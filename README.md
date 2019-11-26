@@ -1,4 +1,4 @@
-Allure piechart telegram script
+<h3>Allure piechart telegram script</h3>
 
 jar, that draws piechart from results `allure-report/export/prometheusData.txt` and sends it with link to build to telegram-chat
 
