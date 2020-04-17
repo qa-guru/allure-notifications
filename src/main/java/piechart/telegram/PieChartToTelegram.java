@@ -22,10 +22,10 @@ public class PieChartToTelegram {
 //        String linkToBuild = "http://google.com/";              // for debug
 
         String chatId = args[0];                                // telegram chat id
-        secretBot = args[0];                                    // telegram secret for bot
-        String projectName = args[1];                           // name, displayed in piechart title
-        String pathToAllureReportFolder = args[2];              // path to allure-report/
-        String linkToBuild = args[3];                           // link to build
+        secretBot = args[1];                                    // telegram secret for bot
+        String projectName = args[2];                           // name, displayed in piechart title
+        String pathToAllureReportFolder = args[3];              // path to allure-report/
+        String linkToBuild = args[4];                           // link to build
 
         String linkToAllureReport = linkToBuild + "allure";    // link to allure report
         String fullPathToDataFile = pathToAllureReportFolder + pathToDataFile;
