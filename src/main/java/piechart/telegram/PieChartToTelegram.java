@@ -12,11 +12,12 @@ public class PieChartToTelegram {
     static String piechartName = "piechart";
     static String pathToDataFile = "export/prometheusData.txt";
     public static String secretBot;
-
-    // java -jar "-12345678" "Project_name" allure-report/ http://.../job/Project_name/60/
+// -Dapple=aaa -Ditem=asd
+    // java -jar allure-piechart-telegram-1.0.jar "-12345678" "bot_secret" "Project_name" allure-report/ http://.../job/Project_name/60/
     public static void main(String[] args) {
 
 //        String chatId = "0";                                    // for debug
+//        secretBot = "0";                                        // telegram secret for bot
 //        String projectName = "Project name";                    // for debug
 //        String pathToAllureReportFolder = "allure-report/";     // for debug
 //        String linkToBuild = "http://google.com/";              // for debug
@@ -37,10 +38,6 @@ public class PieChartToTelegram {
                 testResultsData.get(2) +
                 testResultsData.get(3) +
                 testResultsData.get(4));
-
-        if (successPercent == 100) { //todo - fucked jenkins sometimes sends to telegram even if 100%
-            return;
-        }
 
         String telegramMessage = "[" + successPercent + "] " + projectName + "\n" +
                 "Link to allure report: " + linkToAllureReport;
