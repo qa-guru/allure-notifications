@@ -6,7 +6,7 @@ jar, that draws piechart from results `allure-report/export/prometheusData.txt` 
 
 
 0. Create telegram bot and add it to chat
-1. You can download ready jar https://github.com/svasenkov/allure-piechart-telegram/blob/master/allure-piechart-telegram.jar or clone project and build .jar yourself:
+1. You can download ready jar https://github.com/svasenkov/allure-piechart-telegram/blob/master/allure-piechart-telegram-1.0.jar or clone project and build .jar yourself:
 `gradle build` -> build/libs/allure-piechart-telegram-1.0.jar
 2. Put allure-piechart-telegram-1.0.jar in your in root folder of your autotest project.
 3. Run it after allure-report is generated, 
