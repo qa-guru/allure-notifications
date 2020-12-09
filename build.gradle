@@ -12,8 +12,12 @@ repositories {
 }
 
 dependencies {
-    compile group: 'org.knowm.xchart', name: 'xchart', version: '3.5.2'
-    compile group: 'org.telegram', name: 'telegrambots', version: '4.1'
+    compile(
+            'args4j:args4j:2.33',
+            'org.knowm.xchart:xchart:3.5.2',
+            'org.telegram:telegrambots:4.1',
+            'com.fasterxml.jackson.core:jackson-databind:2.11.2'
+    )
 }
 
 jar {

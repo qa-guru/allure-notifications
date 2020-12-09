@@ -1,5 +1,6 @@
-package piechart.telegram;
+package allure.piechart.telegram.chart;
 
+import allure.piechart.telegram.models.Summary;
 import org.knowm.xchart.PieChart;
 import org.knowm.xchart.PieSeries;
 import org.knowm.xchart.style.Styler;
@@ -10,21 +11,21 @@ import java.util.List;
 
 
 public class PieChartBuilder {
-    public static PieChart getChart(List<Long> data, String title) {
+    public static PieChart getChart(Summary summaryResults, String title) {
 
-        Long failed = data.get(0);
-        Long broken = data.get(1);
-        Long passed = data.get(2);
-        Long skipped = data.get(3);
-        Long unknown = data.get(4);
+        long failedResult = summaryResults.getStatistic().getFailed();
+        long brokenResult = summaryResults.getStatistic().getBroken();
+        long passedResult = summaryResults.getStatistic().getPassed();
+        long skippedResult = summaryResults.getStatistic().getSkipped();
+        long unknownResult = summaryResults.getStatistic().getUnknown();
 
         // Create Chart
         PieChart chart =
-            new org.knowm.xchart.PieChartBuilder()
-                    .title(title)
-                    .width(500)
-                    .height(250)
-                    .build();
+                new org.knowm.xchart.PieChartBuilder()
+                        .title(title)
+                        .width(500)
+                        .height(250)
+                        .build();
 
         // Customize Chart
         // Legend
@@ -50,25 +51,25 @@ public class PieChartBuilder {
 
         // Series // todo - make hiding legend items, if value = 0
         List<int[]> colors = new ArrayList<>();
-        if (passed!=0) {
-            chart.addSeries(passed + " passed", passed);
+        if (passedResult!=0) {
+            chart.addSeries(passedResult + " passed", passedResult);
             colors.add(new int[]{148, 202, 102});
         }
 
-        if (failed!=0) {
-            chart.addSeries(failed + " failed", failed);
+        if (failedResult!=0) {
+            chart.addSeries(failedResult + " failed", failedResult);
             colors.add(new int[]{255, 87, 68});
         }
-        if (skipped!=0) {
-            chart.addSeries(skipped + " skipped", skipped);
+        if (skippedResult!=0) {
+            chart.addSeries(skippedResult + " skipped", skippedResult);
             colors.add(new int[]{170, 170, 170});
         }
-        if (broken!=0) {
-            chart.addSeries(broken + " broken", broken);
+        if (brokenResult!=0) {
+            chart.addSeries(brokenResult + " broken", brokenResult);
             colors.add(new int[]{255, 206, 87});
         }
-        if (unknown!=0) {
-            chart.addSeries(unknown + " unknown", unknown);
+        if (unknownResult!=0) {
+            chart.addSeries(unknownResult + " unknown", unknownResult);
             colors.add(new int[]{216, 97,  190});
         }
         colors.add(new int[]{0, 0, 0});
