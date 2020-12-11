@@ -2,7 +2,7 @@ plugins {
     id 'java'
 }
 
-group 'piechart.telegram'
+group 'allure.piechart.telegram'
 version '1.0'
 
 sourceCompatibility = 1.8
@@ -12,14 +12,19 @@ repositories {
 }
 
 dependencies {
-    compile group: 'org.knowm.xchart', name: 'xchart', version: '3.5.2'
-    compile group: 'org.telegram', name: 'telegrambots', version: '4.1'
+    compile ("org.knowm.xchart:xchart:3.5.2")
+    compile ("org.telegram:telegrambots:4.1")
+    compile ("com.fasterxml.jackson.core:jackson-databind:2.11.2")
+}
+
+tasks.withType(JavaCompile) {
+    options.encoding = 'UTF-8'
 }
 
 jar {
     manifest {
         attributes(
-                'Main-Class': 'piechart.telegram.PieChartToTelegram'
+                'Main-Class': 'allure.piechart.telegram.PieChartToTelegram'
         )
     }
     from {
