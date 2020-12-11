@@ -1,40 +1,44 @@
 package allure.piechart.telegram.models;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonProperty;
-
 import java.util.List;
-
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class Summary {
-
-    @JsonProperty("reportName")
     private String reportName;
-    @JsonProperty("testRuns")
-    private List<Object> testRuns = null;
-    @JsonProperty("statistic")
+    private List<Object> testRuns;
     private Statistic statistic;
-    @JsonProperty("time")
     private Time time;
 
-    @JsonProperty("reportName")
     public String getReportName() {
         return reportName;
     }
 
-    @JsonProperty("testRuns")
+    public void setReportName(String reportName) {
+        this.reportName = reportName;
+    }
+
     public List<Object> getTestRuns() {
         return testRuns;
     }
 
-    @JsonProperty("statistic")
+    public void setTestRuns(List<Object> testRuns) {
+        this.testRuns = testRuns;
+    }
+
     public Statistic getStatistic() {
         return statistic;
     }
 
-    @JsonProperty("time")
+    public void setStatistic(Statistic statistic) {
+        this.statistic = statistic;
+    }
+
     public Time getTime() {
         return time;
+    }
+
+    public void setTime(Time time) {
+        this.time = time;
     }
 }
