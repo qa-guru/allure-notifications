@@ -2,7 +2,7 @@ plugins {
     id 'java'
 }
 
-group 'piechart.telegram'
+group 'allure.piechart.telegram'
 version '1.0'
 
 sourceCompatibility = 1.8
@@ -20,10 +20,14 @@ dependencies {
     )
 }
 
+tasks.withType(JavaCompile) {
+    options.encoding = 'UTF-8'
+}
+
 jar {
     manifest {
         attributes(
-                'Main-Class': 'piechart.telegram.PieChartToTelegram'
+                'Main-Class': 'allure.piechart.telegram.Application'
         )
     }
     from {
