@@ -7,6 +7,7 @@ import allure.piechart.telegram.models.Summary;
 import org.knowm.xchart.BitmapEncoder;
 import org.knowm.xchart.PieChart;
 import org.kohsuke.args4j.Option;
+import org.kohsuke.args4j.spi.ExplicitBooleanOptionHandler;
 
 import java.io.IOException;
 import java.util.logging.Level;
@@ -19,7 +20,7 @@ import static allure.piechart.telegram.utils.Utils.*;
 public class CmdOptions {
     private final Logger logger = Logger.getLogger(CmdOptions.class.getName());
 
-    @Option(name = "-ch", aliases = "--chart", usage = "Enable/disable PieChart diagram")
+    @Option(name = "-ch", aliases = "--chart", usage = "Enable/disable PieChart diagram", handler = ExplicitBooleanOptionHandler.class)
     public boolean chart;
 
     @Option(name = "-s", aliases = {"--secret", "--token"}, usage = "Set telegram bot secret token", required = true)
