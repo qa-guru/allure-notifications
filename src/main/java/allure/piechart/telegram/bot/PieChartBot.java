@@ -1,12 +1,11 @@
 package allure.piechart.telegram.bot;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.methods.send.SendPhoto;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
-
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  * Отвечает за отправку PieChart диаграммы с результатами в чат.
@@ -15,7 +14,7 @@ import java.util.logging.Logger;
  * @since 09.12.2020
  */
 public class PieChartBot extends TelegramLongPollingBot {
-    private final Logger logger = Logger.getLogger(PieChartBot.class.getName());
+    private final Logger logger = LoggerFactory.getLogger(PieChartBot.class);
 
     private final String token;
 
@@ -45,8 +44,9 @@ public class PieChartBot extends TelegramLongPollingBot {
             execute(photo);
             logger.info("finished");
         } catch (TelegramApiException e) {
-            logger.log(Level.INFO, e.getMessage(), e.getStackTrace());
+            logger.error("Error {} \n Reason {}", e.getLocalizedMessage(), e.getStackTrace());
             e.printStackTrace();
+            System.exit(1);
         }
     }
 }

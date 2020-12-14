@@ -8,17 +8,17 @@ import org.knowm.xchart.BitmapEncoder;
 import org.knowm.xchart.PieChart;
 import org.kohsuke.args4j.Option;
 import org.kohsuke.args4j.spi.ExplicitBooleanOptionHandler;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import static allure.piechart.telegram.bot.factory.BotFactory.createPieChartBot;
 import static allure.piechart.telegram.bot.factory.BotFactory.createTextBot;
 import static allure.piechart.telegram.utils.Utils.*;
 
 public class CmdOptions {
-    private final Logger logger = Logger.getLogger(CmdOptions.class.getName());
+    private final Logger logger = LoggerFactory.getLogger(CmdOptions.class);
 
     @Option(name = "-ch", aliases = "--chart", usage = "Enable/disable PieChart diagram", handler = ExplicitBooleanOptionHandler.class)
     public boolean chart;
@@ -47,13 +47,13 @@ public class CmdOptions {
     public void run() {
         journal();
         final String pathToResults = allureReportFolder + "widgets/summary.json";
-        logger.log(Level.INFO, "Path to build results: {0}", pathToResults);
+        logger.info("Path to build results: {}", pathToResults);
         final Summary summary = getBuildSummary(pathToResults);
         final String reportLink = buildLink + "allure";
-        logger.log(Level.INFO, "Report link: {0}", reportLink);
+        logger.info("Report link: {}", reportLink);
         final String text = telegramMessage(summary, launchName,
                 env,reportLink);
-        logger.log(Level.INFO, "Text: {0}", text);
+        logger.info("Text: {}", text);
 
         sendInfo(summary, text);
     }
@@ -63,14 +63,15 @@ public class CmdOptions {
             logger.info("Building chart");
             final String pieChartName = "piechart";
             PieChart chart = PieChartBuilder.getChart(summary, projectName);
-            logger.log(Level.INFO, "Chart with title {0} is built", projectName);
+            logger.info("Chart with title {} is built", projectName);
             try {
                 logger.info("Saving chart as picture");
                 BitmapEncoder.saveBitmap(chart, pieChartName, BitmapEncoder.BitmapFormat.PNG);
                 logger.info("Picture was saved successfully");
             } catch (IOException e) {
-                logger.log(Level.INFO, e.getMessage(), e.getStackTrace());
+                logger.error("Error {} \n Reason {}", e.getLocalizedMessage(), e.getStackTrace());
                 e.printStackTrace();
+                System.exit(1);
             }
             logger.info("Char is built successfully");
             PieChartBot pieChartBot = createPieChartBot(token);
@@ -82,13 +83,13 @@ public class CmdOptions {
     }
 
     private void journal() {
-        logger.log(Level.INFO, "Enable PieChart? {0}", chart);
-        logger.log(Level.INFO, "Token: {0}", token);
-        logger.log(Level.INFO, "Chat ID: {0}", chatID);
-        logger.log(Level.INFO, "Project name: {0}", projectName);
-        logger.log(Level.INFO, "Allure report folder: {0}", allureReportFolder);
-        logger.log(Level.INFO, "Build link: {0}", buildLink);
-        logger.log(Level.INFO, "Launch name: {0}", launchName);
-        logger.log(Level.INFO, "Environment: {0}", env);
+        logger.info("Enable PieChart? {}", chart);
+        logger.info("Token: {}", token);
+        logger.info("Chat ID: {}", chatID);
+        logger.info("Project name: {}", projectName);
+        logger.info("Allure report folder: {}", allureReportFolder);
+        logger.info("Build link: {}", buildLink);
+        logger.info("Launch name: {}", launchName);
+        logger.info("Environment: {}", env);
     }
 }
