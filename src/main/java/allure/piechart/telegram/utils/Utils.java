@@ -14,7 +14,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.TimeZone;
 
-import static allure.piechart.telegram.utils.Debug.*;
+import static allure.piechart.telegram.utils.ConfigHelper.debug;
 
 public class Utils {
     private static final Logger LOGGER = LoggerFactory.getLogger(Utils.class);
@@ -94,21 +94,21 @@ public class Utils {
     public static String[] debugArgs() {
         return new String[] {
                 "-ch",
-                String.valueOf(ENABLE_CHART),
+                String.valueOf(debug().enableChart()),
                 "-s",
-                BOT_SECRET,
+                debug().botSecret(),
                 "-c",
-                CHAT_ID,
+                debug().chatId(),
                 "-p",
-                PROJECT_NAME,
+                debug().projectName(),
                 "-f",
-                ALLURE_REPORT_FOLDER,
+                debug().allureReportFolder(),
                 "-b",
-                BUILD_LINK,
+                debug().buildLink(),
                 "-n",
-                LAUNCH_NAME,
+                debug().launchName(),
                 "-e",
-                ENV
+                debug().environment()
         };
     }
 }
