@@ -14,6 +14,8 @@ import java.util.TimeZone;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import static allure.piechart.telegram.utils.Debug.*;
+
 public class Utils {
     private static final Logger LOGGER = Logger.getLogger(Utils.class.getName());
 
@@ -86,5 +88,26 @@ public class Utils {
         message.setChatId(chatId);
         LOGGER.info("Operation is finished successfully");
         return message;
+    }
+
+    public static String[] debugArgs() {
+        return new String[] {
+                "-ch",
+                String.valueOf(ENABLE_CHART),
+                "-s",
+                BOT_SECRET,
+                "-c",
+                CHAT_ID,
+                "-p",
+                PROJECT_NAME,
+                "-f",
+                ALLURE_REPORT_FOLDER,
+                "-b",
+                BUILD_LINK,
+                "-n",
+                LAUNCH_NAME,
+                "-e",
+                ENV
+        };
     }
 }
