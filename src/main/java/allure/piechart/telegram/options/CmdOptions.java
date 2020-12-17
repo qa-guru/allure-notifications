@@ -46,7 +46,7 @@ public class CmdOptions {
 
     public void run() {
         journal();
-        final String pathToResults = System.getProperty("user.dir") + allureReportFolder + "widgets/summary.json";
+        final String pathToResults = allureReportFolder + "widgets/summary.json";
         logger.info("Path to build results: {}", pathToResults);
         final Summary summary = getBuildSummary(pathToResults);
         final String reportLink = buildLink + "allure";
