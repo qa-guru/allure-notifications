@@ -17,9 +17,9 @@ dependencies {
             'org.knowm.xchart:xchart:3.5.2',
             'org.telegram:telegrambots:4.1',
             'com.fasterxml.jackson.core:jackson-databind:2.11.2',
+            'org.aeonbits.owner:owner:1.0.12',
             'log4j:log4j:1.2.17',
-            'org.slf4j:slf4j-log4j12:1.7.30',
-            'org.aeonbits.owner:owner:1.0.12'
+            'org.slf4j:slf4j-log4j12:1.7.30'
     )
 }
 

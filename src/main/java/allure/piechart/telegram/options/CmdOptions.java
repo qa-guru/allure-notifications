@@ -52,7 +52,7 @@ public class CmdOptions {
         final String reportLink = buildLink + "allure";
         logger.info("Report link: {}", reportLink);
         final String text = telegramMessage(summary, launchName,
-                env,reportLink);
+                env, reportLink);
         logger.info("Text: {}", text);
 
         sendInfo(summary, text);
