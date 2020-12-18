@@ -17,15 +17,15 @@ for example Jenkins postbuild task:
 ![jenkins config](jenkins-config.png)
 
 <h3>CommandLine options</h3>
-You can run post build task using cmd options:<br/>
-`-ch - Enable/disable PieChart diagram (false by default);` <br/>
-`-s - Set telegram bot secret token;` <br/>
-`-c - Set telegram chat id;` <br/>
-`-p - Set project name;` <br/>
-`-f - Set allure report folder;` <br/>
-`-b - Set link to build;` <br/>
-`-n - Set launch name;` <br/>
-`-e - Set environment.` <br/>
-Pay attention, all options (except `-ch` ) are required. <br/>
-Example: <br/>
+You can run post build task using cmd options:
+`-ch - Enable/disable PieChart diagram (false by default);`
+`-s - Set telegram bot secret token;`
+`-c - Set telegram chat id;`
+`-p - Set project name;`
+`-f - Set allure report folder;`
+`-b - Set link to build;`
+`-n - Set launch name;`
+`-e - Set environment.`
+Pay attention, all options (except `-ch`) are required.
+Example:
 `java -jar allure-piechart-telegram-1.0.jar -c telegram_chat_id -s telegram_bot_secret -p ${JOB_BASE_NAME} -f allure-report/ -b ${BUILD_URL} -n Example -e DEV`
