@@ -1,12 +1,12 @@
 package allure.piechart.telegram.utils;
 
+import allure.piechart.telegram.bot.AllureBot;
 import allure.piechart.telegram.models.Summary;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
-import org.telegram.telegrambots.meta.api.methods.send.SendPhoto;
 
+import javax.validation.constraints.NotNull;
 import java.io.File;
 import java.io.IOException;
 import java.text.DateFormat;
@@ -14,24 +14,32 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.TimeZone;
 
+import static allure.piechart.telegram.bot.factory.BotFactory.getBot;
 import static allure.piechart.telegram.utils.ConfigHelper.debug;
 
+/**
+ * Вспомогательный класс для работы с приложением.
+ *
+ * @author kadehar
+ * @since 2.0
+ */
 public class Utils {
     private static final Logger LOGGER = LoggerFactory.getLogger(Utils.class);
 
-    public static String getTimeFromMilliseconds(Long milliseconds) {
+    /** Возвращает дату на основе времени в мс */
+    public static String getTimeFromMilliseconds(final @NotNull Long milliseconds) {
         LOGGER.info("Time in ms: {}", milliseconds);
         Date date = new Date(milliseconds);
         LOGGER.info("Current date: {}", date.toString());
         DateFormat formatter = new SimpleDateFormat("HH:mm:ss.SSS");
         formatter.setTimeZone(TimeZone.getTimeZone("UTC"));
-        LOGGER.info("Date format: {}", formatter.toString());
         LOGGER.info("Time Zone: {}", formatter.getTimeZone());
 
         return formatter.format(date);
     }
 
-    public static Summary getBuildSummary(final String path) {
+    /** Возвращает результаты сборки в виде модели Summary */
+    public static Summary getBuildSummary(final @NotNull String path) {
         ObjectMapper objectMapper = new ObjectMapper();
         Summary summary = null;
         try {
@@ -46,51 +54,7 @@ public class Utils {
         return summary;
     }
 
-    public static String telegramMessage(final Summary summary, final String launchName,
-                                         final String env, final String reportLink) {
-        long failedResult = summary.getStatistic().getFailed();
-        long brokenResult = summary.getStatistic().getBroken();
-        long passedResult = summary.getStatistic().getPassed();
-        long unknownResult = summary.getStatistic().getUnknown();
-        long totalResult = summary.getStatistic().getTotal();
-        long failedPercent = failedResult * 100 / totalResult;
-        long passedPercent = passedResult * 100 / totalResult;
-
-        return "Результаты: " + launchName + "\n" +
-                "- продолжительность: "  + getTimeFromMilliseconds(summary.getTime().getDuration()) + "\n" +
-                "- всего сценариев в запуске: " + totalResult + "\n" +
-                "- рабочий стенд: " + env + "\n" +
-                "- из них успешных: " + passedResult + "\n" +
-                "- из них упавших: " + failedResult + "\n" +
-                (brokenResult > 0 ? "- из них сломано: " + brokenResult + "\n" : "") +
-                (unknownResult > 0 ? "- из них упавших по неизвестной причине: " + unknownResult + "\n" : "") +
-                "- из них пропущенных: " + summary.getStatistic().getSkipped() + "\n" +
-                "- % упавших тестов: " + failedPercent + "\n" +
-                "- % прошедших тестов: " + passedPercent + "\n" +
-                reportLink;
-    }
-
-    public static SendPhoto picture(final String fileName, final String caption, final String chatId) {
-        LOGGER.info("Create photo attachment with file name {}, caption {}, chat ID {}",
-                fileName, caption, chatId);
-        SendPhoto photo = new SendPhoto();
-        photo.setPhoto(new File(fileName + ".png"));
-        photo.setCaption(caption);
-        photo.setChatId(chatId);
-        LOGGER.info("Operation is finished successfully");
-        return photo;
-    }
-
-    public static SendMessage textMessage(final String text, final String chatId) {
-        LOGGER.info("Create message with text {} and chat ID {}",
-                text, chatId);
-        SendMessage message = new SendMessage();
-        message.setText(text);
-        message.setChatId(chatId);
-        LOGGER.info("Operation is finished successfully");
-        return message;
-    }
-
+    /** Опции командной строки для отладки при разработке */
     public static String[] debugArgs() {
         return new String[] {
                 "-ch",
@@ -108,7 +72,20 @@ public class Utils {
                 "-n",
                 debug().launchName(),
                 "-e",
-                debug().environment()
+                debug().environment(),
+                "-l",
+                "en"
         };
+    }
+
+    /**
+     * Создаёт нового бота.
+     *
+     * @param token секретный ключ бота
+     * @param messenger мессенджер, для которого предназначен бот
+     * @return бот
+     */
+    public static AllureBot createBot(final @NotNull String token, final @NotNull String messenger) {
+        return getBot(token, messenger);
     }
 }
