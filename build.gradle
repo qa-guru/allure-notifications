@@ -13,7 +13,6 @@ repositories {
 
 dependencies {
     compile(
-            'args4j:args4j:2.33',
             'com.beust:jcommander:1.78',
             'org.knowm.xchart:xchart:3.5.2',
             'org.telegram:telegrambots:4.1',
