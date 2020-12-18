@@ -3,7 +3,7 @@ plugins {
 }
 
 group 'allure.piechart.telegram'
-version '2.0'
+version '2.0.1'
 
 sourceCompatibility = 1.8
 
@@ -13,7 +13,7 @@ repositories {
 
 dependencies {
     compile(
-            'args4j:args4j:2.33',
+            'com.beust:jcommander:1.78',
             'org.knowm.xchart:xchart:3.5.2',
             'org.telegram:telegrambots:4.1',
             'com.fasterxml.jackson.core:jackson-databind:2.11.2',

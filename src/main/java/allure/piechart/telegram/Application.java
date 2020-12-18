@@ -1,8 +1,9 @@
 package allure.piechart.telegram;
 
+import allure.piechart.telegram.clients.BaseClient;
 import allure.piechart.telegram.options.CmdOptions;
-import org.kohsuke.args4j.CmdLineException;
-import org.kohsuke.args4j.CmdLineParser;
+import allure.piechart.telegram.options.OptionsValues;
+import com.beust.jcommander.JCommander;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -12,16 +13,12 @@ public class Application {
     public static void main(String[] args) {
         LOGGER.info("Start application");
         CmdOptions options = new CmdOptions();
-        CmdLineParser parser = new CmdLineParser(options);
-
-        try {
-            parser.parseArgument(args); //for debugging replace args -> Utils.debugArgs()
-            options.run();
-        } catch (CmdLineException e) {
-            LOGGER.error("Error {} \n Reason {}", e.getLocalizedMessage(), e.getStackTrace());
-            e.printStackTrace();
-            System.exit(1);
-        }
+        JCommander.newBuilder()
+                .addObject(options)
+                .build()
+                .parse(args); // replace args by Utils.debugArgs() for debug
+        OptionsValues values = options.collectOptions();
+        BaseClient.sendMessage(values);
         LOGGER.info("Stop application");
     }
 }
