@@ -27,4 +27,4 @@ You can run post build task using cmd options: <br/>
 `-n, --name - Set launch name;` <br/>
 `-e, --env - Set environment;` <br/>
 `-l, --lang - Set template language (possible values are: ru, en). English by default.` <br/>
-Pay attention, all options (except `-ch`) are required.
+Pay attention, all options (except `-ch` and `-l`) are required.
