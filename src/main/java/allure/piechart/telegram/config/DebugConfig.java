@@ -26,4 +26,8 @@ public interface DebugConfig extends Config {
     String environment();
     @Key("enable.chart")
     Boolean enableChart();
+    @Key("language")
+    String language();
+    @Key("messenger")
+    String messenger();
 }

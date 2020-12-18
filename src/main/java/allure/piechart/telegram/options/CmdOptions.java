@@ -46,9 +46,8 @@ public class CmdOptions {
             required = true, validateWith = NotEmptyOrNullString.class)
     private String environment;
 
-    @Parameter(names = {"-l", "--lang"}, description = "Set template language",
-            required = true, validateWith = NotEmptyOrNullString.class)
-    private String lang;
+    @Parameter(names = {"-l", "--lang"}, description = "Set template language", validateWith = NotEmptyOrNullString.class)
+    private String lang = "en";
 
     @Parameter(names = {"-m", "--messenger"}, description = "Set messenger name", hidden = true)
     private String messenger = "telegram";

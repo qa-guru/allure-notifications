@@ -74,7 +74,9 @@ public class Utils {
                 "-e",
                 debug().environment(),
                 "-l",
-                "en"
+                debug().language(),
+                "-m",
+                debug().messenger()
         };
     }
 
