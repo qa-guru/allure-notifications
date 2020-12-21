@@ -27,7 +27,7 @@ public class BaseClient {
     public static void sendMessage(final @NotNull OptionsValues values) {
         final Summary summary = getBuildSummary(values.getAllureReportFolder());
         final String text = TemplatesFactory.getMessage(summary, values.getLanguage(),
-                values.getLaunchName(), values.getEnv(), values.getBuildLink());
+                values.getLaunchName(), values.getEnv(), values.getBuildLink()).render();
         send(values, summary, text);
     }
 

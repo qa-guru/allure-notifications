@@ -19,37 +19,38 @@ public class CmdOptions {
 
     @Parameter(names = {"-s", "--secret", "--token"},
             description = "Set telegram bot token", required = true, validateWith = NotEmptyOrNullString.class,
-            arity = 1)
+            variableArity = true)
     private String botToken;
 
     @Parameter(names = {"--chat", "-c", "--id"}, description = "Set telegram chat id",
-            required = true, validateWith = NotEmptyOrNullString.class)
+            required = true, validateWith = NotEmptyOrNullString.class, variableArity = true)
     private String chatId;
 
     @Parameter(names = {"-p", "--project"}, description = "Set project name",
-            required = true, validateWith = NotEmptyOrNullString.class)
+            required = true, validateWith = NotEmptyOrNullString.class, variableArity = true)
     private String projectName;
 
     @Parameter(names = {"-f", "--folder", "--allure"}, description = "Set allure report folder",
-            required = true, validateWith = NotEmptyOrNullString.class)
+            required = true, validateWith = NotEmptyOrNullString.class, variableArity = true)
     private String allureReportFolder;
 
     @Parameter(names = {"-b", "--build", "--link"}, description = "Set link to build",
-            required = true, validateWith = NotEmptyOrNullString.class)
+            required = true, validateWith = NotEmptyOrNullString.class, variableArity = true)
     private String buildLink;
 
     @Parameter(names = {"-n", "--name"}, description = "Set launch name",
-            required = true, validateWith = NotEmptyOrNullString.class)
+            required = true, validateWith = NotEmptyOrNullString.class, variableArity = true)
     private String launchName;
 
     @Parameter(names = {"-e", "--env"}, description = "Set environment",
-            required = true, validateWith = NotEmptyOrNullString.class)
+            required = true, validateWith = NotEmptyOrNullString.class, variableArity = true)
     private String environment;
 
-    @Parameter(names = {"-l", "--lang"}, description = "Set template language", validateWith = NotEmptyOrNullString.class)
+    @Parameter(names = {"-l", "--lang"}, description = "Set template language",
+            validateWith = NotEmptyOrNullString.class, variableArity = true)
     private String lang = "en";
 
-    @Parameter(names = {"-m", "--messenger"}, description = "Set messenger name", hidden = true)
+    @Parameter(names = {"-m", "--messenger"}, description = "Set messenger name", hidden = true, variableArity = true)
     private String messenger = "telegram";
 
     /** Возвращает значения, введённые пользователем. */

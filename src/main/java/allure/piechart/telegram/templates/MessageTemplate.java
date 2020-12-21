@@ -1,6 +1,7 @@
 package allure.piechart.telegram.templates;
 
 import allure.piechart.telegram.models.Summary;
+import org.stringtemplate.v4.ST;
 
 import javax.validation.constraints.NotNull;
 
@@ -20,6 +21,9 @@ public class MessageTemplate {
     private final long skipped;
     private final long total;
     private final long duration;
+    private final long percentOfFailed;
+    private final long percentOfPassed;
+
 
     public MessageTemplate(final @NotNull Summary summary) {
         failed = summary.getStatistic().getFailed();
@@ -29,47 +33,47 @@ public class MessageTemplate {
         skipped = summary.getStatistic().getSkipped();
         total = summary.getStatistic().getTotal();
         duration = summary.getTime().getDuration();
+        percentOfFailed = failed * 100 / total;
+        percentOfPassed = passed * 100 / total;
     }
 
     /** Возвращает заполненное сообщение на английском языке. */
-    public String engMessage(final @NotNull String launchName, final @NotNull String env,
-                             final @NotNull String reportLink) {
-        final long percentOfFailed = failed * 100 / total;
-        final long percentOfPassed = passed * 100 / total;
-
-        return "Results: \n" +
-                "- Launch: " + launchName + '\n' +
-                "- Duration: " + getTimeFromMilliseconds(duration) + '\n' +
-                "- Total scenarios: " + total + '\n' +
-                "- Environment: " + env + '\n' +
-                "- Total passed: " + passed + '\n' +
-                "- Total failed: " + failed + '\n' +
-                (broken > 0 ? "- Total broken: " + broken + '\n' : "") +
-                (unknown > 0 ? "- Total unknown: " + unknown + '\n' : "") +
-                "- Total skipped: " + skipped + '\n' +
-                "- % of failed tests: " + percentOfFailed + '\n' +
-                "- % of passed tests: " + percentOfPassed + '\n' +
-                "Report available by link: " + reportLink;
+    public ST engMessage(final @NotNull String launchName, final @NotNull String env,
+                         final @NotNull String reportLink) {
+        return new ST(
+                "<asterisk>Results:<asterisk> \n" +
+                        "<bullet> <asterisk>Launch:<asterisk> " + launchName + '\n' +
+                        "<bullet> <asterisk>Duration:<asterisk> " + getTimeFromMilliseconds(duration) + '\n' +
+                        "<bullet> <asterisk>Total scenarios:<asterisk> " + total + '\n' +
+                        "<bullet> <asterisk>Environment:<asterisk> " + env + '\n' +
+                        "<bullet> <asterisk>Total passed:<asterisk> " + passed + '\n' +
+                        "<bullet> <asterisk>Total failed:<asterisk> " + failed + '\n' +
+                        (broken > 0 ? "<bullet> <asterisk>Total broken:<asterisk> " + broken + '\n' : "") +
+                        (unknown > 0 ? "<bullet> <asterisk>Total unknown:<asterisk> " + unknown + '\n' : "") +
+                        (skipped > 0 ? "<bullet> <asterisk>Total skipped:<asterisk> " + skipped + '\n' : "") +
+                        (percentOfFailed > 0 ? "<bullet> <asterisk>% of failed tests:<asterisk> " + percentOfFailed + '\n' : "") +
+                        (percentOfPassed > 0 ? "<bullet> <asterisk>% of passed tests:<asterisk> " + percentOfPassed + '\n' : "") +
+                        "<asterisk>Report available by link:<asterisk> " + reportLink
+        );
     }
 
     /** Возвращает заполненное сообщение на русском языке. */
-    public String rusMessage(final @NotNull String launchName, final @NotNull String env,
-                             final @NotNull String reportLink) {
-        final long percentOfFailed = failed * 100 / total;
-        final long percentOfPassed = passed * 100 / total;
-
-        return "Результаты: \n" +
-                "- Запуск: " + launchName + '\n' +
-                "- Продолжительность: " + getTimeFromMilliseconds(duration) + '\n' +
-                "- Всего сценариев: " + total + '\n' +
-                "- Рабочее окружение: " + env + '\n' +
-                "- Всего успешных тестов: " + passed + '\n' +
-                "- Всего упавших тестов: " + failed + '\n' +
-                (broken > 0 ? "- Всего сломанных тестов: " + broken + '\n' : "") +
-                (unknown > 0 ? "- Всего неизвестных тестов: " + unknown + '\n' : "") +
-                "- Всего пропущенных тестов: " + skipped + '\n' +
-                "- % упавших тестов: " + percentOfFailed + '\n' +
-                "- % прошедших тестов: " + percentOfPassed + '\n' +
-                "Отчет доступен по ссылке: " + reportLink;
+    public ST rusMessage(final @NotNull String launchName, final @NotNull String env,
+                         final @NotNull String reportLink) {
+        return new ST(
+                "<asterisk>Результаты:<asterisk> \n" +
+                        "<bullet> <asterisk>Запуск:<asterisk> " + launchName + '\n' +
+                        "<bullet> <asterisk>Продолжительность:<asterisk> " + getTimeFromMilliseconds(duration) + '\n' +
+                        "<bullet> <asterisk>Всего сценариев:<asterisk> " + total + '\n' +
+                        "<bullet> <asterisk>Рабочее окружение:<asterisk> " + env + '\n' +
+                        "<bullet> <asterisk>Всего успешных тестов:<asterisk> " + passed + '\n' +
+                        "<bullet> <asterisk>Всего упавших тестов:<asterisk> " + failed + '\n' +
+                        (broken > 0 ? "<bullet> <asterisk>Всего сломанных тестов:<asterisk> " + broken + '\n' : "") +
+                        (unknown > 0 ? "<bullet> <asterisk>Всего неизвестных тестов:<asterisk> " + unknown + '\n' : "") +
+                        (skipped > 0 ? "<bullet> <asterisk>Всего пропущенных тестов:<asterisk> " + skipped + '\n' : "") +
+                        (percentOfFailed > 0 ? "<bullet> <asterisk>% упавших тестов:<asterisk> " + percentOfFailed + '\n' : "") +
+                        (percentOfPassed > 0 ? "<bullet> <asterisk>% прошедших тестов:<asterisk> " + percentOfPassed + '\n' : "") +
+                        "<asterisk>Отчет доступен по ссылке:<asterisk> " + reportLink
+        );
     }
 }
