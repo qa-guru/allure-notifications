@@ -28,5 +28,5 @@ jobs:
     - name: 'Publish JAR'
       uses: actions/upload-artifact@v2
       with:
-        name: allure-piechart-telegram-$version.jar
+#         name: allure-piechart-telegram-$version.jar
         path: build/libs/*.jar
