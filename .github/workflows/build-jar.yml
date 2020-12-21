@@ -30,8 +30,8 @@ jobs:
       - name: 'Checkout'
         uses: actions/checkout@v2
       
-      - name: 'Set Work Dir'
-        run: echo ::set-env name=WORK_DIR::$GITHUB_WORKSPACE
+#       - name: 'Set Work Dir'
+#         run: echo ::set-env name=WORK_DIR::$GITHUB_WORKSPACE
 
       # Build JAR
       - name: 'Assemble JAR'
