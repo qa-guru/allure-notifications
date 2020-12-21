@@ -26,7 +26,7 @@ jobs:
     - name: Print version
       run: echo $version
     - name: 'Publish JAR'
-      uses: actions/upload-artifact@v2-preview
+      uses: actions/upload-artifact@v2
       with:
-        name: "allure-piechart-telegram-${version}.jar"
+        name: allure-piechart-telegram-$version.jar
         path: build/libs/*.jar
