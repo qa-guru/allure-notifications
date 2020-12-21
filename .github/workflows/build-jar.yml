@@ -22,9 +22,10 @@ jobs:
     - name: Build with Gradle
       run: ./gradlew assemble
     - name: 'Get Version Number'
-      run: echo "::set-output name=VERSION::$(./gradlew properties -q | grep 'version:' | awk '{print $2}')"
+      run: echo "version=$(./gradlew properties -q | grep 'version:' | awk '{print $2}')" >> $GITHUB_ENV
+      # run: echo "::set-output name=VERSION::$(./gradlew properties -q | grep 'version:' | awk '{print $2}')"
     - name: Print version
-      run: echo ${{steps.global_env.outputs.VERSION}}
+      run: echo $version
 #     - name: 'Publish JAR'
 #       uses: actions/upload-artifact@v2-preview
 #       with:
