@@ -22,9 +22,9 @@ jobs:
     - name: Build with Gradle
       run: ./gradlew assemble
     - name: 'Get Version Number'
-      run: echo "VERSION=$(./gradlew properties -q | grep 'version:'| awk '{print $2}') >> $GITHUB_ENV
+      run: echo "::set-output name=VERSION::$(./gradlew properties -q | grep "version:" | awk '{print $2}')"
     - name: 'Publish JAR'
       uses: actions/upload-artifact@v2-preview
       with:
-        name: 'allure-piechart-telegram-$VERSION.jar'
+        name: 'allure-piechart-telegram-${{VERSION}}.jar'
         path: build/libs/*.jar
