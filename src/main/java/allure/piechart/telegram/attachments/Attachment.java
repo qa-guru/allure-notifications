@@ -45,6 +45,7 @@ public class Attachment {
         SendMessage message = new SendMessage();
         message.setText(msg);
         message.setChatId(chatId);
+        message.enableMarkdown(true);
         return message;
     }
 }
