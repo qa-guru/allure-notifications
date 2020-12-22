@@ -1,10 +1,15 @@
 name: build-jar
 
 on:
-  push:
-    branches: [ master ]
-  pull_request:
-    branches: [ master ]
+#   push:
+#     branches: [ master ]
+#   pull_request:
+#     branches: [ master ]
+  workflow_dispatch:
+    inputs:
+      release_name:
+        description: 'Name of release  (ie bug fixes)'
+        required: true
 
 jobs:
   build:
@@ -49,7 +54,7 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
         tag_name: ${{ github.ref }}
-        release_name: Release ${{ env.version }}
+        release_name: ${{ github.event.inputs.release_name }}
         body:  ${{ steps.Changelog.outputs.changelog }}
         draft: false
         prerelease: false
