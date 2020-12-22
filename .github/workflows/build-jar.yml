@@ -37,10 +37,10 @@ jobs:
         path: build/libs/*.jar
     
     - name: Read Changelog
-      id: changelog_reader
-      uses: mindsers/changelog-reader-action@v2.0.0
-      with:
-        path: ./CHANGELOG.md
+      uses: scottbrenner/generate-changelog-action@master
+      id: Changelog
+      env:
+        REPO: ${{ github.repository }}
     
     - name: Create Release
       id: create_release
@@ -50,7 +50,7 @@ jobs:
       with:
         tag_name: ${{ github.ref }}
         release_name: Release ${{ env.version }}
-        body: ${{ steps.changelog_reader.outputs.changes }}
+        body:  ${{ steps.Changelog.outputs.changelog }}
         draft: false
         prerelease: false
         
