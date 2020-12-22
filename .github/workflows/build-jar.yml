@@ -55,7 +55,7 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
         upload_url: ${{ steps.create_release.outputs.upload_url }}
-        asset_path: build/libs/*.jar
+        asset_path: build/libs/allure-piechart-telegram-${{env.version}}.jar
         asset_name: 'allure-piechart-telegram-${{env.version}}.jar'
         asset_content_type: application/java-archive  
     
