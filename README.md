@@ -1,3 +1,5 @@
+![build-jar](https://github.com/kadehar/allure-piechart-telegram/workflows/build-jar/badge.svg?branch=master&event=push)
+
 <h3>Allure piechart telegram script</h3>
 
 jar, that draws piechart from results `allure-report/widgets/summary.json` and sends it with link to build to telegram-chat

@@ -2,6 +2,7 @@ package allure.piechart.telegram.utils;
 
 import allure.piechart.telegram.bot.AllureBot;
 import allure.piechart.telegram.models.Summary;
+import allure.piechart.telegram.templates.data.TemplateData;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,6 +26,34 @@ import static allure.piechart.telegram.utils.ConfigHelper.debug;
  */
 public class Utils {
     private static final Logger LOGGER = LoggerFactory.getLogger(Utils.class);
+
+    /** Создание данных для шаблона сообщений */
+    public static TemplateData getTemplateData(final @NotNull Summary summary, final @NotNull String launchName,
+                                               final @NotNull String env, final @NotNull String reportLink) {
+        return new TemplateData.Builder()
+                .failed(summary.getStatistic().getFailed())
+                .broken(summary.getStatistic().getBroken())
+                .passed(summary.getStatistic().getPassed())
+                .unknown(summary.getStatistic().getUnknown())
+                .skipped(summary.getStatistic().getSkipped())
+                .total(summary.getStatistic().getTotal())
+                .duration(summary.getTime().getDuration())
+                .launch(launchName)
+                .environment(env)
+                .reportLink(reportLink)
+                .build();
+    }
+
+    /**
+     * Создаёт нового бота.
+     *
+     * @param token секретный ключ бота
+     * @param messenger мессенджер, для которого предназначен бот
+     * @return бот
+     */
+    public static AllureBot createBot(final @NotNull String token, final @NotNull String messenger) {
+        return getBot(token, messenger);
+    }
 
     /** Возвращает дату на основе времени в мс */
     public static String getTimeFromMilliseconds(final @NotNull Long milliseconds) {
@@ -78,16 +107,5 @@ public class Utils {
                 "-m",
                 debug().messenger()
         };
-    }
-
-    /**
-     * Создаёт нового бота.
-     *
-     * @param token секретный ключ бота
-     * @param messenger мессенджер, для которого предназначен бот
-     * @return бот
-     */
-    public static AllureBot createBot(final @NotNull String token, final @NotNull String messenger) {
-        return getBot(token, messenger);
     }
 }

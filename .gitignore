@@ -23,7 +23,6 @@
 # Project gen files
 .idea
 .gradle/
-gradle/
 build/
 bin/
 out/

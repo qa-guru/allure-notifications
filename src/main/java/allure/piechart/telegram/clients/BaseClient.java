@@ -2,6 +2,7 @@ package allure.piechart.telegram.clients;
 
 import allure.piechart.telegram.models.Summary;
 import allure.piechart.telegram.options.OptionsValues;
+import allure.piechart.telegram.templates.data.TemplateData;
 import allure.piechart.telegram.templates.factory.TemplatesFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -9,6 +10,7 @@ import org.slf4j.LoggerFactory;
 import javax.validation.constraints.NotNull;
 
 import static allure.piechart.telegram.utils.Utils.getBuildSummary;
+import static allure.piechart.telegram.utils.Utils.getTemplateData;
 
 /**
  * Базовый клиент для отправки сообщения в чат.
@@ -26,8 +28,9 @@ public class BaseClient {
      */
     public static void sendMessage(final @NotNull OptionsValues values) {
         final Summary summary = getBuildSummary(values.getAllureReportFolder());
-        final String text = TemplatesFactory.getMessage(summary, values.getLanguage(),
-                values.getLaunchName(), values.getEnv(), values.getBuildLink());
+        final TemplateData data = getTemplateData(summary, values.getLaunchName(),
+                values.getEnv(), values.getBuildLink());
+        final String text = TemplatesFactory.formattedMessage(values.getMessenger(), values.getLanguage(), data);
         send(values, summary, text);
     }
 
