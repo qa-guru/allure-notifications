@@ -1,4 +1,4 @@
-![build-jar](https://github.com/kadehar/allure-piechart-telegram/workflows/build-jar/badge.svg?branch=master&event=workflow_dispatch)
+![build-jar](https://github.com/kadehar/allure-piechart-telegram/workflows/build-jar/badge.svg?branch=master&event=push)
 
 <h3>Allure piechart telegram script</h3>
 

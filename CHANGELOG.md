@@ -28,8 +28,22 @@
 
 ### English
 
-- 
+- Fixed bug with passing parameters by keys `-l` and `-e`
+- Added Template contract for template development
+- Added TemplateData class to store information for reports
+- Added RuTemplate and EngTemplate classes that implement the new contract
+- Added a Telegram class that implements the generation of a formatted message
+- Added a method for generating TemplateData in the Utils class
+- TemplateFactory class now returns formatted message
+- Implemented workflow for publishing releases with new assemblies to GitHub 
 
 ### Russian
 
--
+- Исправлена ошибка с передачей параметров по ключам `-l` и `-e`
+- Добавлен контракт Template для разработки шаблонов
+- Добавлен класс TemplateData для хранения информации для отчетов
+- Добавлены классы RuTemplate и EngTemplate, реализующие новый контракт
+- Добавлен класс Telegram, реализующий генерацию отформатированного сообщения
+- Добавлен метод по генерации TemplateData в классе Utils
+- Класс TemplateFactory теперь возвращает отформатированное сообщение
+- Реализован workflow для публикации релизов с новыми сборками в GitHub
