@@ -36,6 +36,12 @@ jobs:
         name: 'allure-piechart-telegram-${{env.version}}.jar'
         path: build/libs/*.jar
     
+    - name: Read Changelog
+      id: changelog_reader
+      uses: mindsers/changelog-reader-action@v2.0.0
+      with:
+        path: ./CHANGELOG.md
+    
     - name: Create Release
       id: create_release
       uses: actions/create-release@v1
@@ -44,7 +50,7 @@ jobs:
       with:
         tag_name: ${{ github.ref }}
         release_name: Release ${{ env.version }}
-        body: ./CHANGELOG.md
+        body: ${{ steps.changelog_reader.outputs.changes }}
         draft: false
         prerelease: false
         
