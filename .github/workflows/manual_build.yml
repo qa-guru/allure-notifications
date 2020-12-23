@@ -83,4 +83,5 @@ jobs:
         with:
           to: ${{ secrets.TELEGRAM_TO }}
           token: ${{ secrets.TELEGRAM_TOKEN }}
-          args: Release v${{env.version}} is now available for downloading
+          args: * Release v${{env.version}} is now available for downloading *
+          format: markdown
