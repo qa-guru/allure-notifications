@@ -8,6 +8,9 @@ import org.knowm.xchart.BitmapEncoder;
 import org.knowm.xchart.PieChart;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.telegram.telegrambots.meta.api.methods.ParseMode;
+import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
+import org.telegram.telegrambots.meta.api.methods.send.SendPhoto;
 
 import javax.validation.constraints.NotNull;
 import java.io.IOException;
@@ -50,9 +53,12 @@ public class TelegramClient {
                 System.exit(1);
             }
             LOGGER.info("Chart is created successfully");
-            bot.sendPhotoToChat(photo(pieChartName, text, values.getChatId()));
+            SendPhoto photo = photo(pieChartName, text, values.getChatId())
+                    .setParseMode(ParseMode.HTML);
+            bot.sendPhotoToChat(photo);
         } else {
-            bot.sendTextMessage(textMessage(text, values.getChatId()));
+            SendMessage message = textMessage(text, values.getChatId()).enableHtml(true);
+            bot.sendTextMessage(message);
         }
     }
 }

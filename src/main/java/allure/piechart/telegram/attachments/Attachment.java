@@ -31,7 +31,6 @@ public class Attachment {
         attachment.setPhoto(new File(fileName + ".png"));
         attachment.setCaption(caption);
         attachment.setChatId(chatId);
-        attachment.setParseMode("Markdown");
         return attachment;
     }
 
@@ -46,7 +45,6 @@ public class Attachment {
         SendMessage message = new SendMessage();
         message.setText(msg);
         message.setChatId(chatId);
-        message.enableMarkdown(true);
         return message;
     }
 }

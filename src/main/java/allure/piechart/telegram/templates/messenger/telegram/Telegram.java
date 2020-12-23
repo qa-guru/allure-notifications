@@ -1,7 +1,5 @@
-package allure.piechart.telegram.templates.messenger;
+package allure.piechart.telegram.templates.messenger.telegram;
 
-import allure.piechart.telegram.templates.EngTemplate;
-import allure.piechart.telegram.templates.RuTemplate;
 import allure.piechart.telegram.templates.data.TemplateData;
 import org.stringtemplate.v4.ST;
 
@@ -16,11 +14,11 @@ public class Telegram {
         ST template;
         switch (locale.toLowerCase()) {
             case "ru":
-                template = RuTemplate.newInstance().message(data);
+                template = TelegramRuTemplate.newInstance().message(data);
                 format(template);
                 return template.render();
             case "en":
-                template = EngTemplate.newInstance().message(data);
+                template = TelegramEngTemplate.newInstance().message(data);
                 format(template);
                 return template.render();
             default:
@@ -30,6 +28,7 @@ public class Telegram {
 
     private static void format(ST template) {
         template.add("bullet", '\u2022');
-        template.add("asterisk", "*");
+        template.add("open_bold", "<b>");
+        template.add("close_bold", "</b>");
     }
 }
