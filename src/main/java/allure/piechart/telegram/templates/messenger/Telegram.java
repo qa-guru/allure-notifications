@@ -30,6 +30,6 @@ public class Telegram {
 
     private static void format(ST template) {
         template.add("bullet", '\u2022');
-        template.add("asterisk", "**");
+        template.add("asterisk", "*");
     }
 }

@@ -72,6 +72,13 @@ jobs:
         with:
           release_id: ${{ steps.create_release.outputs.id }}
 
+      - name: Send notification via telegram
+        uses: appleboy/telegram-action@master
+        with:
+          to: ${{ secrets.TELEGRAM_TO }}
+          token: ${{ secrets.TELEGRAM_TOKEN }}
+          args: Release v${{env.version}} is now available for downloading
+
 # Use it in 'on' section instead of push if you want to build manually
 #workflow_dispatch:
 #  inputs:

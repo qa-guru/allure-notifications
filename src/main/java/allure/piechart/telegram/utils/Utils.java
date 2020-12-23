@@ -13,7 +13,10 @@ import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
+import java.util.Objects;
 import java.util.TimeZone;
+import java.util.stream.Collectors;
 
 import static allure.piechart.telegram.bot.factory.BotFactory.getBot;
 import static allure.piechart.telegram.utils.ConfigHelper.debug;
@@ -26,6 +29,11 @@ import static allure.piechart.telegram.utils.ConfigHelper.debug;
  */
 public class Utils {
     private static final Logger LOGGER = LoggerFactory.getLogger(Utils.class);
+
+    /** Создает единую строку из списка строк */
+    public static String createStringFromListValues(final List<String> strings) {
+        return strings.stream().map(Objects::toString).collect(Collectors.joining(" "));
+    }
 
     /** Создание данных для шаблона сообщений */
     public static TemplateData getTemplateData(final @NotNull Summary summary, final @NotNull String launchName,
