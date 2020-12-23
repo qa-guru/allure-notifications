@@ -1,8 +1,14 @@
-name: Publish release of new version
+name: Publish release of new version manually
 
 on:
-  push:
-    branches: [master]
+  workflow_dispatch:
+    inputs:
+      release_name:
+        description: 'Name of release  (ie bug fixes)'
+        required: true
+      tag_name:
+        description: 'Name of tag  (ie testing)'
+        required: true
 
 jobs:
   build:
@@ -48,8 +54,8 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          tag_name: v${{env.version}}
-          release_name: Release v${{env.version}}
+          tag_name: ${{ github.event.inputs.tag_name }}
+          release_name: ${{ github.event.inputs.release_name }}
           body:  ${{ steps.changelog.outputs.changelog }}
           draft: false
           prerelease: false
@@ -79,13 +85,3 @@ jobs:
           token: ${{ secrets.TELEGRAM_TOKEN }}
           args: '*Release v${{env.version}} is now available for downloading*'
           format: markdown
-
-# Use it in 'on' section instead of push if you want to build manually
-#workflow_dispatch:
-#  inputs:
-#    release_name:
-#      description: 'Name of release  (ie bug fixes)'
-#      required: true
-#    tag_name:
-#      description: 'Name of tag  (ie testing)'
-#      required: true

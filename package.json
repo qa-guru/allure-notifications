@@ -1,1 +1,10 @@
-{}
+{
+  "changelog": {
+    "labels": {
+      "other": "New Feature",
+      "fix": "Bug Fix",
+      "refactor": "Refactoring"
+    },
+    "repo": "username/repo"
+  }
+}
