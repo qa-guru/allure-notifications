@@ -77,15 +77,8 @@ jobs:
         with:
           to: ${{ secrets.TELEGRAM_TO }}
           token: ${{ secrets.TELEGRAM_TOKEN }}
-          args: '*Release v${{env.version}} is now available for downloading*'
+          args: |
+            *allure-piechart-telegram-${{env.version}} is now available for downloading by link* https://github.com/${{ github.repository }}/releases/latest/download/allure-piechart-telegram-${{env.version}}.jar
+            *See Changelog here*:
+            https://github.com/${{ github.repository }}/releases/latest/
           format: markdown
-
-# Use it in 'on' section instead of push if you want to build manually
-#workflow_dispatch:
-#  inputs:
-#    release_name:
-#      description: 'Name of release  (ie bug fixes)'
-#      required: true
-#    tag_name:
-#      description: 'Name of tag  (ie testing)'
-#      required: true

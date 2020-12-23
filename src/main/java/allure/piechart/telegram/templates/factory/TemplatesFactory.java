@@ -1,7 +1,7 @@
 package allure.piechart.telegram.templates.factory;
 
 import allure.piechart.telegram.templates.data.TemplateData;
-import allure.piechart.telegram.templates.messenger.Telegram;
+import allure.piechart.telegram.templates.messenger.telegram.Telegram;
 
 /**
  * Управляет созданием шаблонов сообщений.
