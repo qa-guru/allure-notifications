@@ -31,13 +31,13 @@ public class TelegramUaTemplate implements Template {
                 "<open_bold>Результати:<close_bold> \n" +
                         "<bullet> <open_bold>Запуск:<close_bold> " + data.getLaunchName() + '\n' +
                         "<bullet> <open_bold>Тривалість:<close_bold> " + getTimeFromMilliseconds(data.getDuration()) + '\n' +
-                        "<bullet> <open_bold>Всього сценаріїв:<close_bold> " + data.getTotal() + '\n' +
-                        "<bullet> <open_bold>Робоче оточення:<close_bold> " + data.getEnvironment() + '\n' +
-                        "<bullet> <open_bold>Всього успішних тестів:<close_bold> " + data.getPassed() + '\n' +
-                        "<bullet> <open_bold>Всього невдалих тестів:<close_bold> " + data.getFailed() + '\n' +
-                        (broken > 0 ? "<bullet> <open_bold>Всього зламаних тестів:<close_bold> " + broken + '\n' : "") +
-                        (unknown > 0 ? "<bullet> <open_bold>Всього невідомих тестів:<close_bold> " + unknown + '\n' : "") +
-                        (skipped > 0 ? "<bullet> <open_bold>Всього пропущених тестів:<close_bold> " + skipped + '\n' : "") +
+                        "<bullet> <open_bold>Усього сценаріїв:<close_bold> " + data.getTotal() + '\n' +
+                        "<bullet> <open_bold>Середовище:<close_bold> " + data.getEnvironment() + '\n' +
+                        "<bullet> <open_bold>Усього успішних тестів:<close_bold> " + data.getPassed() + '\n' +
+                        "<bullet> <open_bold>Усього невдалих тестів:<close_bold> " + data.getFailed() + '\n' +
+                        (broken > 0 ? "<bullet> <open_bold>Усього зламаних тестів:<close_bold> " + broken + '\n' : "") +
+                        (unknown > 0 ? "<bullet> <open_bold>Усього невідомих тестів:<close_bold> " + unknown + '\n' : "") +
+                        (skipped > 0 ? "<bullet> <open_bold>Усього пропущених тестів:<close_bold> " + skipped + '\n' : "") +
                         (percentOfFailed > 0 ? "<bullet> <open_bold>% невдалих тестів:<close_bold> " + percentOfFailed + '\n' : "") +
                         (percentOfPassed > 0 ? "<bullet> <open_bold>% успішних тестів:<close_bold> " + percentOfPassed + '\n' : "") +
                         "<open_bold>Звіт доступний за посиланням:<close_bold> " + data.getReportLink()

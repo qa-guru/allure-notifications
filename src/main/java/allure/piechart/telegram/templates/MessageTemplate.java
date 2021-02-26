@@ -84,13 +84,13 @@ public class MessageTemplate {
                 "<asterisk>Результати:<asterisk> \n" +
                         "<bullet> <asterisk>Запуск:<asterisk> " + launchName + '\n' +
                         "<bullet> <asterisk>Тривалість:<asterisk> " + getTimeFromMilliseconds(duration) + '\n' +
-                        "<bullet> <asterisk>Всього сценаріїв:<asterisk> " + total + '\n' +
-                        "<bullet> <asterisk>Робоче оточення:<asterisk> " + env + '\n' +
-                        "<bullet> <asterisk>Всього успішних тестів:<asterisk> " + passed + '\n' +
-                        "<bullet> <asterisk>Всього невдалих тестів:<asterisk> " + failed + '\n' +
-                        (broken > 0 ? "<bullet> <asterisk>Всього зламаних тестів:<asterisk> " + broken + '\n' : "") +
-                        (unknown > 0 ? "<bullet> <asterisk>Всього невідомих тестів:<asterisk> " + unknown + '\n' : "") +
-                        (skipped > 0 ? "<bullet> <asterisk>Всього пропущених тестів:<asterisk> " + skipped + '\n' : "") +
+                        "<bullet> <asterisk>Усього сценаріїв:<asterisk> " + total + '\n' +
+                        "<bullet> <asterisk>Середовище:<asterisk> " + env + '\n' +
+                        "<bullet> <asterisk>Усього успішних тестів:<asterisk> " + passed + '\n' +
+                        "<bullet> <asterisk>Усього невдалих тестів:<asterisk> " + failed + '\n' +
+                        (broken > 0 ? "<bullet> <asterisk>Усього зламаних тестів:<asterisk> " + broken + '\n' : "") +
+                        (unknown > 0 ? "<bullet> <asterisk>Усього невідомих тестів:<asterisk> " + unknown + '\n' : "") +
+                        (skipped > 0 ? "<bullet> <asterisk>Усього пропущених тестів:<asterisk> " + skipped + '\n' : "") +
                         (percentOfFailed > 0 ? "<bullet> <asterisk>% невдалих тестів:<asterisk> " + percentOfFailed + '\n' : "") +
                         (percentOfPassed > 0 ? "<bullet> <asterisk>% успішних тестів:<asterisk> " + percentOfPassed + '\n' : "") +
                         "<asterisk>Звіт доступний за посиланням:<asterisk> " + reportLink
