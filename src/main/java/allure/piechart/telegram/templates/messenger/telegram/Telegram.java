@@ -21,6 +21,10 @@ public class Telegram {
                 template = TelegramEngTemplate.newInstance().message(data);
                 format(template);
                 return template.render();
+            case "ua":
+                template = TelegramUaTemplate.newInstance().message(data);
+                format(template);
+                return template.render();
             default:
                 throw new IllegalStateException("Unexpected value: " + locale.toLowerCase());
         }
