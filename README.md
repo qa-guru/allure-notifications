@@ -4,7 +4,7 @@
 
 jar, that draws piechart from results `allure-report/widgets/summary.json` and sends it with link to build to telegram-chat
 
-![shakal screenshot](shakal-screenshot.png)
+![shakal screenshot_en](shakal-screenshot_en.png)![shakal screenshot_ru](shakal-screenshot_ru.png)![shakal screenshot_ua](shakal-screenshot_ua.png)
 
 
 0. Create telegram bot in @BotFather and add it to your telegram chat.<br/>
@@ -29,5 +29,5 @@ You can run bot using cmd options: <br/>
 `-b, --build, --link - Set link to build;` <br/>
 `-n, --name - Set launch name;` <br/>
 `-e, --env - Set environment;` <br/>
-`-l, --lang - Set template language (possible values are: ru, en). English by default.` <br/>
+`-l, --lang - Set template language (possible values are: ru, en, ua). English by default.` <br/>
 Pay attention, all options (except `-ch` and `-l`) are required.
