@@ -8,7 +8,7 @@ import javax.validation.constraints.NotNull;
 import static allure.piechart.telegram.utils.Utils.getTimeFromMilliseconds;
 
 /**
- * Содержит шаблоны для ENG и RUS сообщений.
+ * Содержит шаблоны для ENG, RUS и UA сообщений.
  *
  * @author kadehar
  * @since 2.0.1
@@ -74,6 +74,26 @@ public class MessageTemplate {
                         (percentOfFailed > 0 ? "<bullet> <asterisk>% упавших тестов:<asterisk> " + percentOfFailed + '\n' : "") +
                         (percentOfPassed > 0 ? "<bullet> <asterisk>% прошедших тестов:<asterisk> " + percentOfPassed + '\n' : "") +
                         "<asterisk>Отчет доступен по ссылке:<asterisk> " + reportLink
+        );
+    }
+
+    /** Возвращает заполненное сообщение на украинском языке. */
+    public ST uaMessage(final @NotNull String launchName, final @NotNull String env,
+                         final @NotNull String reportLink) {
+        return new ST(
+                "<asterisk>Результати:<asterisk> \n" +
+                        "<bullet> <asterisk>Запуск:<asterisk> " + launchName + '\n' +
+                        "<bullet> <asterisk>Тривалість:<asterisk> " + getTimeFromMilliseconds(duration) + '\n' +
+                        "<bullet> <asterisk>Усього сценаріїв:<asterisk> " + total + '\n' +
+                        "<bullet> <asterisk>Середовище:<asterisk> " + env + '\n' +
+                        "<bullet> <asterisk>Усього успішних тестів:<asterisk> " + passed + '\n' +
+                        "<bullet> <asterisk>Усього невдалих тестів:<asterisk> " + failed + '\n' +
+                        (broken > 0 ? "<bullet> <asterisk>Усього зламаних тестів:<asterisk> " + broken + '\n' : "") +
+                        (unknown > 0 ? "<bullet> <asterisk>Усього невідомих тестів:<asterisk> " + unknown + '\n' : "") +
+                        (skipped > 0 ? "<bullet> <asterisk>Усього пропущених тестів:<asterisk> " + skipped + '\n' : "") +
+                        (percentOfFailed > 0 ? "<bullet> <asterisk>% невдалих тестів:<asterisk> " + percentOfFailed + '\n' : "") +
+                        (percentOfPassed > 0 ? "<bullet> <asterisk>% успішних тестів:<asterisk> " + percentOfPassed + '\n' : "") +
+                        "<asterisk>Звіт доступний за посиланням:<asterisk> " + reportLink
         );
     }
 }
