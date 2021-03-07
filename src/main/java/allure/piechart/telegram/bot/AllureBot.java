@@ -1,7 +1,6 @@
 package allure.piechart.telegram.bot;
 
-import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
-import org.telegram.telegrambots.meta.api.methods.send.SendPhoto;
+import allure.piechart.telegram.options.OptionsValues;
 
 import javax.validation.constraints.NotNull;
 
@@ -12,6 +11,6 @@ import javax.validation.constraints.NotNull;
  * @since 2.0.1
  */
 public interface AllureBot {
-    void sendPhotoToChat(final @NotNull SendPhoto photo);
-    void sendTextMessage(final @NotNull SendMessage message);
+    void sendPhotoToChat(final @NotNull String message, final @NotNull OptionsValues values);
+    void sendTextMessage(final @NotNull String message, final @NotNull OptionsValues values);
 }

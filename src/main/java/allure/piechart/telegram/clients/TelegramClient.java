@@ -8,15 +8,10 @@ import org.knowm.xchart.BitmapEncoder;
 import org.knowm.xchart.PieChart;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.telegram.telegrambots.meta.api.methods.ParseMode;
-import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
-import org.telegram.telegrambots.meta.api.methods.send.SendPhoto;
 
 import javax.validation.constraints.NotNull;
 import java.io.IOException;
 
-import static allure.piechart.telegram.attachments.Attachment.photo;
-import static allure.piechart.telegram.attachments.Attachment.textMessage;
 import static allure.piechart.telegram.utils.Utils.createBot;
 
 /**
@@ -53,12 +48,9 @@ public class TelegramClient {
                 System.exit(1);
             }
             LOGGER.info("Chart is created successfully");
-            SendPhoto photo = photo(pieChartName, text, values.getChatId())
-                    .setParseMode(ParseMode.HTML);
-            bot.sendPhotoToChat(photo);
+            bot.sendPhotoToChat(text, values);
         } else {
-            SendMessage message = textMessage(text, values.getChatId()).enableHtml(true);
-            bot.sendTextMessage(message);
+            bot.sendTextMessage(text, values); // todo
         }
     }
 }

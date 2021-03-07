@@ -1,14 +1,14 @@
 package allure.piechart.telegram.bot;
 
+import allure.piechart.telegram.options.OptionsValues;
+import io.restassured.response.ValidatableResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.telegram.telegrambots.bots.TelegramLongPollingBot;
-import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
-import org.telegram.telegrambots.meta.api.methods.send.SendPhoto;
-import org.telegram.telegrambots.meta.api.objects.Update;
-import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
 import javax.validation.constraints.NotNull;
+import java.io.File;
+
+import static io.restassured.RestAssured.given;
 
 /**
  * Отвечает за работу с telegram ботами.
@@ -16,37 +16,24 @@ import javax.validation.constraints.NotNull;
  * @author kadehar
  * @since 2.0.1
  */
-public class TelegramBot extends TelegramLongPollingBot implements AllureBot {
+public class TelegramBot implements AllureBot {
     private final Logger logger = LoggerFactory.getLogger(TelegramBot.class);
 
-    private final String token;
-
-    public TelegramBot(final String token) {
-        this.token = token;
-    }
-
-    @Override
-    public String getBotUsername() {
-        return null;
-    }
-
-    @Override
-    public String getBotToken() {
-        return token;
-    }
-
-    @Override
-    public void onUpdateReceived(Update update) {
-
-    }
-
     /** Отправка сообщения с фото */
-    public void sendPhotoToChat(final @NotNull SendPhoto photo) {
+    public void sendPhotoToChat(final @NotNull String message, final @NotNull OptionsValues values) {
         try {
             logger.info("Sending photo to chat");
-            execute(photo);
+            ValidatableResponse response =
+                    given()
+                            .formParam("chat_id", values.getChatId())
+                            .formParam("initial_comment", message)
+                            .multiPart("file", new File("piechart.png"))
+                            .post("https://api.telegram.org/bot" + values.getToken() + "/sendMessage")
+                            .then();
+
             logger.info("finished");
-        } catch (TelegramApiException e) {
+//        } catch (TelegramApiException e) {
+        } catch (Exception e) {
             logger.error("Error {} \n Reason {}", e.getLocalizedMessage(), e.getStackTrace());
             e.printStackTrace();
             System.exit(1);
@@ -54,12 +41,13 @@ public class TelegramBot extends TelegramLongPollingBot implements AllureBot {
     }
 
     /** Отправка текстового сообщения */
-    public void sendTextMessage(final @NotNull SendMessage message) {
+    public void sendTextMessage(final @NotNull String message, final @NotNull OptionsValues values) {
         try {
             logger.info("Sending message to chat");
-            execute(message);
+//            execute(message); todo
             logger.info("finished");
-        } catch (TelegramApiException e) {
+//        } catch (TelegramApiException e) {
+        } catch (Exception e) {
             logger.error("Error {} \n Reason {}", e.getLocalizedMessage(), e.getStackTrace());
             e.printStackTrace();
             System.exit(1);
