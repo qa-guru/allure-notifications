@@ -1,14 +1,15 @@
 package allure.piechart.telegram.bot;
 
+import io.restassured.response.ValidatableResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.telegram.telegrambots.bots.TelegramLongPollingBot;
-import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
-import org.telegram.telegrambots.meta.api.methods.send.SendPhoto;
-import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
 import javax.validation.constraints.NotNull;
+import java.io.File;
+
+import static allure.piechart.telegram.chart.Chart.PIECHART_FILE_NAME;
+import static io.restassured.RestAssured.given;
 
 /**
  * Отвечает за работу с telegram ботами.
@@ -16,7 +17,7 @@ import javax.validation.constraints.NotNull;
  * @author kadehar
  * @since 2.0.1
  */
-public class TelegramBot extends TelegramLongPollingBot implements AllureBot {
+public class TelegramBot implements AllureBot {
     private final Logger logger = LoggerFactory.getLogger(TelegramBot.class);
 
     private final String token;
@@ -25,25 +26,22 @@ public class TelegramBot extends TelegramLongPollingBot implements AllureBot {
         this.token = token;
     }
 
-    @Override
-    public String getBotUsername() {
-        return null;
-    }
-
-    @Override
-    public String getBotToken() {
-        return token;
-    }
-
-    @Override
-    public void onUpdateReceived(Update update) {
-
-    }
 
     /** Отправка сообщения с фото */
-    public void sendPhotoToChat(final @NotNull SendPhoto photo) {
+    public void sendPhotoToChat(final @NotNull String photo) {
         try {
             logger.info("Sending photo to chat");
+
+            ValidatableResponse response =
+                    given()
+                            .header("Authorization", "Bearer " + values.getToken())
+                            .formParam("chat_id", values.getChatId())
+                            .formParam("initial_comment", text)
+                            .multiPart("file", new File(PIECHART_FILE_NAME + ".png"))
+                            .post("https://api.telegram.org/bot" + token + "/sendMessage")
+                            .then();
+
+            LOGGER.info("resp " + response.extract().asString());
             execute(photo);
             logger.info("finished");
         } catch (TelegramApiException e) {

@@ -15,6 +15,8 @@ public class TemplatesFactory {
         switch (messenger.toLowerCase()) {
             case "telegram":
                 return Telegram.tgMessage(lang, data);
+            case "slack":
+                return Telegram.tgMessage(lang, data);
             default:
                 throw new IllegalStateException("Unexpected value: " + messenger.toLowerCase());
         }

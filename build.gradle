@@ -3,7 +3,7 @@ plugins {
 }
 
 group 'allure.piechart.telegram'
-version '2.0.6'
+version '2.0.7'
 
 sourceCompatibility = 1.8
 
@@ -17,8 +17,12 @@ dependencies {
             'org.antlr:ST4:4.3.1',
             'org.knowm.xchart:xchart:3.5.2',
             'org.telegram:telegrambots:4.1',
+            'com.slack.api:bolt:1.1.+',
+            'com.slack.api:bolt-servlet:1.1.+',
+            'com.slack.api:bolt-jetty:1.1.+',
             'com.fasterxml.jackson.core:jackson-databind:2.11.2',
             'org.aeonbits.owner:owner:1.0.12',
+            "io.rest-assured:rest-assured:4.1.2",
             'log4j:log4j:1.2.17',
             'org.slf4j:slf4j-log4j12:1.7.30'
     )
