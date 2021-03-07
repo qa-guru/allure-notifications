@@ -18,6 +18,8 @@ public class Application {
                 .build()
                 .parse(args); // replace args by Utils.debugArgs() for debug
         OptionsValues values = options.collectOptions();
+        System.setProperty("language", values.getLanguage());
+
         BaseClient.sendMessage(values);
         LOGGER.info("Stop application");
     }

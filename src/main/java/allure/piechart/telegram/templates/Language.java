@@ -1,12 +1,10 @@
-package allure.piechart.telegram.languages;
+package allure.piechart.telegram.templates;
 
 import org.aeonbits.owner.Config;
 
-@Config.LoadPolicy(Config.LoadType.MERGE)
+
 @Config.Sources({
-        "system:properties",
-        "classpath:languages/en.properties"
-//        "classpath:languages/" + getLanguage() + ".properties" todo
+        "classpath:languages/${language}.properties"
 })
 public interface Language extends Config {
     @Key("results")

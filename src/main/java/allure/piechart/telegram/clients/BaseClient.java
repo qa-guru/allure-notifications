@@ -2,8 +2,8 @@ package allure.piechart.telegram.clients;
 
 import allure.piechart.telegram.models.Summary;
 import allure.piechart.telegram.options.OptionsValues;
+import allure.piechart.telegram.templates.LanguageTemplate;
 import allure.piechart.telegram.templates.data.TemplateData;
-import allure.piechart.telegram.templates.factory.TemplatesFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -30,7 +30,7 @@ public class BaseClient {
         final Summary summary = getBuildSummary(values.getAllureReportFolder());
         final TemplateData data = getTemplateData(summary, values.getLaunchName(),
                 values.getEnv(), values.getBuildLink());
-        final String text = TemplatesFactory.formattedMessage(values.getMessenger(), values.getLanguage(), data);
+        final String text = LanguageTemplate.buildMessage(data);
         send(values, summary, text);
     }
 
