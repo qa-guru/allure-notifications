@@ -1,7 +1,8 @@
 package allure.piechart.telegram.clients;
 
 import allure.piechart.telegram.bot.AllureBot;
-import allure.piechart.telegram.chart.PieChartBuilder;
+import allure.piechart.telegram.chart.Chart;
+import allure.piechart.telegram.chart.ChartBuilder;
 import allure.piechart.telegram.models.Summary;
 import allure.piechart.telegram.options.OptionsValues;
 import org.knowm.xchart.BitmapEncoder;
@@ -17,6 +18,7 @@ import java.io.IOException;
 
 import static allure.piechart.telegram.attachments.Attachment.photo;
 import static allure.piechart.telegram.attachments.Attachment.textMessage;
+import static allure.piechart.telegram.chart.Chart.PIECHART_FILE_NAME;
 import static allure.piechart.telegram.utils.Utils.createBot;
 
 /**
@@ -39,21 +41,9 @@ public class TelegramClient {
                                              final @NotNull String text) {
         AllureBot bot = createBot(values.getToken(), "telegram");
         if (values.isChart()) {
-            LOGGER.info("Create chart");
-            final String pieChartName = "piechart";
-            PieChart chart = PieChartBuilder.getChart(summary, values.getProjectName());
-            LOGGER.info("Chart title: {}", chart.getTitle());
-            try {
-                LOGGER.info("Try to save chart as a picture {}.png", pieChartName);
-                BitmapEncoder.saveBitmap(chart, pieChartName, BitmapEncoder.BitmapFormat.PNG);
-                LOGGER.info("Picture is saved successfully");
-            } catch (IOException e) {
-                LOGGER.error("Error {} \n Reason {}", e.getLocalizedMessage(), e.getStackTrace());
-                e.printStackTrace();
-                System.exit(1);
-            }
-            LOGGER.info("Chart is created successfully");
-            SendPhoto photo = photo(pieChartName, text, values.getChatId())
+            Chart.createChart(values, summary);
+
+            SendPhoto photo = photo(PIECHART_FILE_NAME, text, values.getChatId())
                     .setParseMode(ParseMode.HTML);
             bot.sendPhotoToChat(photo);
         } else {

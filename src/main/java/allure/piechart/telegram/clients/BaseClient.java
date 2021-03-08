@@ -42,6 +42,11 @@ public class BaseClient {
                 TelegramClient.sendMessageToTelegram(values, summary, text);
                 LOGGER.info("Done");
                 break;
+            case "slack":
+                LOGGER.info("Send message to slack");
+                SlackClient.sendMessageToSlack(values, summary, text);
+                LOGGER.info("Done");
+                break;
             default:
                 throw new IllegalStateException("Unexpected value: " + values.getMessenger().toLowerCase());
         }

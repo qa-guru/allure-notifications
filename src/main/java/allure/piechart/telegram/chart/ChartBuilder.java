@@ -13,7 +13,7 @@ import java.util.List;
  * @author svasenkov
  * @since 1.0
  */
-public class PieChartBuilder {
+public class ChartBuilder {
     /**
      * Создаёт диаграмму на основе результата тестов.
      *

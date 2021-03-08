@@ -7,6 +7,8 @@ import com.beust.jcommander.JCommander;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import static allure.piechart.telegram.clients.SlackClient.execute;
+
 public class Application {
     private static final Logger LOGGER = LoggerFactory.getLogger(Application.class);
 

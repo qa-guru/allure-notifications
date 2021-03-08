@@ -31,3 +31,5 @@ You can run bot using cmd options: <br/>
 `-e, --env - Set environment;` <br/>
 `-l, --lang - Set template language (possible values are: ru, en, ua). English by default.` <br/>
 Pay attention, all options (except `-ch` and `-l`) are required.
+
+Slack configure is in progress!
