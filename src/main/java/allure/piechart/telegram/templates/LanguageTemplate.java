@@ -1,9 +1,10 @@
 package allure.piechart.telegram.templates;
 
-import allure.piechart.telegram.templates.data.TemplateData;
+import allure.notifications.templates.data.TemplateData;
 import org.aeonbits.owner.ConfigFactory;
 
-import static allure.piechart.telegram.utils.Utils.getTimeFromMilliseconds;
+import static allure.notifications.utils.Utils.getTimeFromMilliseconds;
+
 
 /**
  * Шаблон сообщения
