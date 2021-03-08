@@ -10,7 +10,6 @@ import org.slf4j.LoggerFactory;
 
 import java.io.File;
 
-import static allure.notifications.chart.Chart.PIECHART_FILE_NAME;
 import static io.restassured.RestAssured.given;
 
 public class Application {

@@ -1,7 +1,5 @@
 package allure.notifications.utils;
 
-import allure.notifications.bot.factory.BotFactory;
-import allure.notifications.bot.AllureBot;
 import allure.notifications.models.Summary;
 import allure.notifications.templates.data.TemplateData;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -50,17 +48,6 @@ public class Utils {
                 .environment(env)
                 .reportLink(reportLink)
                 .build();
-    }
-
-    /**
-     * Создаёт нового бота.
-     *
-     * @param token секретный ключ бота
-     * @param messenger мессенджер, для которого предназначен бот
-     * @return бот
-     */
-    public static AllureBot createBot(final @NotNull String token, final @NotNull String messenger) {
-        return BotFactory.getBot(token, messenger);
     }
 
     /** Возвращает дату на основе времени в мс */

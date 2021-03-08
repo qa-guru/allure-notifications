@@ -1,21 +1,17 @@
 package allure.notifications.clients;
 
-import allure.notifications.bot.AllureBot;
 import allure.notifications.chart.Chart;
 import allure.notifications.models.Summary;
 import allure.notifications.options.OptionsValues;
+import io.restassured.response.ValidatableResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.telegram.telegrambots.meta.api.methods.ParseMode;
-import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
-import org.telegram.telegrambots.meta.api.methods.send.SendPhoto;
 
 import javax.validation.constraints.NotNull;
 
-import static allure.notifications.attachments.Attachment.photo;
-import static allure.notifications.attachments.Attachment.textMessage;
-import static allure.notifications.chart.Chart.PIECHART_FILE_NAME;
-import static allure.notifications.utils.Utils.createBot;
+import java.io.File;
+
+import static io.restassured.RestAssured.given;
 
 /**
  * Клиент для отправки сообщений в telegram
@@ -35,16 +31,25 @@ public class TelegramClient {
      */
     public static void sendMessageToTelegram(final @NotNull OptionsValues values, final @NotNull Summary summary,
                                              final @NotNull String text) {
-        AllureBot bot = createBot(values.getToken(), "telegram");
         if (values.isChart()) {
             Chart.createChart(values, summary);
 
-            SendPhoto photo = photo(PIECHART_FILE_NAME, text, values.getChatId())
-                    .setParseMode(ParseMode.HTML);
-            bot.sendPhotoToChat(photo);
+            ValidatableResponse response =
+                    given()
+                            .multiPart("photo", new File("piechart.png"))
+                            .formParam("chat_id", values.getChatId())
+                            .formParam("caption", text)
+                            .formParam("parse_mode", "Markdown")
+                            .post("https://api.telegram.org/bot" + values.getToken() + "/sendPhoto")
+                            .then();
         } else {
-            SendMessage message = textMessage(text, values.getChatId()).enableHtml(true);
-            bot.sendTextMessage(message);
+            ValidatableResponse response =
+                    given()
+                            .formParam("chat_id", values.getChatId())
+                            .formParam("text", text)
+                            .formParam("parse_mode", "Markdown")
+                            .post("https://api.telegram.org/bot" + values.getToken() + "/sendMessage")
+                            .then();
         }
     }
 }

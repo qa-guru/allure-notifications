@@ -3,7 +3,7 @@ plugins {
 }
 
 group 'allure.notifications'
-version '2.0.8'
+version '2.0.9'
 
 sourceCompatibility = 1.8
 
@@ -16,13 +16,10 @@ dependencies {
             'com.beust:jcommander:1.78',
             'org.antlr:ST4:4.3.1',
             'org.knowm.xchart:xchart:3.5.2',
-            'org.telegram:telegrambots:4.1',
-            'com.slack.api:bolt:1.1.+',
-            'com.slack.api:bolt-servlet:1.1.+',
-            'com.slack.api:bolt-jetty:1.1.+',
             'com.fasterxml.jackson.core:jackson-databind:2.11.2',
             'org.aeonbits.owner:owner:1.0.12',
             "io.rest-assured:rest-assured:4.1.2",
+            "javax.validation:validation-api:2.0.1.Final",
             'log4j:log4j:1.2.17',
             'org.slf4j:slf4j-log4j12:1.7.30'
     )
