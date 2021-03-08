@@ -84,7 +84,7 @@ jobs:
           to: ${{ secrets.TELEGRAM_TO }}
           token: ${{ secrets.TELEGRAM_TOKEN }}
           args: |
-            *allure-piechart-telegram-${{env.version}} is now available for downloading by link* https://github.com/${{ github.repository }}/releases/latest/download/allure-piechart-telegram-${{env.version}}.jar
+            *allure-notifications-${{env.version}} is now available for downloading by link* https://github.com/${{ github.repository }}/releases/latest/download/allure-notifications-${{env.version}}.jar
             *See Changelog here*:
             https://github.com/${{ github.repository }}/releases/latest/
           format: markdown

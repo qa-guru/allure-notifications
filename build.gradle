@@ -2,7 +2,7 @@ plugins {
     id 'java'
 }
 
-group 'allure.piechart.telegram'
+group 'allure.notifications'
 version '2.0.7'
 
 sourceCompatibility = 1.8
@@ -35,7 +35,7 @@ tasks.withType(JavaCompile) {
 jar {
     manifest {
         attributes(
-                'Main-Class': 'allure.piechart.telegram.Application'
+                'Main-Class': 'allure.notifications.Application'
         )
     }
     from {
