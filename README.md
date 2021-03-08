@@ -10,7 +10,7 @@ jar, that draws piechart from results `allure-report/widgets/summary.json` and s
 0. Create telegram bot in @BotFather and add it to your telegram chat.<br/>
 Remember <b>telegram bot secret</b><br/>
 Remember <b>telegram chat id</b>, you can find here -> https://api.telegram.org/bot{telegram_bot_secret}/getUpdates (bot needs admin rights)<br/>
-1. You can download ready jar https://github.com/svasenkov/allure-piechart-telegram/releases/ or clone project and build .jar yourself: <br/>
+1. You can download ready jar https://github.com/qa-guru/allure-notifications/releases or clone project and build .jar yourself: <br/>
 `gradle jar` -> build/libs/allure-piechart-telegram-*.jar <br/>
 2. Put allure-piechart-telegram-*.jar in your in root folder of your autotests project (yes, its awful, but kiss). <br/>
 3. Run it after allure-report is generated, 
