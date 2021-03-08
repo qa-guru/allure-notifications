@@ -16,14 +16,6 @@ public class Application {
     private static final Logger LOGGER = LoggerFactory.getLogger(Application.class);
 
     public static void main(String[] args) {
-        ValidatableResponse response =
-                given()
-                        .formParam("chat_id", "-1001200975738")
-                        .formParam("caption", "sdfsd")
-                        .multiPart("photo", new File("piechart.png"))
-                        .post("https://api.telegram.org/bot1659734527:AAH4Muu7fRtV4CtPGkXn9nGdJ5Q9wKcMCiQ/sendPhoto")
-                        .then();
-
         LOGGER.info("Start application");
         CmdOptions options = new CmdOptions();
         JCommander.newBuilder()

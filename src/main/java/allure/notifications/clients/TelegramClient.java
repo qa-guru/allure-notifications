@@ -39,6 +39,7 @@ public class TelegramClient {
                             .multiPart("photo", new File("piechart.png"))
                             .formParam("chat_id", values.getChatId())
                             .formParam("caption", text)
+                            .formParam("parse_mode", "Markdown")
                             .post("https://api.telegram.org/bot" + values.getToken() + "/sendPhoto")
                             .then();
         } else {
@@ -46,6 +47,7 @@ public class TelegramClient {
                     given()
                             .formParam("chat_id", values.getChatId())
                             .formParam("text", text)
+                            .formParam("parse_mode", "Markdown")
                             .post("https://api.telegram.org/bot" + values.getToken() + "/sendMessage")
                             .then();
         }
