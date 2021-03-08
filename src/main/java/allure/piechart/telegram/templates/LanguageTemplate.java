@@ -22,18 +22,18 @@ public class LanguageTemplate {
         long percentOfFailed = data.getPercentOfFailed();
         long percentOfPassed = data.getPercentOfPassed();
 
-        return "<open_bold>" + language.resultsLabel() + ":<close_bold> \n" +
-                        "<bullet> <open_bold>Launch:<close_bold> " + data.getLaunchName() + '\n' +
-                        "<bullet> <open_bold>Duration:<close_bold> " + getTimeFromMilliseconds(data.getDuration()) + '\n' +
-                        "<bullet> <open_bold>Total scenarios:<close_bold> " + data.getTotal() + '\n' +
-                        "<bullet> <open_bold>Environment:<close_bold> " + data.getEnvironment() + '\n' +
-                        "<bullet> <open_bold>Total passed:<close_bold> " + data.getPassed() + '\n' +
-                        "<bullet> <open_bold>Total failed:<close_bold> " + data.getFailed() + '\n' +
-                        (broken > 0 ? "<bullet> <open_bold>Total broken:<close_bold> " + broken + '\n' : "") +
-                        (unknown > 0 ? "<bullet> <open_bold>Total unknown:<close_bold> " + unknown + '\n' : "") +
-                        (skipped > 0 ? "<bullet> <open_bold>Total skipped:<close_bold> " + skipped + '\n' : "") +
-                        (percentOfFailed > 0 ? "<bullet> <open_bold>% of failed tests:<close_bold> " + percentOfFailed + '\n' : "") +
-                        (percentOfPassed > 0 ? "<bullet> <open_bold>% of passed tests:<close_bold> " + percentOfPassed + '\n' : "") +
-                        "<open_bold>Report available by link:<close_bold> " + data.getReportLink();
+        return "*" + language.resultsLabel() + ":* \n" +
+                        "- *Launch:* " + data.getLaunchName() + '\n' +
+                        "- *Duration:* " + getTimeFromMilliseconds(data.getDuration()) + '\n' +
+                        "- *Total scenarios:* " + data.getTotal() + '\n' +
+                        "- *Environment:* " + data.getEnvironment() + '\n' +
+                        "- *Total passed:* " + data.getPassed() + '\n' +
+                        "- *Total failed:* " + data.getFailed() + '\n' +
+                        (broken > 0 ? "- *Total broken:* " + broken + '\n' : "") +
+                        (unknown > 0 ? "- *Total unknown:* " + unknown + '\n' : "") +
+                        (skipped > 0 ? "- *Total skipped:* " + skipped + '\n' : "") +
+                        (percentOfFailed > 0 ? "- *% of failed tests:* " + percentOfFailed + '\n' : "") +
+                        (percentOfPassed > 0 ? "- *% of passed tests:* " + percentOfPassed + '\n' : "") +
+                        "*Report available by link:* " + data.getReportLink();
     }
 }
