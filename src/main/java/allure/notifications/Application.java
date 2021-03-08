@@ -4,8 +4,14 @@ import allure.notifications.clients.BaseClient;
 import allure.notifications.options.CmdOptions;
 import allure.notifications.options.OptionsValues;
 import com.beust.jcommander.JCommander;
+import io.restassured.response.ValidatableResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.io.File;
+
+import static allure.notifications.chart.Chart.PIECHART_FILE_NAME;
+import static io.restassured.RestAssured.given;
 
 public class Application {
     private static final Logger LOGGER = LoggerFactory.getLogger(Application.class);

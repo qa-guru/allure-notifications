@@ -40,20 +40,20 @@ public class SlackClient {
             given()
                     .header("Authorization", "Bearer " + values.getToken())
                     .formParam("channels", values.getChatId())
-                    .formParam("initial_comment", text)
+                    .formParam("filename", " ")
                     .multiPart("file", new File(PIECHART_FILE_NAME + ".png"))
                     .post("https://slack.com/api/files.upload")
                     .then();
-            LOGGER.info("Data sent to slack {}", response.extract().asString());
-        } else {
-            ValidatableResponse response =
-                    given()
-                            .header("Authorization", "Bearer " + values.getToken())
-                            .formParam("channels", values.getChatId())
-                            .formParam("text", text)
-                            .post("https://slack.com/api/files.upload")
-                            .then();
-            LOGGER.info("Data sent to slack {}", response.extract().asString());
+            LOGGER.info("Picture sent to slack {}", response.extract().asString());
         }
+        ValidatableResponse response =
+                given()
+                        .header("Authorization", "Bearer " + values.getToken())
+                        .contentType("application/x-www-form-urlencoded;charset=utf-8")
+                        .formParam("channel", values.getChatId())
+                        .formParam("text", text)
+                        .post("https://slack.com/api/chat.postMessage")
+                        .then();
+        LOGGER.info("Text sent to slack {}", response.extract().asString());
     }
 }
