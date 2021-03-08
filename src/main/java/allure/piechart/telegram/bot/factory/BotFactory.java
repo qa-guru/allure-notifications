@@ -25,7 +25,7 @@ public class BotFactory {
     public static AllureBot getBot(final @NotNull String token, final @NotNull String messenger) {
         switch (messenger.toLowerCase()) {
             case "telegram": return new TelegramBot(token);
-            case "slack": return new SlackBot(token);
+//            case "slack": return new SlackBot(token);
             default:
                 throw new IllegalStateException("Unexpected value: " + messenger.toLowerCase());
         }

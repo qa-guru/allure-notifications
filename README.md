@@ -32,15 +32,4 @@ You can run bot using cmd options: <br/>
 `-l, --lang - Set template language (possible values are: ru, en, ua). English by default.` <br/>
 Pay attention, all options (except `-ch` and `-l`) are required.
 
-<table>
-    <thead>
-        <tr>
-            <td>1</td><td>1</td><td>1</td>
-        </tr> 
-    </thead>
-    <tbody>
-        <tr>
-            <td>1</td><td>1</td><td>1</td>
-        </tr> 
-    </tbody>
-</table>
+Slack configure is in progress!

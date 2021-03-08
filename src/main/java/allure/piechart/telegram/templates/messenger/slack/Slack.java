@@ -34,8 +34,8 @@ public class Slack {
     }
 
     private static void format(ST template) {
-        template.add("bullet", '\u2022');
-        template.add("open_bold", "<b>");
-        template.add("close_bold", "</b>");
+        template.add("bullet", '-');
+        template.add("open_bold", "*");
+        template.add("close_bold", "*");
     }
 }

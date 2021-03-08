@@ -1,6 +1,7 @@
 package allure.piechart.telegram.templates.factory;
 
 import allure.piechart.telegram.templates.data.TemplateData;
+import allure.piechart.telegram.templates.messenger.slack.Slack;
 import allure.piechart.telegram.templates.messenger.telegram.Telegram;
 
 /**
@@ -16,7 +17,7 @@ public class TemplatesFactory {
             case "telegram":
                 return Telegram.tgMessage(lang, data);
             case "slack":
-                return Telegram.tgMessage(lang, data);
+                return Slack.slackMessage(lang, data);
             default:
                 throw new IllegalStateException("Unexpected value: " + messenger.toLowerCase());
         }

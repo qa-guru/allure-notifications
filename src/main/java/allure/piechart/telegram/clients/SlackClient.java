@@ -38,7 +38,6 @@ public class SlackClient {
     // todo: move slack commands to SlackBot
     public static void sendMessageToSlack(final @NotNull OptionsValues values, final @NotNull Summary summary,
                                              final @NotNull String text) {
-        String command;
         if (values.isChart()) {
             Chart.createChart(values, summary);
 
@@ -50,22 +49,16 @@ public class SlackClient {
                     .multiPart("file", new File(PIECHART_FILE_NAME + ".png"))
                     .post("https://slack.com/api/files.upload")
                     .then();
-
-            LOGGER.info("resp " + response.extract().asString());
-            command = "curl " +
-                            "-F \\\"file=@%s.png\\\" " +
-                            "-F \\\"initial_comment=%s\\\" " +
-                            "-F \\\"channels=%s\\\" " +
-                            "-H \\\"Authorization: Bearer %s\\\" " +
-                            "https://slack.com/api/files.upload";
+            LOGGER.info("Data sent to slack {}", response.extract().asString());
         } else {
-            command = "curl " +
-                            "-F \\\"text=%s\\\" " +
-                            "-F \\\"channels=%s\\\" " +
-                            "-H \\\"Authorization: Bearer %s\\\" " +
-                            "https://slack.com/api/files.upload";
+            ValidatableResponse response =
+                    given()
+                            .header("Authorization", "Bearer " + values.getToken())
+                            .formParam("channels", values.getChatId())
+                            .formParam("text", text)
+                            .post("https://slack.com/api/files.upload")
+                            .then();
+            LOGGER.info("Data sent to slack {}", response.extract().asString());
         }
-
-        LOGGER.info("Try to execute command {}", command);
     }
 }
