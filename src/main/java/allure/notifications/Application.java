@@ -16,6 +16,18 @@ public class Application {
     private static final Logger LOGGER = LoggerFactory.getLogger(Application.class);
 
     public static void main(String[] args) {
+        ValidatableResponse response =
+                given()
+                        .header("Authorization", "Bearer0022-HAT7X1Prfp1jjUaX1T8qdIox" )
+                        .header("Content-Type", "multipart/form-data; charset=utf-8")
+//                        .formParam("channels", "#debug_notifications")
+                        .formParam("filename", " ")
+                        .formParam("initial_comment", "рус")
+
+                        .multiPart("file", new File("piechart.png"))
+                        .post("https://slack.com/api/files.upload")
+                        .then();
+
         LOGGER.info("Start application");
         CmdOptions options = new CmdOptions();
         JCommander.newBuilder()

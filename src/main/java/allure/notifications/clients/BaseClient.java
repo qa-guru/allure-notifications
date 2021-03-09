@@ -1,8 +1,8 @@
 package allure.notifications.clients;
 
-import allure.notifications.templates.factory.TemplatesFactory;
 import allure.notifications.models.Summary;
 import allure.notifications.options.OptionsValues;
+import allure.notifications.templates.LanguageTemplate;
 import allure.notifications.templates.data.TemplateData;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

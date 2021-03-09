@@ -1,4 +1,4 @@
-package allure.piechart.telegram.templates;
+package allure.notifications.config;
 
 import org.aeonbits.owner.Config;
 
