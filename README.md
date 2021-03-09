@@ -22,6 +22,24 @@ for example Jenkins postbuild task (Post build plugin required https://plugins.j
 <h3>CommandLine options</h3>
 
 You can run bot using cmd options: <br/>
+<table>
+    <thead>
+        <tr>
+            <th>Telegram</th><th>Slack</th><th>Email</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>Create telegram bot</td><td>Create slack app</td><td></td>
+        </tr>
+        <tr>
+            <td>Add telegram bot to chat</td><td>Add app to slack channel</td><td></td>
+        </tr>
+        <tr>
+            <td colspan="3">Configure step in build server</td>
+        </tr>
+    </tbody>
+</table>
 `-ch, --chart - Enable/disable PieChart diagram (false by default);` <br/>
 `-s, --secret, --token - Set telegram bot secret token;` <br/>
 `-c, --chat, --id - Set telegram chat id;` <br/>
