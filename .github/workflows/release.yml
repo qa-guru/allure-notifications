@@ -33,7 +33,7 @@ jobs:
       - name: Upload jar artifact
         uses: actions/upload-artifact@v2
         with:
-          name: 'allure-piechart-telegram-${{env.version}}.jar'
+          name: 'allure-notifications-${{env.version}}.jar'
           path: build/libs/*.jar
 
       - name: Create Changelog
@@ -61,8 +61,8 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: build/libs/allure-piechart-telegram-${{env.version}}.jar
-          asset_name: 'allure-piechart-telegram-${{env.version}}.jar'
+          asset_path: build/libs/allure-notifications-${{env.version}}.jar
+          asset_name: 'allure-notifications-${{env.version}}.jar'
           asset_content_type: application/java-archive
 
       - name: Publish Release
@@ -78,7 +78,7 @@ jobs:
           to: ${{ secrets.TELEGRAM_TO }}
           token: ${{ secrets.TELEGRAM_TOKEN }}
           args: |
-            *allure-piechart-telegram-${{env.version}} is now available for downloading by link* https://github.com/${{ github.repository }}/releases/latest/download/allure-piechart-telegram-${{env.version}}.jar
+            *allure-notifications-${{env.version}} is now available for downloading by link* https://github.com/${{ github.repository }}/releases/latest/download/allure-notifications-${{env.version}}.jar
             *See Changelog here*:
             https://github.com/${{ github.repository }}/releases/latest/
           format: markdown
