@@ -17,6 +17,10 @@ public class OptionsValues {
     private final String env;
     private final String language;
     private final String messenger;
+    private final String proxyHost;
+    private final int proxyPort;
+    private final String proxyLogin;
+    private final String proxyPassword;
 
     private OptionsValues(Builder builder) {
         chart = builder.chart;
@@ -29,6 +33,10 @@ public class OptionsValues {
         env = builder.env;
         language = builder.language;
         messenger = builder.messenger;
+        proxyHost = builder.proxyHost;
+        proxyPort = builder.proxyPort;
+        proxyLogin = builder.proxyLogin;
+        proxyPassword = builder.proxyPassword;
     }
 
     public static class Builder {
@@ -42,6 +50,10 @@ public class OptionsValues {
         private String env;
         private String language;
         private String messenger;
+        private String proxyHost;
+        private int proxyPort;
+        private String proxyLogin;
+        private String proxyPassword;
 
         public Builder enableChart(boolean flag) {
             chart = flag;
@@ -93,6 +105,26 @@ public class OptionsValues {
             return this;
         }
 
+        public Builder proxyHost(String proxyHost) {
+            this.proxyHost = proxyHost;
+            return this;
+        }
+
+        public Builder proxyPort(int proxyPort) {
+            this.proxyPort = proxyPort;
+            return this;
+        }
+
+        public Builder proxyLogin(String proxyLogin) {
+            this.proxyLogin = proxyLogin;
+            return this;
+        }
+
+        public Builder proxyPassword(String proxyPassword) {
+            this.proxyPassword = proxyPassword;
+            return this;
+        }
+
         public OptionsValues build() {
             return new OptionsValues(this);
         }
@@ -138,6 +170,22 @@ public class OptionsValues {
         return messenger;
     }
 
+    public String getProxyHost() {
+        return proxyHost;
+    }
+
+    public int getProxyPort() {
+        return proxyPort;
+    }
+
+    public String getProxyLogin() {
+        return proxyLogin;
+    }
+
+    public String getProxyPassword() {
+        return proxyPassword;
+    }
+
     @Override
     public String toString() {
         return "\n{" + "\n\tchart: " + chart +
@@ -150,6 +198,8 @@ public class OptionsValues {
                 ",\n\tenvironment: " + env +
                 ",\n\tlanguage: " + language +
                 "\n\tmessenger: " + messenger +
+                "\n\tproxyHost: " + proxyHost +
+                "\n\tproxyPort: " + proxyPort +
                 "\n}";
     }
 }

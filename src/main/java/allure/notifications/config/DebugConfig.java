@@ -30,4 +30,12 @@ public interface DebugConfig extends Config {
     String language();
     @Key("messenger")
     String messenger();
+    @Key("proxy.host")
+    String proxyHost();
+    @Key("proxy.port")
+    String proxyPort();
+    @Key("proxy.login")
+    String proxyLogin();
+    @Key("proxy.password")
+    String proxyPassword();
 }

@@ -56,6 +56,18 @@ public class CmdOptions {
     @Parameter(names = {"-m", "--messenger"}, description = "Set messenger name", hidden = true)
     private String messenger = "telegram";
 
+    @Parameter(names = {"-ph", "--proxyhost"}, description = "Set proxy host", hidden = true)
+    private String proxyHost = "";
+
+    @Parameter(names = {"-pt", "--proxyport"}, description = "Set proxy port", hidden = true)
+    private int proxyPort = 0;
+
+    @Parameter(names = {"-pl", "--proxylogin"}, description = "Set proxy login user", hidden = true)
+    private String proxyLogin = "";
+
+    @Parameter(names = {"-ps", "--proxypassword"}, description = "Set proxy password", hidden = true)
+    private String proxyPassword = "";
+
     /** Возвращает значения, введённые пользователем. */
     public OptionsValues collectOptions() {
         OptionsValues values = new OptionsValues.Builder()
@@ -69,6 +81,10 @@ public class CmdOptions {
                 .environment(createStringFromListValues(environment))
                 .language(lang)
                 .messenger(messenger)
+                .proxyHost(proxyHost)
+                .proxyPort(proxyPort)
+                .proxyLogin(proxyLogin)
+                .proxyPassword(proxyPassword)
                 .build();
         logger.info("Options values: {}", values.toString());
         return values;
