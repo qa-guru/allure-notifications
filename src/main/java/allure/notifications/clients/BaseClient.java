@@ -1,9 +1,9 @@
 package allure.notifications.clients;
 
-import allure.notifications.templates.factory.TemplatesFactory;
 import allure.notifications.models.Summary;
 import allure.notifications.options.OptionsValues;
 import allure.notifications.templates.data.TemplateData;
+import allure.notifications.templates.factory.TemplatesFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -45,6 +45,11 @@ public class BaseClient {
             case "slack":
                 LOGGER.info("Send message to slack");
                 SlackClient.sendMessageToSlack(values, summary, text);
+                LOGGER.info("Done");
+                break;
+            case "mattermost":
+                LOGGER.info("Send message to mattermost");
+                MattermostClient.sendMessageToMattermost(values, summary, text);
                 LOGGER.info("Done");
                 break;
             default:

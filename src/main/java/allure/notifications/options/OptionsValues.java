@@ -17,6 +17,7 @@ public class OptionsValues {
     private final String env;
     private final String language;
     private final String messenger;
+    private final String mattermostUrl;
 
     private OptionsValues(Builder builder) {
         chart = builder.chart;
@@ -29,6 +30,7 @@ public class OptionsValues {
         env = builder.env;
         language = builder.language;
         messenger = builder.messenger;
+        mattermostUrl = builder.mattermostUrl;
     }
 
     public static class Builder {
@@ -42,6 +44,7 @@ public class OptionsValues {
         private String env;
         private String language;
         private String messenger;
+        private String mattermostUrl;
 
         public Builder enableChart(boolean flag) {
             chart = flag;
@@ -93,6 +96,11 @@ public class OptionsValues {
             return this;
         }
 
+        public Builder mattermostUrl(String mattermostUrl) {
+            this.mattermostUrl = mattermostUrl;
+            return this;
+        }
+
         public OptionsValues build() {
             return new OptionsValues(this);
         }
@@ -138,6 +146,8 @@ public class OptionsValues {
         return messenger;
     }
 
+    public String getMattermostUrl() { return mattermostUrl; }
+
     @Override
     public String toString() {
         return "\n{" + "\n\tchart: " + chart +
@@ -150,6 +160,7 @@ public class OptionsValues {
                 ",\n\tenvironment: " + env +
                 ",\n\tlanguage: " + language +
                 "\n\tmessenger: " + messenger +
+                "\n\tmattermost_url: " + mattermostUrl +
                 "\n}";
     }
 }

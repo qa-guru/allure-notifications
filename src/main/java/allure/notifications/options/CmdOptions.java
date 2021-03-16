@@ -56,6 +56,9 @@ public class CmdOptions {
     @Parameter(names = {"-m", "--messenger"}, description = "Set messenger name", hidden = true)
     private String messenger = "telegram";
 
+    @Parameter(names = {"-u", "--mmUrl"}, description = "Set mattermost URL", hidden = true)
+    private String mattermostUrl;
+
     /** Возвращает значения, введённые пользователем. */
     public OptionsValues collectOptions() {
         OptionsValues values = new OptionsValues.Builder()
@@ -69,6 +72,7 @@ public class CmdOptions {
                 .environment(createStringFromListValues(environment))
                 .language(lang)
                 .messenger(messenger)
+                .mattermostUrl(mattermostUrl)
                 .build();
         logger.info("Options values: {}", values.toString());
         return values;

@@ -1,6 +1,7 @@
 package allure.notifications.templates.factory;
 
 import allure.notifications.templates.data.TemplateData;
+import allure.notifications.templates.messenger.mattermost.Mattermost;
 import allure.notifications.templates.messenger.slack.Slack;
 import allure.notifications.templates.messenger.telegram.Telegram;
 
@@ -18,6 +19,8 @@ public class TemplatesFactory {
                 return Telegram.tgMessage(lang, data);
             case "slack":
                 return Slack.slackMessage(lang, data);
+            case "mattermost":
+                return Mattermost.mattermostMessage(lang, data);
             default:
                 throw new IllegalStateException("Unexpected value: " + messenger.toLowerCase());
         }
