@@ -1,8 +1,8 @@
 package allure.notifications.clients;
 
-import allure.notifications.templates.factory.TemplatesFactory;
 import allure.notifications.models.Summary;
 import allure.notifications.options.OptionsValues;
+import allure.notifications.templates.LanguageTemplate;
 import allure.notifications.templates.data.TemplateData;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -30,7 +30,7 @@ public class BaseClient {
         final Summary summary = getBuildSummary(values.getAllureReportFolder());
         final TemplateData data = getTemplateData(summary, values.getLaunchName(),
                 values.getEnv(), values.getBuildLink());
-        final String text = TemplatesFactory.formattedMessage(values.getMessenger(), values.getLanguage(), data);
+        final String text = LanguageTemplate.buildMessage(data);
         send(values, summary, text);
     }
 
