@@ -29,8 +29,8 @@ public class SettingsHelper {
         return readSettings().messenger();
     }
 
-    public static String apiUrl() {
-        return readSettings().apiUrl();
+    public static String mattermostApiUrl() {
+        return readSettings().mattermostApiUrl();
     }
 
     private static Settings readSettings() {

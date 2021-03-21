@@ -25,7 +25,7 @@ public class MattermostClient implements Notifier {
             .header("Authorization", "Bearer " + botToken())
             .body(body)
         .when()
-            .post("https://" + apiUrl() + "/api/v4/posts")
+            .post("https://" + mattermostApiUrl() + "/api/v4/posts")
         .then()
             .log().body();
         // @formatter: on
@@ -42,7 +42,7 @@ public class MattermostClient implements Notifier {
                     .queryParam("filename", "piechart")
                     .multiPart("piechart", new File("piechart.png"))
                 .when()
-                    .post("https://" + apiUrl() + "/api/v4/files")
+                    .post("https://" + mattermostApiUrl() + "/api/v4/files")
                 .then()
                     .extract().jsonPath().getList("file_infos.id").get(0).toString();
 
