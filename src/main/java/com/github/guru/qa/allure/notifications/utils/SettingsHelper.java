@@ -29,6 +29,10 @@ public class SettingsHelper {
         return readSettings().messenger();
     }
 
+    public static String mattermostApiUrl() {
+        return readSettings().mattermostApiUrl();
+    }
+
     private static Settings readSettings() {
         return ConfigFactory.newInstance().create(Settings.class);
     }

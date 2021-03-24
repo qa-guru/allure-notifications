@@ -12,33 +12,33 @@ import static com.github.guru.qa.allure.notifications.utils.SettingsHelper.proje
 import static org.knowm.xchart.BitmapEncoder.BitmapFormat.PNG;
 
 public class Chart {
-    private static final Logger LOGGER = LoggerFactory.getLogger(Chart.class);
-    private final static String DEFAULT_FILE_NAME = "piechart";
+    private static final Logger LOG = LoggerFactory.getLogger(Chart.class);
+    private final static String FILE_NAME = "piechart";
 
     public static void createChart() {
         final String title = projectName();
-        LOGGER.info("Create chart with title {}", title);
+        LOG.info("Create chart with title {}", title);
         PieChart chart = new org.knowm.xchart.PieChartBuilder()
                 .title(title)
                 .width(500)
                 .height(250)
                 .build();
 
-        LOGGER.info("Add legend to chart");
+        LOG.info("Add legend to chart");
         ChartLegend.addLegendTo(chart);
-        LOGGER.info("Add view to chart");
+        LOG.info("Add view to chart");
         ChartView.addViewTo(chart);
-        LOGGER.info("Add series to chart");
+        LOG.info("Add series to chart");
         List<int[]> colors = ChartSeries.addSeriesTo(chart);
-        LOGGER.info("Add colors to series");
+        LOG.info("Add colors to series");
         ChartColors.addColorsTo(chart, colors);
 
         try {
-            LOGGER.info("Try to save chart as {}.png", DEFAULT_FILE_NAME);
-            BitmapEncoder.saveBitmap(chart, DEFAULT_FILE_NAME, PNG);
-            LOGGER.info("Chart is created successfully");
+            LOG.info("Try to save chart as {}.png", FILE_NAME);
+            BitmapEncoder.saveBitmap(chart, FILE_NAME, PNG);
+            LOG.info("Chart is created successfully");
         } catch (IOException e) {
-            LOGGER.error("Error {} \n Reason {}", e.getLocalizedMessage(), e.getStackTrace());
+            LOG.error("Error {} \n Reason {}", e.getLocalizedMessage(), e.getStackTrace());
             e.printStackTrace();
             System.exit(1);
         }

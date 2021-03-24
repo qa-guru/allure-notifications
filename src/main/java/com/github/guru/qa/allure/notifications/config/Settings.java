@@ -19,4 +19,6 @@ public interface Settings extends Config {
     @Key("messenger")
     @DefaultValue("telegram")
     Messenger messenger();
+    @Key("mattermost.api.url")
+    String mattermostApiUrl();
 }

@@ -6,14 +6,9 @@ import org.aeonbits.owner.ConfigFactory;
 
 import static com.github.guru.qa.allure.notifications.utils.BuildInfoHelper.*;
 import static com.github.guru.qa.allure.notifications.utils.JsonSlurper.readSummaryJson;
+import static com.github.guru.qa.allure.notifications.utils.NumberUtils.percentage;
 import static com.github.guru.qa.allure.notifications.utils.TimeUtil.time;
 
-/**
- * Вспомогательный класс для заполнения шаблона сообщения.
- *
- * @author kadehar
- * @since 2.0.10
- */
 public class TemplateUtil {
     private static final Phrases phrases = ConfigFactory.newInstance().create(Phrases.class);
 
@@ -41,9 +36,9 @@ public class TemplateUtil {
                 phrases.totalSkippedLabel(),
                 summary.getStatistic().getSkipped(),
                 phrases.ofPassedTestsLabel(),
-                (summary.getStatistic().getPassed() * 100) / summary.getStatistic().getTotal(),
+                percentage(summary.getStatistic().getPassed(), summary.getStatistic().getTotal()),
                 phrases.ofFailedTestsLabel(),
-                (summary.getStatistic().getFailed() * 100) / summary.getStatistic().getTotal(),
+                percentage(summary.getStatistic().getFailed(), summary.getStatistic().getTotal()),
                 phrases.reportLinkLabel(),
                 buildReportLink()
         };
