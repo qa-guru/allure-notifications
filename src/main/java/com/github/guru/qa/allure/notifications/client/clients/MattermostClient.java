@@ -3,6 +3,7 @@ package com.github.guru.qa.allure.notifications.client.clients;
 import com.github.guru.qa.allure.notifications.chart.Chart;
 import com.github.guru.qa.allure.notifications.client.Notifier;
 import com.github.guru.qa.allure.notifications.client.publishers.MultiPartBodyPublisher;
+import com.jayway.jsonpath.JsonPath;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -42,27 +43,16 @@ public class MattermostClient implements Notifier {
             e.printStackTrace();
             System.exit(1);
         }
-//        // @formatter: off
-//        given()
-//            .log().body()
-//            .header("Authorization", "Bearer " + botToken())
-//            .body(body)
-//         .when()
-//            .post("https://{url}/api/v4/posts", mattermostApiUrl())
-//         .then()
-//            .log().body();
-//        // @formatter: on
     }
 
     @Override
     public void sendPhoto() {
         Chart.createChart();
+        String query = String.format("/files?channel_id=%s&filename=%s", chatId(), "piechart");
         MultiPartBodyPublisher publisher = new MultiPartBodyPublisher()
-                .addPart("piechart", Paths.get("piechart.png"))
-                .addPart("channel_id", chatId())
-                .addPart("filename", "piechart");
+                .addPart("piechart", Paths.get("piechart.png"));
 
-        var request = multipartRequest(URL + "/files", publisher.build(),
+        var request = multipartRequest(URL + query, publisher.build(),
                 publisher.getBoundary())
                 .header("Authorization", "Bearer " + botToken())
                 .build();
@@ -72,8 +62,8 @@ public class MattermostClient implements Notifier {
             var response = HTTP_CLIENT.send(request, HttpResponse.BodyHandlers.ofString());
 
             LOG.info("Response Status Code: {}\nResponse Body:{}", response.statusCode(), response.body());
-            //TODO: add here file ID extraction
-            String chartId = "";
+
+            String chartId = JsonPath.read(response.body(), "$.file_infos[0].id");
             body.put("file_ids", singletonList(chartId));
             sendText();
         } catch (IOException | InterruptedException e) {
@@ -81,22 +71,5 @@ public class MattermostClient implements Notifier {
             e.printStackTrace();
             System.exit(1);
         }
-//        // @formatter: off
-//        String chartImageId =
-//                given()
-//                    .header("Authorization", "Bearer " + botToken())
-//                    .queryParam("channel_id", chatId())
-//                    .queryParam("filename", "piechart")
-//                    .multiPart("piechart", new File("piechart.png"))
-//                .when()
-//                    .post("https://{url}/api/v4/files", mattermostApiUrl())
-//                .then()
-//                    .extract()
-//                    .jsonPath()
-//                    .getList("file_infos.id")
-//                    .get(0).toString();
-//        // @formatter: on
-//        body.put("file_ids", singletonList(chartImageId));
-//        sendText();
     }
 }

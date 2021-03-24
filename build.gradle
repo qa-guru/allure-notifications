@@ -16,7 +16,7 @@ dependencies {
             'org.knowm.xchart:xchart:3.5.2',
             'com.fasterxml.jackson.core:jackson-databind:2.11.2',
             'org.aeonbits.owner:owner:1.0.12',
-            "io.rest-assured:rest-assured:4.1.2",
+            'com.jayway.jsonpath:json-path:2.5.0',
             'org.slf4j:slf4j-log4j12:1.7.30'
     )
 }
