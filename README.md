@@ -1,5 +1,3 @@
-![build-jar](https://github.com/qa-guru/allure-notifications/workflows/build-jar/badge.svg?branch=master&event=push)
-
 <h3>Allure notifications script</h3>
 for telegram, slack, email (//todo)
 
@@ -40,15 +38,19 @@ You can run bot using cmd options: <br/>
         </tr>
     </tbody>
 </table>
-`-ch, --chart - Enable/disable PieChart diagram (false by default);` <br/>
-`-s, --secret, --token - Set telegram bot secret token;` <br/>
-`-c, --chat, --id - Set telegram chat id;` <br/>
-`-p, --project - Set project name;` <br/>
-`-f, --folder, --allure - Set allure report folder;` <br/>
-`-b, --build, --link - Set link to build;` <br/>
-`-n, --name - Set launch name;` <br/>
-`-e, --env - Set environment;` <br/>
-`-l, --lang - Set template language (possible values are: ru, en, ua). English by default.` <br/>
-Pay attention, all options (except `-ch` and `-l`) are required.
+
+All keys should be used with `-D`: <br/> 
+`build.launch.name - Set build launch name` <br/>
+`build.env - Set build environment` <br/>
+`build.report.link - Set build report link` <br/>
+`lang - Set language (possible values are: ru, en, ua)` <br/>
+`enable.chart - Enable/disable PieChart diagram (false by default)` <br/>
+`bot.token - Set bot secret token` <br/>
+`chat.id - Set chat id` <br/>
+`project.name - Set project name` <br/>
+`allure.report.folder - Set allure report folder` <br/>
+`messenger - Set target messenger (possible values are: telegram, slack, mattermost)` <br/>
+`mattermost.api.url - Set mattermost api url` <br/>
+Pay attention, all options (except `enable.chart` and `messenger`) are required. Telegram is a default messenger.
 
 Slack configure is in progress!
