@@ -1,5 +1,6 @@
 package com.github.guru.qa.allure.notifications.utils;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.guru.qa.allure.notifications.model.Summary;
 import org.slf4j.Logger;
@@ -7,6 +8,7 @@ import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Map;
 
 /**
  * Содержит вспомогательные методы для работы с JSON.
@@ -14,7 +16,7 @@ import java.io.IOException;
  * @since 2.0.10
  */
 public class JsonSlurper {
-    private static final Logger LOGGER = LoggerFactory.getLogger(JsonSlurper.class);
+    private static final Logger LOG = LoggerFactory.getLogger(JsonSlurper.class);
 
     /**
      * Считывает summary.json в модель Summary
@@ -25,14 +27,29 @@ public class JsonSlurper {
         ObjectMapper mapper = new ObjectMapper();
         Summary summary = null;
         try {
-            LOGGER.info("Reading json by path {}", path);
+            LOG.info("Reading json by path {}", path);
             summary = mapper.readValue(new File(path), Summary.class);
-            LOGGER.info("Operation is finished successfully");
+            LOG.info("Operation is finished successfully");
         } catch (IOException ex) {
-            LOGGER.error("Error {} \n Reason {}", ex.getLocalizedMessage(), ex.getStackTrace());
+            LOG.error("Error {} \n Reason {}", ex.getLocalizedMessage(), ex.getStackTrace());
             ex.printStackTrace();
             System.exit(1);
         }
         return summary;
+    }
+
+    public static String convertMapToJSON(Map<String, Object> map) {
+        ObjectMapper mapper = new ObjectMapper();
+        String json = "";
+        try {
+            LOG.info("Try to convert {} to JSON", map);
+            json = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(map);
+            LOG.info("Operation is finished successfully");
+        } catch (JsonProcessingException ex) {
+            LOG.error("Error {} \n Reason {}", ex.getLocalizedMessage(), ex.getStackTrace());
+            ex.printStackTrace();
+            System.exit(1);
+        }
+        return json;
     }
 }
