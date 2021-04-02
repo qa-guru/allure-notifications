@@ -9,6 +9,7 @@ public class ClientFactory {
             case telegram: return new TelegramClient();
             case slack: return new SlackClient();
             case mattermost: return new MattermostClient();
+            case email: return new EmailClient();
             default: throw new IllegalArgumentException("Unknown messenger " + messenger);
         }
     }
