@@ -12,7 +12,7 @@ import java.net.http.HttpResponse;
 import java.nio.file.Paths;
 
 import static com.github.guru.qa.allure.notifications.client.clients.BaseHttpClient.*;
-import static com.github.guru.qa.allure.notifications.message.Text.formattedMessage;
+import static com.github.guru.qa.allure.notifications.message.Text.formattedMarkdownMessage;
 import static com.github.guru.qa.allure.notifications.utils.SettingsHelper.botToken;
 import static com.github.guru.qa.allure.notifications.utils.SettingsHelper.chatId;
 
@@ -23,7 +23,7 @@ public class SlackClient implements Notifier {
 
     @Override
     public void sendText() {
-        String body = String.format("channel=%s&text=%s", chatId(), formattedMessage());
+        String body = String.format("channel=%s&text=%s", chatId(), formattedMarkdownMessage());
 
         var request = formUrlEncodedRequest(URL + "/chat.postMessage", body)
                 .header("Authorization", "Bearer " + botToken())
@@ -48,7 +48,7 @@ public class SlackClient implements Notifier {
                 .addPart("file", Paths.get("piechart.png"))
                 .addPart("channels", chatId())
                 .addPart("title", "")
-                .addPart("initial_comment", formattedMessage());
+                .addPart("initial_comment", formattedMarkdownMessage());
 
         var request = multipartRequest(URL + "/files.upload", publisher.build(),
                 publisher.getBoundary())

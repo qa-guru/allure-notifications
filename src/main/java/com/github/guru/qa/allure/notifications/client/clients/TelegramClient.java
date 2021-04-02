@@ -12,7 +12,7 @@ import java.net.http.HttpResponse;
 import java.nio.file.Paths;
 
 import static com.github.guru.qa.allure.notifications.client.clients.BaseHttpClient.*;
-import static com.github.guru.qa.allure.notifications.message.Text.formattedMessage;
+import static com.github.guru.qa.allure.notifications.message.Text.formattedMarkdownMessage;
 import static com.github.guru.qa.allure.notifications.utils.SettingsHelper.botToken;
 import static com.github.guru.qa.allure.notifications.utils.SettingsHelper.chatId;
 
@@ -23,7 +23,7 @@ public class TelegramClient implements Notifier {
 
     @Override
     public void sendText() {
-        String body = String.format("chat_id=%s&text=%s&parse_mode=Markdown", chatId(), formattedMessage());
+        String body = String.format("chat_id=%s&text=%s&parse_mode=Markdown", chatId(), formattedMarkdownMessage());
 
         var request = formUrlEncodedRequest(URL + "/sendMessage", body).build();
 
@@ -45,7 +45,7 @@ public class TelegramClient implements Notifier {
                 .addPart("photo", Paths.get("piechart.png"))
                 .addPart("chat_id", chatId())
                 .addPart("parse_mode", "Markdown")
-                .addPart("caption", formattedMessage());
+                .addPart("caption", formattedMarkdownMessage());
 
         var request = multipartRequest(URL + "/sendPhoto", publisher.build(),
                 publisher.getBoundary()).build();

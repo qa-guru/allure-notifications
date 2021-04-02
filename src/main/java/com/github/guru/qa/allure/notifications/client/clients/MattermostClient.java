@@ -15,7 +15,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static com.github.guru.qa.allure.notifications.client.clients.BaseHttpClient.*;
-import static com.github.guru.qa.allure.notifications.message.Text.formattedMessage;
+import static com.github.guru.qa.allure.notifications.message.Text.formattedMarkdownMessage;
 import static com.github.guru.qa.allure.notifications.utils.JsonSlurper.convertMapToJSON;
 import static com.github.guru.qa.allure.notifications.utils.SettingsHelper.*;
 import static java.util.Collections.singletonList;
@@ -29,7 +29,7 @@ public class MattermostClient implements Notifier {
     @Override
     public void sendText() {
         body.put("channel_id", chatId());
-        body.put("message", formattedMessage());
+        body.put("message", formattedMarkdownMessage());
 
         var request = jsonRequest(URL + "/posts", convertMapToJSON(body))
                 .header("Authorization", "Bearer " + botToken()).build();
