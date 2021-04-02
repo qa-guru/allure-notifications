@@ -25,9 +25,9 @@ public class Text {
         ResourceBundle message = ResourceBundle.getBundle("template/text");
         MessageFormat formatter = new MessageFormat("");
         formatter.applyPattern(message.getString("html"));
-        return formatter.format(TemplateUtil.templateData()).
-                replaceAll("bold", "<b>").
-                replaceAll("poly", "</b>").
-                replaceAll("nop", "<br>");
+        return formatter.format(TemplateUtil.templateData())
+                .replaceAll("bold", "<b>")
+                .replaceAll("poly", "</b>")
+                .replaceAll("nop", "<br>");
     }
 }
