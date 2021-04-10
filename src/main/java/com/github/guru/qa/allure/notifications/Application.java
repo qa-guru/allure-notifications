@@ -1,6 +1,9 @@
 package com.github.guru.qa.allure.notifications;
 
 import com.github.guru.qa.allure.notifications.client.NotificationManager;
+import com.github.guru.qa.allure.notifications.client.clients.interceptors.UnirestLogInterceptor;
+import kong.unirest.Unirest;
+import kong.unirest.jackson.JacksonObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -18,7 +21,11 @@ public class Application {
                 allureReportFolder(), messenger(), mattermostApiUrl());
 
         LOG.info("Start application.");
+        Unirest.config()
+                .setObjectMapper(new JacksonObjectMapper())
+                .interceptor(new UnirestLogInterceptor());
         NotificationManager.sendMessage();
+        Unirest.shutDown();
         LOG.info("Stop application.");
     }
 }
