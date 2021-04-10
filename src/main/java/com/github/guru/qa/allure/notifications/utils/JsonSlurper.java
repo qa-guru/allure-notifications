@@ -52,4 +52,13 @@ public class JsonSlurper {
         }
         return json;
     }
+
+    public static String prettyPrint(Object json) {
+        ObjectMapper mapper = new ObjectMapper();
+        try {
+            return mapper.writerWithDefaultPrettyPrinter().writeValueAsString(json);
+        } catch (JsonProcessingException e) {
+            return  "";
+        }
+    }
 }
