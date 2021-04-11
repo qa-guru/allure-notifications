@@ -14,10 +14,9 @@ public class Application {
         LOG.info("\n==========PROPERTIES==========\nbuild.launch.name: {}\nbuild.env: {}\nbuild.report.link: {}" +
                         "\nenable.chart: {}\nbot.token: {}\nchat.id: {}\nproject.name: {}\nallure.report.folder: {}" +
                         "\nmessenger: {}\nmattermost.api.url: {}\nmail.host: {}\nmail.ssl.enable: {}\nmail.port: {}" +
-                        "\nmail.username: {}\nmail.password: {}\nmail.from: {}\nmailTo.to: {}", buildLaunchName(),
-                buildEnvironment(), buildReportLink(), enableChart(), botToken(), chatId(), projectName(),
-                allureReportFolder(), messenger(), mattermostApiUrl(), mailHost(), mailSslEnable(), mailPort(),
-                mailUsername(), mailPassword(), mailFrom(), mailTo());
+                        "\nmailTo.to: {}", buildLaunchName(), buildEnvironment(), buildReportLink(), enableChart(),
+                botToken(), chatId(), projectName(), allureReportFolder(), messenger(), mattermostApiUrl(), mailHost(),
+                mailSslEnable(), mailPort(), mailTo());
 
         LOG.info("Start application.");
         NotificationManager.sendMessage();
