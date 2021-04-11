@@ -1,18 +1,11 @@
-## Allure notifications script
-* Telegram
-* Slack
-* Mattermost
-* TODO Email, Skype.
+<h3>Allure notifications script</h3>
+for telegram, slack, email (//todo)
 
-Jar file, that create piechart from results `allure-report/widgets/summary.json` and sends it with link to build to messenger you choose.  
+jar, that draws piechart from results `allure-report/widgets/summary.json` and sends it with link to build to telegram-chat / slack / email (//todo)
 
-Supports 3 languages. English, Russian, Ukrainian.  
+![shakal screenshot_en](shakal-screenshot_en.png)![shakal screenshot_ru](shakal-screenshot_ru.png)![shakal screenshot_ua](shakal-screenshot_ua.png)
 
-<img src="images/shakal-screenshot_en.png" alt="EN Telegram" width="250"/>
-<img src="images/shakal-screenshot_ru.png" alt="RU Telegram" width="250"/>
-<img src="./images/shakal-screenshot_ua.png" alt="UA Telegram" width="250"/>
-
-### Telegram config:
+Telegram config:
 0. Create telegram bot in @BotFather and add it to your telegram chat.<br/>
 Remember <b>telegram bot secret</b><br/>
 Remember <b>telegram chat id</b>, you can find here -> https://api.telegram.org/bot{telegram_bot_secret}/getUpdates (bot needs admin rights)<br/>
@@ -22,7 +15,7 @@ Remember <b>telegram chat id</b>, you can find here -> https://api.telegram.org/
 3. Run it after allure-report is generated, 
 for example Jenkins postbuild task (Post build plugin required https://plugins.jenkins.io/postbuild-task/): <br/>
 `java -jar allure-notifications-2.0.5.jar -ch true -s telegram_bot_secret -c telegram_chat_id -p ${JOB_BASE_NAME} -f allure-report/ -b ${BUILD_URL} -n "Allure piechart telegram bot Release 2.0" -e https://qa.guru -l ru` <br/>
-![jenkins config](images/jenkins-config.png)
+![jenkins config](jenkins-config.png)
 
 <h3>CommandLine options</h3>
 
