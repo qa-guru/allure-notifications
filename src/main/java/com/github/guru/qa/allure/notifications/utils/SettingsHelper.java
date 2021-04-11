@@ -34,6 +34,6 @@ public class SettingsHelper {
     }
 
     private static Settings readSettings() {
-        return ConfigFactory.newInstance().create(Settings.class);
+        return ConfigFactory.newInstance().create(Settings.class, System.getProperties());
     }
 }
