@@ -1,5 +1,6 @@
 package com.github.guru.qa.allure.notifications.client.clients;
 
+import com.github.guru.qa.allure.notifications.chart.Chart;
 import com.github.guru.qa.allure.notifications.client.Notifier;
 import com.github.guru.qa.allure.notifications.client.clients.mail.Letter;
 import org.slf4j.Logger;
@@ -33,7 +34,7 @@ public class EmailClient implements Notifier {
 
     @Override
     public void sendPhoto() {
-//        Chart.createChart();
+        Chart.createChart();
         try {
             Letter letter = new Letter(createSession());
             String message = "<img src='cid:image'>" + formattedHtmlMessage();
