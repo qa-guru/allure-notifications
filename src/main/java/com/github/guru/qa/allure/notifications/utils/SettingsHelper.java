@@ -56,6 +56,6 @@ public class SettingsHelper {
     public static String mailTo() { return readSettings().mailTo(); }
 
     private static Settings readSettings() {
-        return ConfigFactory.newInstance().create(Settings.class);
+        return ConfigFactory.newInstance().create(Settings.class, System.getProperties());
     }
 }
