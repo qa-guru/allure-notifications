@@ -53,8 +53,6 @@ public class SettingsHelper {
         return readSettings().mailPassword();
     }
 
-    public static String mailFrom() { return readSettings().mailFrom(); }
-
     public static String mailTo() { return readSettings().mailTo(); }
 
     private static Settings readSettings() {

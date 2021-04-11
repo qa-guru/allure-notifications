@@ -16,18 +16,15 @@ public class Text {
     public static String formattedMarkdownMessage() {
         ResourceBundle message = ResourceBundle.getBundle("template/text");
         MessageFormat formatter = new MessageFormat("");
-        formatter.applyPattern(message.getString("markdown"));
+        formatter.applyPattern(message.getString("template"));
         return formatter.format(TemplateUtil.templateData());
     }
 
     /** Возвращает отформатированное по шаблону сообщение в HTML формате. */
     public static String formattedHtmlMessage() {
-        ResourceBundle message = ResourceBundle.getBundle("template/text");
+        ResourceBundle message = ResourceBundle.getBundle("template/html");
         MessageFormat formatter = new MessageFormat("");
-        formatter.applyPattern(message.getString("html"));
-        return formatter.format(TemplateUtil.templateData())
-                .replaceAll("bold", "<b>")
-                .replaceAll("poly", "</b>")
-                .replaceAll("nop", "<br>");
+        formatter.applyPattern(message.getString("template"));
+        return formatter.format(TemplateUtil.templateData());
     }
 }

@@ -22,23 +22,16 @@ public interface Settings extends Config {
     @Key("mattermost.api.url")
     String mattermostApiUrl();
     @Key("mail.host")
-    @DefaultValue("smtp.gmail.com")
     String mailHost();
     @Key("mail.ssl.enable")
     @DefaultValue("true")
     String mailSslEnable();
     @Key("mail.port")
-    @DefaultValue("465")
     Integer mailPort();
     @Key("mail.username")
-    @DefaultValue("noreplyallurereport@gmail.com")
     String mailUsername();
     @Key("mail.password")
-    @DefaultValue("qzwxecrvtb123456789")
     String mailPassword();
-    @Key("mail.from")
-    @DefaultValue("noreplyallurereport@gmail.com")
-    String mailFrom();
     @Key("mail.to")
     String mailTo();
 }
