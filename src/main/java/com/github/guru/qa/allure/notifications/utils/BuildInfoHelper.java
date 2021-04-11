@@ -17,6 +17,6 @@ public class BuildInfoHelper {
     }
 
     private static BuildInfo readBuildInfo() {
-        return ConfigFactory.newInstance().create(BuildInfo.class);
+        return ConfigFactory.newInstance().create(BuildInfo.class, System.getProperties());
     }
 }
