@@ -27,7 +27,7 @@ public interface Settings extends Config {
     @DefaultValue("true")
     String mailSslEnable();
     @Key("mail.port")
-    Integer mailPort();
+    String mailPort();
     @Key("mail.username")
     String mailUsername();
     @Key("mail.password")

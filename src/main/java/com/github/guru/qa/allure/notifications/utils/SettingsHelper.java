@@ -41,7 +41,7 @@ public class SettingsHelper {
         return readSettings().mailSslEnable();
     }
 
-    public static int mailPort() {
+    public static String mailPort() {
         return readSettings().mailPort();
     }
 
