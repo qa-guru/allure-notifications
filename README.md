@@ -1,15 +1,15 @@
-<h1>Allure notifications</h1>
+<h1>Allure notifications :sun_with_face:</h1>
 <h4>for telegram, slack, email, mattermost</h4>
 
 Just put <b>allure-notifications.jar</b> in your project root and it will draw <u>piechart.png</u> (from `allure-report/widgets/summary.json`) and send it to any messenger!<br/>
-Languages: en, ru, ua
+<h5>Languages: en, ru, ua </h5>
 
 | Telegram | Slack |
 :-------------------------:|:-------------------------:
 ![shakal_screenshot](readme_images/telegram-en.png) | ![shakal_screenshot](readme_images/slack-en.png)
 
 
-Telegram config:
+<h6>Telegram config</h6>
 0. Create telegram bot in @BotFather and add it to your telegram chat.<br/>
 Remember <b>telegram bot secret</b><br/>
 Remember <b>telegram chat id</b>, you can find here -> https://api.telegram.org/bot{telegram_bot_secret}/getUpdates (bot needs admin rights)<br/>
@@ -21,10 +21,11 @@ for example Jenkins postbuild task (Post build plugin required https://plugins.j
 `java -jar allure-notifications-2.2.1.jar -Dchat.id=XXXXXX -Dbot.token=XXXXXXXXX -Dproject.name=${JOB_BASE_NAME} -Dbuild.report.link=${BUILD_URL}" -Dbuild.launch.name="Fake release v0.1.2.3" -Dallure.report.folder=./allure-report/ " -Dlaunch.name=Allure-notifications-release 2.1 -Denv=https://github.com/qa-guru/allure-notifications -Denable.chart=true -Dlang=en -Dmessenger=telegram  -Dbuild.env=https://github.com/qa-guru/allure-notifications` <br/>
 ![jenkins config](readme_images/jenkins_config.png)
 
-// todo: Slack config, Email config
+- [x] Telegram config
+- [ ] Slack config
+- [ ] Email config
 
-<h3>CommandLine options</h3>
-
+<h6>CommandLine options</h6>
 All keys should be used with `-D`: <br/> 
 `build.launch.name - Set build launch name` <br/>
 `build.env - Set build environment` <br/>
