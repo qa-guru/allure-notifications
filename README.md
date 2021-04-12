@@ -1,43 +1,29 @@
-<h3>Allure notifications script</h3>
-for telegram, slack, email (//todo)
+<h1>Allure notifications</h1>
+<h4>for telegram, slack, email, mattermost</h4>
 
-jar, that draws piechart from results `allure-report/widgets/summary.json` and sends it with link to build to telegram-chat / slack / email (//todo)
+Just put <b>allure-notifications.jar</b> in your project root and it will draw <u>piechart.png</u> (from `allure-report/widgets/summary.json`) and send it to any messenger!<br/>
+Languages: en, ru, ua
 
-![shakal screenshot_en](shakal-screenshot_en.png)![shakal screenshot_ru](shakal-screenshot_ru.png)![shakal screenshot_ua](shakal-screenshot_ua.png)
+| Telegram | Slack |
+:-------------------------:|:-------------------------:
+![shakal_screenshot](readme_images/telegram-en.png) | ![shakal_screenshot](readme_images/slack-en.png)
+
 
 Telegram config:
 0. Create telegram bot in @BotFather and add it to your telegram chat.<br/>
 Remember <b>telegram bot secret</b><br/>
 Remember <b>telegram chat id</b>, you can find here -> https://api.telegram.org/bot{telegram_bot_secret}/getUpdates (bot needs admin rights)<br/>
-1. You can download ready jar https://github.com/qa-guru/allure-notifications/releases or clone project and build .jar yourself: <br/>
+1. Download latest release https://github.com/qa-guru/allure-notifications/releases or build .jar yourself: <br/>
 `gradle jar` -> build/libs/allure-notifications-*.jar <br/>
-2. Put allure-notifications-*.jar in your in root folder of your autotests project (yes, its awful, but kiss). <br/>
+2. Put allure-notifications-*.jar in your in your autotests project root (sorry, but kiss). <br/>
 3. Run it after allure-report is generated, 
 for example Jenkins postbuild task (Post build plugin required https://plugins.jenkins.io/postbuild-task/): <br/>
-`java -jar allure-notifications-2.0.5.jar -ch true -s telegram_bot_secret -c telegram_chat_id -p ${JOB_BASE_NAME} -f allure-report/ -b ${BUILD_URL} -n "Allure piechart telegram bot Release 2.0" -e https://qa.guru -l ru` <br/>
-![jenkins config](jenkins-config.png)
+`java -jar allure-notifications-2.2.1.jar -Dchat.id=XXXXXX -Dbot.token=XXXXXXXXX -Dproject.name=${JOB_BASE_NAME} -Dbuild.report.link=${BUILD_URL}" -Dbuild.launch.name="Fake release v0.1.2.3" -Dallure.report.folder=./allure-report/ " -Dlaunch.name=Allure-notifications-release 2.1 -Denv=https://github.com/qa-guru/allure-notifications -Denable.chart=true -Dlang=en -Dmessenger=telegram  -Dbuild.env=https://github.com/qa-guru/allure-notifications` <br/>
+![jenkins config](readme_images/jenkins_config.png)
+
+// todo: Slack config, Email config
 
 <h3>CommandLine options</h3>
-
-You can run bot using cmd options: <br/>
-<table>
-    <thead>
-        <tr>
-            <th>Telegram</th><th>Slack</th><th>Email</th>
-        </tr>
-    </thead>
-    <tbody>
-        <tr>
-            <td>Create telegram bot</td><td>Create slack app</td><td></td>
-        </tr>
-        <tr>
-            <td>Add telegram bot to chat</td><td>Add app to slack channel</td><td></td>
-        </tr>
-        <tr>
-            <td colspan="3">Configure step in build server</td>
-        </tr>
-    </tbody>
-</table>
 
 All keys should be used with `-D`: <br/> 
 `build.launch.name - Set build launch name` <br/>
@@ -52,5 +38,3 @@ All keys should be used with `-D`: <br/>
 `messenger - Set target messenger (possible values are: telegram, slack, mattermost)` <br/>
 `mattermost.api.url - Set mattermost api url` <br/>
 Pay attention, all options (except `enable.chart` and `messenger`) are required. Telegram is a default messenger.
-
-Slack configure is in progress!
