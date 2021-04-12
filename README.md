@@ -1,4 +1,4 @@
-<h1>Allure notifications :sun_with_face:</h1>
+<h1>:bomb: Allure notifications :sun_with_face:</h1>
 <h4>for telegram, slack, email, mattermost</h4>
 
 Just put <b>allure-notifications.jar</b> in your project root and it will draw <u>piechart.png</u> (from `allure-report/widgets/summary.json`) and send it to any messenger!<br/>
@@ -31,11 +31,11 @@ java  \
 "-Dmail.port=${SMTP_PORT}" \
 "-Dmail.username=${EMAIL_USER}" \
 "-Dmail.password=${EMAIL_PASSWORD}" \
-"-Dmail.to=${EMAIL}"  \
+"-Dmail.to=${EMAIL}" \
+"-Dproject.name=${JOB_BASE_NAME}" \
 "-Dbuild.launch.name=${SOME_LAUNCH_NAME}" \
 "-Dbuild.env=${ENVIRONMENT}" \
 "-Dbuild.report.link=${BUILD_URL}" \
-"-Dproject.name=${JOB_BASE_NAME}" \
 "-Dlang=${LANGUAGE}" \
 "-Denable.chart=${CHART}" \
 "-Dallure.report.folder=./allure-report/" \
@@ -47,17 +47,23 @@ java  \
 - [ ] Email config
 
 <h6>CommandLine options</h6>
-
 All keys should be used with `-D`: <br/> 
-`messenger - Set target messenger (possible values are: telegram, slack, mattermost)` <br/>
-`bot.token - Set bot secret token` <br/>
-`chat.id - Set chat id` <br/>
-`build.launch.name - Set build launch name` <br/>
-`build.env - Set build environment` <br/>
-`build.report.link - Set build report link` <br/>
-`lang - Set language (possible values are: ru, en, ua)` <br/>
-`enable.chart - Enable/disable PieChart diagram (false by default)` <br/>
-`project.name - Set project name` <br/>
-`allure.report.folder - Set allure report folder` <br/>
-`mattermost.api.url - Set mattermost api url` <br/>
-Pay attention, all options (except `enable.chart` and `messenger`) are required. Telegram is a default messenger.
+
+| key | telegram | slack | email | mattermost | description |
+:----:|:--------:|:-----:|:-----:|:----------:|:------------:
+messenger            | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | telegram (default), slack, email, mattermost 
+bot.token            | :heavy_check_mark: | :heavy_check_mark: | :x:                | :heavy_check_mark: | Bot/app secret token
+chat.id              | :heavy_check_mark: | :heavy_check_mark: | :x:                | :heavy_check_mark: | Chat/channel id
+mail.host            | :x:                | :x:                | :heavy_check_mark: | :x:                | Smtp server
+mail.port            | :x:                | :x:                | :heavy_check_mark: | :x:                | Smtp port
+mail.username        | :x:                | :x:                | :heavy_check_mark: | :x:                | From email username
+mail.password        | :x:                | :x:                | :heavy_check_mark: | :x:                | From email password
+mail.to              | :x:                | :x:                | :heavy_check_mark: | :x:                | To email list - a@a.a, b@b.b
+mattermost.api.url   | :x:                | :x:                | :x:                | :heavy_check_mark: | Mattermost api url
+project.name         | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | Project name
+build.launch.name    | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | Build launch name
+build.env            | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | Build environment
+build.report.link    | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | Build report link
+lang                 | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | Supported languages: en, fr, ru, ua
+enable.chart         | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | Enable/disable PieChart diagram (false by default)
+allure.report.folder | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | Set allure report folder
