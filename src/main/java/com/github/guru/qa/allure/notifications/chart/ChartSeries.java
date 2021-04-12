@@ -12,11 +12,11 @@ import static com.github.guru.qa.allure.notifications.utils.SettingsHelper.allur
 public class ChartSeries {
     public static List<int[]> addSeriesTo(PieChart chart) {
         Summary summary = readSummaryJson(allureReportFolder());
-        long failed = summary.getStatistic().getFailed();
-        long broken = summary.getStatistic().getBroken();
-        long passed = summary.getStatistic().getPassed();
-        long skipped = summary.getStatistic().getSkipped();
-        long unknown = summary.getStatistic().getUnknown();
+        long failed = summary.statistic().failed();
+        long broken = summary.statistic().broken();
+        long passed = summary.statistic().passed();
+        long skipped = summary.statistic().skipped();
+        long unknown = summary.statistic().unknown();
 
         List<int[]> colors = new ArrayList<>();
         if (passed != 0) {

@@ -2,28 +2,21 @@ package com.github.guru.qa.allure.notifications;
 
 import com.github.guru.qa.allure.notifications.client.NotificationManager;
 import com.github.guru.qa.allure.notifications.client.clients.interceptors.UnirestLogInterceptor;
+import com.github.guru.qa.allure.notifications.utils.Journal;
 import kong.unirest.Unirest;
-import kong.unirest.jackson.JacksonObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import static com.github.guru.qa.allure.notifications.utils.BuildInfoHelper.*;
-import static com.github.guru.qa.allure.notifications.utils.SettingsHelper.*;
 
 public class Application {
     private static final Logger LOG = LoggerFactory.getLogger(Application.class);
 
     public static void main(String[] args) {
-        LOG.info("\n==========PROPERTIES==========\nbuild.launch.name: {}\nbuild.env: {}\nbuild.report.link: {}" +
-                        "\nenable.chart: {}\nbot.token: {}\nchat.id: {}\nproject.name: {}\nallure.report.folder: {}" +
-                        "\nmessenger: {}\nmattermost.api.url: {}\nmail.host: {}\nmail.ssl.enable: {}\nmail.port: {}" +
-                        "\nmailTo.to: {}", buildLaunchName(), buildEnvironment(), buildReportLink(), enableChart(),
-                botToken(), chatId(), projectName(), allureReportFolder(), messenger(), mattermostApiUrl(), mailHost(),
-                mailSslEnable(), mailPort(), mailTo());
+        Journal.buildInfo();
+        Journal.settings();
+        Journal.mailSetting();
 
         LOG.info("Start application.");
         Unirest.config()
-                .setObjectMapper(new JacksonObjectMapper())
                 .interceptor(new UnirestLogInterceptor());
         NotificationManager.sendMessage();
         Unirest.shutDown();
