@@ -9,8 +9,8 @@ import org.slf4j.LoggerFactory;
 import javax.mail.MessagingException;
 
 import static com.github.guru.qa.allure.notifications.message.Text.formattedHtmlMessage;
+import static com.github.guru.qa.allure.notifications.utils.MailSettingsHelper.mailTo;
 import static com.github.guru.qa.allure.notifications.utils.MailUtils.createSession;
-import static com.github.guru.qa.allure.notifications.utils.SettingsHelper.mailTo;
 import static com.github.guru.qa.allure.notifications.utils.SettingsHelper.projectName;
 
 public class EmailClient implements Notifier {

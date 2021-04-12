@@ -21,17 +21,4 @@ public interface Settings extends Config {
     Messenger messenger();
     @Key("mattermost.api.url")
     String mattermostApiUrl();
-    @Key("mail.host")
-    String mailHost();
-    @Key("mail.ssl.enable")
-    @DefaultValue("true")
-    String mailSslEnable();
-    @Key("mail.port")
-    String mailPort();
-    @Key("mail.username")
-    String mailUsername();
-    @Key("mail.password")
-    String mailPassword();
-    @Key("mail.to")
-    String mailTo();
 }

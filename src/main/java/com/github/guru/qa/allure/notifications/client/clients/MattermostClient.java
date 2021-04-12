@@ -2,6 +2,7 @@ package com.github.guru.qa.allure.notifications.client.clients;
 
 import com.github.guru.qa.allure.notifications.chart.Chart;
 import com.github.guru.qa.allure.notifications.client.Notifier;
+import com.github.guru.qa.allure.notifications.client.clients.interceptors.enums.Header;
 import com.jayway.jsonpath.JsonPath;
 import kong.unirest.Unirest;
 
@@ -9,6 +10,7 @@ import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 
+import static com.github.guru.qa.allure.notifications.client.clients.interceptors.enums.Header.JSON;
 import static com.github.guru.qa.allure.notifications.message.Text.formattedMarkdownMessage;
 import static com.github.guru.qa.allure.notifications.utils.SettingsHelper.*;
 import static java.util.Collections.singletonList;
@@ -24,7 +26,7 @@ public class MattermostClient implements Notifier {
         Unirest.post(URL + "/posts")
                 .routeParam("uri", mattermostApiUrl())
                 .header("Authorization", "Bearer " + botToken())
-                .header("Content-Type", "application/json; charset=utf-8")
+                .header("Content-Type", JSON.contentType())
                 .body(body)
                 .asString()
                 .getBody();

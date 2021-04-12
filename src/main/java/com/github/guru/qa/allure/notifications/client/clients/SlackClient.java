@@ -6,6 +6,7 @@ import kong.unirest.Unirest;
 
 import java.io.File;
 
+import static com.github.guru.qa.allure.notifications.client.clients.interceptors.enums.Header.URL_ENCODED;
 import static com.github.guru.qa.allure.notifications.message.Text.formattedMarkdownMessage;
 import static com.github.guru.qa.allure.notifications.utils.SettingsHelper.botToken;
 import static com.github.guru.qa.allure.notifications.utils.SettingsHelper.chatId;
@@ -19,7 +20,7 @@ public class SlackClient implements Notifier {
                 chatId(), formattedMarkdownMessage());
         Unirest.post(URL + "/chat.postMessage")
                 .header("Authorization", "Bearer " + botToken())
-                .header("Content-Type", "application/x-www-form-urlencoded; charset=utf-8")
+                .header("Content-Type", URL_ENCODED.contentType())
                 .body(body)
                 .asString()
                 .getBody();
@@ -32,7 +33,7 @@ public class SlackClient implements Notifier {
                 .header("Authorization", "Bearer " + botToken())
                 .field("file", new File("piechart.png"))
                 .field("channels", chatId())
-                .field("title", "")
+                .field("filename", " ")
                 .field("initial_comment", formattedMarkdownMessage())
                 .asString()
                 .getBody();

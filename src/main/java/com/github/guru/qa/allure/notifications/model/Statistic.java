@@ -1,61 +1,43 @@
 package com.github.guru.qa.allure.notifications.model;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
-
-@JsonInclude(JsonInclude.Include.NON_NULL)
 public class Statistic {
-    private Integer failed;
-    private Integer broken;
-    private Integer skipped;
-    private Integer passed;
-    private Integer unknown;
-    private Integer total;
+    private final Integer failed;
+    private final Integer broken;
+    private final Integer skipped;
+    private final Integer passed;
+    private final Integer unknown;
+    private final Integer total;
 
-    public Integer getFailed() {
+    public Statistic(Integer failed, Integer broken, Integer skipped, Integer passed, Integer unknown, Integer total) {
+        this.failed = failed;
+        this.broken = broken;
+        this.skipped = skipped;
+        this.passed = passed;
+        this.unknown = unknown;
+        this.total = total;
+    }
+
+    public Integer failed() {
         return failed;
     }
 
-    public void setFailed(Integer failed) {
-        this.failed = failed;
-    }
-
-    public Integer getBroken() {
+    public Integer broken() {
         return broken;
     }
 
-    public void setBroken(Integer broken) {
-        this.broken = broken;
-    }
-
-    public Integer getSkipped() {
+    public Integer skipped() {
         return skipped;
     }
 
-    public void setSkipped(Integer skipped) {
-        this.skipped = skipped;
-    }
-
-    public Integer getPassed() {
+    public Integer passed() {
         return passed;
     }
 
-    public void setPassed(Integer passed) {
-        this.passed = passed;
-    }
-
-    public Integer getUnknown() {
+    public Integer unknown() {
         return unknown;
     }
 
-    public void setUnknown(Integer unknown) {
-        this.unknown = unknown;
-    }
-
-    public Integer getTotal() {
+    public Integer total() {
         return total;
-    }
-
-    public void setTotal(Integer total) {
-        this.total = total;
     }
 }

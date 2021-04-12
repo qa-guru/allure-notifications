@@ -2,7 +2,10 @@ package com.github.guru.qa.allure.notifications.utils;
 
 import com.github.guru.qa.allure.notifications.config.Settings;
 import com.github.guru.qa.allure.notifications.config.enums.Messenger;
+import com.github.guru.qa.allure.notifications.exceptions.ArgumentNotProvidedException;
 import org.aeonbits.owner.ConfigFactory;
+
+import java.util.Optional;
 
 public class SettingsHelper {
     public static boolean enableChart() {
@@ -10,19 +13,32 @@ public class SettingsHelper {
     }
 
     public static String botToken() {
-        return readSettings().botToken();
+        return Optional
+                .ofNullable(readSettings().botToken())
+                .orElseThrow(() ->
+                        new ArgumentNotProvidedException("bot.token"));
     }
 
     public static String chatId() {
-        return readSettings().chatId();
+        return Optional
+                .ofNullable(readSettings().chatId())
+                .orElseThrow(() ->
+                        new ArgumentNotProvidedException("chat.id"));
     }
 
     public static String projectName() {
-        return readSettings().projectName();
+        return Optional
+                .ofNullable(readSettings().projectName())
+                .orElseThrow(() ->
+                        new ArgumentNotProvidedException("project.name"));
     }
 
     public static String allureReportFolder() {
-        return readSettings().allureReportFolder() + "widgets/summary.json";
+        String folder = Optional
+                .ofNullable(readSettings().allureReportFolder())
+                .orElseThrow(() ->
+                        new ArgumentNotProvidedException("allure.report.folder"));
+        return folder + "widgets/summary.json";
     }
 
     public static Messenger messenger() {
@@ -32,28 +48,6 @@ public class SettingsHelper {
     public static String mattermostApiUrl() {
         return readSettings().mattermostApiUrl();
     }
-
-    public static String mailHost() {
-        return readSettings().mailHost();
-    }
-
-    public static String mailSslEnable() {
-        return readSettings().mailSslEnable();
-    }
-
-    public static String mailPort() {
-        return readSettings().mailPort();
-    }
-
-    public static String mailUsername() {
-        return readSettings().mailUsername();
-    }
-
-    public static String mailPassword() {
-        return readSettings().mailPassword();
-    }
-
-    public static String mailTo() { return readSettings().mailTo(); }
 
     private static Settings readSettings() {
         return ConfigFactory.newInstance().create(Settings.class, System.getProperties());

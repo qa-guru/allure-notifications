@@ -1,14 +1,16 @@
 package com.github.guru.qa.allure.notifications.utils;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.guru.qa.allure.notifications.model.Summary;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.File;
-import java.io.IOException;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.util.Map;
+
+import static com.google.gson.JsonParser.parseString;
 
 /**
  * Содержит вспомогательные методы для работы с JSON.
@@ -24,13 +26,11 @@ public class JsonSlurper {
      * @return итоговая информация из отчета
      */
     public static Summary readSummaryJson(final String path) {
-        ObjectMapper mapper = new ObjectMapper();
+        Gson gson = new Gson();
         Summary summary = null;
         try {
-            LOG.info("Reading json by path {}", path);
-            summary = mapper.readValue(new File(path), Summary.class);
-            LOG.info("Operation is finished successfully");
-        } catch (IOException ex) {
+            summary = gson.fromJson(new FileReader(path), Summary.class);
+        } catch (FileNotFoundException ex) {
             LOG.error("Error {} \n Reason {}", ex.getLocalizedMessage(), ex.getStackTrace());
             ex.printStackTrace();
             System.exit(1);
@@ -39,26 +39,15 @@ public class JsonSlurper {
     }
 
     public static String convertMapToJSON(Map<String, Object> map) {
-        ObjectMapper mapper = new ObjectMapper();
-        String json = "";
-        try {
-            LOG.info("Try to convert {} to JSON", map);
-            json = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(map);
-            LOG.info("Operation is finished successfully");
-        } catch (JsonProcessingException ex) {
-            LOG.error("Error {} \n Reason {}", ex.getLocalizedMessage(), ex.getStackTrace());
-            ex.printStackTrace();
-            System.exit(1);
-        }
+        Gson gson = new Gson();
+        LOG.info("Try to convert {} to JSON", map);
+        String json = gson.toJson(map);
+        LOG.info("Operation is finished successfully");
         return json;
     }
 
-    public static String prettyPrint(Object json) {
-        ObjectMapper mapper = new ObjectMapper();
-        try {
-            return mapper.writerWithDefaultPrettyPrinter().writeValueAsString(json);
-        } catch (JsonProcessingException e) {
-            return  "";
-        }
+    public static String prettyPrint(String json) {
+        Gson gson = new GsonBuilder().setPrettyPrinting().create();
+        return gson.toJson(parseString(json));
     }
 }

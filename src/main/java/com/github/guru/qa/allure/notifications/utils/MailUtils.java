@@ -8,7 +8,7 @@ import javax.mail.internet.InternetAddress;
 import java.util.ArrayList;
 import java.util.Properties;
 
-import static com.github.guru.qa.allure.notifications.utils.SettingsHelper.*;
+import static com.github.guru.qa.allure.notifications.utils.MailSettingsHelper.*;
 
 public class MailUtils {
 

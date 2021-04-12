@@ -9,8 +9,8 @@ import javax.mail.Session;
 import javax.mail.Transport;
 import javax.mail.internet.MimeMessage;
 
+import static com.github.guru.qa.allure.notifications.utils.MailSettingsHelper.mailTo;
 import static com.github.guru.qa.allure.notifications.utils.MailUtils.parseRecipientsFromString;
-import static com.github.guru.qa.allure.notifications.utils.SettingsHelper.mailTo;
 
 public class Letter {
     private final Logger LOG = LoggerFactory.getLogger(Letter.class);
