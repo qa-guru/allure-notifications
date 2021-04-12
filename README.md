@@ -27,10 +27,10 @@ java  \
 "-Dmessenger=${MESSENGER}" \
 "-Dchat.id=${CHAT}" \
 "-Dbot.token=${SECRET}" \
-"-Dmail.host=${SMTP_SERVER}" 
-"-Dmail.port=${SMTP_PORT}" 
-"-Dmail.username=${EMAIL_USER}" 
-"-Dmail.password=${EMAIL_PASSWORD}" 
+"-Dmail.host=${SMTP_SERVER}" \
+"-Dmail.port=${SMTP_PORT}" \
+"-Dmail.username=${EMAIL_USER}" \
+"-Dmail.password=${EMAIL_PASSWORD}" \
 "-Dmail.to=${EMAIL}"  \
 "-Dbuild.launch.name=${SOME_LAUNCH_NAME}" \
 "-Dbuild.env=${ENVIRONMENT}" \
@@ -47,6 +47,7 @@ java  \
 - [ ] Email config
 
 <h6>CommandLine options</h6>
+
 All keys should be used with `-D`: <br/> 
 `messenger - Set target messenger (possible values are: telegram, slack, mattermost)` <br/>
 `bot.token - Set bot secret token` <br/>
