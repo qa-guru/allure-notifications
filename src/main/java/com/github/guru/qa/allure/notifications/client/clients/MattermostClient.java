@@ -9,7 +9,7 @@ import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 
-import static com.github.guru.qa.allure.notifications.message.Text.formattedMessage;
+import static com.github.guru.qa.allure.notifications.message.Text.formattedMarkdownMessage;
 import static com.github.guru.qa.allure.notifications.utils.SettingsHelper.*;
 import static java.util.Collections.singletonList;
 
@@ -20,7 +20,7 @@ public class MattermostClient implements Notifier {
     @Override
     public void sendText() {
         body.put("channel_id", chatId());
-        body.put("message", formattedMessage());
+        body.put("message", formattedMarkdownMessage());
         Unirest.post(URL + "/posts")
                 .routeParam("uri", mattermostApiUrl())
                 .header("Authorization", "Bearer " + botToken())

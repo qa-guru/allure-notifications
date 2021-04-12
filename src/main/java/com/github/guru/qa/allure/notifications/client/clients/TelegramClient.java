@@ -6,7 +6,7 @@ import kong.unirest.Unirest;
 
 import java.io.File;
 
-import static com.github.guru.qa.allure.notifications.message.Text.formattedMessage;
+import static com.github.guru.qa.allure.notifications.message.Text.formattedMarkdownMessage;
 import static com.github.guru.qa.allure.notifications.utils.SettingsHelper.botToken;
 import static com.github.guru.qa.allure.notifications.utils.SettingsHelper.chatId;
 
@@ -15,7 +15,7 @@ public class TelegramClient implements Notifier {
 
     @Override
     public void sendText() {
-        String body = String.format("chat_id=%s&text=%s&parse_mode=Markdown", chatId(), formattedMessage());
+        String body = String.format("chat_id=%s&text=%s&parse_mode=Markdown", chatId(), formattedMarkdownMessage());
         Unirest.post(URL + "/sendMessage")
                 .routeParam("token", botToken())
                 .header("Content-Type", "application/x-www-form-urlencoded; charset=utf-8")
@@ -32,7 +32,7 @@ public class TelegramClient implements Notifier {
                 .field("photo", new File("piechart.png"))
                 .field("chat_id", chatId())
                 .field("parse_mode", "Markdown")
-                .field("caption", formattedMessage())
+                .field("caption", formattedMarkdownMessage())
                 .asString()
                 .getBody();
     }

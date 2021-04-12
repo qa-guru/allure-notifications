@@ -12,9 +12,17 @@ import java.util.ResourceBundle;
  * @since 2.0.10
  */
 public class Text {
-    /** Возвращает отформатированное по шаблону сообщение. */
-    public static String formattedMessage() {
+    /** Возвращает отформатированное по шаблону сообщение в Markdown формате. */
+    public static String formattedMarkdownMessage() {
         ResourceBundle message = ResourceBundle.getBundle("template/text");
+        MessageFormat formatter = new MessageFormat("");
+        formatter.applyPattern(message.getString("template"));
+        return formatter.format(TemplateUtil.templateData());
+    }
+
+    /** Возвращает отформатированное по шаблону сообщение в HTML формате. */
+    public static String formattedHtmlMessage() {
+        ResourceBundle message = ResourceBundle.getBundle("template/html");
         MessageFormat formatter = new MessageFormat("");
         formatter.applyPattern(message.getString("template"));
         return formatter.format(TemplateUtil.templateData());
