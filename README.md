@@ -2,13 +2,14 @@
 <h6>for telegram, slack, skype, email, mattermost</h6>
 
 <h3>Languages:</h3>
+
 ![](readme_images/languages/United-Kingdom.png) ![](readme_images/languages/Russia.png) ![](readme_images/languages/Ukraine.png)</h5>
 
 | Telegram | Slack |
 :-------------------------:|:-------------------------:
 ![shakal_screenshot](readme_images/telegram-en.png) | ![shakal_screenshot](readme_images/slack-en.png)
 | **Skype** | **Email** |
-`// todo` [#32](https://github.com/qa-guru/allure-notifications/issues/32) :nerd_face: :computer: | ![shakal_screenshot](readme_images/email_en.png) 
+`// todo` [#32](https://github.com/qa-guru/allure-notifications/issues/32) :nerd_face::computer: | ![shakal_screenshot](readme_images/email_en.png) 
 
 <h6>How to:</h6>
 
