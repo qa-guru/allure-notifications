@@ -14,7 +14,7 @@
 <h6>How to:</h6>
 
 - [x] [Telegram config](https://github.com/qa-guru/allure-notifications/wiki/Telegram-configuration)
-- [ ] [Slack config](https://github.com/qa-guru/allure-notifications/wiki/Slack-configuration)
+- [x] [Slack config](https://github.com/qa-guru/allure-notifications/wiki/Slack-configuration)
 - [ ] [Email config](https://github.com/qa-guru/allure-notifications/wiki/Email-configuration)
 - [ ] [Skype config](https://github.com/qa-guru/allure-notifications/wiki/Skype-configuration)
 - [ ] [Mattermost config](https://github.com/qa-guru/allure-notifications/wiki/Skype-configuration)
