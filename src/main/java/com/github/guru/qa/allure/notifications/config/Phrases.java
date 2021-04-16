@@ -30,4 +30,14 @@ public interface Phrases extends Config {
     String ofPassedTestsLabel();
     @Key("report_available_by_link")
     String reportLinkLabel();
+    @Key("passed")
+    String passed();
+    @Key("failed")
+    String failed();
+    @Key("broken")
+    String broken();
+    @Key("unknown")
+    String unknown();
+    @Key("skipped")
+    String skipped();
 }
