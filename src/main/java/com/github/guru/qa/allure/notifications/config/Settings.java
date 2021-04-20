@@ -12,6 +12,8 @@ public interface Settings extends Config {
     String botToken();
     @Key("chat.id")
     String chatId();
+    @Key("reply.to.message.id")
+    String replyToMessageId();
     @Key("project.name")
     String projectName();
     @Key("allure.report.folder")

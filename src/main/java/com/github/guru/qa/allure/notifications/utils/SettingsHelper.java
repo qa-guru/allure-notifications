@@ -26,6 +26,11 @@ public class SettingsHelper {
                         new ArgumentNotProvidedException("chat.id"));
     }
 
+
+    public static String replyToMessageId() {
+        return readSettings().replyToMessageId();
+    }
+
     public static String projectName() {
         return Optional
                 .ofNullable(readSettings().projectName())

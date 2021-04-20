@@ -8,19 +8,20 @@ import java.io.File;
 
 import static com.github.guru.qa.allure.notifications.client.clients.interceptors.enums.Header.URL_ENCODED;
 import static com.github.guru.qa.allure.notifications.message.Text.formattedMarkdownMessage;
-import static com.github.guru.qa.allure.notifications.utils.SettingsHelper.botToken;
-import static com.github.guru.qa.allure.notifications.utils.SettingsHelper.chatId;
+import static com.github.guru.qa.allure.notifications.utils.SettingsHelper.*;
 
 public class TelegramClient implements Notifier {
     private final String URL = "https://api.telegram.org/bot{token}";
 
     @Override
     public void sendText() {
-        String body = String.format("chat_id=%s&text=%s&parse_mode=Markdown", chatId(), formattedMarkdownMessage());
         Unirest.post(URL + "/sendMessage")
                 .routeParam("token", botToken())
                 .header("Content-Type", URL_ENCODED.contentType())
-                .body(body)
+                .field("chat_id", chatId())
+                .field("reply_to_message_id", replyToMessageId())
+                .field("text", formattedMarkdownMessage())
+                .field("parse_mode", "Markdown")
                 .asString()
                 .getBody();
     }
@@ -32,6 +33,7 @@ public class TelegramClient implements Notifier {
                 .routeParam("token", botToken())
                 .field("photo", new File("piechart.png"))
                 .field("chat_id", chatId())
+                .field("reply_to_message_id", replyToMessageId())
                 .field("parse_mode", "Markdown")
                 .field("caption", formattedMarkdownMessage())
                 .asString()
