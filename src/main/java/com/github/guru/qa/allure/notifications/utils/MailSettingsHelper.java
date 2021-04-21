@@ -25,6 +25,7 @@ public class MailSettingsHelper {
     }
 
     public static String mailTo() { return readSettings().mailTo(); }
+
     private static MailSettings readSettings() {
         return ConfigFactory.newInstance().create(MailSettings.class, System.getProperties());
     }
