@@ -3,7 +3,7 @@
 
 <h3>Languages:</h3>
 
-![](readme_images/languages/United-Kingdom.png) ![](readme_images/languages/Russia.png) ![](readme_images/languages/Ukraine.png)</h5>
+![](readme_images/languages/United-Kingdom.png) ![](readme_images/languages/France.png) ![](readme_images/languages/Russia.png) ![](readme_images/languages/Ukraine.png)</h5>
 
 | Telegram | Slack |
 :-------------------------:|:-------------------------:
