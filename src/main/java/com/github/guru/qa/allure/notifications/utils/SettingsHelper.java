@@ -7,23 +7,31 @@ import org.aeonbits.owner.ConfigFactory;
 
 import java.util.Optional;
 
+import static com.github.guru.qa.allure.notifications.config.enums.Messenger.email;
+
 public class SettingsHelper {
     public static boolean enableChart() {
         return readSettings().enableChart();
     }
 
     public static String botToken() {
-        return Optional
-                .ofNullable(readSettings().botToken())
-                .orElseThrow(() ->
-                        new ArgumentNotProvidedException("bot.token"));
+        if (isNotEmail()) {
+            return Optional
+                    .ofNullable(readSettings().botToken())
+                    .orElseThrow(() ->
+                            new ArgumentNotProvidedException("bot.token"));
+        }
+        return "";
     }
 
     public static String chatId() {
-        return Optional
-                .ofNullable(readSettings().chatId())
-                .orElseThrow(() ->
-                        new ArgumentNotProvidedException("chat.id"));
+        if (isNotEmail()) {
+            return Optional
+                    .ofNullable(readSettings().chatId())
+                    .orElseThrow(() ->
+                            new ArgumentNotProvidedException("chat.id"));
+        }
+        return "";
     }
 
 
@@ -51,10 +59,17 @@ public class SettingsHelper {
     }
 
     public static String mattermostApiUrl() {
-        return readSettings().mattermostApiUrl();
+        if (isNotEmail()) {
+            return readSettings().mattermostApiUrl();
+        }
+        return "";
     }
 
     private static Settings readSettings() {
         return ConfigFactory.newInstance().create(Settings.class, System.getProperties());
+    }
+
+    private static boolean isNotEmail() {
+        return !email.equals(messenger());
     }
 }
