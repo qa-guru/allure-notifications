@@ -28,6 +28,7 @@ All keys should be used with `-D`: <br/>
 messenger            | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | telegram (default), slack, email, mattermost 
 bot.token            | :heavy_check_mark: | :heavy_check_mark: | :x:                | :heavy_check_mark: | Bot/app secret token
 chat.id              | :heavy_check_mark: | :heavy_check_mark: | :x:                | :heavy_check_mark: | Chat/channel id
+reply.to.message.id  | :heavy_check_mark: | // todo            | :x:                | :heavy_check_mark: | Message id for reply
 mail.host            | :x:                | :x:                | :heavy_check_mark: | :x:                | Smtp server
 mail.port            | :x:                | :x:                | :heavy_check_mark: | :x:                | Smtp port
 mail.username        | :x:                | :x:                | :heavy_check_mark: | :x:                | From email username
