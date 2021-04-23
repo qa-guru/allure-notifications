@@ -63,3 +63,6 @@ java  \
 "-Dallure.report.folder=./allure-report/" \
 -jar allure-notifications-2.2.1.jar
 ```
+
+If you want the project logo to appear in the upper left corner of the chart, 
+add the file logo.png to root of project 
