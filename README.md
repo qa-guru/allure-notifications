@@ -1,40 +1,65 @@
-![build-jar](https://github.com/qa-guru/allure-notifications/workflows/build-jar/badge.svg?branch=master&event=push)
+<h1>Allure notifications :sun_with_face:</h1>
+<h6>for telegram, slack, skype, email, mattermost</h6>
 
-<h3>Allure notifications script</h3>
-for telegram, slack, email (//todo)
+<h3>Languages:</h3>
 
-jar, that draws piechart from results `allure-report/widgets/summary.json` and sends it with link to build to telegram-chat / slack / email (//todo)
+![](readme_images/languages/United-Kingdom.png) ![](readme_images/languages/France.png) ![](readme_images/languages/Russia.png) ![](readme_images/languages/Ukraine.png)</h5>
 
-![shakal screenshot_en](shakal-screenshot_en.png)![shakal screenshot_ru](shakal-screenshot_ru.png)![shakal screenshot_ua](shakal-screenshot_ua.png)
+| Telegram | Slack |
+:-------------------------:|:-------------------------:
+![shakal_screenshot](readme_images/telegram-en.png) | ![shakal_screenshot](readme_images/slack-en.png)
+| **Skype** | **Email** |
+`// todo` [#32](https://github.com/qa-guru/allure-notifications/issues/32) :nerd_face::computer: | ![shakal_screenshot](readme_images/email_en.png) 
 
-Telegram config:
-0. Create telegram bot in @BotFather and add it to your telegram chat.<br/>
-Remember <b>telegram bot secret</b><br/>
-Remember <b>telegram chat id</b>, you can find here -> https://api.telegram.org/bot{telegram_bot_secret}/getUpdates (bot needs admin rights)<br/>
-1. You can download ready jar https://github.com/qa-guru/allure-notifications/releases or clone project and build .jar yourself: <br/>
-`gradle jar` -> build/libs/allure-notifications-*.jar <br/>
-2. Put allure-notifications-*.jar in your in root folder of your autotests project (yes, its awful, but kiss). <br/>
-3. Run it after allure-report is generated, 
-for example Jenkins postbuild task (Post build plugin required https://plugins.jenkins.io/postbuild-task/): <br/>
-`java -jar allure-notifications-2.0.5.jar -ch true -s telegram_bot_secret -c telegram_chat_id -p ${JOB_BASE_NAME} -f allure-report/ -b ${BUILD_URL} -n "Allure piechart telegram bot Release 2.0" -e https://qa.guru -l ru` <br/>
-![jenkins config](jenkins-config.png)
+<h6>How to:</h6>
 
-<h3>CommandLine options</h3>
+- [x] [Telegram config](https://github.com/qa-guru/allure-notifications/wiki/Telegram-configuration)
+- [x] [Slack config](https://github.com/qa-guru/allure-notifications/wiki/Slack-configuration)
+- [ ] [Email config](https://github.com/qa-guru/allure-notifications/wiki/Email-configuration)
+- [ ] [Skype config](https://github.com/qa-guru/allure-notifications/wiki/Skype-configuration)
+- [ ] [Mattermost config](https://github.com/qa-guru/allure-notifications/wiki/Skype-configuration)
 
-You can run bot using cmd options: <br/>
-`-ch, --chart - Enable/disable PieChart diagram (false by default);` <br/>
-`-s, --secret, --token - Set telegram bot secret token;` <br/>
-`-c, --chat, --id - Set telegram chat id;` <br/>
-`-p, --project - Set project name;` <br/>
-`-f, --folder, --allure - Set allure report folder;` <br/>
-`-b, --build, --link - Set link to build;` <br/>
-`-n, --name - Set launch name;` <br/>
-`-e, --env - Set environment;` <br/>
-`-l, --lang - Set template language (possible values are: ru, en, ua). English by default.` <br/>
-`-ph, --proxyhost - Set template language (possible values are: ru, en, ua). English by default.` <br/>
-`-l, --lang - Set template language (possible values are: ru, en, ua). English by default.` <br/>
-`-l, --lang - Set template language (possible values are: ru, en, ua). English by default.` <br/>
-`-l, --lang - Set template language (possible values are: ru, en, ua). English by default.` <br/>
-Pay attention, all options (except `-ch` and `-l`) are required.
 
-Slack configure is in progress!
+<h6>CommandLine options</h6>
+All keys should be used with `-D`: <br/> 
+
+| key | telegram | slack | email | mattermost | description |
+:----:|:--------:|:-----:|:-----:|:----------:|:------------:
+messenger            | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | telegram (default), slack, email, mattermost 
+bot.token            | :heavy_check_mark: | :heavy_check_mark: | :x:                | :heavy_check_mark: | Bot/app secret token
+chat.id              | :heavy_check_mark: | :heavy_check_mark: | :x:                | :heavy_check_mark: | Chat/channel id
+reply.to.message.id  | :heavy_check_mark: | // todo            | :x:                | :heavy_check_mark: | Message id for reply
+mail.host            | :x:                | :x:                | :heavy_check_mark: | :x:                | Smtp server
+mail.port            | :x:                | :x:                | :heavy_check_mark: | :x:                | Smtp port
+mail.username        | :x:                | :x:                | :heavy_check_mark: | :x:                | From email username
+mail.password        | :x:                | :x:                | :heavy_check_mark: | :x:                | From email password
+mail.to              | :x:                | :x:                | :heavy_check_mark: | :x:                | To email list - a@a.a, b@b.b
+mattermost.api.url   | :x:                | :x:                | :x:                | :heavy_check_mark: | Mattermost api url
+project.name         | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | Project name
+build.launch.name    | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | Build launch name
+build.env            | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | Build environment
+build.report.link    | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | Build report link
+lang                 | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | Supported languages: en, fr, ru, ua
+enable.chart         | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | Enable/disable PieChart diagram (false by default)
+allure.report.folder | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | Set allure report folder
+
+```
+java  \
+"-Dmessenger=${MESSENGER}" \
+"-Dchat.id=${CHAT}" \
+"-Dbot.token=${SECRET}" \
+"-Dmail.host=${SMTP_SERVER}" \
+"-Dmail.port=${SMTP_PORT}" \
+"-Dmail.username=${EMAIL_USER}" \
+"-Dmail.password=${EMAIL_PASSWORD}" \
+"-Dmail.to=${EMAIL}" \
+"-Dmattermost.api.url=${MATTERMOST_API_URL}" \
+"-Dproject.name=${JOB_BASE_NAME}" \
+"-Dbuild.launch.name=${SOME_LAUNCH_NAME}" \
+"-Dbuild.env=${ENVIRONMENT}" \
+"-Dbuild.report.link=${BUILD_URL}" \
+"-Dlang=${LANGUAGE}" \
+"-Denable.chart=${CHART}" \
+"-Dallure.report.folder=./allure-report/" \
+-jar allure-notifications-2.2.1.jar
+```
