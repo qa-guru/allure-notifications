@@ -4,7 +4,6 @@ import com.github.guru.qa.allure.notifications.config.ProxySettings;
 import org.aeonbits.owner.ConfigFactory;
 
 public class ProxySettingsHelper {
-
     public static String proxyHost() {
         return readSettings().proxyHost();
     }

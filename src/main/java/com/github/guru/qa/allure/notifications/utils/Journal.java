@@ -54,10 +54,8 @@ public class Journal {
     public static void proxySetting() {
         LOG.info("\n=======PROXY SETTINGS=======" +
                         "\nproxy.host: {}" +
-                        "\nproxy.port: {}" +
-                        "\nproxy.username: {}",
+                        "\nproxy.port: {}",
                 proxyHost(),
-                proxyPort(),
-                proxyUsername());
+                proxyPort());
     }
 }

@@ -7,6 +7,7 @@ public interface ProxySettings extends Config {
     @Key("proxy.host")
     String proxyHost();
     @Key("proxy.port")
+    @DefaultValue("0")
     int proxyPort();
     @Key("proxy.username")
     String proxyUsername();
