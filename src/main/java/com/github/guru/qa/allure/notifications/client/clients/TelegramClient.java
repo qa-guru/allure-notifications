@@ -8,6 +8,7 @@ import java.io.File;
 
 import static com.github.guru.qa.allure.notifications.client.clients.interceptors.enums.Header.URL_ENCODED;
 import static com.github.guru.qa.allure.notifications.message.Text.formattedMarkdownMessage;
+import static com.github.guru.qa.allure.notifications.utils.ProxySettingsHelper.*;
 import static com.github.guru.qa.allure.notifications.utils.SettingsHelper.*;
 
 public class TelegramClient implements Notifier {
@@ -15,6 +16,7 @@ public class TelegramClient implements Notifier {
 
     @Override
     public void sendText() {
+        checkProxy();
         Unirest.post(URL + "/sendMessage")
                 .routeParam("token", botToken())
                 .header("Content-Type", URL_ENCODED.contentType())
@@ -28,6 +30,7 @@ public class TelegramClient implements Notifier {
 
     @Override
     public void sendPhoto() {
+        checkProxy();
         Chart.createChart();
         Unirest.post(URL + "/sendPhoto")
                 .routeParam("token", botToken())
@@ -38,5 +41,13 @@ public class TelegramClient implements Notifier {
                 .field("caption", formattedMarkdownMessage())
                 .asString()
                 .getBody();
+    }
+
+    private void checkProxy() {
+        if ((proxyUsername() != null) && (proxyPassword() != null) && (proxyHost() != null) && (proxyPort() != 0)) {
+            Unirest.config().proxy(proxyHost(), proxyPort(), proxyUsername(), proxyPassword());
+        } else if ((proxyHost() != null) && (proxyPort() != 0)) {
+            Unirest.config().proxy(proxyHost(), proxyPort());
+        }
     }
 }

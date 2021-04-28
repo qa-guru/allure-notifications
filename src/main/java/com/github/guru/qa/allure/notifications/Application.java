@@ -14,6 +14,7 @@ public class Application {
         Journal.buildInfo();
         Journal.settings();
         Journal.mailSetting();
+        Journal.proxySetting();
 
         LOG.info("Start application.");
         Unirest.config()

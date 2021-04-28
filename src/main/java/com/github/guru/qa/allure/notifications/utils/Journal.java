@@ -5,6 +5,7 @@ import org.slf4j.LoggerFactory;
 
 import static com.github.guru.qa.allure.notifications.utils.BuildInfoHelper.*;
 import static com.github.guru.qa.allure.notifications.utils.MailSettingsHelper.*;
+import static com.github.guru.qa.allure.notifications.utils.ProxySettingsHelper.*;
 import static com.github.guru.qa.allure.notifications.utils.SettingsHelper.*;
 
 public class Journal {
@@ -41,11 +42,22 @@ public class Journal {
     public static void mailSetting() {
         LOG.info("\n=======MAIL SETTINGS=======" +
                         "\nmail.host: {}" +
-                        "\nmail.ssl.enable: {}\nmail.port: {}" +
+                        "\nmail.ssl.enable: {}" +
+                        "\nmail.port: {}" +
                         "\nmail.to: {}",
                 mailHost(),
                 mailSslEnable(),
                 mailPort(),
                 mailTo());
+    }
+
+    public static void proxySetting() {
+        LOG.info("\n=======PROXY SETTINGS=======" +
+                        "\nproxy.host: {}" +
+                        "\nproxy.port: {}" +
+                        "\nproxy.username: {}",
+                proxyHost(),
+                proxyPort(),
+                proxyUsername());
     }
 }

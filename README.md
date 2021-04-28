@@ -34,6 +34,10 @@ mail.port            | :x:                | :x:                | :heavy_check_ma
 mail.username        | :x:                | :x:                | :heavy_check_mark: | :x:                | From email username
 mail.password        | :x:                | :x:                | :heavy_check_mark: | :x:                | From email password
 mail.to              | :x:                | :x:                | :heavy_check_mark: | :x:                | To email list - a@a.a, b@b.b
+proxy.host           | :heavy_check_mark: | :x:                | :x:                | :x:                | Proxy host url
+proxy.port           | :heavy_check_mark: | :x:                | :x:                | :x:                | Proxy port
+proxy.username       | :heavy_check_mark: | :x:                | :x:                | :x:                | Proxy authentication username
+proxy.password       | :heavy_check_mark: | :x:                | :x:                | :x:                | Proxy authentication password
 mattermost.api.url   | :x:                | :x:                | :x:                | :heavy_check_mark: | Mattermost api url
 project.name         | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | Project name
 build.launch.name    | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | Build launch name
@@ -42,7 +46,6 @@ build.report.link    | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_ma
 lang                 | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | Supported languages: en, fr, ru, ua
 enable.chart         | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | Enable/disable PieChart diagram (false by default)
 allure.report.folder | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | Set allure report folder
-
 ```
 java  \
 "-Dmessenger=${MESSENGER}" \
@@ -53,6 +56,10 @@ java  \
 "-Dmail.username=${EMAIL_USER}" \
 "-Dmail.password=${EMAIL_PASSWORD}" \
 "-Dmail.to=${EMAIL}" \
+"-Dproxy.host=${PROXY_HOST}" \
+"-Dproxy.port=${PROXY_PORT}" \
+"-Dproxy.username=${PROXY_USER}" \
+"-Dproxy.password=${PROXY_PASSWORD}" \
 "-Dmattermost.api.url=${MATTERMOST_API_URL}" \
 "-Dproject.name=${JOB_BASE_NAME}" \
 "-Dbuild.launch.name=${SOME_LAUNCH_NAME}" \
@@ -61,5 +68,5 @@ java  \
 "-Dlang=${LANGUAGE}" \
 "-Denable.chart=${CHART}" \
 "-Dallure.report.folder=./allure-report/" \
--jar allure-notifications-2.2.1.jar
+-jar allure-notifications-2.2.3.jar
 ```
