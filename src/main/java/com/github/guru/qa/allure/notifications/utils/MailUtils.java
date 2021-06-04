@@ -15,6 +15,7 @@ public class MailUtils {
     public static Session createSession() {
         Properties props = new Properties();
 
+        props.put("mail.smtp.from", mailFrom());
         props.put("mail.smtp.host", mailHost());
         props.put("mail.smtp.ssl.enable", mailSslEnable());
         props.put("mail.smtp.port", mailPort());

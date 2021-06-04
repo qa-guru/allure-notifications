@@ -9,6 +9,7 @@ import org.slf4j.LoggerFactory;
 import javax.mail.MessagingException;
 
 import static com.github.guru.qa.allure.notifications.message.Text.formattedHtmlMessage;
+import static com.github.guru.qa.allure.notifications.utils.MailSettingsHelper.mailFrom;
 import static com.github.guru.qa.allure.notifications.utils.MailSettingsHelper.mailTo;
 import static com.github.guru.qa.allure.notifications.utils.MailUtils.createSession;
 import static com.github.guru.qa.allure.notifications.utils.SettingsHelper.projectName;
@@ -21,7 +22,8 @@ public class EmailClient implements Notifier {
         try {
             Letter letter = new Letter(createSession());
 
-            letter.to(mailTo())
+            letter.from(mailFrom())
+                    .to(mailTo())
                     .subject(projectName())
                     .text(formattedHtmlMessage())
                     .send();
@@ -39,7 +41,8 @@ public class EmailClient implements Notifier {
             Letter letter = new Letter(createSession());
             String message = "<img src='cid:image'>" + formattedHtmlMessage();
 
-            letter.to(mailTo())
+            letter.from(mailFrom())
+                    .to(mailTo())
                     .subject(projectName())
                     .text(message)
                     .image("./piechart.png")

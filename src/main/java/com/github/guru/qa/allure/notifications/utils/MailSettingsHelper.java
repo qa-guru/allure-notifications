@@ -4,9 +4,9 @@ import com.github.guru.qa.allure.notifications.config.MailSettings;
 import org.aeonbits.owner.ConfigFactory;
 
 public class MailSettingsHelper {
-    public static String mailHost() {
-        return readSettings().mailHost();
-    }
+    public static String mailFrom() { return readSettings().mailFrom(); }
+
+    public static String mailHost() { return readSettings().mailHost(); }
 
     public static String mailSslEnable() {
         return readSettings().mailSslEnable();

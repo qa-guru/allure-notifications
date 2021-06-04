@@ -17,4 +17,6 @@ public interface MailSettings extends Config {
     String mailPassword();
     @Key("mail.to")
     String mailTo();
+    @Key("mail.from")
+    String mailFrom();
 }

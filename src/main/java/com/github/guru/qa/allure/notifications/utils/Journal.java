@@ -40,9 +40,11 @@ public class Journal {
 
     public static void mailSetting() {
         LOG.info("\n=======MAIL SETTINGS=======" +
+                        "\nmail.from: {}" +
                         "\nmail.host: {}" +
                         "\nmail.ssl.enable: {}\nmail.port: {}" +
                         "\nmail.to: {}",
+                mailFrom(),
                 mailHost(),
                 mailSslEnable(),
                 mailPort(),

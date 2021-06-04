@@ -3,10 +3,8 @@ package com.github.guru.qa.allure.notifications.client.clients.mail;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.mail.Message;
-import javax.mail.MessagingException;
-import javax.mail.Session;
-import javax.mail.Transport;
+import javax.mail.*;
+import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 
 import static com.github.guru.qa.allure.notifications.utils.MailSettingsHelper.mailTo;
@@ -19,6 +17,13 @@ public class Letter {
 
     public Letter(Session session) throws MessagingException {
         letter = new MimeMessage(session);
+    }
+
+    public Letter from(String from) throws MessagingException {
+        if (!from.isEmpty()) {
+            letter.setFrom(new InternetAddress(from));
+        }
+        return this;
     }
 
     public Letter to(String to) throws MessagingException {
