@@ -1,0 +1,8 @@
+{
+  "phrases": {
+    "environment": "环境",
+    "totalPassed": "通过总数",
+    "totalFailed": "失败总数",
+    "reportAvailableByLink": "测试报告链接"
+  }
+}

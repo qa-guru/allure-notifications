@@ -1,0 +1,8 @@
+{
+  "phrases": {
+    "environment": "Середовище",
+    "totalPassed": "Усього успішних тестів",
+    "totalFailed": "Усього невдалих тестів",
+    "reportAvailableByLink": "Звіт доступний за посиланням"
+  }
+}

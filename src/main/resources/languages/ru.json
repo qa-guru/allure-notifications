@@ -1,0 +1,8 @@
+{
+  "phrases": {
+    "environment": "Рабочее окружение",
+    "totalPassed": "Всего успешных тестов",
+    "totalFailed": "Всего упавших тестов",
+    "reportAvailableByLink": "Отчет доступен по ссылке"
+  }
+}

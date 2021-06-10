@@ -3,7 +3,7 @@ plugins {
 }
 
 group 'allure.notifications'
-version '2.2.3'
+version '3.0.0'
 
 sourceCompatibility = 1.8
 
@@ -13,12 +13,11 @@ repositories {
 
 dependencies {
     compile(
-            'org.knowm.xchart:xchart:3.5.2',
-            'org.aeonbits.owner:owner:1.0.12',
-            'com.jayway.jsonpath:json-path:2.5.0',
             'org.slf4j:slf4j-log4j12:1.7.30',
             'com.sun.mail:javax.mail:1.6.2',
-            'com.konghq:unirest-java:3.11.11'
+            'com.konghq:unirest-java:3.11.11',
+            'org.freemarker:freemarker:2.3.31',
+            'com.typesafe:config:1.4.1'
     )
 }
 
@@ -30,7 +29,7 @@ tasks.withType(JavaCompile) {
 jar {
     manifest {
         attributes(
-                'Main-Class': 'com.github.guru.qa.allure.notifications.Application'
+                'Main-Class': 'guru.qa.allure.notifications.Application'
         )
     }
     from {

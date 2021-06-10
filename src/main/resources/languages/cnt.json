@@ -1,0 +1,8 @@
+{
+  "phrases": {
+    "environment": "環境",
+    "totalPassed": "通過總數",
+    "totalFailed": "失敗總數",
+    "reportAvailableByLink": "測試報告鏈接"
+  }
+}

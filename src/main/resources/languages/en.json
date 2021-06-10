@@ -1,0 +1,8 @@
+{
+  "phrases": {
+    "environment": "Environment",
+    "totalPassed": "Total passed",
+    "totalFailed": "Total failed",
+    "reportAvailableByLink": "Report available by link"
+  }
+}
