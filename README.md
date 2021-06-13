@@ -23,43 +23,95 @@
 <h6>CommandLine options</h6>
 All keys should be used with `-D`: <br/> 
 
-| key | telegram | slack | email | mattermost | description |
-:----:|:--------:|:-----:|:-----:|:----------:|:------------:
-messenger            | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | telegram (default), slack, email, mattermost 
-bot.token            | :heavy_check_mark: | :heavy_check_mark: | :x:                | :heavy_check_mark: | Bot/app secret token
-chat.id              | :heavy_check_mark: | :heavy_check_mark: | :x:                | :heavy_check_mark: | Chat/channel id
-reply.to.message.id  | :heavy_check_mark: | // todo            | :x:                | :heavy_check_mark: | Message id for reply
-mail.host            | :x:                | :x:                | :heavy_check_mark: | :x:                | Smtp server
-mail.port            | :x:                | :x:                | :heavy_check_mark: | :x:                | Smtp port
-mail.username        | :x:                | :x:                | :heavy_check_mark: | :x:                | From email username
-mail.password        | :x:                | :x:                | :heavy_check_mark: | :x:                | From email password
-mail.to              | :x:                | :x:                | :heavy_check_mark: | :x:                | To email list - a@a.a, b@b.b
-mattermost.api.url   | :x:                | :x:                | :x:                | :heavy_check_mark: | Mattermost api url
-project.name         | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | Project name
-build.launch.name    | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | Build launch name
-build.env            | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | Build environment
-build.report.link    | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | Build report link
-lang                 | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | Supported languages: en, fr, ru, ua
-enable.chart         | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | Enable/disable PieChart diagram (false by default)
-allure.report.folder | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | Set allure report folder
+| key | description | 
+|:---:| :---------: |
+| job | Jenkins Job Name |
+| env | Environment (Test, Prod, etc.) name |
+| reportLink | Jenkins Build URL |
+| config.file | Path to JSON-config file |
 
 ```
 java  \
-"-Dmessenger=${MESSENGER}" \
-"-Dchat.id=${CHAT}" \
-"-Dbot.token=${SECRET}" \
-"-Dmail.host=${SMTP_SERVER}" \
-"-Dmail.port=${SMTP_PORT}" \
-"-Dmail.username=${EMAIL_USER}" \
-"-Dmail.password=${EMAIL_PASSWORD}" \
-"-Dmail.to=${EMAIL}" \
-"-Dmattermost.api.url=${MATTERMOST_API_URL}" \
-"-Dproject.name=${JOB_BASE_NAME}" \
-"-Dbuild.launch.name=${SOME_LAUNCH_NAME}" \
-"-Dbuild.env=${ENVIRONMENT}" \
-"-Dbuild.report.link=${BUILD_URL}" \
-"-Dlang=${LANGUAGE}" \
-"-Denable.chart=${CHART}" \
-"-Dallure.report.folder=./allure-report/" \
--jar allure-notifications-2.2.1.jar
+"-Djob=${JOB_BASE_NAME}" \
+"-Dconfig.file=${PATH_TO_FILE}" \
+"-Denv=${ENVIRONMENT}" \
+"-DreportLink=${BUILD_URL}" \
+-jar allure-notifications-3.0.0.jar
+```
+
+<h6>Config file structure</h6>
+Here you can find config file structure for lib configuration.
+
+```json
+{
+  "app": {
+    "bot": {
+      "token": "",
+      "chat": "",
+      "replyTo": ""
+    },
+    "base": {
+      "lang": "",
+      "messenger": "",
+      "allureFolder": "",
+      "mattermostUrl": "",
+      "chart": false,
+      "chartName": "",
+      "project": ""
+    },
+    "mail": {
+      "host": "",
+      "port": "",
+      "username": "",
+      "password": "",
+      "enableSSL": false,
+      "from": "",
+      "recipient": ""
+    },
+    "proxy": {
+      "host": "",
+      "port": 0,
+      "username": "",
+      "password": ""
+    }
+  }
+}
+```
+You only need to feel needed options in `bot`, `base`, `mail` or `proxy` section. Please, be careful, `lang` and `messenger` fields are required!
+
+Example for Telegram messenger:
+```json
+{
+  "app": {
+    "bot": {
+      "token": "asdhsdgfjsdfgFgjhg4831)@",
+      "chat": "-1",
+      "replyTo": ""
+    },
+    "base": {
+      "lang": "en",
+      "messenger": "telegram",
+      "allureFolder": "src/test/",
+      "mattermostUrl": "",
+      "chart": true,
+      "chartName": "",
+      "project": ""
+    },
+    "mail": {
+      "host": "",
+      "port": "",
+      "username": "",
+      "password": "",
+      "enableSSL": false,
+      "from": "",
+      "recipient": ""
+    },
+    "proxy": {
+      "host": "",
+      "port": 0,
+      "username": "",
+      "password": ""
+    }
+  }
+}
 ```

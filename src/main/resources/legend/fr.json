@@ -1,0 +1,9 @@
+{
+  "legend": {
+    "passed": "passé",
+    "failed": "manqué",
+    "broken": "cassé",
+    "unknown": "inconnu",
+    "skipped": "ignoré"
+  }
+}
