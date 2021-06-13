@@ -1,8 +1,16 @@
 {
   "phrases": {
+    "results": "Результати",
     "environment": "Середовище",
+    "duration": "Тривалість",
+    "totalScenarios": "Усього сценаріїв",
     "totalPassed": "Усього успішних тестів",
     "totalFailed": "Усього невдалих тестів",
+    "totalBroken": "Усього зламаних тестів",
+    "totalUnknown": "Усього невідомих тестів",
+    "totalSkipped": "Усього невідомих тестів",
+    "ofPassedTests": "успішних тестів",
+    "ofFailedTests": "невдалих тестів",
     "reportAvailableByLink": "Звіт доступний за посиланням"
   }
 }

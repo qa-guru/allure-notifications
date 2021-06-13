@@ -55,9 +55,16 @@ public class Letter {
         return this;
     }
 
-    public Letter body(final String content) {
-        LOG.info("Setting body...");
+    public Letter text(final String content) {
+        LOG.info("Setting text...");
         body.addText(content);
+        LOG.info("Done.");
+        return this;
+    }
+
+    public Letter image(final String imagePath) {
+        LOG.info("Setting image...");
+        body.addImage(imagePath);
         LOG.info("Done.");
         return this;
     }

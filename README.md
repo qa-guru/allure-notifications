@@ -54,7 +54,10 @@ Here you can find config file structure for lib configuration.
       "lang": "",
       "messenger": "",
       "allureFolder": "",
-      "mattermostUrl": ""
+      "mattermostUrl": "",
+      "chart": false,
+      "chartName": "",
+      "project": ""
     },
     "mail": {
       "host": "",
@@ -64,11 +67,17 @@ Here you can find config file structure for lib configuration.
       "enableSSL": false,
       "from": "",
       "recipient": ""
+    },
+    "proxy": {
+      "host": "",
+      "port": 0,
+      "username": "",
+      "password": ""
     }
   }
 }
 ```
-You only need to feel needed options in `bot`, `base` or `mail` section. Please, be careful, `lang` and `messenger` fields are required!
+You only need to feel needed options in `bot`, `base`, `mail` or `proxy` section. Please, be careful, `lang` and `messenger` fields are required!
 
 Example for Telegram messenger:
 ```json
@@ -83,15 +92,25 @@ Example for Telegram messenger:
       "lang": "en",
       "messenger": "telegram",
       "allureFolder": "src/test/",
-      "mattermostUrl": ""
+      "mattermostUrl": "",
+      "chart": true,
+      "chartName": "",
+      "project": ""
     },
     "mail": {
       "host": "",
       "port": "",
       "username": "",
       "password": "",
-      "enableSSL": true,
+      "enableSSL": false,
+      "from": "",
       "recipient": ""
+    },
+    "proxy": {
+      "host": "",
+      "port": 0,
+      "username": "",
+      "password": ""
     }
   }
 }

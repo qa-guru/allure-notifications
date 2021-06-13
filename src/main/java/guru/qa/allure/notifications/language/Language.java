@@ -1,13 +1,9 @@
-package guru.qa.allure.notifications.message;
+package guru.qa.allure.notifications.language;
 
 import com.typesafe.config.Config;
 import com.typesafe.config.ConfigFactory;
 
 public class Language {
-    public enum Locale {
-        en, fr, ru, ua, cn, cnt
-    }
-
     private final Config config;
 
     public Language(final Locale locale) {

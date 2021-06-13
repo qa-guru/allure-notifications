@@ -17,7 +17,9 @@ dependencies {
             'com.sun.mail:javax.mail:1.6.2',
             'com.konghq:unirest-java:3.11.11',
             'org.freemarker:freemarker:2.3.31',
-            'com.typesafe:config:1.4.1'
+            'com.typesafe:config:1.4.1',
+            'org.knowm.xchart:xchart:3.5.2',
+            'com.jayway.jsonpath:json-path:2.5.0'
     )
 }
 

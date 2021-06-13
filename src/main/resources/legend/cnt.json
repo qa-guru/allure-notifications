@@ -1,0 +1,9 @@
+{
+  "legend": {
+    "passed": "通過",
+    "failed": "不通過",
+    "broken": "損壞",
+    "unknown": "未知",
+    "skipped": "跳過"
+  }
+}

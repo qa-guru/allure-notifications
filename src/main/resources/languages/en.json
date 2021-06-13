@@ -1,8 +1,16 @@
 {
   "phrases": {
+    "results": "Results",
     "environment": "Environment",
+    "duration": "Duration",
+    "totalScenarios": "Total scenarios",
     "totalPassed": "Total passed",
     "totalFailed": "Total failed",
+    "totalBroken": "Total broken",
+    "totalUnknown": "Total unknown",
+    "totalSkipped": "Total skipped",
+    "ofPassedTests": "of passed tests",
+    "ofFailedTests": "of failed tests",
     "reportAvailableByLink": "Report available by link"
   }
 }

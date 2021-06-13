@@ -1,9 +1,6 @@
 package guru.qa.allure.notifications.journal;
 
-import guru.qa.allure.notifications.config.helpers.Base;
-import guru.qa.allure.notifications.config.helpers.Bot;
-import guru.qa.allure.notifications.config.helpers.Build;
-import guru.qa.allure.notifications.config.helpers.Mail;
+import guru.qa.allure.notifications.config.helpers.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -34,8 +31,11 @@ public class ApplicationJournal {
                         + "\nLANG: {}"
                         + "\nMESSENGER: {}"
                         + "\nALLURE FOLDER: {}"
-                        + "\nMATTERMOST URL: {}",
-                Base.lang(), Base.messenger(), Base.allureFolder(), Base.mattermostUrl());
+                        + "\nMATTERMOST URL: {}"
+                        + "\nIS CHART ENABLED: {}"
+                        + "\nCHART NAME: {}",
+                Base.lang(), Base.messenger(), Base.allureFolder(),
+                Base.mattermostUrl(), Base.isChartEnabled(), Base.chartName());
     }
 
     public static void mailInfo() {
@@ -47,5 +47,15 @@ public class ApplicationJournal {
                         + "\nFROM: {}"
                         + "\nTO: {}",
                 Mail.host(), Mail.port(), Mail.enableSSL(), Mail.from(), Mail.recipient());
+    }
+
+    public static void proxyInfo() {
+        LOG.info(
+                "\n========PROXY INFO========"
+                        + "\nHOST: {}"
+                        + "\nPORT: {}"
+                        + "\nUSERNAME: {}"
+                        + "\nPASSWORD: {}",
+                Proxy.host(), Proxy.port(), Proxy.username(), Proxy.password());
     }
 }

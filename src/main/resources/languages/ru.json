@@ -1,8 +1,16 @@
 {
   "phrases": {
+    "results": "Результаты",
     "environment": "Рабочее окружение",
+    "duration": "Продолжительность",
+    "totalScenarios": "Всего сценариев",
     "totalPassed": "Всего успешных тестов",
     "totalFailed": "Всего упавших тестов",
+    "totalBroken": "Всего сломанных тестов",
+    "totalUnknown": "Всего неизвестных тестов",
+    "totalSkipped": "Всего пропущенных тестов",
+    "ofPassedTests": "прошедших тестов",
+    "ofFailedTests": "упавших тестов",
     "reportAvailableByLink": "Отчет доступен по ссылке"
   }
 }

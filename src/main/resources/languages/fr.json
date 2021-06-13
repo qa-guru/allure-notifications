@@ -1,8 +1,16 @@
 {
   "phrases": {
+    "results": "Résultats",
     "environment": "Environnement",
+    "duration": "Durée",
+    "totalScenarios": "Scénarios totaux",
     "totalPassed": "Total passé",
     "totalFailed": "Total a échoué",
+    "totalBroken": "Total cassé",
+    "totalUnknown": "Total inconnu",
+    "totalSkipped": "Total ignoré",
+    "ofPassedTests": "de test réussi",
+    "ofFailedTests": "d'échecs de tests",
     "reportAvailableByLink": "Rapport disponible par lien"
   }
 }

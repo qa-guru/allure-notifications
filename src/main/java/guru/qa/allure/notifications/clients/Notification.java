@@ -13,7 +13,11 @@ public class Notification {
         final Notifier notifier = ClientFactory
                 .initClientFor(valueOf(Base.messenger()));
         LOG.info("Sending message...");
-        notifier.sendText();
+        if (Base.isChartEnabled()) {
+            notifier.sendPhoto();
+        } else {
+            notifier.sendText();
+        }
         LOG.info("Done.");
     }
 }
