@@ -48,6 +48,6 @@ public class Base {
                 .of(ApplicationConfig.config
                         .getString("app.base.project"))
                 .filter(s -> !s.isEmpty())
-                .orElse(Build.job());
+                .orElse(Build.projectName());
     }
 }

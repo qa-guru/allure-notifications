@@ -7,18 +7,6 @@ import java.util.Optional;
 
 public class Build {
     /**
-     * <p>Получает значение по ключу <code>job</code></p>
-     * @return значение, если имеется
-     * @throws ArgumentNotProvidedException если параметр не указан или null
-     */
-    public static String job() {
-        return Optional
-                .ofNullable(BuildConfig.config.getString("job"))
-                .orElseThrow(() ->
-                        new ArgumentNotProvidedException("job"));
-    }
-
-    /**
      * <p>Получает значение по ключу <code>env</code></p>
      * @return значение, если имеется
      * @throws ArgumentNotProvidedException если параметр не указан или null
@@ -42,5 +30,12 @@ public class Build {
                         new ArgumentNotProvidedException("reportLink"));
 
         return link + "allure";
+    }
+
+    public static String projectName() {
+        return Optional
+                .ofNullable(BuildConfig.config.getString("projectName"))
+                .orElseThrow(() ->
+                        new ArgumentNotProvidedException("projectName"));
     }
 }

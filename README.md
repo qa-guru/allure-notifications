@@ -25,18 +25,18 @@ All keys should be used with `-D`: <br/>
 
 | key | description | 
 |:---:| :---------: |
-| job | Jenkins Job Name |
+| projectName | Name of project |
 | env | Environment (Test, Prod, etc.) name |
 | reportLink | Jenkins Build URL |
 | config.file | Path to JSON-config file |
 
 ```
 java  \
-"-Djob=${JOB_BASE_NAME}" \
+"-DprojectName=${PROJECT_NAME}" \
 "-Dconfig.file=${PATH_TO_FILE}" \
 "-Denv=${ENVIRONMENT}" \
 "-DreportLink=${BUILD_URL}" \
--jar allure-notifications-3.0.0.jar
+-jar allure-notifications-3.0.1.jar
 ```
 
 <h6>Config file structure</h6>
