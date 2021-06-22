@@ -1,3 +1,4 @@
+<#compress>
 <b>${results}:</b>
     <b>${environment}:</b> ${env}
     <b>${duration}:</b> ${time}
@@ -10,3 +11,4 @@
     <#if passedPercentage != 0 ><b>% ${ofPassedTests}:</b> ${passedPercentage} </#if>
     <#if failedPercentage != 0 ><b>% ${ofFailedTests}:</b> ${failedPercentage} </#if>
     <b>${reportAvailableByLink}:</b> ${reportLink}
+</#compress>

@@ -3,7 +3,7 @@ plugins {
 }
 
 group 'allure.notifications'
-version '3.0.1'
+version '3.0.2'
 
 sourceCompatibility = 1.8
 
