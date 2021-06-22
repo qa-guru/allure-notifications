@@ -15,7 +15,7 @@ public class Email implements Notifier {
 
         letter.from(Mail.from())
                 .to(Mail.recipient())
-                .subject(Build.job())
+                .subject(Build.projectName())
                 .text(MessageText.html())
                 .send();
     }
@@ -28,7 +28,7 @@ public class Email implements Notifier {
 
         letter.from(Mail.from())
                 .to(Mail.recipient())
-                .subject(Build.job())
+                .subject(Build.projectName())
                 .text(message)
                 .image(String.format("./%s.png", Base.chartName()))
                 .send();

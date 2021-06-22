@@ -1,5 +1,4 @@
 <b>${results}:</b>
-    <b>Jenkins Job:</b> ${job}
     <b>${environment}:</b> ${env}
     <b>${duration}:</b> ${time}
     <b>${totalScenarios}:</b> ${total}

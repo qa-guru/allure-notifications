@@ -1,5 +1,4 @@
 *${results}:*
-    *Jenkins Job:* ${job}
     *${environment}:* ${env}
     *${duration}:* ${time}
     *${totalScenarios}:* ${total}

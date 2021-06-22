@@ -10,10 +10,10 @@ public class ApplicationJournal {
     public static void buildInfo() {
         LOG.info(
                 "\n========BUILD INFO========"
-                        + "\nJOB: {}"
+                        + "\nPROJECT: {}"
                         + "\nENV: {}"
                         + "\nREPORT LINK: {}",
-                Build.job(), Build.env(), Build.reportLink());
+                Build.projectName(), Build.env(), Build.reportLink());
     }
 
     public static void botInfo() {

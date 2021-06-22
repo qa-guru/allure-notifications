@@ -69,7 +69,6 @@ public class MessageData {
     private static Map<String, Object> build() {
         final Map<String, Object> buildInfo = new HashMap<>();
         LOG.info("Applying build data...");
-        buildInfo.put("job", Build.job());
         buildInfo.put("env", Build.env());
         buildInfo.put("reportLink", Build.reportLink());
         LOG.info("Done.");
