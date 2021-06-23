@@ -2,6 +2,7 @@ package guru.qa.allure.notifications.clients;
 
 import guru.qa.allure.notifications.clients.mail.Email;
 import guru.qa.allure.notifications.clients.mattermost.Mattermost;
+import guru.qa.allure.notifications.clients.skype.Skype;
 import guru.qa.allure.notifications.clients.slack.Slack;
 import guru.qa.allure.notifications.clients.telegram.Telegram;
 
@@ -17,6 +18,7 @@ public class ClientFactory {
         factory.put(Messenger.slack, Slack::new);
         factory.put(Messenger.email, Email::new);
         factory.put(Messenger.mattermost, Mattermost::new);
+        factory.put(Messenger.skype, Skype::new);
     }
 
     public static Notifier initClientFor(Messenger messenger) {

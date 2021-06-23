@@ -58,4 +58,21 @@ public class ApplicationJournal {
                         + "\nPASSWORD: {}",
                 Proxy.host(), Proxy.port(), Proxy.username(), Proxy.password());
     }
+
+    public static void skypeInfo() {
+        LOG.info(
+                "\n========SKYPE INFO========"
+                        + "\nAPP ID: {}"
+                        + "\nAPP SECRET: {}"
+                        + "\nSERVICE URL: {}"
+                        + "\nCONVERSATION ID: {}"
+                        + "\nBOT ID: {}"
+                        + "\nBOT NAME: {}",
+                SkypeSettings.appId(),
+                SkypeSettings.appSecret(),
+                SkypeSettings.serviceUrl(),
+                SkypeSettings.conversationId(),
+                SkypeSettings.botId(),
+                SkypeSettings.botName());
+    }
 }
