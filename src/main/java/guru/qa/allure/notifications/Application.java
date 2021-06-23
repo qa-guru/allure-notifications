@@ -23,6 +23,7 @@ public class Application {
         ApplicationJournal.baseInfo();
         ApplicationJournal.mailInfo();
         ApplicationJournal.proxyInfo();
+        ApplicationJournal.skypeInfo();
 
         Unirest.config()
                 .interceptor(new LogInterceptor());

@@ -16,7 +16,7 @@
 - [x] [Telegram config](https://github.com/qa-guru/allure-notifications/wiki/Telegram-configuration)
 - [x] [Slack config](https://github.com/qa-guru/allure-notifications/wiki/Slack-configuration)
 - [ ] [Email config](https://github.com/qa-guru/allure-notifications/wiki/Email-configuration)
-- [ ] [Skype config](https://github.com/qa-guru/allure-notifications/wiki/Skype-configuration)
+- [x] [Skype config](https://github.com/qa-guru/allure-notifications/wiki/Skype-Bot-Configuration)
 - [ ] [Mattermost config](https://github.com/qa-guru/allure-notifications/wiki/Skype-configuration)
 
 
@@ -73,6 +73,14 @@ Here you can find config file structure for lib configuration.
       "port": 0,
       "username": "",
       "password": ""
+    },
+    "skype": {
+      "appId": "",
+      "appSecret": "",
+      "serviceUrl": "",
+      "conversationId": "",
+      "botId": "",
+      "botName": ""
     }
   }
 }
@@ -111,6 +119,14 @@ Example for Telegram messenger:
       "port": 0,
       "username": "",
       "password": ""
+    },
+    "skype": {
+      "appId": "",
+      "appSecret": "",
+      "serviceUrl": "",
+      "conversationId": "",
+      "botId": "",
+      "botName": ""
     }
   }
 }

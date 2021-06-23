@@ -4,5 +4,6 @@ public enum Messenger {
     telegram,
     slack,
     email,
-    mattermost
+    mattermost,
+    skype
 }
