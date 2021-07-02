@@ -41,7 +41,7 @@ public class MessageData {
         phrases.put("totalUnknown", LANG.getPhrase("totalUnknown"));
         phrases.put("totalSkipped", LANG.getPhrase("totalSkipped"));
         phrases.put("ofPassedTests", LANG.getPhrase("ofPassedTests"));
-        phrases.put("ofFailedTests", LANG.getPhrase("ofPassedTests"));
+        phrases.put("ofFailedTests", LANG.getPhrase("ofFailedTests"));
         phrases.put("reportAvailableByLink", LANG.getPhrase("reportAvailableByLink"));
         LOG.info("Done.");
         return phrases;
