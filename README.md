@@ -8,8 +8,11 @@
 | Telegram | Slack |
 :-------------------------:|:-------------------------:
 ![shakal_screenshot](readme_images/telegram-en.png) | ![shakal_screenshot](readme_images/slack-en.png)
-| **Skype** | **Email** |
-`// todo` [#32](https://github.com/qa-guru/allure-notifications/issues/32) :nerd_face::computer: | ![shakal_screenshot](readme_images/email_en.png) 
+| **Mattermost** | **Email** |
+![shakal_screenshot](readme_images/mattermost-ru.png) | ![shakal_screenshot](readme_images/email_en.png) 
+| **Skype** |  |
+| `// todo` [#32](https://github.com/qa-guru/allure-notifications/issues/32) :nerd_face::computer: |  |
+
 
 <h6>How to:</h6>
 
@@ -17,7 +20,7 @@
 - [x] [Slack config](https://github.com/qa-guru/allure-notifications/wiki/Slack-configuration)
 - [ ] [Email config](https://github.com/qa-guru/allure-notifications/wiki/Email-configuration)
 - [x] [Skype config](https://github.com/qa-guru/allure-notifications/wiki/Skype-Bot-Configuration)
-- [ ] [Mattermost config](https://github.com/qa-guru/allure-notifications/wiki/Skype-configuration)
+- [x] [Mattermost config](https://github.com/qa-guru/allure-notifications/wiki/Skype-configuration)
 
 
 <h6>CommandLine options</h6>
