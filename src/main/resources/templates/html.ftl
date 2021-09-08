@@ -1,6 +1,7 @@
 <#compress>
 <b>${results}:</b>
     <b>${environment}:</b> ${env}
+    <b>${comment}:</b> ${comm}
     <b>${duration}:</b> ${time}
     <b>${totalScenarios}:</b> ${total}
     <#if passed != 0 ><b>${totalPassed}:</b> ${passed} </#if>

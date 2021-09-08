@@ -10,8 +10,8 @@
 ![shakal_screenshot](readme_images/telegram-en.png) | ![shakal_screenshot](readme_images/slack-en.png)
 | **Mattermost** | **Email** |
 ![shakal_screenshot](readme_images/mattermost-ru.png) | ![shakal_screenshot](readme_images/email_en.png) 
-| **Skype** |  |
-| `// todo` [#32](https://github.com/qa-guru/allure-notifications/issues/32) :nerd_face::computer: |  |
+| **Skype** | **Icq**  |
+| Done | Wat? lol |
 
 
 <h6>How to:</h6>
@@ -30,15 +30,17 @@ All keys should be used with `-D`: <br/>
 |:---:| :---------: |
 | projectName | Name of project |
 | env | Environment (Test, Prod, etc.) name |
+| comment | Any comment here |
 | reportLink | Jenkins Build URL |
 | config.file | Path to JSON-config file |
 
 ```
 java  \
 "-DprojectName=${PROJECT_NAME}" \
-"-Dconfig.file=${PATH_TO_FILE}" \
 "-Denv=${ENVIRONMENT}" \
 "-DreportLink=${BUILD_URL}" \
+"-Dcomment=Any comment here" \
+"-Dconfig.file=${PATH_TO_FILE}" \
 -jar allure-notifications-3.0.1.jar
 ```
 
@@ -57,7 +59,7 @@ Here you can find config file structure for lib configuration.
       "lang": "",
       "messenger": "",
       "allureFolder": "",
-      "mattermostUrl": "",
+      "allureLinkPath": "",
       "chart": false,
       "chartName": "",
       "project": ""
@@ -70,6 +72,9 @@ Here you can find config file structure for lib configuration.
       "enableSSL": false,
       "from": "",
       "recipient": ""
+    },
+    "mattermost": {
+      "url": ""
     },
     "proxy": {
       "host": "",
@@ -103,7 +108,7 @@ Example for Telegram messenger:
       "lang": "en",
       "messenger": "telegram",
       "allureFolder": "src/test/",
-      "mattermostUrl": "",
+      "allureLinkPath": "allure",
       "chart": true,
       "chartName": "",
       "project": ""
@@ -116,6 +121,9 @@ Example for Telegram messenger:
       "enableSSL": false,
       "from": "",
       "recipient": ""
+    },
+    "mattermost": {
+      "url": ""
     },
     "proxy": {
       "host": "",

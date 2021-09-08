@@ -22,6 +22,7 @@ public class Application {
         ApplicationJournal.botInfo();
         ApplicationJournal.baseInfo();
         ApplicationJournal.mailInfo();
+        ApplicationJournal.mattermostInfo();
         ApplicationJournal.proxyInfo();
         ApplicationJournal.skypeInfo();
 

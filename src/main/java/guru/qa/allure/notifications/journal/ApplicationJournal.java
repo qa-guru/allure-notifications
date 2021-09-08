@@ -12,8 +12,9 @@ public class ApplicationJournal {
                 "\n========BUILD INFO========"
                         + "\nPROJECT: {}"
                         + "\nENV: {}"
+                        + "\nCOMMENT: {}"
                         + "\nREPORT LINK: {}",
-                Build.projectName(), Build.env(), Build.reportLink());
+                Build.projectName(), Build.env(), Build.comment(), Build.reportLink());
     }
 
     public static void botInfo() {
@@ -31,11 +32,12 @@ public class ApplicationJournal {
                         + "\nLANG: {}"
                         + "\nMESSENGER: {}"
                         + "\nALLURE FOLDER: {}"
-                        + "\nMATTERMOST URL: {}"
+                        + "\nALLURE LINK PATH: {}"
                         + "\nIS CHART ENABLED: {}"
                         + "\nCHART NAME: {}",
-                Base.lang(), Base.messenger(), Base.allureFolder(),
-                Base.mattermostUrl(), Base.isChartEnabled(), Base.chartName());
+                Base.lang(), Base.messenger(),
+                Base.allureFolder(), Base.allureLinkPath(),
+                Base.isChartEnabled(), Base.chartName());
     }
 
     public static void mailInfo() {
@@ -47,6 +49,14 @@ public class ApplicationJournal {
                         + "\nFROM: {}"
                         + "\nTO: {}",
                 Mail.host(), Mail.port(), Mail.enableSSL(), Mail.from(), Mail.recipient());
+    }
+
+
+    public static void mattermostInfo() {
+        LOG.info(
+                "\n========MATTERMOST INFO========"
+                        + "\nMATTERMOST URL: {}",
+                Mattermost.url());
     }
 
     public static void proxyInfo() {

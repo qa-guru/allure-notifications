@@ -2,6 +2,7 @@
   "phrases": {
     "results": "Результати",
     "environment": "Середовище",
+    "comment": "Коментар",
     "duration": "Тривалість",
     "totalScenarios": "Усього сценаріїв",
     "totalPassed": "Усього успішних тестів",

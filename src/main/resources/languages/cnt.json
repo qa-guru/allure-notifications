@@ -2,6 +2,7 @@
   "phrases": {
     "results": "測試結果",
     "environment": "環境",
+    "comment": "Comment",
     "duration": "持續時間",
     "totalScenarios": "腳本總數",
     "totalPassed": "通過總數",
