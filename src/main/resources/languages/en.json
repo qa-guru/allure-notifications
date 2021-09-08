@@ -2,6 +2,7 @@
   "phrases": {
     "results": "Results",
     "environment": "Environment",
+    "comment": "Comment",
     "duration": "Duration",
     "totalScenarios": "Total scenarios",
     "totalPassed": "Total passed",

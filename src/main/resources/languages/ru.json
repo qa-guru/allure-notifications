@@ -2,6 +2,7 @@
   "phrases": {
     "results": "Результаты",
     "environment": "Рабочее окружение",
+    "comment": "Комментарий",
     "duration": "Продолжительность",
     "totalScenarios": "Всего сценариев",
     "totalPassed": "Всего успешных тестов",

@@ -27,8 +27,8 @@ public class Base {
         return ApplicationConfig.config.getString("app.base.allureFolder");
     }
 
-    public static String mattermostUrl() {
-        return ApplicationConfig.config.getString("app.base.mattermostUrl");
+    public static String allureLinkPath() {
+        return ApplicationConfig.config.getString("app.base.allureLinkPath");
     }
 
     public static Boolean isChartEnabled() {

@@ -6,6 +6,14 @@ import guru.qa.allure.notifications.config.BuildConfig;
 import java.util.Optional;
 
 public class Build {
+
+    public static String projectName() {
+        return Optional
+                .ofNullable(BuildConfig.config.getString("projectName"))
+                .orElseThrow(() ->
+                        new ArgumentNotProvidedException("projectName"));
+    }
+
     /**
      * <p>Получает значение по ключу <code>env</code></p>
      * @return значение, если имеется
@@ -29,13 +37,18 @@ public class Build {
                 .orElseThrow(() ->
                         new ArgumentNotProvidedException("reportLink"));
 
-        return link + "allure";
+        return link + Base.allureLinkPath();
     }
 
-    public static String projectName() {
+    /**
+     * <p>Получает значение по ключу <code>comm</code></p>
+     * @return значение, если имеется
+     * @throws ArgumentNotProvidedException если параметр не указан или null
+     */
+    public static String comment() {
         return Optional
-                .ofNullable(BuildConfig.config.getString("projectName"))
+                .ofNullable(BuildConfig.config.getString("comm"))
                 .orElseThrow(() ->
-                        new ArgumentNotProvidedException("projectName"));
+                        new ArgumentNotProvidedException("comm"));
     }
 }
