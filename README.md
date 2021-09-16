@@ -39,9 +39,9 @@ java  \
 "-DprojectName=${PROJECT_NAME}" \
 "-Denv=${ENVIRONMENT}" \
 "-DreportLink=${BUILD_URL}" \
-"-Dcomment=Any comment here" \
+"-Dcomm=Any comment here" \
 "-Dconfig.file=${PATH_TO_FILE}" \
--jar allure-notifications-3.0.1.jar
+-jar allure-notifications-3.1.2.jar
 ```
 
 <h6>Config file structure</h6>
