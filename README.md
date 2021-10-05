@@ -107,7 +107,7 @@ Example for Telegram messenger:
     "base": {
       "lang": "en",
       "messenger": "telegram",
-      "allureFolder": "src/test/",
+      "allureFolder": "build/allure-report/",
       "allureLinkPath": "allure",
       "chart": true,
       "chartName": "",
