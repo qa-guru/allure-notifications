@@ -28,8 +28,9 @@ public class Build {
                 .ofNullable(BuildConfig.config.getString("reportLink"))
                 .orElseThrow(() ->
                         new ArgumentNotProvidedException("reportLink"));
-
-        return link + "allure";
+        return link.endsWith("/")
+                ? link + "allure"
+                : link;
     }
 
     public static String projectName() {
