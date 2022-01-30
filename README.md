@@ -93,7 +93,7 @@ Here you can find config file structure for lib configuration.
   }
 }
 ```
-You only need to feel needed options in `bot`, `base`, `mail` or `proxy` section. Please, be careful, `lang` and `messenger` fields are required!
+You only need to fill needed options in `bot`, `base`, `mail` or `proxy` section. Please, be careful, `lang` and `messenger` fields are required!
 
 Example for Telegram messenger:
 ```json
