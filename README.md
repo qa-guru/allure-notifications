@@ -35,7 +35,7 @@ All keys should be used with `-D`: <br/>
 | config.file | Path to JSON-config file |
 
 ```
-java  \
+java \
 "-DprojectName=${PROJECT_NAME}" \
 "-Denv=${ENVIRONMENT}" \
 "-DreportLink=${BUILD_URL}" \
