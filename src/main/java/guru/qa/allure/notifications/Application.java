@@ -1,7 +1,6 @@
 package guru.qa.allure.notifications;
 
 import guru.qa.allure.notifications.clients.Notification;
-import guru.qa.allure.notifications.config.helpers.Proxy;
 import guru.qa.allure.notifications.journal.ApplicationJournal;
 import guru.qa.allure.notifications.util.LogInterceptor;
 import guru.qa.allure.notifications.util.ProxyManager;
