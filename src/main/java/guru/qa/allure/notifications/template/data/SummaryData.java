@@ -39,6 +39,6 @@ public class SummaryData implements TemplateData {
                 new Percentage().eval(summary.statistic().failed(),
                         summary.statistic().total()));
         LOG.info("Summary data: {}", info);
-        return null;
+        return info;
     }
 }
