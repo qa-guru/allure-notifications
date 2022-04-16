@@ -36,6 +36,6 @@ public class PhrasesData implements TemplateData {
         info.put("ofPassedTests", phrases.scenario().percentOfPassedTests());
         info.put("ofFailedTests", phrases.scenario().percentOfFailedTests());
         LOG.info("Phrases data: {}", info);
-        return null;
+        return info;
     }
 }
