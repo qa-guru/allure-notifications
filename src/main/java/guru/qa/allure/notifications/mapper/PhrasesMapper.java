@@ -6,6 +6,9 @@ import guru.qa.allure.notifications.model.phrases.Phrases;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.net.URISyntaxException;
+import java.nio.file.Paths;
+
 /**
  * @author kadehar
  * @since 4.0
@@ -18,7 +21,17 @@ public class PhrasesMapper {
     public Phrases map() {
         String lang = ApplicationConfig.newInstance()
                 .readConfig().base().language() + ".json";
-        String fullPath = PhrasesMapper.class.getClassLoader().getResource("phrases/" + lang).toString();
+        String fullPath = "";
+        try {
+            fullPath = Paths.get(
+                    getClass().getProtectionDomain().getCodeSource().getLocation().toURI()
+            ).resolve(
+                    Paths.get("phrases/" + lang)
+            ).toString();
+        } catch (URISyntaxException e) {
+            e.printStackTrace();
+            System.exit(1);
+        }
         LOG.info("Mapping {} to Phrases object", fullPath);
         return new JSON().parse(fullPath, Phrases.class);
     }
