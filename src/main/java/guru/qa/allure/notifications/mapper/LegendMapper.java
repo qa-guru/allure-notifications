@@ -6,6 +6,9 @@ import guru.qa.allure.notifications.model.legend.Legend;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.net.URISyntaxException;
+import java.nio.file.Paths;
+
 /**
  * @author kadehar
  * @since 4.0
@@ -18,7 +21,17 @@ public class LegendMapper {
     public Legend map() {
         String lang = ApplicationConfig.newInstance()
                 .readConfig().base().language() + ".json";
-        String fullPath = LegendMapper.class.getClassLoader().getResource("legend/" + lang).toString();
+        String fullPath = "";
+        try {
+            fullPath = Paths.get(
+                    getClass().getProtectionDomain().getCodeSource().getLocation().toURI()
+            ).resolve(
+                    Paths.get("legend/" + lang)
+            ).toString();
+        } catch (URISyntaxException e) {
+            e.printStackTrace();
+            System.exit(1);
+        }
         LOG.info("Mapping {} to Legend object", fullPath);
         return new JSON().parse(fullPath, Legend.class);
     }
