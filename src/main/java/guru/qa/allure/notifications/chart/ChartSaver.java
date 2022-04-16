@@ -1,6 +1,5 @@
 package guru.qa.allure.notifications.chart;
 
-import guru.qa.allure.notifications.config.helpers.Base;
 import org.knowm.xchart.BitmapEncoder;
 import org.knowm.xchart.PieChart;
 import org.slf4j.Logger;
@@ -14,7 +13,7 @@ public class ChartSaver {
     private static final Logger LOG = LoggerFactory.getLogger("Chart Saver");
 
     public static void saveChart(PieChart chart) {
-        final String name = Base.chartName();
+        final String name = "chart";
         try {
             LOG.info("Trying to save chart as {}.png...", name);
             BitmapEncoder.saveBitmap(chart, name, PNG);

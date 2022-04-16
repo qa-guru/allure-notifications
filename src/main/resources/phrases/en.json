@@ -1,0 +1,17 @@
+{
+  "results": "Results",
+  "environment": "Environment",
+  "comment": "Comment",
+  "reportAvailableByLink": "Report available by link",
+  "scenario": {
+    "duration": "Duration",
+    "totalScenarios": "Total scenarios",
+    "totalPassed": "Total passed",
+    "totalFailed": "Total failed",
+    "totalBroken": "Total broken",
+    "totalUnknown": "Total unknown",
+    "totalSkipped": "Total skipped",
+    "ofPassedTests": "of passed tests",
+    "ofFailedTests": "of failed tests"
+  }
+}

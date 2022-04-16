@@ -1,0 +1,17 @@
+{
+  "results": "Результати",
+  "environment": "Середовище",
+  "comment": "Коментар",
+  "reportAvailableByLink": "Звіт доступний за посиланням",
+  "scenario": {
+    "duration": "Тривалість",
+    "totalScenarios": "Усього сценаріїв",
+    "totalPassed": "Усього успішних тестів",
+    "totalFailed": "Усього невдалих тестів",
+    "totalBroken": "Усього зламаних тестів",
+    "totalUnknown": "Усього невідомих тестів",
+    "totalSkipped": "Всього пропущених тестів",
+    "ofPassedTests": "успішних тестів",
+    "ofFailedTests": "невдалих тестів"
+  }
+}

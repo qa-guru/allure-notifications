@@ -1,0 +1,17 @@
+{
+  "results": "Результаты",
+  "environment": "Рабочее окружение",
+  "comment": "Комментарий",
+  "reportAvailableByLink": "Отчет доступен по ссылке",
+  "scenario": {
+    "duration": "Продолжительность",
+    "totalScenarios": "Всего сценариев",
+    "totalPassed": "Всего успешных тестов",
+    "totalFailed": "Всего упавших тестов",
+    "totalBroken": "Всего сломанных тестов",
+    "totalUnknown": "Всего неизвестных тестов",
+    "totalSkipped": "Всего пропущенных тестов",
+    "ofPassedTests": "прошедших тестов",
+    "ofFailedTests": "упавших тестов"
+  }
+}

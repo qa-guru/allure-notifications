@@ -1,6 +1,6 @@
 package guru.qa.allure.notifications.chart;
 
-import guru.qa.allure.notifications.config.helpers.Base;
+import guru.qa.allure.notifications.config.ApplicationConfig;
 import org.knowm.xchart.PieChart;
 import org.knowm.xchart.PieChartBuilder;
 import org.slf4j.Logger;
@@ -10,7 +10,8 @@ public class ChartBuilder {
     private static final Logger LOG = LoggerFactory.getLogger("Chart Builder");
 
     public static PieChart createBaseChart() {
-        final String title = Base.projectName();
+        final String title = ApplicationConfig.newInstance().readConfig()
+                .base().project();
         LOG.info("Creating chart with title {}...", title);
         PieChart chart = new PieChartBuilder()
                 .title(title)
