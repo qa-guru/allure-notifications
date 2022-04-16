@@ -3,7 +3,7 @@ plugins {
 }
 
 group 'allure.notifications'
-version '3.1.2'
+version '4.0'
 
 sourceCompatibility = 1.8
 
@@ -12,15 +12,22 @@ repositories {
 }
 
 dependencies {
+    def slf4j_version = "1.7.36"
+    def javax_mail_version = "1.6.2"
+    def unirest_version = "3.13.7"
+    def freemarker_version = "2.3.31"
+    def xchart_version = "3.5.2"
+    def jsonpath_version = "2.7.0"
+    def commons_io_version = "2.10.0"
+
     compile(
-            'org.slf4j:slf4j-log4j12:1.7.30',
-            'com.sun.mail:javax.mail:1.6.2',
-            'com.konghq:unirest-java:3.11.11',
-            'org.freemarker:freemarker:2.3.31',
-            'com.typesafe:config:1.4.1',
-            'org.knowm.xchart:xchart:3.5.2',
-            'com.jayway.jsonpath:json-path:2.5.0',
-            'commons-io:commons-io:2.10.0'
+            "org.slf4j:slf4j-log4j12:$slf4j_version",
+            "com.sun.mail:javax.mail:$javax_mail_version",
+            "com.konghq:unirest-java:$unirest_version",
+            "org.freemarker:freemarker:$freemarker_version",
+            "org.knowm.xchart:xchart:$xchart_version",
+            "com.jayway.jsonpath:json-path:$jsonpath_version",
+            "commons-io:commons-io:$commons_io_version"
     )
 }
 

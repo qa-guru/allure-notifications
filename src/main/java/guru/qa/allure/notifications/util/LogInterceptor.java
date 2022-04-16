@@ -1,14 +1,16 @@
 package guru.qa.allure.notifications.util;
 
+import guru.qa.allure.notifications.json.JSON;
 import kong.unirest.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static guru.qa.allure.notifications.clients.Headers.URL_ENCODED;
-import static guru.qa.allure.notifications.util.JsonUtil.prettyPrint;
+import static guru.qa.allure.notifications.config.enums.Headers.URL_ENCODED;
 
 public class LogInterceptor implements Interceptor {
-    private final Logger log = LoggerFactory.getLogger("Client");
+    private final Logger log =
+            LoggerFactory.getLogger(LogInterceptor.class);
+    private final JSON json = new JSON();
 
     @Override
     public void onRequest(HttpRequest<?> request, Config config) {
@@ -21,7 +23,7 @@ public class LogInterceptor implements Interceptor {
     public void onResponse(HttpResponse<?> response, HttpRequestSummary request, Config config) {
         log.info("\n===RESPONSE===\nSTATUS CODE: {}\nBODY: \n{}",
                 response.getStatus(),
-                prettyPrint(response.getBody().toString()));
+                json.prettyPrint(response.getBody().toString()));
     }
 
     private void logRequestBody(Body body, Headers headers) {
@@ -33,6 +35,6 @@ public class LogInterceptor implements Interceptor {
             log.info("BODY: \n{}", body.uniPart());
             return;
         }
-        log.info("BODY: \n{}", prettyPrint(body.uniPart().toString()));
+        log.info("BODY: \n{}", json.prettyPrint(body.uniPart().toString()));
     }
 }

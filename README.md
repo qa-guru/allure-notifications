@@ -28,19 +28,11 @@ All keys should be used with `-D`: <br/>
 
 | key | description | 
 |:---:| :---------: |
-| projectName | Name of project |
-| env | Environment (Test, Prod, etc.) name |
-| comment | Any comment here |
-| reportLink | Jenkins Build URL |
-| config.file | Path to JSON-config file |
+| configFile | Path to JSON-config file |
 
 ```
 java \
-"-DprojectName=${PROJECT_NAME}" \
-"-Denv=${ENVIRONMENT}" \
-"-DreportLink=${BUILD_URL}" \
-"-Dcomm=Any comment here" \
-"-Dconfig.file=${PATH_TO_FILE}" \
+"-DconfigFile=${PATH_TO_FILE}" \
 -jar allure-notifications-3.1.2.jar
 ```
 
@@ -49,47 +41,53 @@ Here you can find config file structure for lib configuration.
 
 ```json
 {
-  "app": {
-    "bot": {
-      "token": "",
-      "chat": "",
-      "replyTo": ""
-    },
-    "base": {
-      "lang": "",
-      "messenger": "",
-      "allureFolder": "",
-      "allureLinkPath": "",
-      "chart": false,
-      "chartName": "",
-      "project": ""
-    },
-    "mail": {
-      "host": "",
-      "port": "",
-      "username": "",
-      "password": "",
-      "enableSSL": false,
-      "from": "",
-      "recipient": ""
-    },
-    "mattermost": {
-      "url": ""
-    },
-    "proxy": {
-      "host": "",
-      "port": 0,
-      "username": "",
-      "password": ""
-    },
-    "skype": {
-      "appId": "",
-      "appSecret": "",
-      "serviceUrl": "",
-      "conversationId": "",
-      "botId": "",
-      "botName": ""
-    }
+  "base": {
+    "project": "",
+    "environment": "",
+    "comment": "",
+    "reportLink": "",
+    "language": "ru",
+    "messenger": "telegram",
+    "allureFolder": "",
+    "enableChart": false
+  },
+  "telegram": {
+    "token": "",
+    "chat": "",
+    "replyTo": ""
+  },
+  "slack": {
+    "token": "",
+    "chat": "",
+    "replyTo": ""
+  },
+  "mattermost": {
+    "url": "",
+    "token": "",
+    "chat": ""
+  },
+  "skype": {
+    "appId": "",
+    "appSecret": "",
+    "serviceUrl": "",
+    "conversationId": "",
+    "botId": "",
+    "botName": ""
+  },
+  "mail": {
+    "host": "",
+    "port": "",
+    "username": "",
+    "password": "",
+    "enableSSL": false,
+    "from": "",
+    "recipient": ""
+  },
+  "proxy": {
+    "host": "",
+    "port": 0,
+    "username": "",
+    "password": ""
   }
 }
 ```
@@ -98,47 +96,20 @@ You only need to fill needed options in `bot`, `base`, `mail` or `proxy` section
 Example for Telegram messenger:
 ```json
 {
-  "app": {
-    "bot": {
-      "token": "asdhsdgfjsdfgFgjhg4831)@",
-      "chat": "-1",
-      "replyTo": ""
-    },
-    "base": {
-      "lang": "en",
-      "messenger": "telegram",
-      "allureFolder": "build/allure-report/",
-      "allureLinkPath": "allure",
-      "chart": true,
-      "chartName": "",
-      "project": ""
-    },
-    "mail": {
-      "host": "",
-      "port": "",
-      "username": "",
-      "password": "",
-      "enableSSL": false,
-      "from": "",
-      "recipient": ""
-    },
-    "mattermost": {
-      "url": ""
-    },
-    "proxy": {
-      "host": "",
-      "port": 0,
-      "username": "",
-      "password": ""
-    },
-    "skype": {
-      "appId": "",
-      "appSecret": "",
-      "serviceUrl": "",
-      "conversationId": "",
-      "botId": "",
-      "botName": ""
-    }
+  "base": {
+    "project": "some project",
+    "environment": "some env",
+    "comment": "some comment",
+    "reportLink": "",
+    "language": "en",
+    "messenger": "telegram",
+    "allureFolder": "build/allure-report/",
+    "enableChart": true
+  },
+  "telegram": {
+    "token": "asdhsdgfjsdfgFgjhg4831)@",
+    "chat": "-1",
+    "replyTo": ""
   }
 }
 ```

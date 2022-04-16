@@ -33,7 +33,7 @@ public class Letter {
         try {
             letter.setRecipients(
                     Message.RecipientType.TO,
-                    MailUtil.getRecipients(to)
+                    new MailUtil().recipients(to)
             );
         } catch (MessagingException e) {
             LOG.error("Unable to set recipients {}!", to);

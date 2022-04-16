@@ -1,17 +1,21 @@
 package guru.qa.allure.notifications.clients.skype;
 
 import com.jayway.jsonpath.JsonPath;
-import guru.qa.allure.notifications.clients.Headers;
-import guru.qa.allure.notifications.config.helpers.SkypeSettings;
+import guru.qa.allure.notifications.config.ApplicationConfig;
+import guru.qa.allure.notifications.config.enums.Headers;
+import guru.qa.allure.notifications.config.skype.Skype;
 import kong.unirest.Unirest;
 
 public class SkypeAuth {
+    private static final Skype skype = ApplicationConfig.newInstance()
+            .readConfig().skype();
+
     public static String bearerToken() {
         String body = Unirest.post("https://login.microsoftonline.com/botframework.com/oauth2/v2.0/token")
                 .header("Content-Type", Headers.URL_ENCODED.header())
                 .field("grant_type", "client_credentials")
-                .field("client_id", SkypeSettings.appId())
-                .field("client_secret", SkypeSettings.appSecret())
+                .field("client_id", skype.appId())
+                .field("client_secret", skype.appSecret())
                 .field("scope", "https://api.botframework.com/.default")
                 .asString()
                 .getBody();
