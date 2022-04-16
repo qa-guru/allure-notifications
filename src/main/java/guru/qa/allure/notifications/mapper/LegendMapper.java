@@ -18,7 +18,7 @@ public class LegendMapper {
     public Legend map() {
         String lang = ApplicationConfig.newInstance()
                 .readConfig().base().language() + ".json";
-        String fullPath = "./src/main/resources/legend/" + lang;
+        String fullPath = LegendMapper.class.getClassLoader().getResource("legend/" + lang).toString();
         LOG.info("Mapping {} to Legend object", fullPath);
         return new JSON().parse(fullPath, Legend.class);
     }
