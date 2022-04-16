@@ -14,12 +14,11 @@ import org.slf4j.LoggerFactory;
 public class LegendMapper {
     private static final Logger LOG =
             LoggerFactory.getLogger(LegendMapper.class);
-    private static final String PATH = "src/main/resources/legend/";
 
     public Legend map() {
         String lang = ApplicationConfig.newInstance()
                 .readConfig().base().language() + ".json";
-        String fullPath = PATH + lang;
+        String fullPath = this.getClass().getClassLoader().getResource("legend/" + lang).getFile();
         LOG.info("Mapping {} to Legend object", fullPath);
         return new JSON().parse(fullPath, Legend.class);
     }

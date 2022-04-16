@@ -14,12 +14,11 @@ import org.slf4j.LoggerFactory;
 public class PhrasesMapper {
     private static final Logger LOG =
             LoggerFactory.getLogger(PhrasesMapper.class);
-    private static final String PATH = "src/main/resources/phrases/";
 
     public Phrases map() {
         String lang = ApplicationConfig.newInstance()
                 .readConfig().base().language() + ".json";
-        String fullPath = PATH + lang;
+        String fullPath = this.getClass().getClassLoader().getResource("phrases/" + lang).getFile();
         LOG.info("Mapping {} to Phrases object", fullPath);
         return new JSON().parse(fullPath, Phrases.class);
     }
