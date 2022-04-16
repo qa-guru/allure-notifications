@@ -18,7 +18,7 @@ public class PhrasesMapper {
     public Phrases map() {
         String lang = ApplicationConfig.newInstance()
                 .readConfig().base().language() + ".json";
-        String fullPath = "./src/main/resources/phrases/" + lang;
+        String fullPath = PhrasesMapper.class.getClassLoader().getResource("phrases/" + lang).toString();
         LOG.info("Mapping {} to Phrases object", fullPath);
         return new JSON().parse(fullPath, Phrases.class);
     }
