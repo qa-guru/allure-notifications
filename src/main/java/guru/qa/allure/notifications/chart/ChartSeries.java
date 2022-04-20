@@ -24,34 +24,34 @@ public class ChartSeries {
         if (passed != 0) {
             chart.addSeries(String.format("%d %s", passed,
                     legend.passed()), passed);
-            COLORS.add(new int[]{148, 202, 102});
+            COLORS.add(Color.GREEN.rgb);
         }
         if (failed != 0) {
             chart.addSeries(String.format("%d %s", failed,
                     legend.failed()), failed);
-            COLORS.add(new int[]{255, 87, 68});
+            COLORS.add(Color.RED.rgb);
         }
         if (broken != 0) {
             chart.addSeries(String.format("%d %s", broken,
                     legend.broken()), broken);
-            COLORS.add(new int[]{255, 206, 87});
+            COLORS.add(Color.YELLOW.rgb);
         }
         if (skipped != 0) {
             chart.addSeries(String.format("%d %s", skipped,
                     legend.skipped()), skipped);
-            COLORS.add(new int[]{170, 170, 170});
+            COLORS.add(Color.GRAY.rgb);
         }
         if (unknown != 0) {
             chart.addSeries(String.format("%d %s", unknown,
                     legend.unknown()), unknown);
-            COLORS.add(new int[]{216, 97,  190});
+            COLORS.add(Color.PURPLE.rgb);
         }
 
-        COLORS.add(new int[]{0, 0, 0});
-        COLORS.add(new int[]{0, 0, 0});
-        COLORS.add(new int[]{0, 0, 0});
-        COLORS.add(new int[]{0, 0, 0});
-        COLORS.add(new int[]{0, 0, 0});
+        COLORS.add(Color.BLACK.rgb);
+        COLORS.add(Color.BLACK.rgb);
+        COLORS.add(Color.BLACK.rgb);
+        COLORS.add(Color.BLACK.rgb);
+        COLORS.add(Color.BLACK.rgb);
 
         return COLORS;
     }
