@@ -1,6 +1,7 @@
 package guru.qa.allure.notifications;
 
 import guru.qa.allure.notifications.clients.Notification;
+import guru.qa.allure.notifications.exceptions.MessagingException;
 import guru.qa.allure.notifications.util.LogInterceptor;
 import guru.qa.allure.notifications.util.ProxyManager;
 import kong.unirest.Unirest;
@@ -19,8 +20,16 @@ public class Application {
         Unirest.config()
                 .interceptor(new LogInterceptor());
         ProxyManager.manageProxy();
-        Notification.send();
-        Unirest.shutDown();
+        try {
+            Notification.send();
+        }
+        catch (MessagingException e) {
+            LOG.error(e.getMessage(), e);
+            System.exit(1);
+        }
+        finally {
+            Unirest.shutDown();
+        }
         LOG.info("Finish.");
     }
 }

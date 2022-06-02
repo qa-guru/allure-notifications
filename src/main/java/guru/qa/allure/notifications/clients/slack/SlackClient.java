@@ -5,6 +5,7 @@ import guru.qa.allure.notifications.clients.Notifier;
 import guru.qa.allure.notifications.config.ApplicationConfig;
 import guru.qa.allure.notifications.config.enums.Headers;
 import guru.qa.allure.notifications.config.slack.Slack;
+import guru.qa.allure.notifications.exceptions.MessagingException;
 import guru.qa.allure.notifications.template.MarkdownTemplate;
 import kong.unirest.Unirest;
 
@@ -16,7 +17,7 @@ public class SlackClient implements Notifier {
     private final MarkdownTemplate markdownTemplate = new MarkdownTemplate();
 
     @Override
-    public void sendText() {
+    public void sendText() throws MessagingException {
         String body = String.format("channel=%s&text=%s",
                 slack.chat(), markdownTemplate.create());
 
@@ -29,7 +30,7 @@ public class SlackClient implements Notifier {
     }
 
     @Override
-    public void sendPhoto() {
+    public void sendPhoto() throws MessagingException {
         Chart.createChart();
 
         Unirest.post("https://slack.com/api/files.upload")
