@@ -1,5 +1,5 @@
 plugins {
-    id 'java'
+    id 'java-library'
 }
 
 group 'allure.notifications'
@@ -20,7 +20,7 @@ dependencies {
     def jsonpath_version = "2.7.0"
     def commons_io_version = "2.10.0"
 
-    compile(
+    implementation(
             "org.slf4j:slf4j-log4j12:$slf4j_version",
             "com.sun.mail:javax.mail:$javax_mail_version",
             "com.konghq:unirest-java:$unirest_version",
@@ -43,6 +43,7 @@ jar {
         )
     }
     from {
-        configurations.compile.collect { it.isDirectory() ? it : zipTree(it) }
+        configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) }
     }
+    duplicatesStrategy = DuplicatesStrategy.WARN
 }
