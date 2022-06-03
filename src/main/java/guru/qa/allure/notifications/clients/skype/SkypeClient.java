@@ -5,7 +5,7 @@ import guru.qa.allure.notifications.clients.Notifier;
 import guru.qa.allure.notifications.clients.skype.model.Attachment;
 import guru.qa.allure.notifications.clients.skype.model.From;
 import guru.qa.allure.notifications.clients.skype.model.SkypeMessage;
-import guru.qa.allure.notifications.config.ApplicationConfig;
+import guru.qa.allure.notifications.config.base.Base;
 import guru.qa.allure.notifications.config.enums.Headers;
 import guru.qa.allure.notifications.config.skype.Skype;
 import guru.qa.allure.notifications.template.MarkdownTemplate;
@@ -15,8 +15,13 @@ import kong.unirest.Unirest;
 import java.util.Collections;
 
 public class SkypeClient implements Notifier {
-    private final Skype skype = ApplicationConfig.newInstance()
-            .readConfig().skype();
+    private final Base base;
+    private final Skype skype;
+
+    public SkypeClient(Base base, Skype skype) {
+        this.base = base;
+        this.skype = skype;
+    }
 
     @Override
     public void sendText() {
@@ -34,7 +39,7 @@ public class SkypeClient implements Notifier {
 
     @Override
     public void sendPhoto() {
-        Chart.createChart();
+        Chart.createChart(base);
         Attachment attachment = new Attachment();
         attachment.contentType = "image/png";
         attachment.name = "chart.png";
@@ -63,13 +68,13 @@ public class SkypeClient implements Notifier {
         SkypeMessage message = new SkypeMessage();
         message.type = "message";
         message.from = from;
-        message.text = new MarkdownTemplate().create();
+        message.text = new MarkdownTemplate(base).create();
 
         return message;
     }
 
     private String token() {
-        return SkypeAuth.bearerToken();
+        return SkypeAuth.bearerToken(skype);
     }
 
     private String host() {

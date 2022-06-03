@@ -1,5 +1,6 @@
 package guru.qa.allure.notifications.clients.mail;
 
+import guru.qa.allure.notifications.config.mail.Mail;
 import guru.qa.allure.notifications.util.MailUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -13,8 +14,8 @@ public class Letter {
     private final LetterBody body = new LetterBody();
     private final Message letter;
 
-    public Letter(Session session) {
-        letter = new MimeMessage(session);
+    public Letter(Mail mail) {
+        letter = new MimeMessage(MailUtil.session(mail));
     }
 
     public Letter from(final String from) {
@@ -33,7 +34,7 @@ public class Letter {
         try {
             letter.setRecipients(
                     Message.RecipientType.TO,
-                    new MailUtil().recipients(to)
+                    MailUtil.recipients(to)
             );
         } catch (MessagingException e) {
             LOG.error("Unable to set recipients {}!", to);

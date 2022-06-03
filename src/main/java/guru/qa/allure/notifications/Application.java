@@ -1,6 +1,8 @@
 package guru.qa.allure.notifications;
 
 import guru.qa.allure.notifications.clients.Notification;
+import guru.qa.allure.notifications.config.ApplicationConfig;
+import guru.qa.allure.notifications.config.Config;
 import guru.qa.allure.notifications.util.LogInterceptor;
 import guru.qa.allure.notifications.util.ProxyManager;
 import kong.unirest.Unirest;
@@ -16,10 +18,11 @@ public class Application {
 
     private static void startApplication() {
         LOG.info("Start...");
+        Config config = ApplicationConfig.newInstance().readConfig();
         Unirest.config()
                 .interceptor(new LogInterceptor());
-        ProxyManager.manageProxy();
-        Notification.send();
+        ProxyManager.manageProxy(config.proxy());
+        Notification.send(config);
         Unirest.shutDown();
         LOG.info("Finish.");
     }

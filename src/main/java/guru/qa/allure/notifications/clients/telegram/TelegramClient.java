@@ -2,7 +2,7 @@ package guru.qa.allure.notifications.clients.telegram;
 
 import guru.qa.allure.notifications.chart.Chart;
 import guru.qa.allure.notifications.clients.Notifier;
-import guru.qa.allure.notifications.config.ApplicationConfig;
+import guru.qa.allure.notifications.config.base.Base;
 import guru.qa.allure.notifications.config.enums.Headers;
 import guru.qa.allure.notifications.config.telegram.Telegram;
 import guru.qa.allure.notifications.template.HTMLTemplate;
@@ -11,10 +11,15 @@ import kong.unirest.Unirest;
 import java.io.File;
 
 public class TelegramClient implements Notifier {
-    private final Telegram telegram = ApplicationConfig.newInstance()
-            .readConfig().telegram();
-    private final HTMLTemplate htmlTemplate = new HTMLTemplate();
+    private final Base base;
+    private final Telegram telegram;
+    private final HTMLTemplate htmlTemplate;
 
+    public TelegramClient(Base base, Telegram telegram) {
+        this.base = base;
+        this.telegram = telegram;
+        this.htmlTemplate = new HTMLTemplate(base);
+    }
 
     @Override
     public void sendText() {
@@ -31,7 +36,7 @@ public class TelegramClient implements Notifier {
 
     @Override
     public void sendPhoto() {
-        Chart.createChart();
+        Chart.createChart(base);
         Unirest.post("https://api.telegram.org/bot{token}/sendPhoto")
                 .routeParam("token", telegram.token())
                 .field("photo",

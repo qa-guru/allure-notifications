@@ -1,5 +1,6 @@
 package guru.qa.allure.notifications.template.data;
 
+import guru.qa.allure.notifications.config.base.Base;
 import guru.qa.allure.notifications.formatters.Formatters;
 import guru.qa.allure.notifications.mapper.SummaryMapper;
 import guru.qa.allure.notifications.model.summary.Summary;
@@ -18,11 +19,17 @@ import java.util.Map;
 public class SummaryData implements TemplateData {
     private static final Logger LOG =
             LoggerFactory.getLogger(SummaryData.class);
-    private final Summary summary = new SummaryMapper().map();
+
+    private final SummaryMapper summaryMapper;
+
+    public SummaryData(Base base) {
+        this.summaryMapper = new SummaryMapper(base);
+    }
 
     @Override
     public Map<String, Object> map() {
         LOG.info("Collecting summary data for template");
+        Summary summary = summaryMapper.map();
         Map<String, Object> info = new HashMap<>();
         info.put("time", new Formatters().formatTime(summary.time()
                 .duration()));

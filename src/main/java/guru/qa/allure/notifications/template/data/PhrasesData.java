@@ -1,5 +1,6 @@
 package guru.qa.allure.notifications.template.data;
 
+import guru.qa.allure.notifications.config.base.Base;
 import guru.qa.allure.notifications.mapper.PhrasesMapper;
 import guru.qa.allure.notifications.model.phrases.Phrases;
 import org.slf4j.Logger;
@@ -16,11 +17,18 @@ import java.util.Map;
 public class PhrasesData implements TemplateData {
     private static final Logger LOG =
             LoggerFactory.getLogger(PhrasesData.class);
-    private final Phrases phrases = new PhrasesMapper().map();
+    private final PhrasesMapper phrasesMapper;
+
+    public PhrasesData(Base base) {
+        this.phrasesMapper = new PhrasesMapper(base);
+    }
 
     @Override
     public Map<String, Object> map() {
         LOG.info("Collecting phrases data for template");
+
+        Phrases phrases = phrasesMapper.map();
+
         Map<String, Object> info = new HashMap<>();
         info.put("results", phrases.results());
         info.put("environment", phrases.environment());
