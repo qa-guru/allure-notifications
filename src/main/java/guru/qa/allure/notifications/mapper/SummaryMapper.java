@@ -1,5 +1,7 @@
 package guru.qa.allure.notifications.mapper;
 
+import java.io.File;
+
 import guru.qa.allure.notifications.config.base.Base;
 import guru.qa.allure.notifications.json.JSON;
 import guru.qa.allure.notifications.model.summary.Summary;
@@ -20,7 +22,7 @@ public class SummaryMapper {
 
     public Summary map() {
         log.info("Mapping {} to Summary object", SUMMARY);
-        String fullPath = base.getAllureFolder() + SUMMARY;
+        String fullPath = new File(base.getAllureFolder(), SUMMARY).getAbsolutePath();
         return new JSON().parse(fullPath, Summary.class);
     }
 }
