@@ -2,7 +2,7 @@
   "results": "测试结果",
   "environment": "环境",
   "comment": "评论",
-  "reportAvailableByLink": "测试报告链接",
+  "reportAvailableAtLink": "测试报告链接",
   "scenario": {
     "duration": "持续时间",
     "totalScenarios": "脚本总数",

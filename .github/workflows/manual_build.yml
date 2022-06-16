@@ -81,7 +81,7 @@ jobs:
           to: ${{ secrets.TELEGRAM_TO }}
           token: ${{ secrets.TELEGRAM_TOKEN }}
           args: |
-            *allure-notifications-${{env.version}} is now available for downloading by link* https://github.com/${{ github.repository }}/releases/latest/download/allure-notifications-${{env.version}}.jar
+            *allure-notifications-${{env.version}} is now available for downloading at the link* https://github.com/${{ github.repository }}/releases/latest/download/allure-notifications-${{env.version}}.jar
             *See Changelog here*:
             https://github.com/${{ github.repository }}/releases/latest/
           format: markdown
