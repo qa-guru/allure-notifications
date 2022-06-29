@@ -5,6 +5,7 @@ import guru.qa.allure.notifications.clients.Notifier;
 import guru.qa.allure.notifications.config.base.Base;
 import guru.qa.allure.notifications.config.enums.Headers;
 import guru.qa.allure.notifications.config.slack.Slack;
+import guru.qa.allure.notifications.exceptions.MessagingException;
 import guru.qa.allure.notifications.template.MarkdownTemplate;
 import kong.unirest.Unirest;
 
@@ -22,8 +23,9 @@ public class SlackClient implements Notifier {
     }
 
     @Override
-    public void sendText() {
-        String body = String.format("channel=%s&text=%s", slack.chat(), markdownTemplate.create());
+    public void sendText() throws MessagingException {
+        String body = String.format("channel=%s&text=%s",
+                slack.chat(), markdownTemplate.create());
 
         Unirest.post("https://slack.com/api/chat.postMessage")
                 .header("Authorization", "Bearer " + slack.token())
@@ -34,7 +36,7 @@ public class SlackClient implements Notifier {
     }
 
     @Override
-    public void sendPhoto() {
+    public void sendPhoto() throws MessagingException {
         Chart.createChart(base);
 
         Unirest.post("https://slack.com/api/files.upload")

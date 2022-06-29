@@ -2,7 +2,7 @@
   "results": "Результаты",
   "environment": "Рабочее окружение",
   "comment": "Комментарий",
-  "reportAvailableByLink": "Отчет доступен по ссылке",
+  "reportAvailableAtLink": "Отчет доступен по ссылке",
   "scenario": {
     "duration": "Продолжительность",
     "totalScenarios": "Всего сценариев",

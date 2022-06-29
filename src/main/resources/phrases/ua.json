@@ -2,7 +2,7 @@
   "results": "Результати",
   "environment": "Середовище",
   "comment": "Коментар",
-  "reportAvailableByLink": "Звіт доступний за посиланням",
+  "reportAvailableAtLink": "Звіт доступний за посиланням",
   "scenario": {
     "duration": "Тривалість",
     "totalScenarios": "Усього сценаріїв",

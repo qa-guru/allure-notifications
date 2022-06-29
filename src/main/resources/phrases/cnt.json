@@ -2,7 +2,7 @@
   "results": "測試結果",
   "environment": "環境",
   "comment": "评论",
-  "reportAvailableByLink": "測試報告鏈接",
+  "reportAvailableAtLink": "測試報告鏈接",
   "scenario": {
     "duration": "持續時間",
     "totalScenarios": "腳本總數",

@@ -1,6 +1,7 @@
 package guru.qa.allure.notifications.template;
 
 import guru.qa.allure.notifications.config.base.Base;
+import guru.qa.allure.notifications.exceptions.MessageBuildException;
 
 /**
  * @author kadehar
@@ -14,7 +15,7 @@ public class MarkdownTemplate {
         this.base = base;
     }
 
-    public String create() {
+    public String create() throws MessageBuildException {
         return new MessageTemplate(base).of("markdown.ftl");
     }
 }
