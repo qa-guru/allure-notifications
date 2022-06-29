@@ -6,6 +6,7 @@ import guru.qa.allure.notifications.clients.Notifier;
 import guru.qa.allure.notifications.config.ApplicationConfig;
 import guru.qa.allure.notifications.config.enums.Headers;
 import guru.qa.allure.notifications.config.mattermost.Mattermost;
+import guru.qa.allure.notifications.exceptions.MessagingException;
 import guru.qa.allure.notifications.template.MarkdownTemplate;
 import kong.unirest.Unirest;
 
@@ -23,7 +24,7 @@ public class MattermostClient implements Notifier {
             .readConfig().mattermost();
 
     @Override
-    public void sendText() {
+    public void sendText() throws MessagingException {
         body.put("channel_id", mattermost.chat());
         body.put("message", new MarkdownTemplate().create());
 
@@ -38,7 +39,7 @@ public class MattermostClient implements Notifier {
     }
 
     @Override
-    public void sendPhoto() {
+    public void sendPhoto() throws MessagingException {
         Chart.createChart();
         String response = Unirest.post("https://{uri}/api/v4/files")
                 .routeParam("uri", url)
