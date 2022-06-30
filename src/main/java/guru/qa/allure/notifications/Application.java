@@ -1,6 +1,8 @@
 package guru.qa.allure.notifications;
 
 import guru.qa.allure.notifications.clients.Notification;
+import guru.qa.allure.notifications.config.ApplicationConfig;
+import guru.qa.allure.notifications.config.Config;
 import guru.qa.allure.notifications.exceptions.MessagingException;
 import guru.qa.allure.notifications.util.LogInterceptor;
 import guru.qa.allure.notifications.util.ProxyManager;
@@ -17,11 +19,14 @@ public class Application {
 
     private static void startApplication() {
         LOG.info("Start...");
+        Config config = ApplicationConfig.newInstance().readConfig();
         Unirest.config()
                 .interceptor(new LogInterceptor());
-        ProxyManager.manageProxy();
+
+        ProxyManager.manageProxy(config.proxy());
+
         try {
-            Notification.send();
+            Notification.send(config);
         }
         catch (MessagingException e) {
             LOG.error(e.getMessage(), e);
@@ -30,6 +35,7 @@ public class Application {
         finally {
             Unirest.shutDown();
         }
+
         LOG.info("Finish.");
     }
 }

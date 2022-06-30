@@ -2,7 +2,7 @@ package guru.qa.allure.notifications.clients.slack;
 
 import guru.qa.allure.notifications.chart.Chart;
 import guru.qa.allure.notifications.clients.Notifier;
-import guru.qa.allure.notifications.config.ApplicationConfig;
+import guru.qa.allure.notifications.config.base.Base;
 import guru.qa.allure.notifications.config.enums.Headers;
 import guru.qa.allure.notifications.config.slack.Slack;
 import guru.qa.allure.notifications.exceptions.MessagingException;
@@ -12,9 +12,15 @@ import kong.unirest.Unirest;
 import java.io.File;
 
 public class SlackClient implements Notifier {
-    private final Slack slack = ApplicationConfig.newInstance()
-            .readConfig().slack();
-    private final MarkdownTemplate markdownTemplate = new MarkdownTemplate();
+    private final Base base;
+    private final Slack slack;
+    private final MarkdownTemplate markdownTemplate;
+
+    public SlackClient(Base base, Slack slack) {
+        this.base = base;
+        this.slack = slack;
+        this.markdownTemplate = new MarkdownTemplate(base);
+    }
 
     @Override
     public void sendText() throws MessagingException {
@@ -31,7 +37,7 @@ public class SlackClient implements Notifier {
 
     @Override
     public void sendPhoto() throws MessagingException {
-        Chart.createChart();
+        Chart.createChart(base);
 
         Unirest.post("https://slack.com/api/files.upload")
                 .header("Authorization", "Bearer " + slack.token())

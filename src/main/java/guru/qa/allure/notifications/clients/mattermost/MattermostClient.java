@@ -3,7 +3,7 @@ package guru.qa.allure.notifications.clients.mattermost;
 import com.jayway.jsonpath.JsonPath;
 import guru.qa.allure.notifications.chart.Chart;
 import guru.qa.allure.notifications.clients.Notifier;
-import guru.qa.allure.notifications.config.ApplicationConfig;
+import guru.qa.allure.notifications.config.base.Base;
 import guru.qa.allure.notifications.config.enums.Headers;
 import guru.qa.allure.notifications.config.mattermost.Mattermost;
 import guru.qa.allure.notifications.exceptions.MessagingException;
@@ -18,18 +18,21 @@ import static java.util.Collections.singletonList;
 
 public class MattermostClient implements Notifier {
     private final Map<String, Object> body = new HashMap<>();
-    private final String url = ApplicationConfig.newInstance().readConfig()
-            .mattermost().url();
-    private final Mattermost mattermost = ApplicationConfig.newInstance()
-            .readConfig().mattermost();
+    private final Base base;
+    private final Mattermost mattermost;
+
+    public MattermostClient(Base base, Mattermost mattermost) {
+        this.base = base;
+        this.mattermost = mattermost;
+    }
 
     @Override
     public void sendText() throws MessagingException {
         body.put("channel_id", mattermost.chat());
-        body.put("message", new MarkdownTemplate().create());
+        body.put("message", new MarkdownTemplate(base).create());
 
         Unirest.post("https://{uri}/api/v4/posts")
-                .routeParam("uri", url)
+                .routeParam("uri", mattermost.url())
                 .header("Authorization", "Bearer " +
                         mattermost.token())
                 .header("Content-Type", Headers.JSON.header())
@@ -40,9 +43,10 @@ public class MattermostClient implements Notifier {
 
     @Override
     public void sendPhoto() throws MessagingException {
-        Chart.createChart();
+        Chart.createChart(base);
+
         String response = Unirest.post("https://{uri}/api/v4/files")
-                .routeParam("uri", url)
+                .routeParam("uri", mattermost.url())
                 .header("Authorization", "Bearer " +
                         mattermost.token())
                 .queryString("channel_id", mattermost.chat())

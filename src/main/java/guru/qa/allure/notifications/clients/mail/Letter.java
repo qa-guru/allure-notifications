@@ -1,5 +1,6 @@
 package guru.qa.allure.notifications.clients.mail;
 
+import guru.qa.allure.notifications.config.mail.Mail;
 import guru.qa.allure.notifications.exceptions.MessageBuildException;
 import guru.qa.allure.notifications.exceptions.MessageSendException;
 import guru.qa.allure.notifications.util.MailUtil;
@@ -15,8 +16,8 @@ public class Letter {
     private final LetterBody body = new LetterBody();
     private final Message letter;
 
-    public Letter(Session session) {
-        letter = new MimeMessage(session);
+    public Letter(Mail mail) {
+        letter = new MimeMessage(MailUtil.session(mail));
     }
 
     public Letter from(final String from) throws MessageBuildException {
@@ -34,7 +35,7 @@ public class Letter {
         try {
             letter.setRecipients(
                     Message.RecipientType.TO,
-                    new MailUtil().recipients(to)
+                    MailUtil.recipients(to)
             );
         } catch (MessagingException e) {
             throw new MessageBuildException(String.format("Unable to set recipients %s!", to), e);

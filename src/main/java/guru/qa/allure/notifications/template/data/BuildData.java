@@ -1,6 +1,5 @@
 package guru.qa.allure.notifications.template.data;
 
-import guru.qa.allure.notifications.config.ApplicationConfig;
 import guru.qa.allure.notifications.config.base.Base;
 import guru.qa.allure.notifications.formatters.Formatters;
 import org.slf4j.Logger;
@@ -17,8 +16,12 @@ import java.util.Map;
 public class BuildData implements TemplateData {
     private static final Logger LOG =
             LoggerFactory.getLogger(BuildData.class);
-    private final Base base = ApplicationConfig.newInstance()
-            .readConfig().base();
+
+    private final Base base;
+
+    public BuildData(Base base) {
+        this.base = base;
+    }
 
     @Override
     public Map<String, Object> map() {

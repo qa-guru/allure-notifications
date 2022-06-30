@@ -1,13 +1,15 @@
 package guru.qa.allure.notifications.util;
 
-import guru.qa.allure.notifications.config.ApplicationConfig;
 import guru.qa.allure.notifications.config.mail.Mail;
 
 import java.util.Properties;
 
 public class MailProperties {
-    private final Mail mail = ApplicationConfig.newInstance()
-            .readConfig().mail();
+    private final Mail mail;
+
+    public MailProperties(Mail mail) {
+        this.mail = mail;
+    }
 
     public Properties create() {
         Properties properties = new Properties();

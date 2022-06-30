@@ -1,6 +1,5 @@
 package guru.qa.allure.notifications.util;
 
-import guru.qa.allure.notifications.config.ApplicationConfig;
 import guru.qa.allure.notifications.config.mail.Mail;
 import guru.qa.allure.notifications.exceptions.InvalidArgumentException;
 import org.slf4j.Logger;
@@ -18,12 +17,10 @@ import java.util.Properties;
 
 public class MailUtil {
     private static final Logger LOG = LoggerFactory.getLogger("Mail Settings");
-    private final Mail mail = ApplicationConfig.newInstance()
-            .readConfig().mail();
 
-    public Session session() {
+    public static Session session(Mail mail) {
         LOG.info("Creating new session");
-        Properties properties = new MailProperties().create();
+        Properties properties = new MailProperties(mail).create();
         return Session.getDefaultInstance(
                 properties,
                 new Authenticator() {
@@ -36,7 +33,7 @@ public class MailUtil {
         );
     }
 
-    public InternetAddress[] recipients(String addresses) {
+    public static InternetAddress[] recipients(String addresses) {
         LOG.info("Parsing addresses");
         List<InternetAddress> addressList = new ArrayList<>();
 

@@ -1,5 +1,6 @@
 package guru.qa.allure.notifications.template;
 
+import guru.qa.allure.notifications.config.base.Base;
 import guru.qa.allure.notifications.exceptions.MessageBuildException;
 
 /**
@@ -8,8 +9,13 @@ import guru.qa.allure.notifications.exceptions.MessageBuildException;
  * Utility class for HTML template creation.
  */
 public class HTMLTemplate {
+    private final Base base;
 
-    public String create() throws MessageBuildException {
-        return new MessageTemplate().of("html.ftl");
+    public HTMLTemplate(Base base) {
+        this.base = base;
+    }
+    
+    public String create() throws MessageBuildException  {
+        return new MessageTemplate(base).of("html.ftl");
     }
 }
