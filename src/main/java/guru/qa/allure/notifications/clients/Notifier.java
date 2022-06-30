@@ -1,6 +1,8 @@
 package guru.qa.allure.notifications.clients;
 
+import guru.qa.allure.notifications.exceptions.MessagingException;
+
 public interface Notifier {
-    void sendText();
-    void sendPhoto();
+    void sendText() throws MessagingException;
+    void sendPhoto() throws MessagingException;
 }

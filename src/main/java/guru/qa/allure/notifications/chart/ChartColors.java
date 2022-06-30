@@ -2,7 +2,7 @@ package guru.qa.allure.notifications.chart;
 
 import org.knowm.xchart.PieChart;
 
-import java.awt.*;
+import java.awt.Color;
 import java.util.List;
 
 public class ChartColors {

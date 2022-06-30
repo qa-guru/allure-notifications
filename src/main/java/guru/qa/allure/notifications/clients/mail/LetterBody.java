@@ -1,7 +1,6 @@
 package guru.qa.allure.notifications.clients.mail;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import guru.qa.allure.notifications.exceptions.MessageBuildException;
 
 import javax.activation.DataHandler;
 import javax.activation.DataSource;
@@ -12,21 +11,19 @@ import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMultipart;
 
 public class LetterBody {
-    private final Logger LOG = LoggerFactory.getLogger("Body");
     private final MimeMultipart multipart = new MimeMultipart("related");
 
-    public void addText(final String body) {
+    public void addText(final String body) throws MessageBuildException {
         BodyPart textBody = new MimeBodyPart();
         try {
             textBody.setContent(body, "text/html; charset=UTF-8");
             multipart.addBodyPart(textBody);
         } catch (MessagingException e) {
-            LOG.error("Unable to create text body!");
-            System.exit(1);
+            throw new MessageBuildException("Unable to create text body!", e);
         }
     }
 
-    public void addImage(final String imagePath) {
+    public void addImage(final String imagePath) throws MessageBuildException {
         BodyPart imageBody = new MimeBodyPart();
         DataSource dataSource = new FileDataSource(imagePath);
         try {
@@ -34,8 +31,7 @@ public class LetterBody {
             imageBody.setHeader("Content-ID", "<image>");
             multipart.addBodyPart(imageBody);
         } catch (MessagingException e) {
-            LOG.error("Unable to create image body!");
-            System.exit(1);
+            throw new MessageBuildException("Unable to create image body!", e);
         }
     }
 

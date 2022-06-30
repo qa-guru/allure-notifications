@@ -12,6 +12,9 @@ public class ApplicationConfig {
     private static final ApplicationConfig INSTANCE = new ApplicationConfig();
     private final String configFile = System.getProperty("configFile");
 
+    private ApplicationConfig() {
+    }
+
     public static ApplicationConfig newInstance() {
         return INSTANCE;
     }

@@ -8,6 +8,8 @@ import guru.qa.allure.notifications.clients.skype.model.SkypeMessage;
 import guru.qa.allure.notifications.config.base.Base;
 import guru.qa.allure.notifications.config.enums.Headers;
 import guru.qa.allure.notifications.config.skype.Skype;
+import guru.qa.allure.notifications.exceptions.MessageBuildException;
+import guru.qa.allure.notifications.exceptions.MessagingException;
 import guru.qa.allure.notifications.template.MarkdownTemplate;
 import guru.qa.allure.notifications.util.ImageConverter;
 import kong.unirest.Unirest;
@@ -24,7 +26,7 @@ public class SkypeClient implements Notifier {
     }
 
     @Override
-    public void sendText() {
+    public void sendText() throws MessagingException {
         Unirest.post("https://{url}/apis/v3/conversations/{conversationId}/activities")
                 .routeParam("url", host())
                 .routeParam("conversationId",
@@ -38,8 +40,9 @@ public class SkypeClient implements Notifier {
     }
 
     @Override
-    public void sendPhoto() {
+    public void sendPhoto() throws MessagingException {
         Chart.createChart(base);
+        
         Attachment attachment = new Attachment();
         attachment.contentType = "image/png";
         attachment.name = "chart.png";
@@ -60,7 +63,7 @@ public class SkypeClient implements Notifier {
                 .getBody();
     }
 
-    private SkypeMessage createSimpleMessage() {
+    private SkypeMessage createSimpleMessage() throws MessageBuildException {
         From from = new From();
         from.id = skype.botId();
         from.name = skype.botName();

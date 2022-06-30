@@ -3,6 +3,7 @@ package guru.qa.allure.notifications.template;
 import freemarker.template.Template;
 import freemarker.template.TemplateException;
 import guru.qa.allure.notifications.config.base.Base;
+import guru.qa.allure.notifications.exceptions.MessageBuildException;
 import guru.qa.allure.notifications.template.config.TemplateConfig;
 import guru.qa.allure.notifications.template.data.MessageData;
 import org.slf4j.Logger;
@@ -28,25 +29,21 @@ public class MessageTemplate {
         this.base = base;
     }
 
-    public String of(String templateFile) {
+    public String of(String templateFile) throws MessageBuildException {
         LOG.info("Processing template {}", templateFile);
         Template template = null;
         try {
             LOG.info("Parsing template");
             template = templateConfig.configure().getTemplate(templateFile);
         } catch (IOException ex) {
-            LOG.info("Unable to parse template {}! Reason: {}", templateFile,
-                    ex.getMessage());
-            System.exit(1);
+            throw new MessageBuildException(String.format("Unable to parse template %s!", templateFile), ex);
         }
         Writer writer = new StringWriter();
         try {
             LOG.info("Convert template to string");
             template.process(new MessageData(base).values(), writer);
         } catch (TemplateException | IOException ex) {
-            LOG.info("Unable to parse template {}! Reason: {}", templateFile,
-                    ex.getMessage());
-            System.exit(1);
+            throw new MessageBuildException(String.format("Unable to parse template %s!", templateFile), ex);
         }
         return writer.toString();
     }

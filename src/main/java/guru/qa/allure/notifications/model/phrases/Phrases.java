@@ -14,8 +14,8 @@ public class Phrases {
     private String environment;
     @SerializedName("comment")
     private String comment;
-    @SerializedName("reportAvailableByLink")
-    private String reportAvailableByLink;
+    @SerializedName("reportAvailableAtLink")
+    private String reportAvailableAtLink;
     @SerializedName("scenario")
     private Scenario scenario;
 
@@ -43,12 +43,12 @@ public class Phrases {
         this.comment = comment;
     }
 
-    public String reportAvailableByLink() {
-        return reportAvailableByLink;
+    public String reportAvailableAtLink() {
+        return reportAvailableAtLink;
     }
 
-    public void setReportAvailableByLink(String reportAvailableByLink) {
-        this.reportAvailableByLink = reportAvailableByLink;
+    public void setReportAvailableAtLink(String reportAvailableAtLink) {
+        this.reportAvailableAtLink = reportAvailableAtLink;
     }
 
     public Scenario scenario() {

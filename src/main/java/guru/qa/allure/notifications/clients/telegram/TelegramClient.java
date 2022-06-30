@@ -5,6 +5,7 @@ import guru.qa.allure.notifications.clients.Notifier;
 import guru.qa.allure.notifications.config.base.Base;
 import guru.qa.allure.notifications.config.enums.Headers;
 import guru.qa.allure.notifications.config.telegram.Telegram;
+import guru.qa.allure.notifications.exceptions.MessagingException;
 import guru.qa.allure.notifications.template.HTMLTemplate;
 import kong.unirest.Unirest;
 
@@ -22,7 +23,7 @@ public class TelegramClient implements Notifier {
     }
 
     @Override
-    public void sendText() {
+    public void sendText() throws MessagingException {
         Unirest.post("https://api.telegram.org/bot{token}/sendMessage")
                 .routeParam("token", telegram.token())
                 .header("Content-Type", Headers.URL_ENCODED.header())
@@ -35,8 +36,9 @@ public class TelegramClient implements Notifier {
     }
 
     @Override
-    public void sendPhoto() {
+    public void sendPhoto() throws MessagingException {
         Chart.createChart(base);
+
         Unirest.post("https://api.telegram.org/bot{token}/sendPhoto")
                 .routeParam("token", telegram.token())
                 .field("photo",
