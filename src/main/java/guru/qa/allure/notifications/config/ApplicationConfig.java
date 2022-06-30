@@ -17,8 +17,8 @@ public class ApplicationConfig {
     }
 
     public Config readConfig() {
-        if (configFile.isEmpty()) {
-            throw new ConfigNotFoundException("Unable to parse config " + configFile);
+        if (configFile == null || configFile.isEmpty()) {
+            throw new ConfigNotFoundException("Config file not found or empty: " + configFile);
         }
         return new JSON().parse(configFile, Config.class);
     }
