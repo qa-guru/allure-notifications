@@ -36,12 +36,17 @@ java \
 -jar allure-notifications-4.1.jar
 ```
 
+If you want the project logo to appear in the upper left corner of the chart,
+add the file logo.png to root of project
+
+
 <h6>Config file structure</h6>
 Here you can find config file structure for lib configuration.
 
 ```json
 {
   "base": {
+    "logo": "",
     "project": "",
     "environment": "",
     "comment": "",
@@ -92,6 +97,11 @@ Here you can find config file structure for lib configuration.
 }
 ```
 You only need to fill needed options in `bot`, `base`, `mail` or `proxy` section. Please, be careful, `lang` and `messenger` fields are required!
+
+If you want the project logo to appear in the upper left corner of the chart,
+add file path to logo parameter in configuration
+
+![](piechart.png)
 
 Example for Telegram messenger:
 ```json

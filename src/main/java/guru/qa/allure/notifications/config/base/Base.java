@@ -20,6 +20,8 @@ public class Base {
     private String reportLink;
     @SerializedName("language")
     private Language language;
+    @SerializedName("logo")
+    private String logo;
     @SerializedName("messenger")
     private Messenger messenger;
     @SerializedName("allureFolder")
@@ -89,5 +91,9 @@ public class Base {
 
     public void setEnableChart(Boolean enableChart) {
         this.enableChart = enableChart;
+    }
+
+    public String getLogo() {
+        return logo;
     }
 }
