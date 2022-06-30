@@ -53,7 +53,7 @@ public class ChartSeries {
         if (unknown != 0) {
             chart.addSeries(String.format("%d %s", unknown,
                     legend.unknown()), unknown);
-            v.add(Color.PURPLE.rgb);
+            colors.add(Color.PURPLE.rgb);
         }
 
         colors.add(Color.BLACK.rgb);
