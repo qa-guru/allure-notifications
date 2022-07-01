@@ -40,5 +40,7 @@ public class Chart {
                 log.warn("Logo file isn't existed: " + base.getLogo());
             }
         }
+
+        new File(CHART_FILE_NAME + ".png").deleteOnExit();
     }
 }
