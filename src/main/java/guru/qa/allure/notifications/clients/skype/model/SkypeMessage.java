@@ -1,10 +1,14 @@
 package guru.qa.allure.notifications.clients.skype.model;
 
-import java.util.List;
+import lombok.Builder;
+import lombok.Data;
 
+import java.util.List;
+@Data
+@Builder
 public class SkypeMessage {
-    public String type;
-    public From from;
-    public String text;
-    public List<Attachment> attachments;
+    private String type;
+    private From from;
+    private String text;
+    private List<Attachment> attachments;
 }

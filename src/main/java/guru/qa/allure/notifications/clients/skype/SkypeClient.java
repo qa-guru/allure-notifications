@@ -30,7 +30,7 @@ public class SkypeClient implements Notifier {
         Unirest.post("https://{url}/apis/v3/conversations/{conversationId}/activities")
                 .routeParam("url", host())
                 .routeParam("conversationId",
-                        skype.conversationId())
+                        skype.getConversationId())
                 .header("Content-Type", Headers.JSON.header())
                 .header("Authorization", "Bearer " + token())
                 .header("Host", host())
@@ -42,19 +42,21 @@ public class SkypeClient implements Notifier {
     @Override
     public void sendPhoto() throws MessagingException {
         Chart.createChart(base);
-        
-        Attachment attachment = new Attachment();
-        attachment.contentType = "image/png";
-        attachment.name = "chart.png";
-        attachment.contentUrl = contentUrl();
+
+        Attachment attachment = Attachment.builder()
+                .contentType("image/png")
+                .name("chart.png")
+                .contentUrl(contentUrl())
+                .build();
+
 
         SkypeMessage body = createSimpleMessage();
-        body.attachments = Collections.singletonList(attachment);
+        body.setAttachments(Collections.singletonList(attachment));
 
         Unirest.post("https://{url}/apis/v3/conversations/{conversationId}/activities")
                 .routeParam("url", host())
                 .routeParam("conversationId",
-                        skype.conversationId())
+                        skype.getConversationId())
                 .header("Content-Type", Headers.JSON.header())
                 .header("Authorization", "Bearer " + token())
                 .header("Host", host())
@@ -64,16 +66,16 @@ public class SkypeClient implements Notifier {
     }
 
     private SkypeMessage createSimpleMessage() throws MessageBuildException {
-        From from = new From();
-        from.id = skype.botId();
-        from.name = skype.botName();
+        From from = From.builder()
+                .id(skype.getBotId())
+                .name(skype.getBotName())
+                .build();
 
-        SkypeMessage message = new SkypeMessage();
-        message.type = "message";
-        message.from = from;
-        message.text = new MarkdownTemplate(base).create();
-
-        return message;
+        return SkypeMessage.builder()
+                .type("message")
+                .from(from)
+                .text(new MarkdownTemplate(base).create())
+                .build();
     }
 
     private String token() {
@@ -81,7 +83,9 @@ public class SkypeClient implements Notifier {
     }
 
     private String host() {
-        return skype.serviceUrl().substring(0, 23);
+        return skype.getServiceUrl().substring(0, skype.getServiceUrl().contains("/")
+                ? skype.getServiceUrl().indexOf("/") :
+                skype.getServiceUrl().length());
     }
 
     private String contentUrl() {

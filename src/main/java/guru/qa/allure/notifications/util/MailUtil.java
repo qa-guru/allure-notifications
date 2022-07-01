@@ -2,8 +2,7 @@ package guru.qa.allure.notifications.util;
 
 import guru.qa.allure.notifications.config.mail.Mail;
 import guru.qa.allure.notifications.exceptions.InvalidArgumentException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 
 import javax.mail.Authenticator;
 import javax.mail.PasswordAuthentication;
@@ -14,27 +13,26 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Properties;
-
+@Slf4j
 public class MailUtil {
-    private static final Logger LOG = LoggerFactory.getLogger("Mail Settings");
 
     public static Session session(Mail mail) {
-        LOG.info("Creating new session");
+        log.info("Creating new session");
         Properties properties = new MailProperties(mail).create();
         return Session.getDefaultInstance(
                 properties,
                 new Authenticator() {
                     @Override
                     protected PasswordAuthentication getPasswordAuthentication() {
-                        return new PasswordAuthentication(mail.username(),
-                                mail.password());
+                        return new PasswordAuthentication(mail.getUsername(),
+                                mail.getPassword());
                     }
                 }
         );
     }
 
     public static InternetAddress[] recipients(String addresses) {
-        LOG.info("Parsing addresses");
+        log.info("Parsing addresses");
         List<InternetAddress> addressList = new ArrayList<>();
 
         if (addresses == null || addresses.isEmpty()) {
@@ -46,13 +44,13 @@ public class MailUtil {
             try {
                 addressList.add(new InternetAddress(address));
             } catch (AddressException e) {
-                LOG.error("Invalid email address {}!", address);
+                log.error("Invalid email address {}!", address);
                 System.exit(1);
             }
         }
 
         InternetAddress[] recipients = addressList.toArray(new InternetAddress[0]);
-        LOG.info("Recipients: {}", Arrays.toString(recipients));
+        log.info("Recipients: {}", Arrays.toString(recipients));
         return recipients;
     }
 }
