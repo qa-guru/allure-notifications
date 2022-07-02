@@ -10,8 +10,7 @@ import guru.qa.allure.notifications.json.JSON;
  */
 public class ApplicationConfig {
     private static final ApplicationConfig INSTANCE = new ApplicationConfig();
-//    private final String configFile = System.getProperty("configFile");
-private final String configFile = "/Users/User/Documents/GitHub/allure-notifications-test/config.json";
+    private final String configFile = System.getProperty("configFile");
 
     private ApplicationConfig() {
     }
