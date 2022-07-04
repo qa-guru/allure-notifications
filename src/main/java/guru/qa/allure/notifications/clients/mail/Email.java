@@ -25,20 +25,20 @@ public class Email implements Notifier {
         letter.from(mail.from())
                 .to(mail.recipient())
                 .subject(base.project())
-                .text(htmlTemplate.create())
+                .text(htmlTemplate.create("htmlMail.ftl"))
                 .send();
     }
 
     @Override
     public void sendPhoto()  throws MessagingException {
         Chart.createChart(base);
-        String message = "<img src='cid:image'>" + htmlTemplate.create();
+        String message = "<img src='cid:image'>" + htmlTemplate.create("htmlMail.ftl");
 
         letter.from(mail.from())
                 .to(mail.recipient())
                 .subject(base.project())
                 .text(message)
-                .image("/chart.png")
+                .image("chart.png")
                 .send();
     }
 }
