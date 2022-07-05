@@ -1,30 +1,28 @@
 package guru.qa.allure.notifications.util;
 
-import org.apache.commons.io.FileUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.pdfbox.io.IOUtils;
 
-import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.Base64;
-
+@Slf4j
 public class ImageConverter {
-    private static final Logger LOG = LoggerFactory.getLogger("Img Converter");
 
     public static String convertToBase64() {
         final String fileName = "chart.png";
-        LOG.info("Converting {} to base64 String", fileName);
+        log.info("Converting {} to base64 String", fileName);
         byte[] content = new byte[0];
-        try {
-            content = FileUtils.readFileToByteArray(new File(fileName));
+        try (InputStream in = new FileInputStream(fileName)) {
+            content = IOUtils.toByteArray(in);
         } catch (IOException e) {
-            LOG.error("Unable to convert file {}!", fileName);
-            LOG.error(e.getLocalizedMessage());
+            log.error(e.getLocalizedMessage());
             System.exit(1);
         }
         String base64 = Base64.getEncoder().encodeToString(content);
-        LOG.info("Base64 content: {}", base64);
-        LOG.info("Done.");
+        log.info("Base64 content: {}", base64);
+        log.info("Done.");
         return base64;
     }
 }

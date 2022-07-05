@@ -1,33 +1,32 @@
 package guru.qa.allure.notifications.chart;
 
+import lombok.extern.slf4j.Slf4j;
 import org.knowm.xchart.PieChart;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
+import java.awt.*;
 import java.util.List;
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.File;
 
 import guru.qa.allure.notifications.config.base.Base;
-
+@Slf4j
 public class Chart {
-    private static final Logger LOG = LoggerFactory.getLogger(Chart.class);
     private final static String CHART_FILE_NAME = "chart";
 
     public static void createChart(Base base) {
-        LOG.info("Creating chart...");
+        log.info("Creating chart...");
         PieChart chart = ChartBuilder.createBaseChart(base);
-        LOG.info("Adding legend to chart...");
+        log.info("Adding legend to chart...");
         ChartLegend.addLegendTo(chart);
-        LOG.info("Adding view to chart...");
+        log.info("Adding view to chart...");
         ChartView.addViewTo(chart);
-        LOG.info("Adding series to chart...");
-        List<int[]> colors = new ChartSeries(base).addSeriesTo(chart);
-        LOG.info("Adding colors to series...");
-        ChartColors.addColorsTo(colors, chart);
+        log.info("Adding series to chart...");
+        List<Color> colors = new ChartSeries(base).addSeriesTo(chart);
+        log.info("Adding colors to series...");
+        chart.getStyler().setSeriesColors(colors.toArray(new Color[0]));
         ChartSaver.saveChart(chart);
-        LOG.info("Chart is created.");
+        log.info("Chart is created.");
 
         if (base.getLogo() != null) {
             try {
@@ -38,8 +37,10 @@ public class Chart {
                 File f = new File(CHART_FILE_NAME + ".png");
                 ImageIO.write(source, "PNG", f);
             } catch (Exception e) {
-                LOG.info("Logo file isn't existed: " + base.getLogo());
+                log.warn("Logo file isn't existed: " + base.getLogo());
             }
         }
+
+        new File(CHART_FILE_NAME + ".png").deleteOnExit();
     }
 }

@@ -25,10 +25,10 @@ public class SlackClient implements Notifier {
     @Override
     public void sendText() throws MessagingException {
         String body = String.format("channel=%s&text=%s",
-                slack.chat(), markdownTemplate.create());
+                slack.getChat(), markdownTemplate.create());
 
         Unirest.post("https://slack.com/api/chat.postMessage")
-                .header("Authorization", "Bearer " + slack.token())
+                .header("Authorization", "Bearer " + slack.getToken())
                 .header("Content-Type", Headers.URL_ENCODED.header())
                 .body(body)
                 .asString()
@@ -40,10 +40,10 @@ public class SlackClient implements Notifier {
         Chart.createChart(base);
 
         Unirest.post("https://slack.com/api/files.upload")
-                .header("Authorization", "Bearer " + slack.token())
+                .header("Authorization", "Bearer " + slack.getToken())
                 .field("file",
                         new File("chart.png"))
-                .field("channels", slack.chat())
+                .field("channels", slack.getChat())
                 .field("filename", " ")
                 .field("initial_comment", markdownTemplate.create())
                 .asString()

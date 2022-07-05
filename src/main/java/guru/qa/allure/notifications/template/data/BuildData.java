@@ -2,8 +2,7 @@ package guru.qa.allure.notifications.template.data;
 
 import guru.qa.allure.notifications.config.base.Base;
 import guru.qa.allure.notifications.formatters.Formatters;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -13,9 +12,8 @@ import java.util.Map;
  * @since 4.0
  * Utility class for mapping build data for template.
  */
+@Slf4j
 public class BuildData implements TemplateData {
-    private static final Logger LOG =
-            LoggerFactory.getLogger(BuildData.class);
 
     private final Base base;
 
@@ -25,13 +23,13 @@ public class BuildData implements TemplateData {
 
     @Override
     public Map<String, Object> map() {
-        LOG.info("Collecting build data for template");
+        log.info("Collecting build data for template");
         Map<String, Object> info = new HashMap<>();
-        info.put("env", base.environment());
-        info.put("comm", base.comment());
+        info.put("env", base.getEnvironment());
+        info.put("comm", base.getComment());
         info.put("reportLink",
-                new Formatters().formatReportLink(base.reportLink()));
-        LOG.info("Build data: {}", info);
+                new Formatters().formatReportLink(base.getReportLink()));
+        log.info("Build data: {}", info);
         return info;
     }
 }

@@ -16,14 +16,14 @@ public class ClientFactory {
             new EnumMap<>(Messenger.class);
 
     static {
-        factory.put(Messenger.telegram, config -> new TelegramClient(config.base(), config.telegram()));
-        factory.put(Messenger.slack, config -> new SlackClient(config.base(), config.slack()));
-        factory.put(Messenger.email, config -> new Email(config.base(), config.mail()));
-        factory.put(Messenger.mattermost, config -> new MattermostClient(config.base(), config.mattermost()));
-        factory.put(Messenger.skype, config -> new SkypeClient(config.base(), config.skype()));
+        factory.put(Messenger.telegram, config -> new TelegramClient(config.getBase(), config.getTelegram()));
+        factory.put(Messenger.slack, config -> new SlackClient(config.getBase(), config.getSlack()));
+        factory.put(Messenger.email, config -> new Email(config.getBase(), config.getMail()));
+        factory.put(Messenger.mattermost, config -> new MattermostClient(config.getBase(), config.getMattermost()));
+        factory.put(Messenger.skype, config -> new SkypeClient(config.getBase(), config.getSkype()));
     }
 
     public static Notifier from(Config config) {
-        return factory.get(config.base().messenger()).apply(config);
+        return factory.get(config.getBase().getMessenger()).apply(config);
     }
 }

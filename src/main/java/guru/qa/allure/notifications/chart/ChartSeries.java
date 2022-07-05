@@ -7,11 +7,11 @@ import guru.qa.allure.notifications.model.legend.Legend;
 import guru.qa.allure.notifications.model.summary.Summary;
 import org.knowm.xchart.PieChart;
 
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 
 public class ChartSeries {
-    private final List<int[]> colors = new ArrayList<>();
     private final LegendMapper legendMapper;
     private final SummaryMapper summaryMapper;
 
@@ -20,48 +20,25 @@ public class ChartSeries {
         this.summaryMapper = new SummaryMapper(base);
     }
 
-    public List<int[]> addSeriesTo(PieChart chart) {
+    public List<Color> addSeriesTo(PieChart chart) {
+        List<Color> colors = new ArrayList<>();
         final Summary summary = summaryMapper.map();
         final Legend legend = legendMapper.map();
 
-        final long passed = summary.statistic().passed();
-        final long failed = summary.statistic().failed();
-        final long broken = summary.statistic().broken();
-        final long skipped = summary.statistic().skipped();
-        final long unknown = summary.statistic().unknown();
-
-        if (passed != 0) {
-            chart.addSeries(String.format("%d %s", passed,
-                    legend.passed()), passed);
-            colors.add(Color.GREEN.rgb);
-        }
-        if (failed != 0) {
-            chart.addSeries(String.format("%d %s", failed,
-                    legend.failed()), failed);
-            colors.add(Color.RED.rgb);
-        }
-        if (broken != 0) {
-            chart.addSeries(String.format("%d %s", broken,
-                    legend.broken()), broken);
-            colors.add(Color.YELLOW.rgb);
-        }
-        if (skipped != 0) {
-            chart.addSeries(String.format("%d %s", skipped,
-                    legend.skipped()), skipped);
-            colors.add(Color.GRAY.rgb);
-        }
-        if (unknown != 0) {
-            chart.addSeries(String.format("%d %s", unknown,
-                    legend.unknown()), unknown);
-            colors.add(Color.PURPLE.rgb);
-        }
-
-        colors.add(Color.BLACK.rgb);
-        colors.add(Color.BLACK.rgb);
-        colors.add(Color.BLACK.rgb);
-        colors.add(Color.BLACK.rgb);
-        colors.add(Color.BLACK.rgb);
+        addSeries(chart, colors, summary.getStatistic().getPassed(), legend.getPassed(), Color.GREEN);
+        addSeries(chart, colors, summary.getStatistic().getFailed(), legend.getFailed(), Color.RED);
+        addSeries(chart, colors, summary.getStatistic().getBroken(), legend.getBroken(), Color.YELLOW);
+        addSeries(chart, colors, summary.getStatistic().getSkipped(), legend.getSkipped(), Color.GRAY);
+        addSeries(chart, colors, summary.getStatistic().getUnknown(), legend.getUnknown(), Color.MAGENTA);
 
         return colors;
+    }
+
+    private void addSeries(PieChart chart, List<Color> colors, Integer value, String legend, Color color) {
+        if (value != 0) {
+            chart.addSeries(String.format("%d %s", value,
+                    legend), value);
+            colors.add(color);
+        }
     }
 }

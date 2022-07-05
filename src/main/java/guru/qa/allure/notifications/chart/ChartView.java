@@ -15,9 +15,6 @@ public class ChartView {
                 .setDonutThickness(.2);
 
         chart.getStyler()
-                .setAnnotationDistance(.63);
-
-        chart.getStyler()
                 .setChartPadding(0)
                 .setPlotContentSize(.9)
                 .setPlotBorderColor(WHITE)

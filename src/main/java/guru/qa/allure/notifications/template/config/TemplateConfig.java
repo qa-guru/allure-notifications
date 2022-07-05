@@ -2,8 +2,7 @@ package guru.qa.allure.notifications.template.config;
 
 import freemarker.template.Configuration;
 import guru.qa.allure.notifications.template.MessageTemplate;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 
 import static freemarker.template.Configuration.VERSION_2_3_31;
 
@@ -12,21 +11,20 @@ import static freemarker.template.Configuration.VERSION_2_3_31;
  * @since 4.0
  * Utility class for template configuration.
  */
+@Slf4j
 public class TemplateConfig {
-    private static final Logger LOG =
-            LoggerFactory.getLogger(TemplateConfig.class);
 
     public Configuration configure() {
-        LOG.info("Configuring template engine...");
+        log.info("Configuring template engine...");
         final Configuration config =
                 new Configuration(VERSION_2_3_31);
-        LOG.info("Set directory for templates loading...");
+        log.info("Set directory for templates loading...");
         config.setClassForTemplateLoading(MessageTemplate.class, "/templates");
-        LOG.info("Done.");
-        LOG.info("Set UTF-8 encoding...");
+        log.info("Done.");
+        log.info("Set UTF-8 encoding...");
         config.setDefaultEncoding("UTF-8");
-        LOG.info("Done.");
-        LOG.info("Configuration is complete.");
+        log.info("Done.");
+        log.info("Configuration is complete.");
         return config;
     }
 }

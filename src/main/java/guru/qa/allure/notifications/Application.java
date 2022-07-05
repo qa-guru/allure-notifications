@@ -7,35 +7,32 @@ import guru.qa.allure.notifications.exceptions.MessagingException;
 import guru.qa.allure.notifications.util.LogInterceptor;
 import guru.qa.allure.notifications.util.ProxyManager;
 import kong.unirest.Unirest;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 public class Application {
-    private static final Logger LOG = LoggerFactory.getLogger("APP");
 
     public static void main(String[] args) {
         startApplication();
     }
 
     private static void startApplication() {
-        LOG.info("Start...");
+        log.info("Start...");
         Config config = ApplicationConfig.newInstance().readConfig();
         Unirest.config()
                 .interceptor(new LogInterceptor());
 
-        ProxyManager.manageProxy(config.proxy());
+        ProxyManager.manageProxy(config.getProxy());
 
         try {
             Notification.send(config);
-        }
-        catch (MessagingException e) {
-            LOG.error(e.getMessage(), e);
+        } catch (MessagingException e) {
+            log.error(e.getMessage(), e);
             System.exit(1);
-        }
-        finally {
+        } finally {
             Unirest.shutDown();
         }
 
-        LOG.info("Finish.");
+        log.info("Finish.");
     }
 }

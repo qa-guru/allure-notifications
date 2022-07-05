@@ -1,6 +1,11 @@
 package guru.qa.allure.notifications.clients.skype.model;
 
+import lombok.Builder;
+import lombok.Data;
+
+@Data
+@Builder
 public class From {
-    public String id;
-    public String name;
+    private String id;
+    private String name;
 }

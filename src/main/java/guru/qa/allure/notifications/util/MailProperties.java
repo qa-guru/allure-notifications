@@ -13,10 +13,10 @@ public class MailProperties {
 
     public Properties create() {
         Properties properties = new Properties();
-        properties.put("mail.smtp.from", mail.from());
-        properties.put("mail.smtp.host", mail.host());
-        properties.put("mail.smtp.ssl.enable", mail.enableSSL());
-        properties.put("mail.smtp.port", mail.port());
+        properties.put("mail.smtp.from", mail.getFrom());
+        properties.put("mail.smtp.host", mail.getHost());
+        properties.put("mail.smtp.ssl.enable", mail.getEnableSSL());
+        properties.put("mail.smtp.port", mail.getPort());
         properties.put("mail.smtp.auth", "true");
         return properties;
     }
