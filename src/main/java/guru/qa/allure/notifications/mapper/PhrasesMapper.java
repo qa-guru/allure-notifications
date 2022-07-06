@@ -4,17 +4,14 @@ import guru.qa.allure.notifications.config.base.Base;
 import guru.qa.allure.notifications.json.JSON;
 import guru.qa.allure.notifications.model.phrases.Phrases;
 import guru.qa.allure.notifications.util.ResourcesUtil;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
+import lombok.extern.slf4j.Slf4j;
 /**
  * @author kadehar
  * @since 4.0
  * Utility class for mapping phrases *.json to Phrases object.
  */
+@Slf4j
 public class PhrasesMapper {
-    private static final Logger LOG =
-            LoggerFactory.getLogger(PhrasesMapper.class);
 
     private final Base base;
 
@@ -23,10 +20,10 @@ public class PhrasesMapper {
     }
 
     public Phrases map() {
-        String lang = base.language() + ".json";
+        String lang = base.getLanguage() + ".json";
         String fullPath = new ResourcesUtil()
                 .resourcesPath("/phrases/" + lang);
-        LOG.info("Mapping {} to Phrases object", fullPath);
+        log.info("Mapping {} to Phrases object", fullPath);
         return new JSON().parse(fullPath, Phrases.class);
     }
 }

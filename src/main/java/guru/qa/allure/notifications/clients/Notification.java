@@ -1,24 +1,19 @@
 package guru.qa.allure.notifications.clients;
 
 import guru.qa.allure.notifications.config.Config;
-import guru.qa.allure.notifications.config.ApplicationConfig;
-import guru.qa.allure.notifications.config.base.Base;
 import guru.qa.allure.notifications.exceptions.MessagingException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
+import lombok.extern.slf4j.Slf4j;
+@Slf4j
 public class Notification {
-    private static final Logger LOG =
-            LoggerFactory.getLogger(Notification.class);
 
     public static void send(Config config) throws MessagingException {
         final Notifier notifier = ClientFactory.from(config);
-        LOG.info("Sending message...");
-        if (config.base().enableChart()) {
+        log.info("Sending message...");
+        if (config.getBase().getEnableChart()) {
             notifier.sendPhoto();
         } else {
             notifier.sendText();
         }
-        LOG.info("Done.");
+        log.info("Done.");
     }
 }

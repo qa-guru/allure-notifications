@@ -22,10 +22,10 @@ public class Email implements Notifier {
 
     @Override
     public void sendText() throws MessagingException {
-        letter.from(mail.from())
-                .to(mail.recipient())
-                .subject(base.project())
-                .text(htmlTemplate.create("htmlMail.ftl"))
+        letter.from(mail.getFrom())
+                .to(mail.getRecipient())
+                .subject(base.getProject())
+                .text(htmlTemplate.create())
                 .send();
     }
 
@@ -34,9 +34,9 @@ public class Email implements Notifier {
         Chart.createChart(base);
         String message = "<img src='cid:image'>" + htmlTemplate.create("htmlMail.ftl");
 
-        letter.from(mail.from())
-                .to(mail.recipient())
-                .subject(base.project())
+        letter.from(mail.getFrom())
+                .to(mail.getRecipient())
+                .subject(base.getProject())
                 .text(message)
                 .image("chart.png")
                 .send();

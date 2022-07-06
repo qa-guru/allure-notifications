@@ -1,7 +1,12 @@
 package guru.qa.allure.notifications.clients.skype.model;
 
+import lombok.Builder;
+import lombok.Data;
+
+@Data
+@Builder
 public class Attachment {
-    public String contentType;
-    public String contentUrl;
-    public String name;
+    private String contentType;
+    private String contentUrl;
+    private String name;
 }

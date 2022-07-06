@@ -11,8 +11,8 @@ public class SkypeAuth {
         String body = Unirest.post("https://login.microsoftonline.com/botframework.com/oauth2/v2.0/token")
                 .header("Content-Type", Headers.URL_ENCODED.header())
                 .field("grant_type", "client_credentials")
-                .field("client_id", skype.appId())
-                .field("client_secret", skype.appSecret())
+                .field("client_id", skype.getAppId())
+                .field("client_secret", skype.getAppSecret())
                 .field("scope", "https://api.botframework.com/.default")
                 .asString()
                 .getBody();

@@ -4,17 +4,15 @@ import guru.qa.allure.notifications.config.base.Base;
 import guru.qa.allure.notifications.json.JSON;
 import guru.qa.allure.notifications.model.legend.Legend;
 import guru.qa.allure.notifications.util.ResourcesUtil;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * @author kadehar
  * @since 4.0
  * Utility class for mapping legend *.json to Legend object.
  */
+@Slf4j
 public class LegendMapper {
-    private static final Logger LOG =
-            LoggerFactory.getLogger(LegendMapper.class);
 
     private final Base base;
 
@@ -23,10 +21,10 @@ public class LegendMapper {
     }
 
     public Legend map() {
-        String lang = base.language() + ".json";
+        String lang = base.getLanguage() + ".json";
         String fullPath = new ResourcesUtil()
                 .resourcesPath("/legend/" + lang);
-        LOG.info("Mapping {} to Legend object", fullPath);
+        log.info("Mapping {} to Legend object", fullPath);
         return new JSON().parse(fullPath, Legend.class);
     }
 }

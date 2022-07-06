@@ -1,21 +1,18 @@
 package guru.qa.allure.notifications.template.data;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.util.HashMap;
 import java.util.Map;
 
 import guru.qa.allure.notifications.config.base.Base;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * @author kadehar
  * @since 1.0
  * Utility class for mapping template data for template.
  */
+@Slf4j
 public class MessageData {
-    private static final Logger LOG =
-            LoggerFactory.getLogger(MessageData.class);
 
     private final BuildData buildData;
     private final SummaryData summaryData;
@@ -29,11 +26,11 @@ public class MessageData {
 
     public Map<String, Object> values() {
         Map<String, Object> data = new HashMap<>();
-        LOG.info("Collecting template data");
+        log.info("Collecting template data");
         data.putAll(buildData.map());
         data.putAll(summaryData.map());
         data.putAll(phrasesData.map());
-        LOG.info("Template data: {}", data);
+        log.info("Template data: {}", data);
         return data;
     }
 }

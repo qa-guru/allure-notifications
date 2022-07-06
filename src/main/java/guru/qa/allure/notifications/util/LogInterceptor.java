@@ -2,14 +2,12 @@ package guru.qa.allure.notifications.util;
 
 import guru.qa.allure.notifications.json.JSON;
 import kong.unirest.*;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 
 import static guru.qa.allure.notifications.config.enums.Headers.URL_ENCODED;
 
+@Slf4j
 public class LogInterceptor implements Interceptor {
-    private final Logger log =
-            LoggerFactory.getLogger(LogInterceptor.class);
     private final JSON json = new JSON();
 
     @Override

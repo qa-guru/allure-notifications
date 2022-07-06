@@ -28,13 +28,13 @@ public class MattermostClient implements Notifier {
 
     @Override
     public void sendText() throws MessagingException {
-        body.put("channel_id", mattermost.chat());
+        body.put("channel_id", mattermost.getChat());
         body.put("message", new MarkdownTemplate(base).create());
 
         Unirest.post("https://{uri}/api/v4/posts")
-                .routeParam("uri", mattermost.url())
+                .routeParam("uri", mattermost.getUrl())
                 .header("Authorization", "Bearer " +
-                        mattermost.token())
+                        mattermost.getToken())
                 .header("Content-Type", Headers.JSON.header())
                 .body(body)
                 .asString()
@@ -46,10 +46,10 @@ public class MattermostClient implements Notifier {
         Chart.createChart(base);
 
         String response = Unirest.post("https://{uri}/api/v4/files")
-                .routeParam("uri", mattermost.url())
+                .routeParam("uri", mattermost.getUrl())
                 .header("Authorization", "Bearer " +
-                        mattermost.token())
-                .queryString("channel_id", mattermost.chat())
+                        mattermost.getToken())
+                .queryString("channel_id", mattermost.getChat())
                 .queryString("filename", "chart")
                 .field("chart",
                         new File("chart.png"))

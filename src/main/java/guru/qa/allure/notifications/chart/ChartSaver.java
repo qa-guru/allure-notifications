@@ -1,25 +1,23 @@
 package guru.qa.allure.notifications.chart;
 
+import lombok.extern.slf4j.Slf4j;
 import org.knowm.xchart.BitmapEncoder;
 import org.knowm.xchart.PieChart;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 
 import static org.knowm.xchart.BitmapEncoder.BitmapFormat.PNG;
-
+@Slf4j
 public class ChartSaver {
-    private static final Logger LOG = LoggerFactory.getLogger("Chart Saver");
 
     public static void saveChart(PieChart chart) {
         final String name = "chart";
         try {
-            LOG.info("Trying to save chart as {}.png...", name);
+            log.info("Trying to save chart as {}.png...", name);
             BitmapEncoder.saveBitmap(chart, name, PNG);
-            LOG.info("Done.");
+            log.info("Done.");
         } catch (IOException e) {
-            LOG.error("Unable to save chart! {}", e.getCause().getLocalizedMessage());
+            log.error("Unable to save chart! {}", e.getCause().getLocalizedMessage());
             System.exit(1);
         }
     }
