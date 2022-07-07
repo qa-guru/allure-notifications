@@ -32,8 +32,7 @@ public class Email implements Notifier {
     @Override
     public void sendPhoto()  throws MessagingException {
         Chart.createChart(base);
-        String message = "<img src='cid:image'>" + htmlTemplate.create("htmlMail.ftl");
-
+        String message = "<img src='cid:image'/><br/>" + htmlTemplate.create("htmlMail.ftl");
         letter.from(mail.getFrom())
                 .to(mail.getRecipient())
                 .subject(base.getProject())

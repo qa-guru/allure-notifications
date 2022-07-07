@@ -1,15 +1,13 @@
 <h1>Allure notifications :sun_with_face:</h1>
 <h6>for telegram, slack, skype, email, mattermost</h6>
 
-<h3>Languages:</h3>
-
-![](readme_images/languages/United-Kingdom.png) ![](readme_images/languages/France.png) ![](readme_images/languages/Russia.png) ![](readme_images/languages/Ukraine.png)</h5>
+<h3>Languages: :uk: :fr: :ru: :ukraine:</h3>
 
 | Telegram | Slack |
 :-------------------------:|:-------------------------:
 ![shakal_screenshot](readme_images/telegram-en.png) | ![shakal_screenshot](readme_images/slack-en.png)
 | **Mattermost** | **Email** |
-![shakal_screenshot](readme_images/mattermost-ru.png) | ![shakal_screenshot](readme_images/email_en.png) 
+![shakal_screenshot](readme_images/mattermost-ru.png) | ![shakal_screenshot](readme_images/email_en.png)
 | **Skype** | **Icq**  |
 | Done | Wat? lol |
 
@@ -24,9 +22,9 @@
 
 
 <h6>CommandLine options</h6>
-All keys should be used with `-D`: <br/> 
+All keys should be used with `-D`: <br/>
 
-| key | description | 
+| key | description |
 |:---:| :---------: |
 | configFile | Path to JSON-config file |
 
