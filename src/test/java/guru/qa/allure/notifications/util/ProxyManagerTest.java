@@ -3,6 +3,8 @@ package guru.qa.allure.notifications.util;
 import guru.qa.allure.notifications.config.proxy.Proxy;
 import kong.unirest.Config;
 import kong.unirest.Unirest;
+
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -11,7 +13,7 @@ import org.mockito.Mockito;
 import java.util.UUID;
 import java.util.stream.Stream;
 
-
+@Disabled
 class ProxyManagerTest {
 
     public static Stream<Arguments> proxySource() {
