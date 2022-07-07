@@ -11,5 +11,5 @@
     <#if skipped != 0 >*${totalSkipped}:* ${skipped} </#if>
     <#if passedPercentage != 0 >*% ${ofPassedTests}:* ${passedPercentage} </#if>
     <#if failedPercentage != 0 >*% ${ofFailedTests}:* ${failedPercentage} </#if>
-    *${reportAvailableAtLink}:* ${reportLink}
+    <#if reportLink??>*${reportAvailableAtLink}:* ${reportLink}</#if>
 </#compress>

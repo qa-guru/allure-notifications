@@ -43,6 +43,6 @@ public class Formatters {
     }
 
     public String formatReportLink(String link) {
-        return link.endsWith("/") ? link + "allure" : link;
+        return link != null && link.endsWith("/") ? link + "allure" : link;
     }
 }
