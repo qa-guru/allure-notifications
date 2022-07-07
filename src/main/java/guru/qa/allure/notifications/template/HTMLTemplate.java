@@ -15,7 +15,7 @@ public class HTMLTemplate {
         this.base = base;
     }
     
-    public String create() throws MessageBuildException  {
-        return new MessageTemplate(base).of("html.ftl");
+    public String create(String template) throws MessageBuildException  {
+        return new MessageTemplate(base).of(template);
     }
 }

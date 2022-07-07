@@ -29,7 +29,7 @@ public class TelegramClient implements Notifier {
                 .header("Content-Type", Headers.URL_ENCODED.header())
                 .field("chat_id", telegram.chat())
                 .field("reply_to_message_id", telegram.replyTo() + "")
-                .field("text", htmlTemplate.create())
+                .field("text", htmlTemplate.create("html.ftl"))
                 .field("parse_mode", "HTML")
                 .asString()
                 .getBody();
@@ -45,7 +45,7 @@ public class TelegramClient implements Notifier {
                         new File("chart.png"))
                 .field("chat_id", telegram.chat())
                 .field("reply_to_message_id", telegram.replyTo())
-                .field("caption", htmlTemplate.create())
+                .field("caption", htmlTemplate.create("html.ftl"))
                 .field("parse_mode", "HTML")
                 .asString()
                 .getBody();
