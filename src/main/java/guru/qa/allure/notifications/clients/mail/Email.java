@@ -32,7 +32,7 @@ public class Email implements Notifier {
     @Override
     public void sendPhoto()  throws MessagingException {
         Chart.createChart(base);
-        String message = "<img src='cid:image'>" + htmlTemplate.create();
+        String message = "<img src='cid:image'/><br/>" + htmlTemplate.create();
 
         letter.from(mail.getFrom())
                 .to(mail.getRecipient())
