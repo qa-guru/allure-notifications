@@ -25,7 +25,7 @@ public class Email implements Notifier {
         letter.from(mail.getFrom())
                 .to(mail.getRecipient())
                 .subject(base.getProject())
-                .text(htmlTemplate.create())
+                .text(htmlTemplate.create("htmlMail.ftl"))
                 .send();
     }
 
