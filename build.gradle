@@ -12,38 +12,31 @@ repositories {
 }
 
 dependencies {
+    def lombok = '1.18.24'
+    def slf4j = '1.7.36'
 
-    def slf4j_version = "1.7.36"
-    def javax_mail_version = "1.6.2"
-    def unirest_version = '3.13.10'
-    def freemarker_version = "2.3.31"
-    def xchart_version = '3.8.1'
-    def jsonpath_version = "2.7.0"
-    def commons_io_version = '20030203.000550'
-    def log4j_version = "2.7.1"
-    def lombok = "1.18.24"
-    def junit_jupiter = "5.7.0"
+    annotationProcessor("org.projectlombok:lombok:$lombok")
+    compileOnly("org.projectlombok:lombok:$lombok")
+    implementation("org.slf4j:slf4j-log4j12:$slf4j")  // SLF4J binding for Log4J 1.2
+    implementation("org.slf4j:jul-to-slf4j:$slf4j")   // Java Util Logging -> SLF4J
+    implementation("org.slf4j:jcl-over-slf4j:$slf4j") // commons-logging -> SLF4J
+    implementation('com.sun.mail:javax.mail:1.6.2')
+    implementation('com.konghq:unirest-java:3.13.10')
+    implementation('org.freemarker:freemarker:2.3.31')
+    implementation('org.knowm.xchart:xchart:3.8.1')
+    implementation('com.jayway.jsonpath:json-path:2.7.0')
+    implementation('commons-io:commons-io:2.11.0')
+    implementation('org.apache.commons:commons-lang3:3.12.0')
 
-    implementation(
-            "org.slf4j:slf4j-log4j12:$slf4j_version",
-            "com.sun.mail:javax.mail:$javax_mail_version",
-            "com.konghq:unirest-java:$unirest_version",
-            "org.freemarker:freemarker:$freemarker_version",
-            "org.knowm.xchart:xchart:$xchart_version",
-            "com.jayway.jsonpath:json-path:$jsonpath_version",
-            "commons-io:commons-io:$commons_io_version",
+    testImplementation('org.junit.jupiter:junit-jupiter:5.8.2')
+    testImplementation('org.springframework:spring-test:5.3.21') {
+        exclude module: 'spring-jcl' // Use jcl-over-slf4j bridge instead
+    }
+    testImplementation('org.mockito:mockito-junit-jupiter:4.6.1')
+}
 
-            compileOnly("org.springframework.boot:spring-boot-starter-log4j2:$log4j_version"),
-            annotationProcessor("org.projectlombok:lombok:$lombok"),
-            compileOnly("org.projectlombok:lombok:$lombok"),
-            implementation("org.junit.jupiter:junit-jupiter:$junit_jupiter"),
-            implementation('org.apache.commons:commons-lang3:3.12.0'),
-
-    )
-    testImplementation 'org.springframework.boot:spring-boot-starter-test:2.7.1'
-    implementation 'org.springframework:spring-context:5.3.21'
-    testImplementation 'org.mockito:mockito-all:1.10.19'
-
+configurations.all {
+    exclude module: 'commons-logging' // Use jcl-over-slf4j bridge instead
 }
 
 tasks.withType(JavaCompile) {
