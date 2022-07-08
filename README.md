@@ -82,7 +82,7 @@ Here you can find config file structure for lib configuration.
     "port": "",
     "username": "",
     "password": "",
-    "enableSSL": false,
+    "securityProtocol": null,
     "from": "",
     "recipient": ""
   },
@@ -121,3 +121,17 @@ Example for Telegram messenger:
   }
 }
 ```
+
+<h6>Email client configuration</h6>
+
+ - `host` - the SMTP server to connect to.
+ - `port` - the SMTP server port to connect to.
+ - `username` - user to authenticate to the SMTP server.
+ - `password` - user's password for authentication.
+ - `securityProtocol` (optional: can be omitted or set to `null`) - one of the following security protocols:
+   - `SSL` - use SSL to connect (make sure the SSL port is used).
+   - `STARTTLS` - use of the STARTTLS command (if supported by the server) to switch the connection to
+   a TLS-protected connection before issuing any login commands. If the server does not support STARTTLS,
+   the connection continues without the use of TLS.
+ - `from` - email address to use for SMTP MAIL command, this sets the envelope return address.
+ - `recipient` - comma-separated list of recipient email addresses.

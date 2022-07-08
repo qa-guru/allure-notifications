@@ -18,8 +18,8 @@ public class Mail {
     private String username;
     @SerializedName("password")
     private String password;
-    @SerializedName("enableSSL")
-    private Boolean enableSSL;
+    @SerializedName("securityProtocol")
+    private SecurityProtocol securityProtocol;
     @SerializedName("from")
     private String from;
     @SerializedName("recipient")
