@@ -2,6 +2,7 @@ package guru.qa.allure.notifications.template;
 
 import guru.qa.allure.notifications.config.base.Base;
 import guru.qa.allure.notifications.exceptions.MessageBuildException;
+import guru.qa.allure.notifications.template.data.MessageData;
 
 /**
  * @author kadehar
@@ -9,13 +10,13 @@ import guru.qa.allure.notifications.exceptions.MessageBuildException;
  * Utility class for HTML template creation.
  */
 public class HTMLTemplate {
-    private final Base base;
+    private final MessageData messageData;
 
-    public HTMLTemplate(Base base) {
-        this.base = base;
+    public HTMLTemplate(MessageData messageData) {
+        this.messageData = messageData;
     }
     
     public String create() throws MessageBuildException  {
-        return new MessageTemplate(base).of("html.ftl");
+        return new MessageTemplate(messageData).of("html.ftl");
     }
 }

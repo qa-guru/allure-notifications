@@ -6,6 +6,7 @@ import guru.qa.allure.notifications.config.base.Base;
 import guru.qa.allure.notifications.config.mail.Mail;
 import guru.qa.allure.notifications.exceptions.MessagingException;
 import guru.qa.allure.notifications.template.HTMLTemplate;
+import guru.qa.allure.notifications.template.data.MessageData;
 
 public class Email implements Notifier {
     private final Base base;
@@ -13,11 +14,11 @@ public class Email implements Notifier {
     private final Letter letter;
     private final HTMLTemplate htmlTemplate;
 
-    public Email(Base base, Mail mail) {
+    public Email(Base base, MessageData messageData, Mail mail) {
         this.base = base;
         this.mail = mail;
         this.letter = new Letter(mail);
-        this.htmlTemplate = new HTMLTemplate(base);
+        this.htmlTemplate = new HTMLTemplate(messageData);
     }
 
     @Override

@@ -7,6 +7,7 @@ import guru.qa.allure.notifications.config.enums.Headers;
 import guru.qa.allure.notifications.config.slack.Slack;
 import guru.qa.allure.notifications.exceptions.MessagingException;
 import guru.qa.allure.notifications.template.MarkdownTemplate;
+import guru.qa.allure.notifications.template.data.MessageData;
 import kong.unirest.Unirest;
 
 import java.io.File;
@@ -16,10 +17,10 @@ public class SlackClient implements Notifier {
     private final Slack slack;
     private final MarkdownTemplate markdownTemplate;
 
-    public SlackClient(Base base, Slack slack) {
+    public SlackClient(Base base, MessageData messageData, Slack slack) {
         this.base = base;
         this.slack = slack;
-        this.markdownTemplate = new MarkdownTemplate(base);
+        this.markdownTemplate = new MarkdownTemplate(messageData);
     }
 
     @Override
