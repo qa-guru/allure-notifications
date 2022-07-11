@@ -10,8 +10,6 @@
     "totalFailed": "Total a échoué",
     "totalBroken": "Total cassé",
     "totalUnknown": "Total inconnu",
-    "totalSkipped": "Total ignoré",
-    "ofPassedTests": "de test réussi",
-    "ofFailedTests": "d'échecs de tests"
+    "totalSkipped": "Total ignoré"
   }
 }

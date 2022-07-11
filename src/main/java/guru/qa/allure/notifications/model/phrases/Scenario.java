@@ -24,8 +24,4 @@ public class Scenario {
     private String totalUnknown;
     @SerializedName("totalSkipped")
     private String totalSkipped;
-    @SerializedName("ofPassedTests")
-    private String ofPassedTests;
-    @SerializedName("ofFailedTests")
-    private String ofFailedTests;
 }

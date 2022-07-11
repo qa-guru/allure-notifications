@@ -39,8 +39,6 @@ public class PhrasesData implements TemplateData {
         info.put("totalBroken", phrases.getScenario().getTotalBroken());
         info.put("totalUnknown", phrases.getScenario().getTotalUnknown());
         info.put("totalSkipped", phrases.getScenario().getTotalSkipped());
-        info.put("ofPassedTests", phrases.getScenario().getOfPassedTests());
-        info.put("ofFailedTests", phrases.getScenario().getOfFailedTests());
         log.info("Phrases data: {}", info);
         return info;
     }

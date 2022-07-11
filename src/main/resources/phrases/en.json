@@ -10,8 +10,6 @@
     "totalFailed": "Total failed",
     "totalBroken": "Total broken",
     "totalUnknown": "Total unknown",
-    "totalSkipped": "Total skipped",
-    "ofPassedTests": "of passed tests",
-    "ofFailedTests": "of failed tests"
+    "totalSkipped": "Total skipped"
   }
 }
