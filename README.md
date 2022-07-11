@@ -1,7 +1,7 @@
 <h1>Allure notifications :sun_with_face:</h1>
 <h6>for telegram, slack, skype, email, mattermost</h6>
 
-<h3>Languages: :uk: :fr: :ru: :ukraine:</h3>
+<h3>Languages: :uk: :fr: :ru: :ukraine: :belarus: :cn:</h3>
 
 | Telegram | Slack |
 :-------------------------:|:-------------------------:
