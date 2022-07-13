@@ -10,8 +10,6 @@
     "totalFailed": "Всего упавших тестов",
     "totalBroken": "Всего сломанных тестов",
     "totalUnknown": "Всего неизвестных тестов",
-    "totalSkipped": "Всего пропущенных тестов",
-    "ofPassedTests": "прошедших тестов",
-    "ofFailedTests": "упавших тестов"
+    "totalSkipped": "Всего пропущенных тестов"
   }
 }

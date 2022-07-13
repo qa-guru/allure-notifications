@@ -10,8 +10,6 @@
     "totalFailed": "失敗總數",
     "totalBroken": "損壞總數",
     "totalUnknown": "未知錯誤總數",
-    "totalSkipped": "跳過總數",
-    "ofPassedTests": "成功的測試",
-    "ofFailedTests": "不成功的測試"
+    "totalSkipped": "跳過總數"
   }
 }

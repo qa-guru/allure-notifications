@@ -1,15 +1,15 @@
 <#compress>
-<b>${results}:</b>
-    <b>${environment}:</b> ${env}
-    <b>${comment}:</b> ${comm}
-    <b>${duration}:</b> ${time}
-    <b>${totalScenarios}:</b> ${total}
-    <#if passed != 0 ><b>${totalPassed}:</b> ${passed} </#if>
-    <#if failed != 0 ><b>${totalFailed}:</b> ${failed} </#if>
-    <#if broken != 0 ><b>${totalBroken}:</b> ${broken} </#if>
-    <#if unknown != 0 ><b>${totalUnknown}:</b> ${unknown} </#if>
-    <#if skipped != 0 ><b>${totalSkipped}:</b> ${skipped} </#if>
-    <#if passedPercentage != 0 ><b>% ${ofPassedTests}:</b> ${passedPercentage} </#if>
-    <#if failedPercentage != 0 ><b>% ${ofFailedTests}:</b> ${failedPercentage} </#if>
-    <#if reportLink??><b>${reportAvailableAtLink}:</b> ${reportLink}</#if>
+    <h3>${results}:</h3>
+    <b>${environment}: </b>${env}<br/>
+    <b>${comment}: </b>${comm}<br/>
+    <b>${duration}: </b>${time}<br/>
+    <b>${totalScenarios}: </b>${total}
+    <ul>
+        <#if passed != 0 ><li><b>${totalPassed}: </b>${passed} (${passedPercentage} %)</li></#if>
+        <#if failed != 0 ><li><b>${totalFailed}: </b>${failed} (${failedPercentage} %)</li></#if>
+        <#if broken != 0 ><li><b>${totalBroken}: </b>${broken}</li></#if>
+        <#if unknown != 0 ><li><b>${totalUnknown}: </b>${unknown}</li></#if>
+        <#if skipped != 0 ><li><b>${totalSkipped}: </b>${skipped}</li></#if>
+    </ul>
+    <#if reportLink??><b>${reportAvailableAtLink}:</b> <a href=${reportLink}>${reportLink}</a></#if>
 </#compress>

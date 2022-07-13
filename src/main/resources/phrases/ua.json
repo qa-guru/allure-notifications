@@ -10,8 +10,6 @@
     "totalFailed": "Усього невдалих тестів",
     "totalBroken": "Усього зламаних тестів",
     "totalUnknown": "Усього невідомих тестів",
-    "totalSkipped": "Всього пропущених тестів",
-    "ofPassedTests": "успішних тестів",
-    "ofFailedTests": "невдалих тестів"
+    "totalSkipped": "Всього пропущених тестів"
   }
 }
