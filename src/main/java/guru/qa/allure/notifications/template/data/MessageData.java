@@ -14,18 +14,26 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class MessageData {
 
+    private final BuildData buildData;
+    private final SummaryData summaryData;
+    private final PhrasesData phrasesData;
     private Map<String, Object> data;
 
     public MessageData(Base base) {
-        this.data = new HashMap<>();
-        log.info("Collecting template data");
-        this.data.putAll(new BuildData(base).map());
-        this.data.putAll(new SummaryData(base).map());
-        this.data.putAll(new PhrasesData(base).map());
-        log.info("Template data: {}", data);
+        this.buildData = new BuildData(base);
+        this.summaryData = new SummaryData(base);
+        this.phrasesData = new PhrasesData(base);
     }
 
     public Map<String, Object> getValues() {
+        if (data == null) {
+            this.data = new HashMap<>();
+            log.info("Collecting template data");
+            data.putAll(buildData.map());
+            data.putAll(summaryData.map());
+            data.putAll(phrasesData.map());
+            log.info("Template data: {}", data);
+        }
         return data;
     }
 }
