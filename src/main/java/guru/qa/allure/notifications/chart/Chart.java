@@ -1,20 +1,24 @@
 package guru.qa.allure.notifications.chart;
 
+import guru.qa.allure.notifications.exceptions.MessageBuildException;
 import lombok.extern.slf4j.Slf4j;
+import org.knowm.xchart.BitmapEncoder;
 import org.knowm.xchart.PieChart;
 
-import java.awt.*;
+import java.awt.Color;
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.util.List;
 import javax.imageio.ImageIO;
-import java.awt.image.BufferedImage;
 import java.io.File;
 
 import guru.qa.allure.notifications.config.base.Base;
+
 @Slf4j
 public class Chart {
-    private final static String CHART_FILE_NAME = "chart";
 
-    public static void createChart(Base base) {
+    public static byte[] createChart(Base base) throws MessageBuildException {
         log.info("Creating chart...");
         PieChart chart = ChartBuilder.createBaseChart(base);
         log.info("Adding legend to chart...");
@@ -25,22 +29,24 @@ public class Chart {
         List<Color> colors = new ChartSeries(base).addSeriesTo(chart);
         log.info("Adding colors to series...");
         chart.getStyler().setSeriesColors(colors.toArray(new Color[0]));
-        ChartSaver.saveChart(chart);
+        BufferedImage chartImage = BitmapEncoder.getBufferedImage(chart);
         log.info("Chart is created.");
 
         if (base.getLogo() != null) {
             try {
-                BufferedImage source = ImageIO.read(new File(CHART_FILE_NAME + ".png"));
                 BufferedImage logo = ImageIO.read(new File(base.getLogo()));
-
-                source.getGraphics().drawImage(logo, 3, 3, null);
-                File f = new File(CHART_FILE_NAME + ".png");
-                ImageIO.write(source, "PNG", f);
+                chartImage.getGraphics().drawImage(logo, 3, 3, null);
             } catch (Exception e) {
                 log.warn("Logo file isn't existed: " + base.getLogo());
             }
         }
 
-        new File(CHART_FILE_NAME + ".png").deleteOnExit();
+        try {
+            ByteArrayOutputStream os = new ByteArrayOutputStream();
+            ImageIO.write(chartImage, "png", os);
+            return os.toByteArray();
+        } catch (IOException e) {
+            throw new MessageBuildException("Unable to create image with chart", e);
+        }
     }
 }

@@ -1,23 +1,21 @@
 package guru.qa.allure.notifications.clients.slack;
 
-import guru.qa.allure.notifications.chart.Chart;
 import guru.qa.allure.notifications.clients.Notifier;
 import guru.qa.allure.notifications.config.base.Base;
 import guru.qa.allure.notifications.config.enums.Headers;
 import guru.qa.allure.notifications.config.slack.Slack;
 import guru.qa.allure.notifications.exceptions.MessagingException;
 import guru.qa.allure.notifications.template.MarkdownTemplate;
+import kong.unirest.ContentType;
 import kong.unirest.Unirest;
 
-import java.io.File;
+import java.io.ByteArrayInputStream;
 
 public class SlackClient implements Notifier {
-    private final Base base;
     private final Slack slack;
     private final MarkdownTemplate markdownTemplate;
 
     public SlackClient(Base base, Slack slack) {
-        this.base = base;
         this.slack = slack;
         this.markdownTemplate = new MarkdownTemplate(base);
     }
@@ -36,13 +34,10 @@ public class SlackClient implements Notifier {
     }
 
     @Override
-    public void sendPhoto() throws MessagingException {
-        Chart.createChart(base);
-
+    public void sendPhoto(byte[] chartImage) throws MessagingException {
         Unirest.post("https://slack.com/api/files.upload")
                 .header("Authorization", "Bearer " + slack.getToken())
-                .field("file",
-                        new File("chart.png"))
+                .field("file", new ByteArrayInputStream(chartImage), ContentType.IMAGE_PNG, "chart.png")
                 .field("channels", slack.getChat())
                 .field("filename", " ")
                 .field("initial_comment", markdownTemplate.create())

@@ -9,7 +9,8 @@ import lombok.extern.slf4j.Slf4j;
 import javax.mail.*;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
- @Slf4j
+
+@Slf4j
 public class Letter {
     private final LetterBody body = new LetterBody();
     private final Message letter;
@@ -60,9 +61,9 @@ public class Letter {
         return this;
     }
 
-    public Letter image(final String imagePath) throws MessageBuildException {
+    public Letter image(final byte[] image) throws MessageBuildException {
         log.info("Setting image...");
-        body.addImage(imagePath);
+        body.addImage(image);
         log.info("Done.");
         return this;
     }

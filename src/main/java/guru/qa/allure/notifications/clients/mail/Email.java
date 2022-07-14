@@ -1,6 +1,5 @@
 package guru.qa.allure.notifications.clients.mail;
 
-import guru.qa.allure.notifications.chart.Chart;
 import guru.qa.allure.notifications.clients.Notifier;
 import guru.qa.allure.notifications.config.base.Base;
 import guru.qa.allure.notifications.config.mail.Mail;
@@ -30,14 +29,13 @@ public class Email implements Notifier {
     }
 
     @Override
-    public void sendPhoto()  throws MessagingException {
-        Chart.createChart(base);
+    public void sendPhoto(byte[] chartImage)  throws MessagingException {
         String message = "<img src='cid:image'/><br/>" + htmlTemplate.create();
         letter.from(mail.getFrom())
                 .to(mail.getRecipient())
                 .subject(base.getProject())
                 .text(message)
-                .image("chart.png")
+                .image(chartImage)
                 .send();
     }
 }

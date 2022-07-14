@@ -1,6 +1,5 @@
 package guru.qa.allure.notifications.clients.skype;
 
-import guru.qa.allure.notifications.chart.Chart;
 import guru.qa.allure.notifications.clients.Notifier;
 import guru.qa.allure.notifications.clients.skype.model.Attachment;
 import guru.qa.allure.notifications.clients.skype.model.From;
@@ -11,9 +10,10 @@ import guru.qa.allure.notifications.config.skype.Skype;
 import guru.qa.allure.notifications.exceptions.MessageBuildException;
 import guru.qa.allure.notifications.exceptions.MessagingException;
 import guru.qa.allure.notifications.template.MarkdownTemplate;
-import guru.qa.allure.notifications.util.ImageConverter;
+import kong.unirest.ContentType;
 import kong.unirest.Unirest;
 
+import java.util.Base64;
 import java.util.Collections;
 
 public class SkypeClient implements Notifier {
@@ -40,13 +40,11 @@ public class SkypeClient implements Notifier {
     }
 
     @Override
-    public void sendPhoto() throws MessagingException {
-        Chart.createChart(base);
-
+    public void sendPhoto(byte[] chartImage) throws MessagingException {
         Attachment attachment = Attachment.builder()
-                .contentType("image/png")
+                .contentType(ContentType.IMAGE_PNG.toString())
                 .name("chart.png")
-                .contentUrl(contentUrl())
+                .contentUrl("data:image/png;base64," + Base64.getEncoder().encodeToString(chartImage))
                 .build();
 
 
@@ -86,10 +84,5 @@ public class SkypeClient implements Notifier {
         return skype.getServiceUrl().substring(0, skype.getServiceUrl().contains("/")
                 ? skype.getServiceUrl().indexOf("/") :
                 skype.getServiceUrl().length());
-    }
-
-    private String contentUrl() {
-        return String.join(",", "data:image/png;base64",
-                ImageConverter.convertToBase64());
     }
 }

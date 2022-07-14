@@ -4,11 +4,11 @@ import guru.qa.allure.notifications.exceptions.MessageBuildException;
 
 import javax.activation.DataHandler;
 import javax.activation.DataSource;
-import javax.activation.FileDataSource;
 import javax.mail.BodyPart;
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMultipart;
+import javax.mail.util.ByteArrayDataSource;
 
 public class LetterBody {
     private final MimeMultipart multipart = new MimeMultipart("related");
@@ -23,9 +23,9 @@ public class LetterBody {
         }
     }
 
-    public void addImage(final String imagePath) throws MessageBuildException {
+    public void addImage(final byte[] image) throws MessageBuildException {
         BodyPart imageBody = new MimeBodyPart();
-        DataSource dataSource = new FileDataSource(imagePath);
+        DataSource dataSource = new ByteArrayDataSource(image, "image/png");
         try {
             imageBody.setDataHandler(new DataHandler(dataSource));
             imageBody.setHeader("Content-ID", "<image>");
