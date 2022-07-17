@@ -25,11 +25,11 @@ public class ChartSeries {
         final Summary summary = summaryMapper.map();
         final Legend legend = legendMapper.map();
 
-        addSeries(chart, colors, summary.getStatistic().getPassed(), legend.getPassed(), Color.GREEN);
-        addSeries(chart, colors, summary.getStatistic().getFailed(), legend.getFailed(), Color.RED);
-        addSeries(chart, colors, summary.getStatistic().getBroken(), legend.getBroken(), Color.YELLOW);
-        addSeries(chart, colors, summary.getStatistic().getSkipped(), legend.getSkipped(), Color.GRAY);
-        addSeries(chart, colors, summary.getStatistic().getUnknown(), legend.getUnknown(), Color.MAGENTA);
+        addSeries(chart, colors, summary.getStatistic().getPassed(), legend.getPassed(),  new Color(148, 202, 102));
+        addSeries(chart, colors, summary.getStatistic().getFailed(), legend.getFailed(), new Color(255, 87, 68));
+        addSeries(chart, colors, summary.getStatistic().getBroken(), legend.getBroken(), new Color(255, 206, 87));
+        addSeries(chart, colors, summary.getStatistic().getSkipped(), legend.getSkipped(), new Color(170, 170, 170));
+        addSeries(chart, colors, summary.getStatistic().getUnknown(), legend.getUnknown(), new Color(216, 97,  190));
 
         return colors;
     }
