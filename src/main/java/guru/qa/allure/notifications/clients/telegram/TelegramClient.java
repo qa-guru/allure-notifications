@@ -6,7 +6,7 @@ import guru.qa.allure.notifications.config.base.Base;
 import guru.qa.allure.notifications.config.enums.Headers;
 import guru.qa.allure.notifications.config.telegram.Telegram;
 import guru.qa.allure.notifications.exceptions.MessagingException;
-import guru.qa.allure.notifications.template.MarkdownTemplate;
+import guru.qa.allure.notifications.template.TelegramTemplate;
 import kong.unirest.Unirest;
 
 import java.io.File;
@@ -14,12 +14,12 @@ import java.io.File;
 public class TelegramClient implements Notifier {
     private final Base base;
     private final Telegram telegram;
-    private final MarkdownTemplate markdownTemplate;
+    private final TelegramTemplate telegramTemplate;
 
     public TelegramClient(Base base, Telegram telegram) {
         this.base = base;
         this.telegram = telegram;
-        this.markdownTemplate = new MarkdownTemplate(base);
+        this.telegramTemplate = new TelegramTemplate(base);
     }
 
     @Override
@@ -29,8 +29,8 @@ public class TelegramClient implements Notifier {
                 .header("Content-Type", Headers.URL_ENCODED.header())
                 .field("chat_id", telegram.chat())
                 .field("reply_to_message_id", telegram.replyTo() + "")
-                .field("text", markdownTemplate.create())
-                .field("parse_mode", "Markdown")
+                .field("text", telegramTemplate.create())
+                .field("parse_mode", "HTML")
                 .asString()
                 .getBody();
     }
@@ -45,8 +45,8 @@ public class TelegramClient implements Notifier {
                         new File("chart.png"))
                 .field("chat_id", telegram.chat())
                 .field("reply_to_message_id", telegram.replyTo())
-                .field("caption", markdownTemplate.create())
-                .field("parse_mode", "Markdown")
+                .field("caption", telegramTemplate.create())
+                .field("parse_mode", "HTML")
                 .asString()
                 .getBody();
     }
