@@ -2,7 +2,6 @@ package guru.qa.allure.notifications.clients.mattermost;
 
 import com.jayway.jsonpath.JsonPath;
 import guru.qa.allure.notifications.clients.Notifier;
-import guru.qa.allure.notifications.config.enums.Headers;
 import guru.qa.allure.notifications.config.mattermost.Mattermost;
 import guru.qa.allure.notifications.exceptions.MessagingException;
 import guru.qa.allure.notifications.template.MarkdownTemplate;
@@ -35,7 +34,7 @@ public class MattermostClient implements Notifier {
                 .routeParam("uri", mattermost.getUrl())
                 .header("Authorization", "Bearer " +
                         mattermost.getToken())
-                .header("Content-Type", Headers.JSON.header())
+                .header("Content-Type", ContentType.APPLICATION_JSON.getMimeType())
                 .body(body)
                 .asString()
                 .getBody();

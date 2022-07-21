@@ -4,8 +4,6 @@ import guru.qa.allure.notifications.json.JSON;
 import kong.unirest.*;
 import lombok.extern.slf4j.Slf4j;
 
-import static guru.qa.allure.notifications.config.enums.Headers.URL_ENCODED;
-
 @Slf4j
 public class LogInterceptor implements Interceptor {
     private final JSON json = new JSON();
@@ -29,7 +27,7 @@ public class LogInterceptor implements Interceptor {
             log.info("BODY: \n{}", body.multiParts());
             return;
         }
-        if (headers.get("Content-Type").contains(URL_ENCODED.header())) {
+        if (headers.get("Content-Type").contains(ContentType.APPLICATION_FORM_URLENCODED.getMimeType())) {
             log.info("BODY: \n{}", body.uniPart());
             return;
         }
