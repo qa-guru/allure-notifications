@@ -24,13 +24,19 @@ public class Application {
 
         ProxyManager.manageProxy(config.getProxy());
 
+
+        boolean successfulSending;
         try {
-            Notification.send(config);
-        } catch (MessagingException e) {
+            successfulSending = Notification.send(config);
+        } catch (Exception e) {
             log.error(e.getMessage(), e);
-            System.exit(1);
+            successfulSending = false;
         } finally {
             Unirest.shutDown();
+        }
+
+        if (!successfulSending) {
+            System.exit(1);
         }
 
         log.info("Finish.");

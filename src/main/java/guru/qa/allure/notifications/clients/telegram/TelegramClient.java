@@ -6,6 +6,7 @@ import guru.qa.allure.notifications.config.base.Base;
 import guru.qa.allure.notifications.config.enums.Headers;
 import guru.qa.allure.notifications.config.telegram.Telegram;
 import guru.qa.allure.notifications.exceptions.MessagingException;
+import guru.qa.allure.notifications.template.data.MessageData;
 import guru.qa.allure.notifications.template.TelegramTemplate;
 import kong.unirest.Unirest;
 
@@ -16,10 +17,10 @@ public class TelegramClient implements Notifier {
     private final Telegram telegram;
     private final TelegramTemplate telegramTemplate;
 
-    public TelegramClient(Base base, Telegram telegram) {
+    public TelegramClient(Base base, MessageData messageData, Telegram telegram) {
         this.base = base;
         this.telegram = telegram;
-        this.telegramTemplate = new TelegramTemplate(base);
+        this.telegramTemplate = new TelegramTemplate(messageData);
     }
 
     @Override

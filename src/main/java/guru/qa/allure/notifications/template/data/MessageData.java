@@ -17,6 +17,7 @@ public class MessageData {
     private final BuildData buildData;
     private final SummaryData summaryData;
     private final PhrasesData phrasesData;
+    private Map<String, Object> data;
 
     public MessageData(Base base) {
         this.buildData = new BuildData(base);
@@ -24,13 +25,15 @@ public class MessageData {
         this.phrasesData = new PhrasesData(base);
     }
 
-    public Map<String, Object> values() {
-        Map<String, Object> data = new HashMap<>();
-        log.info("Collecting template data");
-        data.putAll(buildData.map());
-        data.putAll(summaryData.map());
-        data.putAll(phrasesData.map());
-        log.info("Template data: {}", data);
+    public Map<String, Object> getValues() {
+        if (data == null) {
+            this.data = new HashMap<>();
+            log.info("Collecting template data");
+            data.putAll(buildData.map());
+            data.putAll(summaryData.map());
+            data.putAll(phrasesData.map());
+            log.info("Template data: {}", data);
+        }
         return data;
     }
 }

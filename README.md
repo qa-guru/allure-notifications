@@ -50,7 +50,6 @@ Here you can find config file structure for lib configuration.
     "comment": "",
     "reportLink": "",
     "language": "ru",
-    "messenger": "telegram",
     "allureFolder": "",
     "enableChart": false
   },
@@ -94,7 +93,10 @@ Here you can find config file structure for lib configuration.
   }
 }
 ```
-You only need to fill needed options in `bot`, `base`, `mail` or `proxy` section. Please, be careful, `lang` and `messenger` fields are required!
+You only need:
+ - to fill needed options in `base` block (please, be careful, `language` field is required!);
+ - to configure desired destinations for notifications (`telegram`, `slack`,  `mattermost`, `skype`, `mail`), keep in mind it's possible to set multiple destinations at once, if no destination is set, then no notification will be sent and no error will occur;
+ - to specify optional proxy configuration in `proxy` block.
 
 If you want the project logo to appear in the upper left corner of the chart,
 add file path to logo parameter in configuration
@@ -110,7 +112,6 @@ Example for Telegram messenger:
     "comment": "some comment",
     "reportLink": "",
     "language": "en",
-    "messenger": "telegram",
     "allureFolder": "build/allure-report/",
     "enableChart": true
   },
