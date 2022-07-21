@@ -1,12 +1,11 @@
 package guru.qa.allure.notifications.clients.slack;
 
 import guru.qa.allure.notifications.clients.Notifier;
-import guru.qa.allure.notifications.config.enums.Headers;
 import guru.qa.allure.notifications.config.slack.Slack;
 import guru.qa.allure.notifications.exceptions.MessagingException;
 import guru.qa.allure.notifications.template.MarkdownTemplate;
-import kong.unirest.ContentType;
 import guru.qa.allure.notifications.template.data.MessageData;
+import kong.unirest.ContentType;
 import kong.unirest.Unirest;
 
 import java.io.ByteArrayInputStream;
@@ -27,7 +26,7 @@ public class SlackClient implements Notifier {
 
         Unirest.post("https://slack.com/api/chat.postMessage")
                 .header("Authorization", "Bearer " + slack.getToken())
-                .header("Content-Type", Headers.URL_ENCODED.header())
+                .header("Content-Type", ContentType.APPLICATION_FORM_URLENCODED.getMimeType())
                 .body(body)
                 .asString()
                 .getBody();

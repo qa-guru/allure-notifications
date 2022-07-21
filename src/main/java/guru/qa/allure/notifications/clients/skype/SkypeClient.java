@@ -4,8 +4,6 @@ import guru.qa.allure.notifications.clients.Notifier;
 import guru.qa.allure.notifications.clients.skype.model.Attachment;
 import guru.qa.allure.notifications.clients.skype.model.From;
 import guru.qa.allure.notifications.clients.skype.model.SkypeMessage;
-import guru.qa.allure.notifications.config.base.Base;
-import guru.qa.allure.notifications.config.enums.Headers;
 import guru.qa.allure.notifications.config.skype.Skype;
 import guru.qa.allure.notifications.exceptions.MessageBuildException;
 import guru.qa.allure.notifications.exceptions.MessagingException;
@@ -32,7 +30,7 @@ public class SkypeClient implements Notifier {
                 .routeParam("url", host())
                 .routeParam("conversationId",
                         skype.getConversationId())
-                .header("Content-Type", Headers.JSON.header())
+                .header("Content-Type", ContentType.APPLICATION_JSON.getMimeType())
                 .header("Authorization", "Bearer " + token())
                 .header("Host", host())
                 .body(createSimpleMessage())
@@ -56,7 +54,7 @@ public class SkypeClient implements Notifier {
                 .routeParam("url", host())
                 .routeParam("conversationId",
                         skype.getConversationId())
-                .header("Content-Type", Headers.JSON.header())
+                .header("Content-Type", ContentType.APPLICATION_JSON.getMimeType())
                 .header("Authorization", "Bearer " + token())
                 .header("Host", host())
                 .body(body)

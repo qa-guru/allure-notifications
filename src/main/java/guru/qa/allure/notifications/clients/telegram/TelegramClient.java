@@ -1,12 +1,11 @@
 package guru.qa.allure.notifications.clients.telegram;
 
 import guru.qa.allure.notifications.clients.Notifier;
-import guru.qa.allure.notifications.config.enums.Headers;
 import guru.qa.allure.notifications.config.telegram.Telegram;
 import guru.qa.allure.notifications.exceptions.MessagingException;
+import guru.qa.allure.notifications.template.TelegramTemplate;
 import guru.qa.allure.notifications.template.data.MessageData;
 import kong.unirest.ContentType;
-import guru.qa.allure.notifications.template.TelegramTemplate;
 import kong.unirest.Unirest;
 
 import java.io.ByteArrayInputStream;
@@ -24,7 +23,7 @@ public class TelegramClient implements Notifier {
     public void sendText() throws MessagingException {
         Unirest.post("https://api.telegram.org/bot{token}/sendMessage")
                 .routeParam("token", telegram.token())
-                .header("Content-Type", Headers.URL_ENCODED.header())
+                .header("Content-Type", ContentType.APPLICATION_FORM_URLENCODED.getMimeType())
                 .field("chat_id", telegram.chat())
                 .field("reply_to_message_id", telegram.replyTo() + "")
                 .field("text", telegramTemplate.create())
