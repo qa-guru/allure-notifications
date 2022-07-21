@@ -34,5 +34,4 @@ public class Notification {
 
         return successfulSending;
     }
-
 }

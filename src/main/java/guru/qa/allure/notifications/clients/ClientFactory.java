@@ -18,19 +18,19 @@ public class ClientFactory {
 
         List<Notifier> notifiers =  new ArrayList<>();
         if (config.getTelegram() != null) {
-            notifiers.add(new TelegramClient(config.getBase(), messageData, config.getTelegram()));
+            notifiers.add(new TelegramClient(messageData, config.getTelegram()));
         }
         if (config.getSlack() != null) {
-            notifiers.add(new SlackClient(config.getBase(), messageData, config.getSlack()));
+            notifiers.add(new SlackClient(messageData, config.getSlack()));
         }
         if (config.getMail() != null) {
-            notifiers.add(new Email(config.getBase(), messageData, config.getMail()));
+            notifiers.add(new Email(messageData, config.getMail()));
         }
         if (config.getMattermost() != null) {
-            notifiers.add(new MattermostClient(config.getBase(), messageData, config.getMattermost()));
+            notifiers.add(new MattermostClient(messageData, config.getMattermost()));
         }
         if (config.getSkype() != null) {
-            notifiers.add(new SkypeClient(config.getBase(), messageData, config.getSkype()));
+            notifiers.add(new SkypeClient(messageData, config.getSkype()));
         }
         return notifiers;
     }

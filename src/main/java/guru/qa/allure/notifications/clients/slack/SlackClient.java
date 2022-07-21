@@ -1,7 +1,6 @@
 package guru.qa.allure.notifications.clients.slack;
 
 import guru.qa.allure.notifications.clients.Notifier;
-import guru.qa.allure.notifications.config.base.Base;
 import guru.qa.allure.notifications.config.enums.Headers;
 import guru.qa.allure.notifications.config.slack.Slack;
 import guru.qa.allure.notifications.exceptions.MessagingException;
@@ -16,7 +15,7 @@ public class SlackClient implements Notifier {
     private final Slack slack;
     private final MarkdownTemplate markdownTemplate;
 
-    public SlackClient(Base base, Slack slack) {
+    public SlackClient(MessageData messageData, Slack slack) {
         this.slack = slack;
         this.markdownTemplate = new MarkdownTemplate(messageData);
     }

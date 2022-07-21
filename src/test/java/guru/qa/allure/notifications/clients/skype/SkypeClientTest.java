@@ -1,6 +1,5 @@
 package guru.qa.allure.notifications.clients.skype;
 
-import guru.qa.allure.notifications.config.base.Base;
 import guru.qa.allure.notifications.config.skype.Skype;
 import guru.qa.allure.notifications.template.data.MessageData;
 
@@ -15,11 +14,10 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.mock;
 
 class SkypeClientTest{
-    @Mock Base base = mock(Base.class);
     @Mock Skype skype = mock(Skype.class);
 
     @InjectMocks
-    private SkypeClient app = new SkypeClient(base, mock(MessageData.class), skype);
+    private SkypeClient app = new SkypeClient(mock(MessageData.class), skype);
 
     @ParameterizedTest(name = "Get host name from service url: {0}")
     @CsvSource({

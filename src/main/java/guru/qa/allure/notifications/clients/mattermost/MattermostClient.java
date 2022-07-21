@@ -2,7 +2,6 @@ package guru.qa.allure.notifications.clients.mattermost;
 
 import com.jayway.jsonpath.JsonPath;
 import guru.qa.allure.notifications.clients.Notifier;
-import guru.qa.allure.notifications.config.base.Base;
 import guru.qa.allure.notifications.config.enums.Headers;
 import guru.qa.allure.notifications.config.mattermost.Mattermost;
 import guru.qa.allure.notifications.exceptions.MessagingException;
@@ -19,20 +18,18 @@ import static java.util.Collections.singletonList;
 
 public class MattermostClient implements Notifier {
     private final Map<String, Object> body = new HashMap<>();
-    private final Base base;
-    private MessageData messageData;
+    private MarkdownTemplate markdownTemplate;
     private final Mattermost mattermost;
 
-    public MattermostClient(Base base, MessageData messageData, Mattermost mattermost) {
-        this.base = base;
-        this.messageData = messageData;
+    public MattermostClient(MessageData messageData, Mattermost mattermost) {
         this.mattermost = mattermost;
+        this.markdownTemplate = new MarkdownTemplate(messageData);
     }
 
     @Override
     public void sendText() throws MessagingException {
         body.put("channel_id", mattermost.getChat());
-        body.put("message", new MarkdownTemplate(messageData).create());
+        body.put("message", markdownTemplate.create());
 
         Unirest.post("https://{uri}/api/v4/posts")
                 .routeParam("uri", mattermost.getUrl())

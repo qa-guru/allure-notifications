@@ -1,12 +1,11 @@
 package guru.qa.allure.notifications.clients.telegram;
 
 import guru.qa.allure.notifications.clients.Notifier;
-import guru.qa.allure.notifications.config.base.Base;
 import guru.qa.allure.notifications.config.enums.Headers;
 import guru.qa.allure.notifications.config.telegram.Telegram;
 import guru.qa.allure.notifications.exceptions.MessagingException;
-import kong.unirest.ContentType;
 import guru.qa.allure.notifications.template.data.MessageData;
+import kong.unirest.ContentType;
 import guru.qa.allure.notifications.template.TelegramTemplate;
 import kong.unirest.Unirest;
 
@@ -16,7 +15,7 @@ public class TelegramClient implements Notifier {
     private final Telegram telegram;
     private final TelegramTemplate telegramTemplate;
 
-    public TelegramClient(Base base, Telegram telegram) {
+    public TelegramClient(MessageData messageData, Telegram telegram) {
         this.telegram = telegram;
         this.telegramTemplate = new TelegramTemplate(messageData);
     }

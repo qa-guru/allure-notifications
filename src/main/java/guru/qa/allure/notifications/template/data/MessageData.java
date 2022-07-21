@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import guru.qa.allure.notifications.config.base.Base;
+import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
 /**
@@ -12,14 +13,16 @@ import lombok.extern.slf4j.Slf4j;
  * Utility class for mapping template data for template.
  */
 @Slf4j
+@Getter
 public class MessageData {
-
+    private final String project;
     private final BuildData buildData;
     private final SummaryData summaryData;
     private final PhrasesData phrasesData;
     private Map<String, Object> data;
 
     public MessageData(Base base) {
+        this.project = base.getProject();
         this.buildData = new BuildData(base);
         this.summaryData = new SummaryData(base);
         this.phrasesData = new PhrasesData(base);
