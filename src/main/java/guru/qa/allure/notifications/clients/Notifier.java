@@ -4,5 +4,5 @@ import guru.qa.allure.notifications.exceptions.MessagingException;
 
 public interface Notifier {
     void sendText() throws MessagingException;
-    void sendPhoto() throws MessagingException;
+    void sendPhoto(byte[] chartImage) throws MessagingException;
 }
