@@ -2,7 +2,6 @@ package guru.qa.allure.notifications.config.base;
 
 import com.google.gson.annotations.SerializedName;
 import guru.qa.allure.notifications.config.enums.Language;
-import guru.qa.allure.notifications.config.enums.Messenger;
 import lombok.Data;
 
 /**
@@ -24,8 +23,6 @@ public class Base {
     private Language language;
     @SerializedName("logo")
     private String logo;
-    @SerializedName("messenger")
-    private Messenger messenger;
     @SerializedName("allureFolder")
     private String allureFolder;
     @SerializedName("enableChart")

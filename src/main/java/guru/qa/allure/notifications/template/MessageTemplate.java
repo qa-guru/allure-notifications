@@ -20,11 +20,11 @@ import java.io.Writer;
 @Slf4j
 public class MessageTemplate {
 
-    private final Base base;
+    private final MessageData messageData;
     private final TemplateConfig templateConfig = new TemplateConfig();
 
-    public MessageTemplate(Base base) {
-        this.base = base;
+    public MessageTemplate(MessageData messageData) {
+        this.messageData = messageData;
     }
 
     public String of(String templateFile) throws MessageBuildException {
@@ -39,7 +39,7 @@ public class MessageTemplate {
         Writer writer = new StringWriter();
         try {
             log.info("Convert template to string");
-            template.process(new MessageData(base).values(), writer);
+            template.process(messageData.getValues(), writer);
         } catch (TemplateException | IOException ex) {
             throw new MessageBuildException(String.format("Unable to parse template %s!", templateFile), ex);
         }

@@ -11,6 +11,8 @@ import guru.qa.allure.notifications.exceptions.MessageBuildException;
 import guru.qa.allure.notifications.exceptions.MessagingException;
 import guru.qa.allure.notifications.template.MarkdownTemplate;
 import kong.unirest.ContentType;
+import guru.qa.allure.notifications.template.data.MessageData;
+import guru.qa.allure.notifications.util.ImageConverter;
 import kong.unirest.Unirest;
 
 import java.util.Base64;
@@ -19,10 +21,12 @@ import java.util.Collections;
 public class SkypeClient implements Notifier {
     private final Base base;
     private final Skype skype;
+    private final MarkdownTemplate markdownTemplate;
 
-    public SkypeClient(Base base, Skype skype) {
+    public SkypeClient(Base base, MessageData messageData, Skype skype) {
         this.base = base;
         this.skype = skype;
+        this.markdownTemplate = new MarkdownTemplate(messageData);
     }
 
     @Override
@@ -72,7 +76,7 @@ public class SkypeClient implements Notifier {
         return SkypeMessage.builder()
                 .type("message")
                 .from(from)
-                .text(new MarkdownTemplate(base).create())
+                .text(markdownTemplate.create())
                 .build();
     }
 
