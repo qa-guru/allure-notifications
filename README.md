@@ -90,7 +90,11 @@ Here you can find config file structure for lib configuration.
     "port": 0,
     "username": "",
     "password": ""
-  }
+  },
+   "cliq": {
+      "token": "",
+      "chat": 0
+   }
 }
 ```
 You only need:
