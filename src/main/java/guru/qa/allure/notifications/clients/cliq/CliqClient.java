@@ -1,5 +1,6 @@
 package guru.qa.allure.notifications.clients.cliq;
 
+import com.google.gson.JsonObject;
 import guru.qa.allure.notifications.clients.Notifier;
 import guru.qa.allure.notifications.config.cliq.Cliq;
 import guru.qa.allure.notifications.exceptions.MessagingException;
@@ -10,8 +11,6 @@ import kong.unirest.Unirest;
 import kong.unirest.json.JSONArray;
 
 import java.io.ByteArrayInputStream;
-import java.util.HashMap;
-import java.util.Map;
 
 public class CliqClient implements Notifier {
     private final Cliq cliq;
@@ -24,12 +23,9 @@ public class CliqClient implements Notifier {
 
     @Override
     public void sendText() throws MessagingException {
-        Map<String, Object> body = new HashMap() {{
-            put("text", markdownTemplate.create());
-        }};
-
-        String url = String.format("https://cliq.zoho.eu/api/v2/channelsbyname/%s/message?zapikey=%s",
-                cliq.getChat(), cliq.getToken());
+        JsonObject body = new JsonObject();
+        String url = generateUrl("message");
+        body.addProperty("text", markdownTemplate.create());
 
         Unirest.post(url)
                 .header("Content-Type", ContentType.APPLICATION_JSON.getMimeType())
@@ -40,15 +36,25 @@ public class CliqClient implements Notifier {
 
     @Override
     public void sendPhoto(byte[] chartImage) throws MessagingException {
-        String url = String.format("https://cliq.zoho.eu/api/v2/channelsbyname/%s/files?zapikey=%s",
-                cliq.getChat(), cliq.getToken());
-
+        String url = generateUrl("files");
+        ByteArrayInputStream file = new ByteArrayInputStream(chartImage);
         String comments = new JSONArray().put(markdownTemplate.create()).toString();
 
         Unirest.post(url)
-                .field("files", new ByteArrayInputStream(chartImage), ContentType.IMAGE_PNG.getMimeType())
+                .field("files", file, ContentType.IMAGE_PNG.getMimeType())
                 .field("comments", comments)
                 .asString()
                 .getBody();
+    }
+
+    private String generateUrl(String type) {
+        String url = String.format(
+                "https://cliq.zoho.eu/api/v2/channelsbyname/%s/" + type + "?zapikey=%s",
+                cliq.getChat(), cliq.getToken()
+        );
+        if (!cliq.getBot().isEmpty()) {
+            url += "&bot_unique_name=" + cliq.getBot();
+        }
+        return url;
     }
 }

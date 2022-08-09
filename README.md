@@ -93,7 +93,8 @@ Here you can find config file structure for lib configuration.
   },
    "cliq": {
       "token": "",
-      "chat": 0
+      "chat": "",
+      "bot": ""
    }
 }
 ```

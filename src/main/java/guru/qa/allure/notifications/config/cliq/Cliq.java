@@ -14,4 +14,6 @@ public class Cliq {
     private String token;
     @SerializedName("chat")
     private String chat;
+    @SerializedName("bot")
+    private String bot;
 }
