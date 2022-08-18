@@ -16,9 +16,9 @@
 
 - [x] [Telegram config](https://github.com/qa-guru/allure-notifications/wiki/Telegram-configuration)
 - [x] [Slack config](https://github.com/qa-guru/allure-notifications/wiki/Slack-configuration)
-- [ ] [Email config](https://github.com/qa-guru/allure-notifications/wiki/Email-configuration)
-- [x] [Skype config](https://github.com/qa-guru/allure-notifications/wiki/Skype-Bot-Configuration)
-- [x] [Mattermost config](https://github.com/qa-guru/allure-notifications/wiki/Skype-configuration)
+- [x] [Email config](https://github.com/qa-guru/allure-notifications/wiki/Email-configuration)
+- [x] [Skype config](https://github.com/qa-guru/allure-notifications/wiki/Skype-configuration)
+- [x] [Mattermost config](https://github.com/qa-guru/allure-notifications/wiki/Mattermost-configuration)
 
 
 <h6>CommandLine options</h6>
