@@ -21,7 +21,7 @@ dependencies {
     implementation("org.slf4j:jul-to-slf4j:$slf4j")   // Java Util Logging -> SLF4J
     implementation("org.slf4j:jcl-over-slf4j:$slf4j") // commons-logging -> SLF4J
     implementation('com.sun.mail:javax.mail:1.6.2')
-    implementation('com.konghq:unirest-java:3.13.10')
+    implementation('com.konghq:unirest-java:3.13.11')
     implementation('org.freemarker:freemarker:2.3.31')
     implementation('org.knowm.xchart:xchart:3.8.1')
     implementation('com.jayway.jsonpath:json-path:2.7.0')
