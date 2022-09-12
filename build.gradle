@@ -32,7 +32,7 @@ dependencies {
     testImplementation('org.springframework:spring-test:5.3.22') {
         exclude module: 'spring-jcl' // Use jcl-over-slf4j bridge instead
     }
-    testImplementation('org.mockito:mockito-junit-jupiter:4.6.1')
+    testImplementation('org.mockito:mockito-junit-jupiter:4.8.0')
 }
 
 configurations.all {
