@@ -24,9 +24,6 @@ jobs:
         with:
           java-version: 1.8
 
-      - name: Grant execute permission for gradlew
-        run: chmod +x gradlew
-
       - name: Build with Gradle
         run: ./gradlew assemble
 
@@ -37,7 +34,7 @@ jobs:
         run: echo $version
 
       - name: Upload jar artifact
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: 'allure-notifications-${{env.version}}.jar'
           path: build/libs/*.jar
@@ -84,7 +81,7 @@ jobs:
           to: ${{ secrets.TELEGRAM_TO }}
           token: ${{ secrets.TELEGRAM_TOKEN }}
           args: |
-            *allure-notifications-${{env.version}} is now available for downloading by link* https://github.com/${{ github.repository }}/releases/latest/download/allure-notifications-${{env.version}}.jar
+            *allure-notifications-${{env.version}} is now available for downloading at the link* https://github.com/${{ github.repository }}/releases/latest/download/allure-notifications-${{env.version}}.jar
             *See Changelog here*:
             https://github.com/${{ github.repository }}/releases/latest/
           format: markdown

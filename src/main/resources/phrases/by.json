@@ -1,0 +1,15 @@
+{
+  "results": "Вынікі",
+  "environment": "Працоўнае асяроддзе",
+  "comment": "Каментар",
+  "reportAvailableAtLink": "Справаздача даступна па спасылцы",
+  "scenario": {
+    "duration": "Працягласць",
+    "totalScenarios": "Усяго сцэнарыяў",
+    "totalPassed": "Усяго паспяховых тэстаў",
+    "totalFailed": "Усяго тэстаў, якія ўпалі",
+    "totalBroken": "Усяго зламаных тэстаў",
+    "totalUnknown": "Усяго невядомых тэстаў",
+    "totalSkipped": "Усяго прапушчаных тэстаў"
+  }
+}

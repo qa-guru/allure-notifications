@@ -1,0 +1,15 @@
+{
+  "results": "Résultats",
+  "environment": "Environnement",
+  "comment": "Commentaire",
+  "reportAvailableAtLink": "Rapport disponible par lien",
+  "scenario": {
+    "duration": "Durée",
+    "totalScenarios": "Scénarios totaux",
+    "totalPassed": "Total passé",
+    "totalFailed": "Total a échoué",
+    "totalBroken": "Total cassé",
+    "totalUnknown": "Total inconnu",
+    "totalSkipped": "Total ignoré"
+  }
+}

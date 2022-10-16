@@ -1,0 +1,7 @@
+{
+  "passed": "通过",
+  "failed": "不通过",
+  "broken": "损坏",
+  "unknown": "未知",
+  "skipped": "跳过"
+}
