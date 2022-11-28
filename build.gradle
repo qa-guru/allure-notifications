@@ -29,7 +29,7 @@ dependencies {
     implementation('org.apache.commons:commons-lang3:3.12.0')
 
     testImplementation('org.junit.jupiter:junit-jupiter:5.9.0')
-    testImplementation('org.springframework:spring-test:5.3.22') {
+    testImplementation('org.springframework:spring-test:6.0.2') {
         exclude module: 'spring-jcl' // Use jcl-over-slf4j bridge instead
     }
     testImplementation('org.mockito:mockito-junit-jupiter:4.6.1')
