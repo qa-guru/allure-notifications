@@ -1,27 +1,27 @@
 # Allure notifications
-**Allure notifications** - это библиотека, позволяющая выполнять автоматическое оповещение о результатах прохождения автотестов, которое направляется в нужный вам мессенджер (Telegram, Slack, Skype, Email, Mattermost).
+**Allure notifications** - this is a library that allows you to automatically notify about the results of passing autotests, which is sent to the messenger you need (Telegram, Slack, Skype, Email, Mattermost).
 
 Languages: 🇬🇧 🇫🇷 🇷🇺 🇺🇦 🇧🇾 🇨🇳
  
-## Содержание
-+ [Принцип работы](#Принцип)
-+ [Как выглядят оповещения](#Примеры)
-+ [Как использовать в своем проекте:](#Настройка)
-   + [для запуска локально](#Локально)
-   + [для запуска из Jenkins](#Jenkins)
-+ [Особенности заполнения файла config.json в зависимости от выбранного мессенджера](#config)
+## Contents
++ [How to work](#How)
++ [What notifications look like](#Example)
++ [How to use it in your project:](#Settings)
+   + [to run locally](#Local)
+   + [to run from Jenkins](#Jenkins)
++ [Features of filling in the config file.json depending on the chosen messenger](#config)
 
  
-<a name="Принцип">
+<a name="How">
  
-## Принцип работы
-По итогам выполнения автотестов генерируется файл summary.json в папке allure-report/widgets. 
-Этот файл содержит общую статистику о результатах прохождения тестов, на основании которой как раз и формируется уведомление, которое отправляет бот (отрисовывается диаграмма и добавляется соответствующий текст).
+## How to work
+Based on the results of the autotests, a summary file is generated.json in the allure-report/widgets folder. 
+This file contains general statistics on the results of passing tests, on the basis of which a notification is generated that the bot sends (a diagram is drawn and the corresponding text is added).
  
-<img width="1021" alt="image" src="https://user-images.githubusercontent.com/109241600/213257051-977acd4d-5793-4b2e-b16b-c0e0c6c10194.png">
- 
+![img.png](img.png)
 
-Пример файла summary.json
+
+Example of the summary.json
 ```
 {
   "reportName" : "Allure Report",
@@ -46,25 +46,25 @@ Languages: 🇬🇧 🇫🇷 🇷🇺 🇺🇦 🇧🇾 🇨🇳
 ```
  
  
-<a name="Примеры">
+<a name="Example">
  
-## Как выглядят оповещения
-Пример оповещения в Telegram
+## What notifications look like
+Example of a notification in Telegram
 
 <img width="333" alt="image" src="https://user-images.githubusercontent.com/109241600/213396660-c70adc4c-7a0f-4926-8d9d-473c6c433dd2.png">
 
-<a name="Настройка">
+<a name="Settings">
 
-## Как использовать в своем проекте
+## How to use it in your project
 
  
-<a name="Локально">
+<a name="Local">
 
-### Для запуска локально
-1. Для локальной отладки нужно установить java (для запуска в Jenkins она не понадобится)
-2. Создать в корне проекта папку `notifications`.
-3. <a href="https://github.com/qa-guru/allure-notifications/releases" target="_blank">Скачать</a> актуальную версию файла `allure-notifications-version.jar`, и разместить его в папке `notifications` в своем проекте.
-4. В папке `notifications` создать файл `config.json` со следующей структурой (оставить раздел `base` и тот мессенджер, на который требуется отправлять оповещения): 
+### To run locally
+1. For local debugging, you need to install java (you won't need it to run in Jenkins)
+2. Create a folder in the root of the project `notifications`.
+3. <a href="https://github.com/qa-guru/allure-notifications/releases" target="_blank">Download</a> the current version of the file `allure-notifications-version.jar`, and place it in the folder `notifications` in your project.
+4. In the `notifications` folder, create a `config.json` file with the following structure (leave the `base` section and the messenger to which you want to send notifications):
 ```
 {
   "base": {
@@ -117,13 +117,13 @@ Languages: 🇬🇧 🇫🇷 🇷🇺 🇺🇦 🇧🇾 🇨🇳
   }
 }
 ```
-Блок `proxy` используется если нужно указать дополнительную конфигурацию proxy.
+The `proxy` block is used if you need to specify an additional proxy configuration.
 
 <a name="Base">
 
-5. Заполнить в файле `config.json` блок `base`: 
+5. Fill in the `base` block in the `config.json` file:
 
-Пример заполнения блока `base`:
+Example of filling in the `base' block:
 ```
 "base": {
     "logo": "logo.png",
@@ -136,48 +136,51 @@ Languages: 🇬🇧 🇫🇷 🇷🇺 🇺🇦 🇧🇾 🇨🇳
     "enableChart": true
   }
 ```  
-Порядок заполнения:
-+ `project`, `environment`, `comment` - имя проекта, название окружения и произвольный комментарий. 
-+ `reportLink` - ссылка на Allure report с результатами прохождения автотестов (целесообразно заполнять при запуске автотестов из Jenkins - об этом ниже)
-+ `language` - язык, на котором будет сформирован текст для оповещения (варианты: en / fr / ru / ua / by / cn)
-+ `allureFolder` - путь к папке с результатами работы Allure
-+ `enableChart` - требуется ли отображать диаграмму (варианты: true / false)
-+ `logo` - путь к файлу с логотипом (если заполнено, то в левом верхнем углу диаграммы будет отображаться соответствующий логотип).
+The order of filling in:
++ `project`, `environment`, `comment` - the name of the project, the name of the environment and an arbitrary comment.
++ `reportLink` - a link to the Allure report with the results of passing autotests (it is advisable to fill in when launching autotests from Jenkins - more on this below)
++ `language` - the language in which the text for the notification will be generated (options: en / fr / ru / ua / by / cn)
++ `allureFolder` - the path to the folder with the results of Allure
++ `enableChart` - do I need to display a chart (options: true / false)
++ `logo` - the path to the file with the logo (if filled in, the corresponding logo will be displayed in the upper left corner of the diagram).
 
-6. Заполнить в файле `config.json` блок с информацией о выбранном мессенджере: [особенности заполнения файла config.json в зависимости от выбранного мессенджера](#config)
+6. Fill in the `config.json` file a block with information about the selected messenger: [features of filling in the config file.json depending on the chosen messenger](#config)
  
-7. Выполнить в терминале следующую команду:
+7. Execute the following command in the terminal:
 ```
 java "-DconfigFile=notifications/config.json" -jar notifications/allure-notifications-4.2.1.jar
 ``` 
-Примечание:
-+ на момент запуска уже должен быть сформирован файл `summary.json`
-+ в тексте команды нужно указать ту версию файла jar, которую вы скачали на предыдущих шагах
+Note:
++ at the time of launch, a file should already be generated `summary.json`
++ in the command text, you need to specify the version of the jar file that you downloaded in the previous steps
 
-В результате будет сформировано оповещение с результатами прохождения автотестов и направлено в выбранный мессенджер.
+As a result, an alert will be generated with the results of passing autotests and sent to the selected messenger.
  
 
 <a name="Jenkins">
  
-### Для запуска из Jenkins
-1. Перейти в настройки сборки в Jenkins
-2. В разделе `Сборка` нажать кнопку `Добавить шаг собрки`, в появившемся меню выбрать `Create/Update Text File`
-<img width="739" alt="image" src="https://user-images.githubusercontent.com/109241600/213293791-75eecef5-9e6d-449b-9b10-520561e2f112.png">
+### To run from Jenkins
+1. Go to Job settings in Jenkins
+2. In the `Build` section, click `Add build step`, in the menu select `Create/Update Text File`
 
-Заполнить следующим образом:
+![img_1.png](img_1.png)
+
+
+Fill in as follows:
 
 <img width="745" alt="image" src="https://user-images.githubusercontent.com/109241600/213294133-164df8c0-85da-4059-97e7-3e4c8a386538.png">
 <img width="744" alt="image" src="https://user-images.githubusercontent.com/109241600/213294275-31a5efeb-d400-496d-b963-c6071f187e94.png">
 
-Примечание:
-+ Общая информация о заполнении блока `base` описана [в этом разделе](#Base)
-+ В следующих параметрах в качестве значений указываем переменные: `"project": "${JOB_BASE_NAME}"` и `"reportLink": "${BUILD_URL}"`. При формировании уведомления в данных полях будут указаны название `JOB` и ссылка на `BUILD` в Jenkins.
-+ Особенности заполнения файла config.json в зависимости от выбранного мессенджера описаны [в этом разделе](#config)
+Note:
++ General information about filling in the `base` block is described [in this section](#Base)
++ In the following parameters, we specify variables as values: `"project": "${JOB_BASE_NAME}"` and `"reportLink": "${BUILD_URL}"`. When forming a notification, the name will be indicated in these fields `JOB` and a link to `BUILD` in Jenkins.
++ Features of filling the file config.json depending on the chosen messenger, the following are described [in this section](#config)
 
-3. В разделе `Послесборочные операции` нажать кнопку `Добавить шаг после собрки`, в появившемся меню выбрать `Post build task`
-<img width="743" alt="image" src="https://user-images.githubusercontent.com/109241600/213299612-d28334c1-5dba-4e53-9f8d-32ef40b713ad.png">
+3. In the `Post-build Actions` section, click the `Add post-build action` button, in the menu that appears, select `Post build task`
 
-+ В поле `Script` указываем следующее:
+![img_2.png](img_2.png)
+
++ In the `Script` field, specify the following:
 ```
 cd ..
 FILE=allure-notifications-4.2.1.jar
@@ -185,20 +188,20 @@ if [ ! -f "$FILE" ]; then
    wget https://github.com/qa-guru/allure-notifications/releases/download/4.2.1/allure-notifications-4.2.1.jar
 fi
 ```
-Примечание: 
-В этом скрипте мы переходим на папку выше, если там нет jar файла, то скачиваем его. Необходимо указать <a href="https://github.com/qa-guru/allure-notifications/releases" target="_blank">актуальную версию файла jar</a>
+Note: 
+In this script, we go to the folder above, if there is no jar file there, then download it. It is necessary to specify <a href="https://github.com/qa-guru/allure-notifications/releases" target="_blank">the current version of the file jar</a>
 
-+ Нажимаем `Add another task` и во втором поле `Script` указываем следующее:
++ Click `Add another task` and in the second field `Script` specify the following:
 ```
 java "-DconfigFile=notifications/config.json" -jar ../allure-notifications-4.2.1.jar
 ```
  
-4. Сохраняем изменения настроек и запускаем автотесты. По завершении в мессенджер будет направлено уведомление о результатах.
+4. Save the settings changes and run autotests. Upon completion, a notification of the results will be sent to the messenger.
  
 
 <a name="config">
 
-## Особенности заполнения файла config.json в зависимости от выбранного мессенджера
+## Features of filling in the config file.json depending on the chosen messenger
 + <a href="https://github.com/qa-guru/knowledge-base/wiki/11.-Телеграм-бот.-Отправляем-уведомления-о-результатах-прохождения-тестов" target="_blank">Telegram config</a>
 + <a href="https://github.com/qa-guru/allure-notifications/wiki/Slack-configuration" target="_blank">Slack config</a>
 + <a href="https://github.com/qa-guru/allure-notifications/wiki/Email-configuration" target="_blank">Email config</a>
