@@ -1,4 +1,7 @@
 # Allure notifications
+
+<a href="https://github.com/qa-guru/allure-notifications/blob/change_readme/README_RU.md" target="_blank">RU version</a>
+
 **Allure notifications** - this is a library that allows you to automatically notify about the results of passing autotests, which is sent to the messenger you need (Telegram, Slack, Skype, Email, Mattermost).
 
 Languages: 🇬🇧 🇫🇷 🇷🇺 🇺🇦 🇧🇾 🇨🇳
