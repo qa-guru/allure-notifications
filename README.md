@@ -4,7 +4,7 @@
 Languages: 🇬🇧 🇫🇷 🇷🇺 🇺🇦 🇧🇾 🇨🇳
  
 ## Contents
-+ [How to work](#How)
++ [How it works](#How)
 + [What notifications look like](#Example)
 + [How to use it in your project:](#Settings)
    + [to run locally](#Local)
@@ -14,11 +14,11 @@ Languages: 🇬🇧 🇫🇷 🇷🇺 🇺🇦 🇧🇾 🇨🇳
  
 <a name="How">
  
-## How to work
+## How it works
 Based on the results of the autotests, a summary file is generated.json in the allure-report/widgets folder. 
 This file contains general statistics on the results of passing tests, on the basis of which a notification is generated that the bot sends (a diagram is drawn and the corresponding text is added).
  
-![img.png](img.png)
+<img width="1022" alt="image" src="https://user-images.githubusercontent.com/109241600/215502835-82bfee8c-63cb-4569-95d9-e9f55128b3f7.png">
 
 
 Example of the summary.json
@@ -163,7 +163,7 @@ As a result, an alert will be generated with the results of passing autotests an
 1. Go to Job settings in Jenkins
 2. In the `Build` section, click `Add build step`, in the menu select `Create/Update Text File`
 
-![img_1.png](img_1.png)
+<img width="714" alt="image" src="https://user-images.githubusercontent.com/109241600/215503405-7014f98d-f388-44de-931e-a0272c97b6a1.png">
 
 
 Fill in as follows:
@@ -178,7 +178,7 @@ Note:
 
 3. In the `Post-build Actions` section, click the `Add post-build action` button, in the menu that appears, select `Post build task`
 
-![img_2.png](img_2.png)
+<img width="752" alt="image" src="https://user-images.githubusercontent.com/109241600/215503598-c493077f-7234-4619-ad44-2fcb53888203.png">
 
 + In the `Script` field, specify the following:
 ```
