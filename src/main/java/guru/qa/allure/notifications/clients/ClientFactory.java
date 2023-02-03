@@ -5,6 +5,7 @@ import java.util.List;
 
 import guru.qa.allure.notifications.clients.mail.Email;
 import guru.qa.allure.notifications.clients.mattermost.MattermostClient;
+import guru.qa.allure.notifications.clients.rocket.RocketClient;
 import guru.qa.allure.notifications.clients.skype.SkypeClient;
 import guru.qa.allure.notifications.clients.slack.SlackClient;
 import guru.qa.allure.notifications.clients.telegram.TelegramClient;
@@ -31,6 +32,9 @@ public class ClientFactory {
         }
         if (config.getSkype() != null) {
             notifiers.add(new SkypeClient(messageData, config.getSkype()));
+        }
+        if (config.getRocket() != null) {
+            notifiers.add(new RocketClient(messageData, config.getRocket()));
         }
         return notifiers;
     }
