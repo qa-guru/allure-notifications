@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import guru.qa.allure.notifications.config.base.Base;
+import guru.qa.allure.notifications.config.testops.TestOps;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
@@ -25,6 +26,13 @@ public class MessageData {
         this.project = base.getProject();
         this.buildData = new BuildData(base);
         this.summaryData = new SummaryData(base);
+        this.phrasesData = new PhrasesData(base);
+    }
+
+    public MessageData(Base base, TestOps testOps) {
+        this.project = base.getProject();
+        this.buildData = new BuildData(base, testOps);
+        this.summaryData = new SummaryData(base, testOps);
         this.phrasesData = new PhrasesData(base);
     }
 
