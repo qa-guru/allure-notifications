@@ -3,11 +3,14 @@ package guru.qa.allure.notifications.json;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonParser;
+import com.google.gson.JsonSyntaxException;
+import com.google.gson.stream.JsonReader;
 import guru.qa.allure.notifications.exceptions.ConfigNotFoundException;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.FileNotFoundException;
 import java.io.FileReader;
+import java.io.StringReader;
 
 /**
  * @author kadehar
@@ -28,6 +31,15 @@ public class JSON {
     }
 
     public String prettyPrint(String json) {
-        return GSON.toJson(JsonParser.parseString(json));
+        String result = "";
+        try {
+            result = GSON.toJson(JsonParser.parseString(json));
+        }
+        catch (JsonSyntaxException e) {
+            JsonReader reader = new JsonReader(new StringReader(json));
+            reader.setLenient(true);
+            result = GSON.toJson(JsonParser.parseReader(reader));
+        }
+        return result;
     }
 }

@@ -16,6 +16,9 @@ public class ClientFactory {
 
     public static List<Notifier> from(Config config) {
         MessageData messageData = new MessageData(config.getBase());
+        if (config.getTestops() != null) {
+            messageData = new MessageData(config.getBase(), config.getTestops());
+        }
 
         List<Notifier> notifiers =  new ArrayList<>();
         if (config.getTelegram() != null) {

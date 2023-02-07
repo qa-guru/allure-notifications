@@ -1,5 +1,5 @@
 <h1>Allure notifications :sun_with_face:</h1>
-<h6>for telegram, slack, skype, email, mattermost</h6>
+<h6>for telegram, slack, skype, email, mattermost, rocket</h6>
 
 <h3>Languages: :uk: :fr: :ru: :ukraine: :belarus: :cn:</h3>
 
@@ -8,6 +8,8 @@
 ![shakal_screenshot](readme_images/telegram-en.png) | ![shakal_screenshot](readme_images/slack-en.png)
 | **Mattermost** | **Email** |
 ![shakal_screenshot](readme_images/mattermost-ru.png) | ![shakal_screenshot](readme_images/email_en.png)
+| **RocketChat** |
+![shakal_screenshot](readme_images/allure_testops_en.png) |
 | **Skype** | **Icq**  |
 | Done | Wat? lol |
 
@@ -19,6 +21,7 @@
 - [x] [Email config](https://github.com/qa-guru/allure-notifications/wiki/Email-configuration)
 - [x] [Skype config](https://github.com/qa-guru/allure-notifications/wiki/Skype-configuration)
 - [x] [Mattermost config](https://github.com/qa-guru/allure-notifications/wiki/Mattermost-configuration)
+- [x] [Rocket config]
 
 
 <h6>CommandLine options</h6>
@@ -68,6 +71,12 @@ Here you can find config file structure for lib configuration.
     "token": "",
     "chat": ""
   },
+   "rocket" : {
+      "url": "",
+      "auth_token": "",
+      "user_id": "",
+      "channel": ""
+   },
   "skype": {
     "appId": "",
     "appSecret": "",
@@ -85,6 +94,12 @@ Here you can find config file structure for lib configuration.
     "from": "",
     "recipient": ""
   },
+   "testOps": {
+      "url": "",
+      "auth_token": "",
+      "xsrf_token": "",
+      "project_id": ""
+   },
   "proxy": {
     "host": "",
     "port": 0,
@@ -97,6 +112,7 @@ You only need:
  - to fill needed options in `base` block (please, be careful, `language` field is required!);
  - to configure desired destinations for notifications (`telegram`, `slack`,  `mattermost`, `skype`, `mail`), keep in mind it's possible to set multiple destinations at once, if no destination is set, then no notification will be sent and no error will occur;
  - to specify optional proxy configuration in `proxy` block.
+ - if you need Allure TestOps integration, you must fill field `enableTestOpsIntegration` in `base` block and fill `testOps` block
 
 If you want the project logo to appear in the upper left corner of the chart,
 add file path to logo parameter in configuration
