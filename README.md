@@ -110,9 +110,8 @@ Languages: 🇬🇧 🇫🇷 🇷🇺 🇺🇦 🇧🇾 🇨🇳
     "recipient": ""
   },
   "discord": {
-    "token": "",
-    "chat": "",
-    "replyTo": ""
+    "botToken": "",
+    "channelId": ""
   },
   "proxy": {
     "host": "",

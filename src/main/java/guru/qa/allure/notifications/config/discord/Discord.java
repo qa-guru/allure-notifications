@@ -5,10 +5,8 @@ import lombok.Getter;
 
 @Getter
 public class Discord {
-    @SerializedName("token")
-    private String token;
-    @SerializedName("chat")
-    private String chat;
-    @SerializedName("replyTo")
-    private String replyTo;
+    @SerializedName("botToken")
+    private String botToken;
+    @SerializedName("channelId")
+    private String channelId;
 }

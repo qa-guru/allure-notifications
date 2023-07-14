@@ -22,9 +22,9 @@ public class DiscordClient implements Notifier {
 
     @Override
     public void sendText() throws MessagingException {
-        Unirest.post("https://discord.com/api/channels/{chat}/messages")
-                .routeParam("chat", discord.getChat())
-                .header("Authorization", "Bot " + discord.getToken())
+        Unirest.post("https://discord.com/api/channels/{channelId}/messages")
+                .routeParam("channelId", discord.getChannelId())
+                .header("Authorization", "Bot " + discord.getBotToken())
                 .header("Content-Type", ContentType.APPLICATION_FORM_URLENCODED.getMimeType())
                 .field("content", markdownTemplate.create())
                 .asString()
@@ -33,9 +33,9 @@ public class DiscordClient implements Notifier {
 
     @Override
     public void sendPhoto(byte[] chartImage) throws MessagingException {
-        Unirest.post("https://discord.com/api/channels/{chat}/messages")
-                .routeParam("chat", discord.getChat())
-                .header("Authorization", "Bot " + discord.getToken())
+        Unirest.post("https://discord.com/api/channels/{channelId}/messages")
+                .routeParam("channelId", discord.getChannelId())
+                .header("Authorization", "Bot " + discord.getBotToken())
                 .field("file", new ByteArrayInputStream(chartImage), ContentType.IMAGE_PNG, "chart.png")
                 .field("content", markdownTemplate.create())
                 .asString()
