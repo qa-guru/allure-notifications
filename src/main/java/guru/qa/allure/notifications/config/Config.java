@@ -2,6 +2,7 @@ package guru.qa.allure.notifications.config;
 
 import com.google.gson.annotations.SerializedName;
 import guru.qa.allure.notifications.config.base.Base;
+import guru.qa.allure.notifications.config.cliq.Cliq;
 import guru.qa.allure.notifications.config.mail.Mail;
 import guru.qa.allure.notifications.config.mattermost.Mattermost;
 import guru.qa.allure.notifications.config.proxy.Proxy;
@@ -31,4 +32,6 @@ public class Config {
     private Mail mail;
     @SerializedName("proxy")
     private Proxy proxy;
+    @SerializedName("cliq")
+    private Cliq cliq;
 }
