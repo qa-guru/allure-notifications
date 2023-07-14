@@ -24,7 +24,7 @@ dependencies {
     implementation('com.konghq:unirest-java:3.14.5')
     implementation('org.freemarker:freemarker:2.3.31')
     implementation('org.knowm.xchart:xchart:3.8.4')
-    implementation('com.jayway.jsonpath:json-path:2.7.0')
+    implementation('com.jayway.jsonpath:json-path:2.8.0')
     implementation('commons-io:commons-io:2.13.0')
     implementation('org.apache.commons:commons-lang3:3.12.0')
 
