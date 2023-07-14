@@ -1,5 +1,6 @@
 package guru.qa.allure.notifications.chart;
 
+import guru.qa.allure.notifications.config.testops.TestOps;
 import guru.qa.allure.notifications.exceptions.MessageBuildException;
 import lombok.extern.slf4j.Slf4j;
 import org.knowm.xchart.BitmapEncoder;
@@ -9,6 +10,7 @@ import java.awt.Color;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import javax.imageio.ImageIO;
 import java.io.File;
@@ -19,6 +21,9 @@ import guru.qa.allure.notifications.config.base.Base;
 public class Chart {
 
     public static byte[] createChart(Base base) throws MessageBuildException {
+        return createChart(base, null);
+    }
+    public static byte[] createChart(Base base, TestOps testOps) throws MessageBuildException {
         log.info("Creating chart...");
         PieChart chart = ChartBuilder.createBaseChart(base);
         log.info("Adding legend to chart...");
@@ -26,7 +31,13 @@ public class Chart {
         log.info("Adding view to chart...");
         ChartView.addViewTo(chart);
         log.info("Adding series to chart...");
-        List<Color> colors = new ChartSeries(base).addSeriesTo(chart);
+        List<Color> colors;
+        if (base.getEnableTestOpsIntegration()) {
+            colors = new ChartSeries(base, testOps).addSeriesTo(chart);
+        }
+        else {
+            colors = new ChartSeries(base).addSeriesTo(chart);
+        }
         log.info("Adding colors to series...");
         chart.getStyler().setSeriesColors(colors.toArray(new Color[0]));
         BufferedImage chartImage = BitmapEncoder.getBufferedImage(chart);

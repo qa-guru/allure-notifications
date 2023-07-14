@@ -29,6 +29,8 @@ dependencies {
     implementation('com.jayway.jsonpath:json-path:2.8.0')
     implementation('commons-io:commons-io:2.13.0')
     implementation('org.apache.commons:commons-lang3:3.12.0')
+    implementation('io.rest-assured:rest-assured:4.4.0')
+    implementation('org.jboss.resteasy:resteasy-jackson2-provider:3.0.6.Final')
 
     testImplementation('org.junit.jupiter:junit-jupiter:5.9.3')
     testImplementation('org.springframework:spring-test:5.3.29') {

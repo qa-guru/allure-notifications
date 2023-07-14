@@ -1,5 +1,6 @@
 package guru.qa.allure.notifications.clients;
 
+import com.sun.mail.iap.ByteArray;
 import guru.qa.allure.notifications.chart.Chart;
 import java.util.List;
 
@@ -19,7 +20,13 @@ public class Notification {
             try {
                 log.info("Sending message...");
                 if (config.getBase().getEnableChart()) {
-                    byte[] chartImage = Chart.createChart(config.getBase());
+                    byte[] chartImage = null;
+                    if (config.getTestops() != null) {
+                        chartImage = Chart.createChart(config.getBase(), config.getTestops());
+                    }
+                    else {
+                        chartImage = Chart.createChart(config.getBase());
+                    }
                     notifier.sendPhoto(chartImage);
                 }
                 else {
