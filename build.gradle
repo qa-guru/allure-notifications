@@ -12,7 +12,7 @@ repositories {
 }
 
 dependencies {
-    def lombok = '1.18.24'
+    def lombok = '1.18.28'
     def slf4j = '2.0.7'
 
     annotationProcessor("org.projectlombok:lombok:$lombok")
