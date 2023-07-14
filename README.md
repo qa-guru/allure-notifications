@@ -109,6 +109,10 @@ Languages: 🇬🇧 🇫🇷 🇷🇺 🇺🇦 🇧🇾 🇨🇳
     "from": "",
     "recipient": ""
   },
+  "discord": {
+    "botToken": "",
+    "channelId": ""
+  },
   "proxy": {
     "host": "",
     "port": 0,
