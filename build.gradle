@@ -23,7 +23,7 @@ dependencies {
     implementation('com.sun.mail:javax.mail:1.6.2')
     implementation('com.konghq:unirest-java:3.13.10')
     implementation('org.freemarker:freemarker:2.3.31')
-    implementation('org.knowm.xchart:xchart:3.8.1')
+    implementation('org.knowm.xchart:xchart:3.8.4')
     implementation('com.jayway.jsonpath:json-path:2.7.0')
     implementation('commons-io:commons-io:2.11.0')
     implementation('org.apache.commons:commons-lang3:3.12.0')
