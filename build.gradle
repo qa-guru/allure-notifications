@@ -12,8 +12,8 @@ repositories {
 }
 
 dependencies {
-    def lombok = '1.18.24'
-    def slf4j = '1.7.36'
+    def lombok = '1.18.28'
+    def slf4j = '2.0.7'
 
     annotationProcessor("org.projectlombok:lombok:$lombok")
     compileOnly("org.projectlombok:lombok:$lombok")
@@ -21,18 +21,18 @@ dependencies {
     implementation("org.slf4j:jul-to-slf4j:$slf4j")   // Java Util Logging -> SLF4J
     implementation("org.slf4j:jcl-over-slf4j:$slf4j") // commons-logging -> SLF4J
     implementation('com.sun.mail:jakarta.mail:1.6.7')
-    implementation('com.konghq:unirest-java:3.13.10')
-    implementation('org.freemarker:freemarker:2.3.31')
-    implementation('org.knowm.xchart:xchart:3.8.1')
-    implementation('com.jayway.jsonpath:json-path:2.7.0')
-    implementation('commons-io:commons-io:2.11.0')
+    implementation('com.konghq:unirest-java:3.14.5')
+    implementation('org.freemarker:freemarker:2.3.32')
+    implementation('org.knowm.xchart:xchart:3.8.4')
+    implementation('com.jayway.jsonpath:json-path:2.8.0')
+    implementation('commons-io:commons-io:2.13.0')
     implementation('org.apache.commons:commons-lang3:3.12.0')
 
-    testImplementation('org.junit.jupiter:junit-jupiter:5.9.0')
+    testImplementation('org.junit.jupiter:junit-jupiter:5.9.3')
     testImplementation('org.springframework:spring-test:5.3.22') {
         exclude module: 'spring-jcl' // Use jcl-over-slf4j bridge instead
     }
-    testImplementation('org.mockito:mockito-junit-jupiter:4.6.1')
+    testImplementation('org.mockito:mockito-junit-jupiter:4.11.0')
 }
 
 configurations.all {
