@@ -208,3 +208,23 @@ java "-DconfigFile=notifications/config.json" -jar ../allure-notifications-4.2.1
 + <a href="https://github.com/qa-guru/allure-notifications/wiki/Email-configuration" target="_blank">Email config</a>
 + <a href="https://github.com/qa-guru/allure-notifications/wiki/Skype-configuration" target="_blank">Skype config</a>
 + <a href="https://github.com/qa-guru/allure-notifications/wiki/Mattermost-configuration" target="_blank">Mattermost config</a>
++ <details>
+    <summary>Discord config</summary>
+    To enable Discord notifications it's required to provide 2 configuration parameters: <code>botToken</code> and <code>channelId</code>.
+    <ul>
+    <li>To create your own Discord bot and get its token follow these steps.
+      <ol>
+        <li>Turn on “Developer mode” in your Discord account.</li>
+        <li>Click on “Discord API”.</li>
+        <li>In the Developer portal, click on “Applications”. Log in again and then, back in the “Applications” menu, click on “New Application”.</li>
+        <li>Name the bot and then click “Create”.</li>
+        <li>Go to the “Bot” menu and generate a token using “Add Bot”.</li>
+        <li>Copy the bot’s token and paste it into the JSON config</li>
+        <li>Define other details for your bot under “General Information”.</li>
+        <li>Click on “OAuth2”, activate “bot”, set the permissions, and then click on “Copy”.</li>
+        <li>Select your server to add your bot to it.</li>
+    </ol>
+    </li>
+    <li>To get a Channel ID right click the channel and click on "Copy ID" then paste it into the JSON config. Alternatively type the channel as a mention and place a backslash \ in front of the mention.</li>
+    <ul>
+  </details>
