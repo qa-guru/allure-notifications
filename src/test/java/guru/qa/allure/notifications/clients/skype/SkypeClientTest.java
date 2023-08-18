@@ -3,12 +3,12 @@ package guru.qa.allure.notifications.clients.skype;
 import guru.qa.allure.notifications.config.skype.Skype;
 import guru.qa.allure.notifications.template.data.MessageData;
 
+import org.apache.commons.lang3.reflect.MethodUtils;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.springframework.test.util.ReflectionTestUtils;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.mock;
@@ -27,8 +27,8 @@ class SkypeClientTest{
             "smba.trafficmanager.net,smba.trafficmanager.net",
 
     })
-    void hostTest(String url, String expected){
+    void hostTest(String url, String expected) throws ReflectiveOperationException {
         Mockito.when(skype.getServiceUrl()).thenReturn(url);
-        assertEquals(expected, ReflectionTestUtils.invokeMethod(app, "host"));
+        assertEquals(expected, MethodUtils.invokeMethod(app, true, "host"));
     }
 }

@@ -32,9 +32,6 @@ dependencies {
 
     testImplementation('org.junit.jupiter:junit-jupiter:5.10.0')
     testRuntimeOnly('org.junit.platform:junit-platform-launcher')
-    testImplementation('org.springframework:spring-test:5.3.29') {
-        exclude module: 'spring-jcl' // Use jcl-over-slf4j bridge instead
-    }
     testImplementation('org.mockito:mockito-junit-jupiter:4.11.0')
 }
 
