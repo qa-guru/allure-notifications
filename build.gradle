@@ -15,13 +15,13 @@ repositories {
 
 dependencies {
     def lombok = '1.18.28'
-    def slf4j = '2.0.9'
 
     annotationProcessor("org.projectlombok:lombok:$lombok")
     compileOnly("org.projectlombok:lombok:$lombok")
-    implementation("org.slf4j:slf4j-log4j12:$slf4j")  // SLF4J binding for Log4J 1.2
-    implementation("org.slf4j:jul-to-slf4j:$slf4j")   // Java Util Logging -> SLF4J
-    implementation("org.slf4j:jcl-over-slf4j:$slf4j") // commons-logging -> SLF4J
+    implementation platform('org.slf4j:slf4j-bom:2.0.9')
+    implementation('org.slf4j:slf4j-log4j12')  // SLF4J binding for Log4J 1.2
+    implementation('org.slf4j:jul-to-slf4j')   // Java Util Logging -> SLF4J
+    implementation('org.slf4j:jcl-over-slf4j') // commons-logging -> SLF4J
     implementation('com.sun.mail:jakarta.mail:1.6.7')
     implementation('com.konghq:unirest-java:3.14.5')
     implementation('org.freemarker:freemarker:2.3.32')
