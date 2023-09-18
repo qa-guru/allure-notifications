@@ -229,5 +229,18 @@ java "-DconfigFile=notifications/config.json" -jar ../allure-notifications-4.2.1
     </ol>
     </li>
     <li>To get a Channel ID right click the channel and click on "Copy ID" then paste it into the JSON config. Alternatively type the channel as a mention and place a backslash \ in front of the mention.</li>
+    </ul>
+  </details>
++ <details>
+    <summary>Loop config</summary>
+    To create your own Loop web hook url.
     <ul>
+      <li>Go to main menu of Loop application</li>
+      <li>Click on “Integrations”.</li>
+      <li>Choose "Incoming Webhooks".</li>
+      <li>Click "Add Incoming Webhook"</li>
+      <li>Fill out the form fields as you wish, but select a channel for messages</li>
+      <li>Click Save</li>
+      <li>Copy url of webhook.</li>
+    </ul>
   </details>
