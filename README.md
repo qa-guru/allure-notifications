@@ -114,7 +114,7 @@ Languages: 🇬🇧 🇫🇷 🇷🇺 🇺🇦 🇧🇾 🇨🇳
     "channelId": ""
   },
   "loop": {
-    "webHookUrl": ""
+    "webhookUrl": ""
   },
   "proxy": {
     "host": "",
