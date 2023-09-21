@@ -25,7 +25,7 @@ public class LoopClient implements Notifier {
         Map<String, Object> body = new HashMap<>();
         body.put("text", markdownTemplate.create());
 
-        Unirest.post(loop.getWebHookUrl())
+        Unirest.post(loop.getWebhookUrl())
                 .header("Content-Type", ContentType.APPLICATION_JSON.getMimeType())
                 .body(body)
                 .asString()
@@ -43,7 +43,7 @@ public class LoopClient implements Notifier {
         attachment.put("image_url", "data:image/png;base64," + encodedChartImage);
         body.put("attachments", new Object[]{attachment});
 
-        Unirest.post(loop.getWebHookUrl())
+        Unirest.post(loop.getWebhookUrl())
                 .header("Content-Type", ContentType.APPLICATION_JSON.getMimeType())
                 .body(body)
                 .asString()

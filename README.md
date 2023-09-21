@@ -233,14 +233,14 @@ java "-DconfigFile=notifications/config.json" -jar ../allure-notifications-4.2.1
   </details>
 + <details>
     <summary>Loop config</summary>
-    To create your own Loop web hook url.
+    To create your own Loop webhook URL follow these steps.
     <ul>
-      <li>Go to main menu of Loop application</li>
-      <li>Click on “Integrations”.</li>
+      <li>Go to main menu of Loop application.</li>
+      <li>Click "Integrations".</li>
       <li>Choose "Incoming Webhooks".</li>
-      <li>Click "Add Incoming Webhook"</li>
-      <li>Fill out the form fields as you wish, but select a channel for messages</li>
-      <li>Click Save</li>
-      <li>Copy url of webhook.</li>
+      <li>Click "Add Incoming Webhook".</li>
+      <li>Fill out the form fields on your choice, make sure to select a channel for messages.</li>
+      <li>Click "Save".</li>
+      <li>Copy URL of webhook.</li>
     </ul>
   </details>

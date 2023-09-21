@@ -5,6 +5,6 @@ import lombok.Getter;
 
 @Getter
 public class Loop {
-    @SerializedName("webHookUrl")
-    private String webHookUrl;
+    @SerializedName("webhookUrl")
+    private String webhookUrl;
 }
