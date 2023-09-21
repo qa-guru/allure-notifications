@@ -22,7 +22,7 @@ dependencies {
     implementation('org.slf4j:slf4j-log4j12')  // SLF4J binding for Log4J 1.2
     implementation('org.slf4j:jul-to-slf4j')   // Java Util Logging -> SLF4J
     implementation('org.slf4j:jcl-over-slf4j') // commons-logging -> SLF4J
-    implementation('com.sun.mail:jakarta.mail:1.6.7')
+    implementation('com.sun.mail:jakarta.mail:2.0.1')
     implementation('com.konghq:unirest-java:3.14.5')
     implementation('org.freemarker:freemarker:2.3.32')
     implementation('org.knowm.xchart:xchart:3.8.5')
