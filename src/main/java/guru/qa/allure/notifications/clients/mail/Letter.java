@@ -6,9 +6,11 @@ import guru.qa.allure.notifications.exceptions.MessageSendException;
 import guru.qa.allure.notifications.util.MailUtil;
 import lombok.extern.slf4j.Slf4j;
 
-import javax.mail.*;
-import javax.mail.internet.InternetAddress;
-import javax.mail.internet.MimeMessage;
+import jakarta.mail.Message;
+import jakarta.mail.MessagingException;
+import jakarta.mail.Transport;
+import jakarta.mail.internet.InternetAddress;
+import jakarta.mail.internet.MimeMessage;
 
 @Slf4j
 public class Letter {
