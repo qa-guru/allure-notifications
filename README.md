@@ -1,5 +1,5 @@
 # Allure notifications
-**Allure notifications** - это библиотека, позволяющая выполнять автоматическое оповещение о результатах прохождения автотестов, которое направляется в нужный вам мессенджер (Telegram, Slack, Skype, Email, Mattermost, Discord).
+**Allure notifications** - это библиотека, позволяющая выполнять автоматическое оповещение о результатах прохождения автотестов, которое направляется в нужный вам мессенджер (Telegram, Slack, Skype, Email, Mattermost, Discord, Loop).
 
 Languages: 🇬🇧 🇫🇷 🇷🇺 🇺🇦 🇧🇾 🇨🇳
  
@@ -112,6 +112,9 @@ Languages: 🇬🇧 🇫🇷 🇷🇺 🇺🇦 🇧🇾 🇨🇳
   "discord": {
     "botToken": "",
     "channelId": ""
+  },
+  "loop": {
+    "webhookUrl": ""
   },
   "proxy": {
     "host": "",
@@ -226,5 +229,18 @@ java "-DconfigFile=notifications/config.json" -jar ../allure-notifications-4.2.1
     </ol>
     </li>
     <li>To get a Channel ID right click the channel and click on "Copy ID" then paste it into the JSON config. Alternatively type the channel as a mention and place a backslash \ in front of the mention.</li>
+    </ul>
+  </details>
++ <details>
+    <summary>Loop config</summary>
+    To create your own Loop webhook URL follow these steps.
     <ul>
+      <li>Go to main menu of Loop application.</li>
+      <li>Click "Integrations".</li>
+      <li>Choose "Incoming Webhooks".</li>
+      <li>Click "Add Incoming Webhook".</li>
+      <li>Fill out the form fields on your choice, make sure to select a channel for messages.</li>
+      <li>Click "Save".</li>
+      <li>Copy URL of webhook.</li>
+    </ul>
   </details>

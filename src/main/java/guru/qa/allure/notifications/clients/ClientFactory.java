@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import guru.qa.allure.notifications.clients.discord.DiscordClient;
+import guru.qa.allure.notifications.clients.loop.LoopClient;
 import guru.qa.allure.notifications.clients.mail.Email;
 import guru.qa.allure.notifications.clients.mattermost.MattermostClient;
 import guru.qa.allure.notifications.clients.skype.SkypeClient;
@@ -35,6 +36,9 @@ public class ClientFactory {
         }
         if (config.getDiscord() != null) {
             notifiers.add(new DiscordClient(messageData, config.getDiscord()));
+        }
+        if (config.getLoop() != null) {
+            notifiers.add(new LoopClient(messageData, config.getLoop()));
         }
         return notifiers;
     }

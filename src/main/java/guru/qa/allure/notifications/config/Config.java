@@ -3,6 +3,7 @@ package guru.qa.allure.notifications.config;
 import com.google.gson.annotations.SerializedName;
 import guru.qa.allure.notifications.config.base.Base;
 import guru.qa.allure.notifications.config.discord.Discord;
+import guru.qa.allure.notifications.config.loop.Loop;
 import guru.qa.allure.notifications.config.mail.Mail;
 import guru.qa.allure.notifications.config.mattermost.Mattermost;
 import guru.qa.allure.notifications.config.proxy.Proxy;
@@ -32,6 +33,8 @@ public class Config {
     private Mail mail;
     @SerializedName("discord")
     private Discord discord;
+    @SerializedName("loop")
+    private Loop loop;
     @SerializedName("proxy")
     private Proxy proxy;
 }
