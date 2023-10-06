@@ -14,6 +14,6 @@ public class Percentage {
         log.info("Calculate percentage for result {} by total {}", result,
                 total);
         double value = (result * 100.00) / total;
-        return new Formatters().formatDouble(value);
+        return Formatters.formatDouble(value);
     }
 }

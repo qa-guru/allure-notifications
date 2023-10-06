@@ -20,8 +20,11 @@ public class SummaryData implements TemplateData {
 
     private final SummaryMapper summaryMapper;
 
+    private final Base base;
+
     public SummaryData(Base base) {
         this.summaryMapper = new SummaryMapper(base);
+        this.base = base;
     }
 
     @Override
@@ -29,8 +32,7 @@ public class SummaryData implements TemplateData {
         log.info("Collecting summary data for template");
         Summary summary = summaryMapper.map();
         Map<String, Object> info = new HashMap<>();
-        info.put("time", new Formatters().formatTime(summary.getTime()
-                .getDuration()));
+        info.put("time", Formatters.formatDuration(summary.getTime().getDuration(), base.getDurationFormat()));
         info.put("total", summary.getStatistic().getTotal());
         info.put("passed", summary.getStatistic().getPassed());
         info.put("failed", summary.getStatistic().getFailed());

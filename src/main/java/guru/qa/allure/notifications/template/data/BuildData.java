@@ -27,8 +27,7 @@ public class BuildData implements TemplateData {
         Map<String, Object> info = new HashMap<>();
         info.put("env", base.getEnvironment());
         info.put("comm", base.getComment());
-        info.put("reportLink",
-                new Formatters().formatReportLink(base.getReportLink()));
+        info.put("reportLink", Formatters.formatReportLink(base.getReportLink()));
         log.info("Build data: {}", info);
         return info;
     }
