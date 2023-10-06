@@ -27,4 +27,6 @@ public class Base {
     private String allureFolder;
     @SerializedName("enableChart")
     private Boolean enableChart;
+    @SerializedName("durationFormat")
+    private String durationFormat = "HH:mm:ss.SSS";
 }

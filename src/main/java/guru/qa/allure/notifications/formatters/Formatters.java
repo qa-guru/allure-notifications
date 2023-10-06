@@ -1,11 +1,12 @@
 package guru.qa.allure.notifications.formatters;
 
 import guru.qa.allure.notifications.exceptions.InvalidArgumentException;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.time.DurationFormatUtils;
 
 import java.text.*;
-import java.util.Date;
-import java.util.TimeZone;
 
 /**
  * @author kadehar
@@ -13,22 +14,31 @@ import java.util.TimeZone;
  * Utility class for data formatting.
  */
 @Slf4j
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class Formatters {
 
-    public String formatTime(Long duration) {
-        if (duration == null) {
+    /**
+     * Formats the time gap as a string, using the specified format, and padding with zeros.
+     *
+     * <p>This method formats durations using the days and lower fields of the
+     * format pattern. Months and larger are not used.</p>
+     *
+     * @param durationMillis  the duration to format
+     * @param format  the way in which to format the duration, not null
+     * @return the formatted duration, not null
+     * @throws IllegalArgumentException if durationMillis is null or negative
+     */
+    public static String formatDuration(Long durationMillis, String format) {
+        if (durationMillis == null) {
             throw new InvalidArgumentException("Duration can't be null!");
         }
-        log.info("Duration(ms): {}", duration);
-        Date date = new Date(duration);
-        DateFormat formatter = new SimpleDateFormat("HH:mm:ss.SSS");
-        formatter.setTimeZone(TimeZone.getTimeZone("UTC"));
-        String time = formatter.format(date);
-        log.info("Formatted time: {}", time);
-        return time;
+        log.debug("Duration: {} ms", durationMillis);
+        String formattedDuration = DurationFormatUtils.formatDuration(durationMillis, format);
+        log.debug("Formatted duration: {}", formattedDuration);
+        return formattedDuration;
     }
 
-    public double formatDouble(double value) {
+    public static double formatDouble(double value) {
         log.info("Formatting value {}", value);
         DecimalFormat df = new DecimalFormat("##.#");
         String tmp = df.format(value);
@@ -42,7 +52,7 @@ public class Formatters {
         }
     }
 
-    public String formatReportLink(String link) {
+    public static String formatReportLink(String link) {
         return link != null && link.endsWith("/") ? link + "allure" : link;
     }
 }
