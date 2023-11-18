@@ -92,6 +92,12 @@ Languages: 🇬🇧 🇫🇷 🇷🇺 🇺🇦 🇧🇾 🇨🇳
     "token": "",
     "chat": ""
   },
+  "rocket" : {
+    "url": "",
+    "auth_token": "",
+    "user_id": "",
+    "channel": ""
+   },
   "skype": {
     "appId": "",
     "appSecret": "",
