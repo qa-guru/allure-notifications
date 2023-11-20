@@ -10,7 +10,7 @@ import java.io.ByteArrayInputStream;
 import kong.unirest.ContentType;
 import kong.unirest.Unirest;
 
-public class RocketClient implements Notifier {
+public class RocketChatClient implements Notifier {
 
     private final JSON json = new JSON();
     private final Rocket rocket;
