@@ -13,7 +13,6 @@ import kong.unirest.Unirest;
 
 public class RocketChatClient implements Notifier {
 
-    private final Map<String, Object> body = new HashMap<>();
     private final RocketChat rocketChat;
     private final RocketTemplate template;
 
@@ -24,6 +23,7 @@ public class RocketChatClient implements Notifier {
 
     @Override
     public void sendText() throws MessagingException {
+        Map<String, Object> body = new HashMap<>();
         body.put("channel", rocketChat.getChannel());
         body.put("text", template.create());
         Unirest.post(rocketChat.getUrl() + "/api/v1/chat.postMessage")
