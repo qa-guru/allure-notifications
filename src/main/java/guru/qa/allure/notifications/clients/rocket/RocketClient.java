@@ -29,7 +29,7 @@ public class RocketChatClient implements Notifier {
         Unirest.post(url)
             .header("X-Auth-Token", rocket.getToken())
             .header("X-User-Id", rocket.getUserId())
-            .header("Content-Type", "application/json")
+            .header("Content-Type", ContentType.APPLICATION_JSON.getMimeType())
             .body(json.prettyPrint(body))
             .asString()
             .getBody();
