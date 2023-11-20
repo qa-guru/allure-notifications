@@ -41,8 +41,8 @@ public class ClientFactory {
         if (config.getLoop() != null) {
             notifiers.add(new LoopClient(messageData, config.getLoop()));
         }
-        if (config.getRocket() != null) {
-            notifiers.add(new RocketChatClient(messageData, config.getRocket()));
+        if (config.getRocketChat() != null) {
+            notifiers.add(new RocketChatClient(messageData, config.getRocketChat()));
         }
         return notifiers;
     }

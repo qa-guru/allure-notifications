@@ -4,7 +4,7 @@ import com.google.gson.annotations.SerializedName;
 import lombok.Getter;
 
 @Getter
-public class Rocket {
+public class RocketChat {
 
     @SerializedName("url")
     private String url;

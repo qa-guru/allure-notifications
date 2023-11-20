@@ -1,10 +1,8 @@
 package guru.qa.allure.notifications.clients.rocket;
 
 import guru.qa.allure.notifications.clients.Notifier;
-import guru.qa.allure.notifications.config.rocket.Rocket;
+import guru.qa.allure.notifications.config.rocket.RocketChat;
 import guru.qa.allure.notifications.exceptions.MessagingException;
-import guru.qa.allure.notifications.json.JSON;
-import guru.qa.allure.notifications.template.MarkdownTemplate;
 import guru.qa.allure.notifications.template.RocketTemplate;
 import guru.qa.allure.notifications.template.data.MessageData;
 import java.io.ByteArrayInputStream;
@@ -16,21 +14,21 @@ import kong.unirest.Unirest;
 public class RocketChatClient implements Notifier {
 
     private final Map<String, Object> body = new HashMap<>();
-    private final Rocket rocket;
+    private final RocketChat rocketChat;
     private final RocketTemplate template;
 
-    public RocketChatClient(MessageData messageData, Rocket rocket) {
-        this.rocket = rocket;
+    public RocketChatClient(MessageData messageData, RocketChat rocket) {
+        this.rocketChat = rocket;
         this.template = new RocketTemplate(messageData);
     }
 
     @Override
     public void sendText() throws MessagingException {
-        body.put("channel", rocket.getChannel());
+        body.put("channel", rocketChat.getChannel());
         body.put("text", template.create());
-        Unirest.post(rocket.getUrl() + "/api/v1/chat.postMessage")
-            .header("X-Auth-Token", rocket.getToken())
-            .header("X-User-Id", rocket.getUserId())
+        Unirest.post(rocketChat.getUrl() + "/api/v1/chat.postMessage")
+            .header("X-Auth-Token", rocketChat.getToken())
+            .header("X-User-Id", rocketChat.getUserId())
             .header("Content-Type", ContentType.APPLICATION_JSON.getMimeType())
             .body(body)
             .asString()
@@ -40,10 +38,10 @@ public class RocketChatClient implements Notifier {
     @Override
     public void sendPhoto(byte[] chartImage) throws MessagingException {
         sendText();
-        String url = String.format("%s/api/v1/rooms.upload/%s", rocket.getUrl(), rocket.getChannel());
+        String url = String.format("%s/api/v1/rooms.upload/%s", rocketChat.getUrl(), rocketChat.getChannel());
         Unirest.post(url)
-            .header("X-Auth-Token", rocket.getToken())
-            .header("X-User-Id", rocket.getUserId())
+            .header("X-Auth-Token", rocketChat.getToken())
+            .header("X-User-Id", rocketChat.getUserId())
             .field("file", new ByteArrayInputStream(chartImage), ContentType.IMAGE_PNG, "chart.png")
             .asString()
             .getBody();
