@@ -255,7 +255,7 @@ java "-DconfigFile=notifications/config.json" -jar ../allure-notifications-4.2.1
   </details>
 + <details>
       <summary>Rocket.Chat config</summary>
-      To enable RocketChat notifications it's required to provide 4 configuration parameters: 
+      To enable Rocket.Chat notifications it's required to provide 4 configuration parameters: 
   <code>url</code>, <code>auth_token</code>,<code>user_id</code>,<code>channel</code>
       <ul>
     <li>
