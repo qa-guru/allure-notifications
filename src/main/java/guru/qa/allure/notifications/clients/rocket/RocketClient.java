@@ -25,7 +25,7 @@ public class RocketChatClient implements Notifier {
     public void sendText() throws MessagingException {
         String body = String.format("{\"channel\": \"%s\", \"text\": \"%s\" }",
             rocket.getChannel(), template.create().replace("\r\n", "\\\n"));
-        String url = String.format("%s/api/v1/chat.postMessage", rocket.getUrl());
+        String url = rocket.getUrl() + "/api/v1/chat.postMessage";
         Unirest.post(url)
             .header("X-Auth-Token", rocket.getToken())
             .header("X-User-Id", rocket.getUserId())

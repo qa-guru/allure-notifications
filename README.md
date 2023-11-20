@@ -92,7 +92,7 @@ Languages: 🇬🇧 🇫🇷 🇷🇺 🇺🇦 🇧🇾 🇨🇳
     "token": "",
     "chat": ""
   },
-  "rocket" : {
+  "rocketChat" : {
     "url": "",
     "auth_token": "",
     "user_id": "",
@@ -260,7 +260,7 @@ java "-DconfigFile=notifications/config.json" -jar ../allure-notifications-4.2.1
       <ul>
     <li>
       <ol>
-        <li>First of all you need to generate auth_token from user setting</li>
+        <li>First of all you need to generate auth_token from user setting.</li>
         <li>After generation you can get auth_token and user_id.</li>
         <li>You can get the channel parameter using previously generated tokens and following the documentation
 + (<a href="https://developer.rocket.chat/reference/api/rest-api/endpoints/rooms/channels-endpoints/info" target="_blank">Channels info docs</a>).</li> 
