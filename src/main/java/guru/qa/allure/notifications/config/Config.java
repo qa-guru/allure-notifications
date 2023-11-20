@@ -36,7 +36,7 @@ public class Config {
     private Discord discord;
     @SerializedName("loop")
     private Loop loop;
-    @SerializedName("rocket")
+    @SerializedName("rocketChat")
     private Rocket rocket;
     @SerializedName("proxy")
     private Proxy proxy;

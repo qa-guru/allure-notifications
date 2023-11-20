@@ -1,6 +1,6 @@
 package guru.qa.allure.notifications.clients;
 
-import guru.qa.allure.notifications.clients.rocket.RocketClient;
+import guru.qa.allure.notifications.clients.rocket.RocketChatClient;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -19,7 +19,7 @@ public class ClientFactory {
     public static List<Notifier> from(Config config) {
         MessageData messageData = new MessageData(config.getBase());
 
-        List<Notifier> notifiers = new ArrayList<>();
+        List<Notifier> notifiers =  new ArrayList<>();
         if (config.getTelegram() != null) {
             notifiers.add(new TelegramClient(messageData, config.getTelegram()));
         }
@@ -42,7 +42,7 @@ public class ClientFactory {
             notifiers.add(new LoopClient(messageData, config.getLoop()));
         }
         if (config.getRocket() != null) {
-            notifiers.add(new RocketClient(messageData, config.getRocket()));
+            notifiers.add(new RocketChatClient(messageData, config.getRocket()));
         }
         return notifiers;
     }
