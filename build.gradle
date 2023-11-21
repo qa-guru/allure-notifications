@@ -1,5 +1,6 @@
 plugins {
     id 'java-library'
+    id 'checkstyle'
 }
 
 group 'allure.notifications'
@@ -50,6 +51,20 @@ tasks.withType(JavaCompile) {
 }
 tasks.named('test') {
     useJUnitPlatform()
+}
+
+checkstyle {
+    toolVersion '10.12.4'
+    configFile = file("checkstyle.xml")
+    ignoreFailures = false
+    showViolations = true
+
+    tasks.withType(Checkstyle) {
+        reports {
+            xml.required = false
+            html.required = false
+        }
+    }
 }
 
 jar {
