@@ -53,19 +53,23 @@ tasks.named('test') {
     useJUnitPlatform()
 }
 
-checkstyle {
-    toolVersion '10.12.4'
-    configFile = file("checkstyle.xml")
-    ignoreFailures = false
-    showViolations = true
+// Checkstyle requires Java 11 starting from 10.0
+if (JavaVersion.current().isJava11Compatible()) {
+    apply plugin: 'checkstyle'
 
+    checkstyle {
+        toolVersion = '10.12.5'
+        ignoreFailures = false
+        showViolations = true
+    }
+    
     tasks.withType(Checkstyle) {
         reports {
             xml.required = false
             html.required = false
         }
     }
-}
+}```
 
 jar {
     manifest {
