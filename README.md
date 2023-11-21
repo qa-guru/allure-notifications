@@ -1,5 +1,5 @@
 # Allure notifications
-**Allure notifications** - это библиотека, позволяющая выполнять автоматическое оповещение о результатах прохождения автотестов, которое направляется в нужный вам мессенджер (Telegram, Slack, Skype, Email, Mattermost, Discord, Loop).
+**Allure notifications** - это библиотека, позволяющая выполнять автоматическое оповещение о результатах прохождения автотестов, которое направляется в нужный вам мессенджер (Telegram, Slack, Skype, Email, Mattermost, Discord, Loop, Rocket.Chat).
 
 Languages: 🇬🇧 🇫🇷 🇷🇺 🇺🇦 🇧🇾 🇨🇳
  
@@ -92,6 +92,12 @@ Languages: 🇬🇧 🇫🇷 🇷🇺 🇺🇦 🇧🇾 🇨🇳
     "token": "",
     "chat": ""
   },
+  "rocketChat" : {
+    "url": "",
+    "auth_token": "",
+    "user_id": "",
+    "channel": ""
+   },
   "skype": {
     "appId": "",
     "appSecret": "",
@@ -245,5 +251,20 @@ java "-DconfigFile=notifications/config.json" -jar ../allure-notifications-4.2.1
       <li>Fill out the form fields on your choice, make sure to select a channel for messages.</li>
       <li>Click "Save".</li>
       <li>Copy URL of webhook.</li>
+    </ul>
+  </details>
++ <details>
+      <summary>Rocket.Chat config</summary>
+      To enable Rocket.Chat notifications it's required to provide 4 configuration parameters: 
+  <code>url</code>, <code>auth_token</code>,<code>user_id</code>,<code>channel</code>
+      <ul>
+    <li>
+      <ol>
+        <li>First of all you need to generate auth_token from user setting.</li>
+        <li>After generation you can get auth_token and user_id.</li>
+        <li>You can get the channel parameter using previously generated tokens and following the documentation.</li>
++ (<a href="https://developer.rocket.chat/reference/api/rest-api/endpoints/rooms/channels-endpoints/info" target="_blank">Channels info docs</a>)
+    </ol>
+    </li>
     </ul>
   </details>

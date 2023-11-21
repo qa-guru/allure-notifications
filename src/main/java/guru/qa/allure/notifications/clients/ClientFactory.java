@@ -1,5 +1,6 @@
 package guru.qa.allure.notifications.clients;
 
+import guru.qa.allure.notifications.clients.rocket.RocketChatClient;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -39,6 +40,9 @@ public class ClientFactory {
         }
         if (config.getLoop() != null) {
             notifiers.add(new LoopClient(messageData, config.getLoop()));
+        }
+        if (config.getRocketChat() != null) {
+            notifiers.add(new RocketChatClient(messageData, config.getRocketChat()));
         }
         return notifiers;
     }
