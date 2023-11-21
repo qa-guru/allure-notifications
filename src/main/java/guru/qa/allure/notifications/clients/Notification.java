@@ -21,12 +21,11 @@ public class Notification {
                 if (config.getBase().getEnableChart()) {
                     byte[] chartImage = Chart.createChart(config.getBase());
                     notifier.sendPhoto(chartImage);
-                }
-                else {
+                } else {
                     notifier.sendText();
                 }
                 log.info("Done.");
-            } catch (MessagingException e){
+            } catch (MessagingException e) {
                 successfulSending = false;
                 log.error(e.getMessage(), e);
             }

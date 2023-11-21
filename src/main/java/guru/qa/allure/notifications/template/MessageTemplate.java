@@ -2,7 +2,6 @@ package guru.qa.allure.notifications.template;
 
 import freemarker.template.Template;
 import freemarker.template.TemplateException;
-import guru.qa.allure.notifications.config.base.Base;
 import guru.qa.allure.notifications.exceptions.MessageBuildException;
 import guru.qa.allure.notifications.template.config.TemplateConfig;
 import guru.qa.allure.notifications.template.data.MessageData;

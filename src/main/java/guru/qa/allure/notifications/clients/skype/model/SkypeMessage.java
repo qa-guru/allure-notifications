@@ -4,9 +4,11 @@ import lombok.Builder;
 import lombok.Data;
 
 import java.util.List;
+
 @Data
 @Builder
 public class SkypeMessage {
+
     private String type;
     private From from;
     private String text;

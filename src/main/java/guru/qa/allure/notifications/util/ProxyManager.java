@@ -7,11 +7,11 @@ import org.apache.commons.lang3.StringUtils;
 public class ProxyManager {
     public static void manageProxy(Proxy proxy) {
         if (proxy != null) {
-            if(StringUtils.isNotEmpty(proxy.getHost()) && proxy.getPort() != 0){
+            if (StringUtils.isNotEmpty(proxy.getHost()) && proxy.getPort() != 0) {
                 if (StringUtils.isNotEmpty(proxy.getUsername()) && StringUtils.isNotEmpty(proxy.getPassword())) {
                     Unirest.config().proxy(proxy.getHost(), proxy.getPort(),
                             proxy.getUsername(), proxy.getPassword());
-                }else{
+                } else {
                     Unirest.config().proxy(proxy.getHost(), proxy.getPort());
                 }
             }

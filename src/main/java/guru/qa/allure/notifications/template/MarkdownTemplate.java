@@ -1,6 +1,5 @@
 package guru.qa.allure.notifications.template;
 
-import guru.qa.allure.notifications.config.base.Base;
 import guru.qa.allure.notifications.exceptions.MessageBuildException;
 import guru.qa.allure.notifications.template.data.MessageData;
 

@@ -11,6 +11,7 @@ import lombok.extern.slf4j.Slf4j;
  * @since 4.0
  * Utility class for mapping summary.json to Summary object.
  */
+
 @Slf4j
 public class SummaryMapper {
     private static final String SUMMARY = "widgets/summary.json";

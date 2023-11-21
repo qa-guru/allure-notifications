@@ -10,6 +10,7 @@ import lombok.extern.slf4j.Slf4j;
  * @since 4.0
  * Utility class for mapping phrases *.json to Phrases object.
  */
+
 @Slf4j
 public class PhrasesMapper {
 

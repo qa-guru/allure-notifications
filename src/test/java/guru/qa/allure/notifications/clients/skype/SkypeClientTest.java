@@ -13,7 +13,7 @@ import org.mockito.Mockito;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.mock;
 
-class SkypeClientTest{
+class SkypeClientTest {
     @Mock Skype skype = mock(Skype.class);
 
     @InjectMocks

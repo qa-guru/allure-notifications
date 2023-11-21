@@ -46,7 +46,6 @@ public class SkypeClient implements Notifier {
                 .contentUrl("data:image/png;base64," + Base64.getEncoder().encodeToString(chartImage))
                 .build();
 
-
         SkypeMessage body = createSimpleMessage();
         body.setAttachments(Collections.singletonList(attachment));
 
