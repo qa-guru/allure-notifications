@@ -69,7 +69,7 @@ if (JavaVersion.current().isJava11Compatible()) {
             html.required = false
         }
     }
-}```
+}
 
 jar {
     manifest {
