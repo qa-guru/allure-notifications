@@ -16,9 +16,7 @@ import guru.qa.allure.notifications.template.data.MessageData;
 
 public class ClientFactory {
 
-    public static List<Notifier> from(Config config) {
-        MessageData messageData = new MessageData(config.getBase());
-
+    public static List<Notifier> from(Config config, MessageData messageData) {
         List<Notifier> notifiers =  new ArrayList<>();
         if (config.getTelegram() != null) {
             notifiers.add(new TelegramClient(messageData, config.getTelegram()));

@@ -1,7 +1,5 @@
 package guru.qa.allure.notifications.template.data;
 
-import guru.qa.allure.notifications.config.base.Base;
-import guru.qa.allure.notifications.mapper.PhrasesMapper;
 import guru.qa.allure.notifications.model.phrases.Phrases;
 import lombok.extern.slf4j.Slf4j;
 
@@ -15,17 +13,15 @@ import java.util.Map;
  */
 @Slf4j
 public class PhrasesData implements TemplateData {
-    private final PhrasesMapper phrasesMapper;
+    private final Phrases phrases;
 
-    public PhrasesData(Base base) {
-        this.phrasesMapper = new PhrasesMapper(base);
+    public PhrasesData(Phrases phrases) {
+        this.phrases = phrases;
     }
 
     @Override
     public Map<String, Object> map() {
         log.info("Collecting phrases data for template");
-
-        Phrases phrases = phrasesMapper.map();
 
         Map<String, Object> info = new HashMap<>();
         info.put("results", phrases.getResults());

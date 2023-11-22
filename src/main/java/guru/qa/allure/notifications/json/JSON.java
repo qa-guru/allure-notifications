@@ -12,7 +12,6 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.UncheckedIOException;
 
 /**
  * @author kadehar
@@ -34,13 +33,11 @@ public class JSON {
         return GSON.fromJson(new FileReader(file), clazz);
     }
 
-    public <T> T parseResource(String resourcePath, Class<T> clazz) {
+    public <T> T parseResource(String resourcePath, Class<T> clazz) throws IOException {
         log.info("Mapping resource at path {} to {} object", resourcePath, clazz.getSimpleName());
         try (InputStream inputStream = RESOURCES_UTIL.getResourceAsStream(resourcePath);
              InputStreamReader inputStreamReader = new InputStreamReader(inputStream)) {
             return GSON.fromJson(inputStreamReader, clazz);
-        } catch (IOException e) {
-            throw new UncheckedIOException(e);
         }
     }
 

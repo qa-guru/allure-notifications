@@ -1,8 +1,5 @@
 package guru.qa.allure.notifications.chart;
 
-import guru.qa.allure.notifications.config.base.Base;
-import guru.qa.allure.notifications.mapper.LegendMapper;
-import guru.qa.allure.notifications.mapper.SummaryMapper;
 import guru.qa.allure.notifications.model.legend.Legend;
 import guru.qa.allure.notifications.model.summary.Summary;
 import org.knowm.xchart.PieChart;
@@ -12,18 +9,16 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ChartSeries {
-    private final LegendMapper legendMapper;
-    private final SummaryMapper summaryMapper;
+    private final Summary summary;
+    private final Legend legend;
 
-    public ChartSeries(Base base) {
-        this.legendMapper = new LegendMapper(base);
-        this.summaryMapper = new SummaryMapper(base);
+    public ChartSeries(Summary summary, Legend legend) {
+        this.summary = summary;
+        this.legend = legend;
     }
 
     public List<Color> addSeriesTo(PieChart chart) {
         List<Color> colors = new ArrayList<>();
-        final Summary summary = summaryMapper.map();
-        final Legend legend = legendMapper.map();
 
         addSeries(chart, colors, summary.getStatistic().getPassed(), legend.getPassed(),  new Color(148, 202, 102));
         addSeries(chart, colors, summary.getStatistic().getFailed(), legend.getFailed(), new Color(255, 87, 68));

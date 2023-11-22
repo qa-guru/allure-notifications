@@ -1,6 +1,8 @@
 package guru.qa.allure.notifications.chart;
 
 import guru.qa.allure.notifications.exceptions.MessageBuildException;
+import guru.qa.allure.notifications.model.legend.Legend;
+import guru.qa.allure.notifications.model.summary.Summary;
 import lombok.extern.slf4j.Slf4j;
 import org.knowm.xchart.BitmapEncoder;
 import org.knowm.xchart.PieChart;
@@ -18,7 +20,7 @@ import guru.qa.allure.notifications.config.base.Base;
 @Slf4j
 public class Chart {
 
-    public static byte[] createChart(Base base) throws MessageBuildException {
+    public static byte[] createChart(Base base, Summary summary, Legend legend) throws MessageBuildException {
         log.info("Creating chart...");
         PieChart chart = ChartBuilder.createBaseChart(base);
         log.info("Adding legend to chart...");
@@ -26,7 +28,7 @@ public class Chart {
         log.info("Adding view to chart...");
         ChartView.addViewTo(chart);
         log.info("Adding series to chart...");
-        List<Color> colors = new ChartSeries(base).addSeriesTo(chart);
+        List<Color> colors = new ChartSeries(summary, legend).addSeriesTo(chart);
         log.info("Adding colors to series...");
         chart.getStyler().setSeriesColors(colors.toArray(new Color[0]));
         BufferedImage chartImage = BitmapEncoder.getBufferedImage(chart);
