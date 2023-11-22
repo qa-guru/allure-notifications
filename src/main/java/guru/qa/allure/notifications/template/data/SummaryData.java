@@ -2,7 +2,6 @@ package guru.qa.allure.notifications.template.data;
 
 import guru.qa.allure.notifications.config.base.Base;
 import guru.qa.allure.notifications.formatters.Formatters;
-import guru.qa.allure.notifications.mapper.SummaryMapper;
 import guru.qa.allure.notifications.model.summary.Summary;
 import guru.qa.allure.notifications.util.Percentage;
 import lombok.extern.slf4j.Slf4j;
@@ -18,19 +17,17 @@ import java.util.Map;
 @Slf4j
 public class SummaryData implements TemplateData {
 
-    private final SummaryMapper summaryMapper;
-
     private final Base base;
+    private final Summary summary;
 
-    public SummaryData(Base base) {
-        this.summaryMapper = new SummaryMapper(base);
+    public SummaryData(Base base, Summary summary) {
         this.base = base;
+        this.summary = summary;
     }
 
     @Override
     public Map<String, Object> map() {
         log.info("Collecting summary data for template");
-        Summary summary = summaryMapper.map();
         Map<String, Object> info = new HashMap<>();
         info.put("time", Formatters.formatDuration(summary.getTime().getDuration(), base.getDurationFormat()));
         info.put("total", summary.getStatistic().getTotal());
