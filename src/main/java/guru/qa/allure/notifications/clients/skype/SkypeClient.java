@@ -17,15 +17,13 @@ import java.util.Collections;
 
 public class SkypeClient implements Notifier {
     private final Skype skype;
-    private final MarkdownTemplate markdownTemplate;
 
-    public SkypeClient(MessageData messageData, Skype skype) {
+    public SkypeClient(Skype skype) {
         this.skype = skype;
-        this.markdownTemplate = new MarkdownTemplate(messageData);
     }
 
     @Override
-    public void sendText() throws MessagingException {
+    public void sendText(MessageData messageData) throws MessagingException {
         Unirest.post("https://{url}/apis/v3/conversations/{conversationId}/activities")
                 .routeParam("url", host())
                 .routeParam("conversationId",
@@ -33,20 +31,20 @@ public class SkypeClient implements Notifier {
                 .header("Content-Type", ContentType.APPLICATION_JSON.getMimeType())
                 .header("Authorization", "Bearer " + token())
                 .header("Host", host())
-                .body(createSimpleMessage())
+                .body(createSimpleMessage(messageData))
                 .asString()
                 .getBody();
     }
 
     @Override
-    public void sendPhoto(byte[] chartImage) throws MessagingException {
+    public void sendPhoto(MessageData messageData, byte[] chartImage) throws MessagingException {
         Attachment attachment = Attachment.builder()
                 .contentType(ContentType.IMAGE_PNG.toString())
                 .name("chart.png")
                 .contentUrl("data:image/png;base64," + Base64.getEncoder().encodeToString(chartImage))
                 .build();
 
-        SkypeMessage body = createSimpleMessage();
+        SkypeMessage body = createSimpleMessage(messageData);
         body.setAttachments(Collections.singletonList(attachment));
 
         Unirest.post("https://{url}/apis/v3/conversations/{conversationId}/activities")
@@ -61,7 +59,7 @@ public class SkypeClient implements Notifier {
                 .getBody();
     }
 
-    private SkypeMessage createSimpleMessage() throws MessageBuildException {
+    private SkypeMessage createSimpleMessage(MessageData messageData) throws MessageBuildException {
         From from = From.builder()
                 .id(skype.getBotId())
                 .name(skype.getBotName())
@@ -70,7 +68,7 @@ public class SkypeClient implements Notifier {
         return SkypeMessage.builder()
                 .type("message")
                 .from(from)
-                .text(markdownTemplate.create())
+                .text(new MarkdownTemplate(messageData).create())
                 .build();
     }
 

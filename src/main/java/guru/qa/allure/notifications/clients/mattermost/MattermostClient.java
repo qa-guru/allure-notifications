@@ -3,6 +3,7 @@ package guru.qa.allure.notifications.clients.mattermost;
 import com.jayway.jsonpath.JsonPath;
 import guru.qa.allure.notifications.clients.Notifier;
 import guru.qa.allure.notifications.config.mattermost.Mattermost;
+import guru.qa.allure.notifications.exceptions.MessageBuildException;
 import guru.qa.allure.notifications.exceptions.MessagingException;
 import guru.qa.allure.notifications.template.MarkdownTemplate;
 import kong.unirest.ContentType;
@@ -16,32 +17,19 @@ import java.util.Map;
 import static java.util.Collections.singletonList;
 
 public class MattermostClient implements Notifier {
-    private final Map<String, Object> body = new HashMap<>();
-    private MarkdownTemplate markdownTemplate;
     private final Mattermost mattermost;
 
-    public MattermostClient(MessageData messageData, Mattermost mattermost) {
+    public MattermostClient(Mattermost mattermost) {
         this.mattermost = mattermost;
-        this.markdownTemplate = new MarkdownTemplate(messageData);
     }
 
     @Override
-    public void sendText() throws MessagingException {
-        body.put("channel_id", mattermost.getChat());
-        body.put("message", markdownTemplate.create());
-
-        Unirest.post("https://{uri}/api/v4/posts")
-                .routeParam("uri", mattermost.getUrl())
-                .header("Authorization", "Bearer " +
-                        mattermost.getToken())
-                .header("Content-Type", ContentType.APPLICATION_JSON.getMimeType())
-                .body(body)
-                .asString()
-                .getBody();
+    public void sendText(MessageData messageData) throws MessagingException {
+        send(messageData, new HashMap<>());
     }
 
     @Override
-    public void sendPhoto(byte[] chartImage) throws MessagingException {
+    public void sendPhoto(MessageData messageData, byte[] chartImage) throws MessagingException {
         String response = Unirest.post("https://{uri}/api/v4/files")
                 .routeParam("uri", mattermost.getUrl())
                 .header("Authorization", "Bearer " +
@@ -53,7 +41,22 @@ public class MattermostClient implements Notifier {
                 .getBody();
 
         String chartId = JsonPath.read(response, "$.file_infos[0].id");
+        Map<String, Object> body = new HashMap<>();
         body.put("file_ids", singletonList(chartId));
-        sendText();
+        send(messageData, body);
+    }
+
+    private void send(MessageData messageData, Map<String, Object> body) throws MessageBuildException {
+        body.put("channel_id", mattermost.getChat());
+        body.put("message", new MarkdownTemplate(messageData).create());
+
+        Unirest.post("https://{uri}/api/v4/posts")
+                .routeParam("uri", mattermost.getUrl())
+                .header("Authorization", "Bearer " +
+                        mattermost.getToken())
+                .header("Content-Type", ContentType.APPLICATION_JSON.getMimeType())
+                .body(body)
+                .asString()
+                .getBody();
     }
 }

@@ -12,34 +12,32 @@ import java.io.ByteArrayInputStream;
 
 public class TelegramClient implements Notifier {
     private final Telegram telegram;
-    private final TelegramTemplate telegramTemplate;
 
-    public TelegramClient(MessageData messageData, Telegram telegram) {
+    public TelegramClient(Telegram telegram) {
         this.telegram = telegram;
-        this.telegramTemplate = new TelegramTemplate(messageData);
     }
 
     @Override
-    public void sendText() throws MessagingException {
+    public void sendText(MessageData messageData) throws MessagingException {
         Unirest.post("https://api.telegram.org/bot{token}/sendMessage")
                 .routeParam("token", telegram.token())
                 .header("Content-Type", ContentType.APPLICATION_FORM_URLENCODED.getMimeType())
                 .field("chat_id", telegram.chat())
                 .field("reply_to_message_id", telegram.replyTo() + "")
-                .field("text", telegramTemplate.create())
+                .field("text", new TelegramTemplate(messageData).create())
                 .field("parse_mode", "HTML")
                 .asString()
                 .getBody();
     }
 
     @Override
-    public void sendPhoto(byte[] chartImage) throws MessagingException {
+    public void sendPhoto(MessageData messageData, byte[] chartImage) throws MessagingException {
         Unirest.post("https://api.telegram.org/bot{token}/sendPhoto")
                 .routeParam("token", telegram.token())
                 .field("photo", new ByteArrayInputStream(chartImage), ContentType.IMAGE_PNG, "chart.png")
                 .field("chat_id", telegram.chat())
                 .field("reply_to_message_id", telegram.replyTo())
-                .field("caption", telegramTemplate.create())
+                .field("caption", new TelegramTemplate(messageData).create())
                 .field("parse_mode", "HTML")
                 .asString()
                 .getBody();

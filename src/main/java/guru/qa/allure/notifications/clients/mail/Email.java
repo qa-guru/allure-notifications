@@ -7,33 +7,29 @@ import guru.qa.allure.notifications.template.HTMLTemplate;
 import guru.qa.allure.notifications.template.data.MessageData;
 
 public class Email implements Notifier {
-    private final String project;
     private final Mail mail;
     private final Letter letter;
-    private final HTMLTemplate htmlTemplate;
 
-    public Email(MessageData messageData, Mail mail) {
+    public Email(Mail mail) {
         this.mail = mail;
         this.letter = new Letter(mail);
-        this.htmlTemplate = new HTMLTemplate(messageData);
-        this.project = messageData.getProject();
     }
 
     @Override
-    public void sendText() throws MessagingException {
+    public void sendText(MessageData messageData) throws MessagingException {
         letter.from(mail.getFrom())
                 .to(mail.getRecipient())
-                .subject(project)
-                .text(htmlTemplate.create())
+                .subject(messageData.getProject())
+                .text(new HTMLTemplate(messageData).create())
                 .send();
     }
 
     @Override
-    public void sendPhoto(byte[] chartImage)  throws MessagingException {
-        String message = "<img src='cid:image'/><br/>" + htmlTemplate.create();
+    public void sendPhoto(MessageData messageData, byte[] chartImage)  throws MessagingException {
+        String message = "<img src='cid:image'/><br/>" + new HTMLTemplate(messageData).create();
         letter.from(mail.getFrom())
                 .to(mail.getRecipient())
-                .subject(project)
+                .subject(messageData.getProject())
                 .text(message)
                 .image(chartImage)
                 .send();

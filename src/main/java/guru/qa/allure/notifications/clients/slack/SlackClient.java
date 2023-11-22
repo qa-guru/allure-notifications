@@ -12,17 +12,15 @@ import java.io.ByteArrayInputStream;
 
 public class SlackClient implements Notifier {
     private final Slack slack;
-    private final MarkdownTemplate markdownTemplate;
 
-    public SlackClient(MessageData messageData, Slack slack) {
+    public SlackClient(Slack slack) {
         this.slack = slack;
-        this.markdownTemplate = new MarkdownTemplate(messageData);
     }
 
     @Override
-    public void sendText() throws MessagingException {
+    public void sendText(MessageData messageData) throws MessagingException {
         String body = String.format("channel=%s&text=%s",
-                slack.getChat(), markdownTemplate.create());
+                slack.getChat(), new MarkdownTemplate(messageData).create());
 
         Unirest.post("https://slack.com/api/chat.postMessage")
                 .header("Authorization", "Bearer " + slack.getToken())
@@ -33,13 +31,13 @@ public class SlackClient implements Notifier {
     }
 
     @Override
-    public void sendPhoto(byte[] chartImage) throws MessagingException {
+    public void sendPhoto(MessageData messageData, byte[] chartImage) throws MessagingException {
         Unirest.post("https://slack.com/api/files.upload")
                 .header("Authorization", "Bearer " + slack.getToken())
                 .field("file", new ByteArrayInputStream(chartImage), ContentType.IMAGE_PNG, "chart.png")
                 .field("channels", slack.getChat())
                 .field("filename", " ")
-                .field("initial_comment", markdownTemplate.create())
+                .field("initial_comment", new MarkdownTemplate(messageData).create())
                 .asString()
                 .getBody();
     }

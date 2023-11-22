@@ -11,33 +11,30 @@ import kong.unirest.Unirest;
 import java.io.ByteArrayInputStream;
 
 public class DiscordClient implements Notifier {
-
     private final Discord discord;
-    private final MarkdownTemplate markdownTemplate;
 
-    public DiscordClient(MessageData messageData, Discord discord) {
+    public DiscordClient(Discord discord) {
         this.discord = discord;
-        this.markdownTemplate = new MarkdownTemplate(messageData);
     }
 
     @Override
-    public void sendText() throws MessagingException {
+    public void sendText(MessageData messageData) throws MessagingException {
         Unirest.post("https://discord.com/api/channels/{channelId}/messages")
                 .routeParam("channelId", discord.getChannelId())
                 .header("Authorization", "Bot " + discord.getBotToken())
                 .header("Content-Type", ContentType.APPLICATION_FORM_URLENCODED.getMimeType())
-                .field("content", markdownTemplate.create())
+                .field("content", new MarkdownTemplate(messageData).create())
                 .asString()
                 .getBody();
     }
 
     @Override
-    public void sendPhoto(byte[] chartImage) throws MessagingException {
+    public void sendPhoto(MessageData messageData, byte[] chartImage) throws MessagingException {
         Unirest.post("https://discord.com/api/channels/{channelId}/messages")
                 .routeParam("channelId", discord.getChannelId())
                 .header("Authorization", "Bot " + discord.getBotToken())
                 .field("file", new ByteArrayInputStream(chartImage), ContentType.IMAGE_PNG, "chart.png")
-                .field("content", markdownTemplate.create())
+                .field("content", new MarkdownTemplate(messageData).create())
                 .asString()
                 .getBody();
     }

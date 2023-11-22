@@ -12,35 +12,34 @@ import guru.qa.allure.notifications.clients.skype.SkypeClient;
 import guru.qa.allure.notifications.clients.slack.SlackClient;
 import guru.qa.allure.notifications.clients.telegram.TelegramClient;
 import guru.qa.allure.notifications.config.Config;
-import guru.qa.allure.notifications.template.data.MessageData;
 
 public class ClientFactory {
 
-    public static List<Notifier> from(Config config, MessageData messageData) {
+    public static List<Notifier> from(Config config) {
         List<Notifier> notifiers =  new ArrayList<>();
         if (config.getTelegram() != null) {
-            notifiers.add(new TelegramClient(messageData, config.getTelegram()));
+            notifiers.add(new TelegramClient(config.getTelegram()));
         }
         if (config.getSlack() != null) {
-            notifiers.add(new SlackClient(messageData, config.getSlack()));
+            notifiers.add(new SlackClient(config.getSlack()));
         }
         if (config.getMail() != null) {
-            notifiers.add(new Email(messageData, config.getMail()));
+            notifiers.add(new Email(config.getMail()));
         }
         if (config.getMattermost() != null) {
-            notifiers.add(new MattermostClient(messageData, config.getMattermost()));
+            notifiers.add(new MattermostClient(config.getMattermost()));
         }
         if (config.getSkype() != null) {
-            notifiers.add(new SkypeClient(messageData, config.getSkype()));
+            notifiers.add(new SkypeClient(config.getSkype()));
         }
         if (config.getDiscord() != null) {
-            notifiers.add(new DiscordClient(messageData, config.getDiscord()));
+            notifiers.add(new DiscordClient(config.getDiscord()));
         }
         if (config.getLoop() != null) {
-            notifiers.add(new LoopClient(messageData, config.getLoop()));
+            notifiers.add(new LoopClient(config.getLoop()));
         }
         if (config.getRocketChat() != null) {
-            notifiers.add(new RocketChatClient(messageData, config.getRocketChat()));
+            notifiers.add(new RocketChatClient(config.getRocketChat()));
         }
         return notifiers;
     }
