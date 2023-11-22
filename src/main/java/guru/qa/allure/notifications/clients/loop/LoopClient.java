@@ -13,17 +13,15 @@ import java.util.Map;
 
 public class LoopClient implements Notifier {
     private final Loop loop;
-    private final MarkdownTemplate markdownTemplate;
 
-    public LoopClient(MessageData messageData, Loop loop) {
+    public LoopClient(Loop loop) {
         this.loop = loop;
-        this.markdownTemplate = new MarkdownTemplate(messageData);
     }
 
     @Override
-    public void sendText() throws MessagingException {
+    public void sendText(MessageData messageData) throws MessagingException {
         Map<String, Object> body = new HashMap<>();
-        body.put("text", markdownTemplate.create());
+        body.put("text", new MarkdownTemplate(messageData).create());
 
         Unirest.post(loop.getWebhookUrl())
                 .header("Content-Type", ContentType.APPLICATION_JSON.getMimeType())
@@ -33,11 +31,11 @@ public class LoopClient implements Notifier {
     }
 
     @Override
-    public void sendPhoto(byte[] chartImage) throws MessagingException {
+    public void sendPhoto(MessageData messageData, byte[] chartImage) throws MessagingException {
         String encodedChartImage = Base64.getEncoder().encodeToString(chartImage);
 
         Map<String, Object> body = new HashMap<>();
-        body.put("text", markdownTemplate.create());
+        body.put("text", new MarkdownTemplate(messageData).create());
 
         Map<String, String> attachment = new HashMap<>();
         attachment.put("image_url", "data:image/png;base64," + encodedChartImage);

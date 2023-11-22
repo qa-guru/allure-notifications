@@ -21,6 +21,13 @@ import lombok.extern.slf4j.Slf4j;
 public class Notification {
 
     public static boolean send(Config config) throws IOException, MessageBuildException {
+        boolean successfulSending = true;
+
+        final List<Notifier> notifiers = ClientFactory.from(config);
+        if (notifiers.isEmpty()) {
+            return successfulSending;
+        }
+
         Base base = config.getBase();
         JSON json = new JSON();
         Summary summary = json.parseFile(new File(base.getAllureFolder(), "widgets/summary.json"), Summary.class);
@@ -32,16 +39,13 @@ public class Notification {
             chartImage = Chart.createChart(base, summary, legend);
         }
 
-        boolean successfulSending = true;
-
-        final List<Notifier> notifiers = ClientFactory.from(config, messageData);
         for (Notifier notifier : notifiers) {
             try {
                 log.info("Sending message...");
                 if (base.getEnableChart()) {
-                    notifier.sendPhoto(chartImage);
+                    notifier.sendPhoto(messageData, chartImage);
                 } else {
-                    notifier.sendText();
+                    notifier.sendText(messageData);
                 }
                 log.info("Done.");
             } catch (MessagingException e) {

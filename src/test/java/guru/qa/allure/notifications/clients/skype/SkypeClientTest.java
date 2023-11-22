@@ -1,23 +1,22 @@
 package guru.qa.allure.notifications.clients.skype;
 
 import guru.qa.allure.notifications.config.skype.Skype;
-import guru.qa.allure.notifications.template.data.MessageData;
 
 import org.apache.commons.lang3.reflect.MethodUtils;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
+import org.mockito.junit.jupiter.MockitoExtension;
 
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.mock;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
+@ExtendWith(MockitoExtension.class)
 class SkypeClientTest {
-    @Mock Skype skype = mock(Skype.class);
-
-    @InjectMocks
-    private SkypeClient app = new SkypeClient(mock(MessageData.class), skype);
+    @Mock private Skype skype;
+    @InjectMocks private SkypeClient app;
 
     @ParameterizedTest(name = "Get host name from service url: {0}")
     @CsvSource({
