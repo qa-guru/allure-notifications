@@ -1,5 +1,7 @@
 package guru.qa.allure.notifications.config;
 
+import java.io.FileNotFoundException;
+
 import guru.qa.allure.notifications.exceptions.ConfigNotFoundException;
 import guru.qa.allure.notifications.json.JSON;
 
@@ -10,7 +12,8 @@ import guru.qa.allure.notifications.json.JSON;
  */
 public class ApplicationConfig {
     private static final ApplicationConfig INSTANCE = new ApplicationConfig();
-    private final String configFile = System.getProperty("configFile");
+    private static final String CONFIG_FILE_PROPERTY_NAME = "configFile";
+    private final String configFile = System.getProperty(CONFIG_FILE_PROPERTY_NAME);
 
     private ApplicationConfig() {
     }
@@ -21,8 +24,13 @@ public class ApplicationConfig {
 
     public Config readConfig() {
         if (configFile == null || configFile.isEmpty()) {
-            throw new ConfigNotFoundException("Config file not found or empty: " + configFile);
+            throw new IllegalArgumentException("'" + CONFIG_FILE_PROPERTY_NAME + "' property is not set or empty: "
+                    + configFile);
         }
-        return new JSON().parse(configFile, Config.class);
+        try {
+            return new JSON().parseFile(configFile, Config.class);
+        } catch (FileNotFoundException e) {
+            throw new ConfigNotFoundException("Unable to find config file at path " + configFile);
+        }
     }
 }
