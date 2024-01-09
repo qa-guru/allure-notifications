@@ -19,7 +19,7 @@ dependencies {
     annotationProcessor("org.projectlombok:lombok:$lombok")
     compileOnly("org.projectlombok:lombok:$lombok")
 
-    implementation platform('org.slf4j:slf4j-bom:2.0.10')
+    implementation platform('org.slf4j:slf4j-bom:2.0.11')
     implementation('org.slf4j:jul-to-slf4j')   // Java Util Logging -> SLF4J
     implementation('org.slf4j:jcl-over-slf4j') // commons-logging -> SLF4J
 
