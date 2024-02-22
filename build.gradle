@@ -72,7 +72,7 @@ if (JavaVersion.current().isJava11Compatible()) {
     // https://github.com/checkstyle/checkstyle/issues/14211#issuecomment-1905356177
     configurations.checkstyle {
         resolutionStrategy.capabilitiesResolution.withCapability('com.google.collections:google-collections') {
-            select('com.google.guava:guava:0')
+            select('com.google.guava:guava:23.0')
         }
     }
 }
