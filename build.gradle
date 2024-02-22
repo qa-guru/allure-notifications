@@ -45,7 +45,6 @@ configurations.all {
 }
 
 tasks.withType(JavaCompile) {
-    System.getProperties()
     options.encoding = 'UTF-8'
 }
 tasks.named('test') {
