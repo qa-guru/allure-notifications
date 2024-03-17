@@ -57,7 +57,7 @@ if (JavaVersion.current().isJava11Compatible()) {
     apply plugin: 'checkstyle'
 
     checkstyle {
-        toolVersion = '10.13.0'
+        toolVersion = '10.14.2'
         ignoreFailures = false
         showViolations = true
     }
@@ -66,13 +66,6 @@ if (JavaVersion.current().isJava11Compatible()) {
         reports {
             xml.required = false
             html.required = false
-        }
-    }
-
-    // https://github.com/checkstyle/checkstyle/issues/14211#issuecomment-1905356177
-    configurations.checkstyle {
-        resolutionStrategy.capabilitiesResolution.withCapability('com.google.collections:google-collections') {
-            select('com.google.guava:guava:0')
         }
     }
 }
