@@ -14,7 +14,7 @@ repositories {
 }
 
 dependencies {
-    def lombok = '1.18.30'
+    def lombok = '1.18.32'
 
     annotationProcessor("org.projectlombok:lombok:$lombok")
     compileOnly("org.projectlombok:lombok:$lombok")
