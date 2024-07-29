@@ -57,7 +57,7 @@ if (JavaVersion.current().isJava11Compatible()) {
     apply plugin: 'checkstyle'
 
     checkstyle {
-        toolVersion = '10.14.2'
+        toolVersion = '10.17.0'
         ignoreFailures = false
         showViolations = true
     }
