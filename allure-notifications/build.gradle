@@ -1,0 +1,52 @@
+project.description = 'Library for sending notifications about autotest results (to generate executable Fat JAR)'
+
+dependencies {
+    annotationProcessor(group: 'org.projectlombok', name: 'lombok', version: lombokVersion)
+    compileOnly(group: 'org.projectlombok', name: 'lombok', version: lombokVersion)
+
+    implementation project(':allure-notifications-api')
+
+    implementation platform(group: 'org.slf4j', name: 'slf4j-bom', version: slf4jVersion)
+    implementation('org.slf4j:jul-to-slf4j')   // Java Util Logging -> SLF4J
+    implementation('org.slf4j:jcl-over-slf4j') // commons-logging -> SLF4J
+
+    implementation platform(group: 'org.apache.logging.log4j', name: 'log4j-bom', version: '2.23.1')
+    implementation(group: 'org.apache.logging.log4j', name: 'log4j-api')
+    implementation(group: 'org.apache.logging.log4j', name: 'log4j-core')
+    implementation(group: 'org.apache.logging.log4j', name: 'log4j-slf4j2-impl')
+}
+
+configurations.all {
+    exclude module: 'commons-logging' // Use jcl-over-slf4j bridge instead
+}
+
+// Checkstyle requires Java 11 starting from 10.0
+if (JavaVersion.current().isJava11Compatible()) {
+    apply plugin: 'checkstyle'
+
+    checkstyle {
+        toolVersion = '10.17.0'
+        ignoreFailures = false
+        showViolations = true
+    }
+
+    tasks.withType(Checkstyle) {
+        reports {
+            xml.required = false
+            html.required = false
+        }
+    }
+}
+
+jar {
+    dependsOn(configurations.runtimeClasspath)
+    manifest {
+        attributes(
+                'Main-Class': 'guru.qa.allure.notifications.Application'
+        )
+    }
+    from {
+        configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) }
+    }
+    duplicatesStrategy = DuplicatesStrategy.WARN
+}

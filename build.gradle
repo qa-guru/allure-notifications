@@ -1,83 +1,17 @@
-plugins {
-    id 'java-library'
-}
+subprojects {
+    group 'allure.notifications'
+    version '4.6.1'
 
-group 'allure.notifications'
-version '4.6.1'
+    apply plugin: 'java-library'
 
-java {
     sourceCompatibility = 1.8
-}
 
-repositories {
-    mavenCentral()
-}
-
-dependencies {
-    def lombok = '1.18.34'
-
-    annotationProcessor("org.projectlombok:lombok:$lombok")
-    compileOnly("org.projectlombok:lombok:$lombok")
-
-    implementation platform('org.slf4j:slf4j-bom:2.0.13')
-    implementation('org.slf4j:jul-to-slf4j')   // Java Util Logging -> SLF4J
-    implementation('org.slf4j:jcl-over-slf4j') // commons-logging -> SLF4J
-
-    implementation platform(group: 'org.apache.logging.log4j', name: 'log4j-bom', version: '2.23.1')
-    implementation(group: 'org.apache.logging.log4j', name: 'log4j-api')
-    implementation(group: 'org.apache.logging.log4j', name: 'log4j-core')
-    implementation(group: 'org.apache.logging.log4j', name: 'log4j-slf4j2-impl')
-
-    implementation('com.sun.mail:jakarta.mail:2.0.1')
-    implementation('com.konghq:unirest-java:3.14.5')
-    implementation('org.freemarker:freemarker:2.3.33')
-    implementation('org.knowm.xchart:xchart:3.8.8')
-    implementation('com.jayway.jsonpath:json-path:2.9.0')
-    implementation('org.apache.commons:commons-lang3:3.15.0')
-
-    testImplementation('org.junit.jupiter:junit-jupiter:5.10.3')
-    testRuntimeOnly('org.junit.platform:junit-platform-launcher')
-    testImplementation('org.mockito:mockito-junit-jupiter:4.11.0')
-}
-
-configurations.all {
-    exclude module: 'commons-logging' // Use jcl-over-slf4j bridge instead
-}
-
-tasks.withType(JavaCompile) {
-    options.encoding = 'UTF-8'
-}
-
-tasks.withType(Test).configureEach {
-    useJUnitPlatform()
-}
-
-// Checkstyle requires Java 11 starting from 10.0
-if (JavaVersion.current().isJava11Compatible()) {
-    apply plugin: 'checkstyle'
-
-    checkstyle {
-        toolVersion = '10.17.0'
-        ignoreFailures = false
-        showViolations = true
-    }
-
-    tasks.withType(Checkstyle) {
-        reports {
-            xml.required = false
-            html.required = false
-        }
+    tasks.withType(JavaCompile) {
+        options.encoding = 'UTF-8'
     }
 }
 
-jar {
-    manifest {
-        attributes(
-                'Main-Class': 'guru.qa.allure.notifications.Application'
-        )
-    }
-    from {
-        configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) }
-    }
-    duplicatesStrategy = DuplicatesStrategy.WARN
+ext {
+    lombokVersion = '1.18.34'
+    slf4jVersion = '2.0.13'
 }
