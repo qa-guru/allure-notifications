@@ -1,0 +1,8 @@
+include 'allure-notifications-api'
+include 'allure-notifications'
+
+dependencyResolutionManagement {
+    repositories {
+        mavenCentral()
+    }
+}
