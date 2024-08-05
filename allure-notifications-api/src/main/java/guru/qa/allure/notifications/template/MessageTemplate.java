@@ -7,9 +7,11 @@ import guru.qa.allure.notifications.template.config.TemplateConfig;
 import guru.qa.allure.notifications.template.data.MessageData;
 import lombok.extern.slf4j.Slf4j;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.io.Writer;
+import java.util.Optional;
 
 /**
  * @author kadehar
@@ -26,21 +28,24 @@ public class MessageTemplate {
         this.messageData = messageData;
     }
 
-    public String of(String templateFile) throws MessageBuildException {
-        log.info("Processing template {}", templateFile);
+    public String createMessageFromTemplate(String templatePath) throws MessageBuildException {
+        log.info("Processing template {}", templatePath);
         Template template;
         try {
             log.info("Parsing template");
-            template = templateConfig.configure().getTemplate(templateFile);
+            File templateAsFile = new File(templatePath);
+            template = templateAsFile.exists()
+                    ? templateConfig.configure(Optional.of(templateAsFile)).getTemplate(templateAsFile.getName())
+                    : templateConfig.configure(Optional.empty()).getTemplate(templatePath);
         } catch (IOException ex) {
-            throw new MessageBuildException(String.format("Unable to parse template %s!", templateFile), ex);
+            throw new MessageBuildException(String.format("Unable to parse template %s!", templatePath), ex);
         }
         Writer writer = new StringWriter();
         try {
             log.info("Convert template to string");
             template.process(messageData.getValues(), writer);
         } catch (TemplateException | IOException ex) {
-            throw new MessageBuildException(String.format("Unable to parse template %s!", templateFile), ex);
+            throw new MessageBuildException(String.format("Unable to parse template %s!", templatePath), ex);
         }
         return writer.toString();
     }

@@ -3,7 +3,7 @@ package guru.qa.allure.notifications.clients.discord;
 import guru.qa.allure.notifications.clients.Notifier;
 import guru.qa.allure.notifications.config.discord.Discord;
 import guru.qa.allure.notifications.exceptions.MessagingException;
-import guru.qa.allure.notifications.template.MarkdownTemplate;
+import guru.qa.allure.notifications.template.MessageTemplate;
 import guru.qa.allure.notifications.template.data.MessageData;
 import kong.unirest.ContentType;
 import kong.unirest.Unirest;
@@ -23,7 +23,7 @@ public class DiscordClient implements Notifier {
                 .routeParam("channelId", discord.getChannelId())
                 .header("Authorization", "Bot " + discord.getBotToken())
                 .header("Content-Type", ContentType.APPLICATION_FORM_URLENCODED.getMimeType())
-                .field("content", new MarkdownTemplate(messageData).create())
+                .field("content", new MessageTemplate(messageData).createMessageFromTemplate(discord.getTemplatePath()))
                 .asString()
                 .getBody();
     }
@@ -34,7 +34,7 @@ public class DiscordClient implements Notifier {
                 .routeParam("channelId", discord.getChannelId())
                 .header("Authorization", "Bot " + discord.getBotToken())
                 .field("file", new ByteArrayInputStream(chartImage), ContentType.IMAGE_PNG, "chart.png")
-                .field("content", new MarkdownTemplate(messageData).create())
+                .field("content", new MessageTemplate(messageData).createMessageFromTemplate(discord.getTemplatePath()))
                 .asString()
                 .getBody();
     }

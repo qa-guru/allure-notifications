@@ -16,4 +16,6 @@ public class Mattermost {
     private String token;
     @SerializedName("chat")
     private String chat;
+    @SerializedName("templatePath")
+    private String templatePath = "/templates/markdown.ftl";
 }

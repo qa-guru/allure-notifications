@@ -3,7 +3,7 @@ package guru.qa.allure.notifications.clients.rocket;
 import guru.qa.allure.notifications.clients.Notifier;
 import guru.qa.allure.notifications.config.rocket.RocketChat;
 import guru.qa.allure.notifications.exceptions.MessagingException;
-import guru.qa.allure.notifications.template.RocketTemplate;
+import guru.qa.allure.notifications.template.MessageTemplate;
 import guru.qa.allure.notifications.template.data.MessageData;
 import java.io.ByteArrayInputStream;
 import java.util.HashMap;
@@ -22,7 +22,7 @@ public class RocketChatClient implements Notifier {
     public void sendText(MessageData messageData) throws MessagingException {
         Map<String, Object> body = new HashMap<>();
         body.put("channel", rocketChat.getChannel());
-        body.put("text", new RocketTemplate(messageData).create());
+        body.put("text", new MessageTemplate(messageData).createMessageFromTemplate(rocketChat.getTemplatePath()));
         Unirest.post(rocketChat.getUrl() + "/api/v1/chat.postMessage")
             .header("X-Auth-Token", rocketChat.getToken())
             .header("X-User-Id", rocketChat.getUserId())

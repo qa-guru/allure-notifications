@@ -22,4 +22,6 @@ public class Skype {
     private String botId;
     @SerializedName("botName")
     private String botName;
+    @SerializedName("templatePath")
+    private String templatePath = "/templates/markdown.ftl";
 }

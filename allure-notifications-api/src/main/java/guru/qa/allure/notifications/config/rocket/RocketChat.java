@@ -14,4 +14,6 @@ public class RocketChat {
     private String userId;
     @SerializedName("channel")
     private String channel;
+    @SerializedName("templatePath")
+    private String templatePath = "/templates/rocket.ftl";
 }

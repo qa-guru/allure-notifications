@@ -16,4 +16,6 @@ public class Slack {
     private String chat;
     @SerializedName("replyTo")
     private String replyTo;
+    @SerializedName("templatePath")
+    private String templatePath = "/templates/markdown.ftl";
 }

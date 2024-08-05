@@ -3,7 +3,7 @@ package guru.qa.allure.notifications.clients.slack;
 import guru.qa.allure.notifications.clients.Notifier;
 import guru.qa.allure.notifications.config.slack.Slack;
 import guru.qa.allure.notifications.exceptions.MessagingException;
-import guru.qa.allure.notifications.template.MarkdownTemplate;
+import guru.qa.allure.notifications.template.MessageTemplate;
 import guru.qa.allure.notifications.template.data.MessageData;
 import kong.unirest.ContentType;
 import kong.unirest.Unirest;
@@ -20,7 +20,7 @@ public class SlackClient implements Notifier {
     @Override
     public void sendText(MessageData messageData) throws MessagingException {
         String body = String.format("channel=%s&text=%s",
-                slack.getChat(), new MarkdownTemplate(messageData).create());
+                slack.getChat(), new MessageTemplate(messageData).createMessageFromTemplate(slack.getTemplatePath()));
 
         Unirest.post("https://slack.com/api/chat.postMessage")
                 .header("Authorization", "Bearer " + slack.getToken())
@@ -37,7 +37,8 @@ public class SlackClient implements Notifier {
                 .field("file", new ByteArrayInputStream(chartImage), ContentType.IMAGE_PNG, "chart.png")
                 .field("channels", slack.getChat())
                 .field("filename", " ")
-                .field("initial_comment", new MarkdownTemplate(messageData).create())
+                .field("initial_comment", new MessageTemplate(messageData).createMessageFromTemplate(
+                        slack.getTemplatePath()))
                 .asString()
                 .getBody();
     }
