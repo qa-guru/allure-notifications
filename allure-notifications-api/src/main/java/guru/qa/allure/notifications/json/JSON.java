@@ -12,6 +12,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
 
 /**
  * @author kadehar
@@ -36,7 +37,7 @@ public class JSON {
     public <T> T parseResource(String resourcePath, Class<T> clazz) throws IOException {
         log.info("Mapping resource at path {} to {} object", resourcePath, clazz.getSimpleName());
         try (InputStream inputStream = RESOURCES_UTIL.getResourceAsStream(resourcePath);
-             InputStreamReader inputStreamReader = new InputStreamReader(inputStream)) {
+             InputStreamReader inputStreamReader = new InputStreamReader(inputStream, StandardCharsets.UTF_8)) {
             return GSON.fromJson(inputStreamReader, clazz);
         }
     }
