@@ -9,4 +9,6 @@ public class Discord {
     private String botToken;
     @SerializedName("channelId")
     private String channelId;
+    @SerializedName("templatePath")
+    private String templatePath = "/templates/markdown.ftl";
 }

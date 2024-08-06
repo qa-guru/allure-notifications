@@ -7,7 +7,7 @@ import guru.qa.allure.notifications.clients.skype.model.SkypeMessage;
 import guru.qa.allure.notifications.config.skype.Skype;
 import guru.qa.allure.notifications.exceptions.MessageBuildException;
 import guru.qa.allure.notifications.exceptions.MessagingException;
-import guru.qa.allure.notifications.template.MarkdownTemplate;
+import guru.qa.allure.notifications.template.MessageTemplate;
 import kong.unirest.ContentType;
 import guru.qa.allure.notifications.template.data.MessageData;
 import kong.unirest.Unirest;
@@ -68,7 +68,7 @@ public class SkypeClient implements Notifier {
         return SkypeMessage.builder()
                 .type("message")
                 .from(from)
-                .text(new MarkdownTemplate(messageData).create())
+                .text(new MessageTemplate(messageData).createMessageFromTemplate(skype.getTemplatePath()))
                 .build();
     }
 

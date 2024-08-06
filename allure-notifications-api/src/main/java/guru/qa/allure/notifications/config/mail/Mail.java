@@ -24,4 +24,6 @@ public class Mail {
     private String from;
     @SerializedName("recipient")
     private String recipient;
+    @SerializedName("templatePath")
+    private String templatePath = "/templates/html.ftl";
 }

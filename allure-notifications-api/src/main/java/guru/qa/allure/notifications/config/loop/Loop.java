@@ -7,4 +7,6 @@ import lombok.Getter;
 public class Loop {
     @SerializedName("webhookUrl")
     private String webhookUrl;
+    @SerializedName("templatePath")
+    private String templatePath = "/templates/markdown.ftl";
 }

@@ -3,7 +3,7 @@ package guru.qa.allure.notifications.clients.loop;
 import guru.qa.allure.notifications.clients.Notifier;
 import guru.qa.allure.notifications.config.loop.Loop;
 import guru.qa.allure.notifications.exceptions.MessagingException;
-import guru.qa.allure.notifications.template.MarkdownTemplate;
+import guru.qa.allure.notifications.template.MessageTemplate;
 import guru.qa.allure.notifications.template.data.MessageData;
 import kong.unirest.ContentType;
 import kong.unirest.Unirest;
@@ -21,7 +21,7 @@ public class LoopClient implements Notifier {
     @Override
     public void sendText(MessageData messageData) throws MessagingException {
         Map<String, Object> body = new HashMap<>();
-        body.put("text", new MarkdownTemplate(messageData).create());
+        body.put("text", new MessageTemplate(messageData).createMessageFromTemplate(loop.getTemplatePath()));
 
         Unirest.post(loop.getWebhookUrl())
                 .header("Content-Type", ContentType.APPLICATION_JSON.getMimeType())
@@ -35,7 +35,7 @@ public class LoopClient implements Notifier {
         String encodedChartImage = Base64.getEncoder().encodeToString(chartImage);
 
         Map<String, Object> body = new HashMap<>();
-        body.put("text", new MarkdownTemplate(messageData).create());
+        body.put("text", new MessageTemplate(messageData).createMessageFromTemplate(loop.getTemplatePath()));
 
         Map<String, String> attachment = new HashMap<>();
         attachment.put("image_url", "data:image/png;base64," + encodedChartImage);

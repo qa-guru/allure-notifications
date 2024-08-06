@@ -3,7 +3,7 @@ package guru.qa.allure.notifications.clients.mail;
 import guru.qa.allure.notifications.clients.Notifier;
 import guru.qa.allure.notifications.config.mail.Mail;
 import guru.qa.allure.notifications.exceptions.MessagingException;
-import guru.qa.allure.notifications.template.HTMLTemplate;
+import guru.qa.allure.notifications.template.MessageTemplate;
 import guru.qa.allure.notifications.template.data.MessageData;
 
 public class Email implements Notifier {
@@ -20,13 +20,14 @@ public class Email implements Notifier {
         letter.from(mail.getFrom())
                 .to(mail.getRecipient())
                 .subject(messageData.getProject())
-                .text(new HTMLTemplate(messageData).create())
+                .text(new MessageTemplate(messageData).createMessageFromTemplate(mail.getTemplatePath()))
                 .send();
     }
 
     @Override
     public void sendPhoto(MessageData messageData, byte[] chartImage)  throws MessagingException {
-        String message = "<img src='cid:image'/><br/>" + new HTMLTemplate(messageData).create();
+        String message = "<img src='cid:image'/><br/>" + new MessageTemplate(messageData).createMessageFromTemplate(
+                mail.getTemplatePath());
         letter.from(mail.getFrom())
                 .to(mail.getRecipient())
                 .subject(messageData.getProject())

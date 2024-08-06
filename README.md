@@ -1,3 +1,5 @@
+[![en](https://img.shields.io/badge/lang-en-red.svg)](https://github.com/qa-guru/allure-notifications/blob/master/README.en.md)
+
 # Allure notifications
 **Allure notifications** - это библиотека, позволяющая выполнять автоматическое оповещение о результатах прохождения автотестов, которое направляется в нужный вам мессенджер (Telegram, Slack, Skype, Email, Mattermost, Discord, Loop, Rocket.Chat).
 
@@ -80,23 +82,27 @@ Languages: 🇬🇧 🇫🇷 🇷🇺 🇺🇦 🇧🇾 🇨🇳
   "telegram": {
     "token": "",
     "chat": "",
-    "replyTo": ""
+    "replyTo": "",
+    "templatePath": "/templates/telegram.ftl"
   },
   "slack": {
     "token": "",
     "chat": "",
-    "replyTo": ""
+    "replyTo": "",
+    "templatePath": "/templates/markdown.ftl"
   },
   "mattermost": {
     "url": "",
     "token": "",
-    "chat": ""
+    "chat": "",
+    "templatePath": "/templates/markdown.ftl"
   },
   "rocketChat" : {
     "url": "",
     "auth_token": "",
     "user_id": "",
-    "channel": ""
+    "channel": "",
+    "templatePath": "/templates/rocket.ftl"
    },
   "skype": {
     "appId": "",
@@ -104,7 +110,8 @@ Languages: 🇬🇧 🇫🇷 🇷🇺 🇺🇦 🇧🇾 🇨🇳
     "serviceUrl": "",
     "conversationId": "",
     "botId": "",
-    "botName": ""
+    "botName": "",
+    "templatePath": "/templates/markdown.ftl"
   },
   "mail": {
     "host": "",
@@ -113,14 +120,17 @@ Languages: 🇬🇧 🇫🇷 🇷🇺 🇺🇦 🇧🇾 🇨🇳
     "password": "",
     "securityProtocol": null,
     "from": "",
-    "recipient": ""
+    "recipient": "",
+    "templatePath": "/templates/html.ftl"
   },
   "discord": {
     "botToken": "",
-    "channelId": ""
+    "channelId": "",
+    "templatePath": "/templates/markdown.ftl"
   },
   "loop": {
-    "webhookUrl": ""
+    "webhookUrl": "",
+    "templatePath": "/templates/markdown.ftl"
   },
   "proxy": {
     "host": "",
@@ -130,7 +140,26 @@ Languages: 🇬🇧 🇫🇷 🇷🇺 🇺🇦 🇧🇾 🇨🇳
   }
 }
 ```
-Блок `proxy` используется если нужно указать дополнительную конфигурацию proxy.
+Блок `proxy` используется если нужно указать дополнительную конфигурацию proxy.\
+Параметр `templatePath` является опциональным и позволяет установить путь к собственному Freemarker шаблону для сообщения. 
+Пример:
+```
+{
+  "base": {
+    ...
+  },
+  "mail": {
+    "host": "smtp.gmail.com",
+    "port": "465",
+    "username": "username",
+    "password": "password",
+    "securityProtocol": "SSL",
+    "from": "test@gmail.com",
+    "recipient": "test1@gmail.com",
+    "templatePath": "/templates/html_custom.ftl"
+  }
+}
+```
 
 <a name="Base"></a>
 
