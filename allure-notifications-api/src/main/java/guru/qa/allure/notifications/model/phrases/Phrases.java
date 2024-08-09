@@ -20,4 +20,8 @@ public class Phrases {
     private String reportAvailableAtLink;
     @SerializedName("scenario")
     private Scenario scenario;
+    @SerializedName("numberOfSuites")
+    private String numberOfSuites;
+    @SerializedName("suiteName")
+    private String suiteName;
 }

@@ -11,5 +11,7 @@
     "totalBroken": "Total broken",
     "totalUnknown": "Total unknown",
     "totalSkipped": "Total skipped"
-  }
+  },
+  "numberOfSuites": "Number of test suites",
+  "suiteName": "Name of the test suite"
 }

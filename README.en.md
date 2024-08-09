@@ -37,6 +37,7 @@ Example of a `summary.json` file
   }
 }
 ```
+In addition, if the Allure Summary plugin is connected, `suites.json` file will also be generated, and data from this file will be included in the statistic.
 
 ## What the notifications look like
 Example of a notification in Telegram
@@ -59,7 +60,8 @@ Example of a notification in Telegram
     "reportLink": "",
     "language": "ru",
     "allureFolder": "",
-    "enableChart": false
+    "enableChart": false,
+    "enableSuitesPublishing": false
   },
   "telegram": {
     "token": "",
@@ -154,6 +156,7 @@ Example:
     "language": "en",
     "allureFolder": "build/allure-report/",
     "enableChart": true,
+    "enableSuitesPublishing": true,
     "logo": "logo.png",
     "durationFormat": "HH:mm:ss.SSS"
 }
@@ -165,6 +168,7 @@ Fields:
 + `language` - the language in which the notification text will be formed (options: `en` / `fr` / `ru` / `ua` / `by` / `cn`).
 + `allureFolder` - the path to the folder with Allure results.
 + `enableChart` - whether the chart should be displayed (options: `true` / `false`).
++ `enableSuitesPublishing` - whether the statistic per suite should be published (options: `true` / `false`, default `false`). Before enabling the option, make sure that the `<allureFolder>/widgets` folder contains JSON file `suites.json`
 + `logo` - path to the logo file (if filled, the corresponding logo will be displayed in the top left corner of the chart).
 + `durationFormat` (optional, default value is `HH:mm:ss.SSS`) - specifies the desired output format for the test duration.
 6. Fill in the `config.json` file block with the information about the chosen messenger.
