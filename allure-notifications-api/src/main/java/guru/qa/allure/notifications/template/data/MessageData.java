@@ -5,6 +5,7 @@ import java.util.Map;
 
 import guru.qa.allure.notifications.config.base.Base;
 import guru.qa.allure.notifications.model.phrases.Phrases;
+import guru.qa.allure.notifications.model.summary.SuitesSummary;
 import guru.qa.allure.notifications.model.summary.Summary;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
@@ -23,10 +24,10 @@ public class MessageData {
     private final PhrasesData phrasesData;
     private Map<String, Object> data;
 
-    public MessageData(Base base, Summary summary, Phrases phrases) {
+    public MessageData(Base base, Summary summary, SuitesSummary suitesSummary, Phrases phrases) {
         this.project = base.getProject();
         this.buildData = new BuildData(base);
-        this.summaryData = new SummaryData(base, summary);
+        this.summaryData = new SummaryData(base, summary, suitesSummary);
         this.phrasesData = new PhrasesData(phrases);
     }
 

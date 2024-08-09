@@ -13,6 +13,7 @@ import guru.qa.allure.notifications.exceptions.MessagingException;
 import guru.qa.allure.notifications.json.JSON;
 import guru.qa.allure.notifications.model.legend.Legend;
 import guru.qa.allure.notifications.model.phrases.Phrases;
+import guru.qa.allure.notifications.model.summary.SuitesSummary;
 import guru.qa.allure.notifications.model.summary.Summary;
 import guru.qa.allure.notifications.template.data.MessageData;
 import lombok.extern.slf4j.Slf4j;
@@ -31,8 +32,13 @@ public class Notification {
         Base base = config.getBase();
         JSON json = new JSON();
         Summary summary = json.parseFile(new File(base.getAllureFolder(), "widgets/summary.json"), Summary.class);
+        SuitesSummary suitesSummary = new SuitesSummary();
+        File suiteSummaryFile = new File(base.getAllureFolder(), "widgets/suites.json");
+        if (suiteSummaryFile.exists()) {
+            suitesSummary = json.parseFile(new File(base.getAllureFolder(), "widgets/suites.json"), SuitesSummary.class);
+        }
         Phrases phrases = json.parseResource("/phrases/" + base.getLanguage() + ".json", Phrases.class);
-        MessageData messageData = new MessageData(config.getBase(), summary, phrases);
+        MessageData messageData = new MessageData(config.getBase(), summary, suitesSummary, phrases);
         byte[] chartImage = null;
         if (base.getEnableChart()) {
             Legend legend = json.parseResource("/legend/" + base.getLanguage() + ".json", Legend.class);

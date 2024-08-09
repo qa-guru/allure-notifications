@@ -9,5 +9,22 @@
     <#if broken != 0 ><b>${totalBroken}: </b>${broken}</#if>
     <#if unknown != 0 ><b>${totalUnknown}: </b>${unknown}</#if>
     <#if skipped != 0 ><b>${totalSkipped}: </b>${skipped}</#if>
+
+    <#if totalSuites??><b>${numberOfSuites}: </b>${totalSuites}</#if>
+    <#list suites![] as suite>
+        <#assign suitePassed = suite.statistic.passed>
+        <#assign suiteFailed = suite.statistic.failed>
+        <#assign suiteBroken = suite.statistic.broken>
+        <#assign suiteUnknown = suite.statistic.unknown>
+        <#assign suiteSkipped = suite.statistic.skipped>
+
+        <b>${suiteName}: </b>${suite.name}
+        <code>${totalScenarios}: ${suite.statistic.total}</code>
+        <#if suitePassed != 0 ><code>${totalPassed}: ${suitePassed}</code></#if>
+        <#if suiteFailed != 0 ><code>${totalFailed}: ${suiteFailed}</code></#if>
+        <#if suiteBroken != 0 ><code>${totalBroken}: ${suiteBroken}</code></#if>
+        <#if suiteUnknown != 0 ><code>${totalUnknown}: ${suiteUnknown}</code></#if>
+        <#if suiteSkipped != 0 ><code>${totalSkipped}: ${suiteSkipped}</code></#if>
+    </#list>
     <#if reportLink??><b>${reportAvailableAtLink}:</b> <a href="${reportLink}">${reportLink}</a></#if>
 </#compress>

@@ -37,6 +37,7 @@ Example of a `summary.json` file
   }
 }
 ```
+In addition, if the Allure Summary plugin is connected, `suites.json` file will also be generated, and data from this file will be included in the statistic.
 
 ## What the notifications look like
 Example of a notification in Telegram
