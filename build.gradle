@@ -1,7 +1,7 @@
-subprojects {
-    group 'allure.notifications'
-    version '4.7.0'
+group 'allure.notifications'
+version '4.7.0'
 
+subprojects {
     apply plugin: 'java-library'
 
     sourceCompatibility = 1.8
