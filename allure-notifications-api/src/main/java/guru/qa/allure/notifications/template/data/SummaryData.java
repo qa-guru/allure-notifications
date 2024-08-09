@@ -2,6 +2,7 @@ package guru.qa.allure.notifications.template.data;
 
 import guru.qa.allure.notifications.config.base.Base;
 import guru.qa.allure.notifications.formatters.Formatters;
+import guru.qa.allure.notifications.model.summary.SuitesSummary;
 import guru.qa.allure.notifications.model.summary.Summary;
 import guru.qa.allure.notifications.util.Percentage;
 import lombok.extern.slf4j.Slf4j;
@@ -19,10 +20,12 @@ public class SummaryData implements TemplateData {
 
     private final Base base;
     private final Summary summary;
+    private final SuitesSummary suitesSummary;
 
-    public SummaryData(Base base, Summary summary) {
+    public SummaryData(Base base, Summary summary, SuitesSummary suitesSummary) {
         this.base = base;
         this.summary = summary;
+        this.suitesSummary = suitesSummary;
     }
 
     @Override
@@ -42,6 +45,8 @@ public class SummaryData implements TemplateData {
         info.put("failedPercentage",
                 new Percentage().eval(summary.getStatistic().getFailed(),
                         summary.getStatistic().getTotal()));
+        info.put("totalSuites", suitesSummary.getTotal());
+        info.put("suites", suitesSummary.getSuites());
         log.info("Summary data: {}", info);
         return info;
     }

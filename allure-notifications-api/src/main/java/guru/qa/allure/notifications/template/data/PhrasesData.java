@@ -28,6 +28,8 @@ public class PhrasesData implements TemplateData {
         info.put("environment", phrases.getEnvironment());
         info.put("comment", phrases.getComment());
         info.put("reportAvailableAtLink", phrases.getReportAvailableAtLink());
+        info.put("numberOfSuites", phrases.getNumberOfSuites());
+        info.put("suiteName", phrases.getSuiteName());
         info.put("duration", phrases.getScenario().getDuration());
         info.put("totalScenarios", phrases.getScenario().getTotalScenarios());
         info.put("totalPassed", phrases.getScenario().getTotalPassed());

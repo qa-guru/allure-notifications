@@ -11,5 +11,28 @@
         <#if unknown != 0 ><li><b>${totalUnknown}: </b>${unknown}</li></#if>
         <#if skipped != 0 ><li><b>${totalSkipped}: </b>${skipped}</li></#if>
     </ul>
+
+    <#if totalSuites??><b>${numberOfSuites}: </b>${totalSuites}</#if><br/>
+    <#list suites![] as suite>
+        <#assign suitePassed = suite.statistic.passed>
+        <#assign suiteFailed = suite.statistic.failed>
+        <#assign suiteBroken = suite.statistic.broken>
+        <#assign suiteUnknown = suite.statistic.unknown>
+        <#assign suiteSkipped = suite.statistic.skipped>
+
+        <table style="border:1px solid black;">
+          <tr>
+            <td>
+                <b>${suiteName}: </b>${suite.name}<br/>
+                <b>${totalScenarios}: </b>${suite.statistic.total}<br/>
+                <#if suitePassed != 0 ><li><b>${totalPassed}: </b>${suitePassed}</li></#if>
+                <#if suiteFailed != 0 ><li><b>${totalFailed}: </b>${suiteFailed}</li></#if>
+                <#if suiteBroken != 0 ><li><b>${totalBroken}: </b>${suiteBroken}</li></#if>
+                <#if suiteUnknown != 0 ><li><b>${totalUnknown}: </b>${suiteUnknown}</li></#if>
+                <#if suiteSkipped != 0 ><li><b>${totalSkipped}: </b>${suiteSkipped}</li></#if>
+            </td>
+          </tr>
+        </table><br/>
+    </#list>
     <#if reportLink??><b>${reportAvailableAtLink}:</b> <a href=${reportLink}>${reportLink}</a></#if>
 </#compress>
