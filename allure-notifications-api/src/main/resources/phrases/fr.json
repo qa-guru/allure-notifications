@@ -11,5 +11,7 @@
     "totalBroken": "Total cassé",
     "totalUnknown": "Total inconnu",
     "totalSkipped": "Total ignoré"
-  }
+  },
+  "numberOfSuites": "Nombre de suites de tests",
+  "suiteName": "Nom de la suite de tests"
 }

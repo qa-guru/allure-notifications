@@ -11,5 +11,7 @@
     "totalBroken": "损坏总数",
     "totalUnknown": "未知错误总数",
     "totalSkipped": "跳过总数"
-  }
+  },
+  "numberOfSuites": "测试套件数量",
+  "suiteName": "测试套件名称"
 }
