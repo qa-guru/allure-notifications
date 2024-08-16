@@ -21,7 +21,7 @@ public class MessageData {
     private final BuildData buildData;
     private final SummaryData summaryData;
     private final String suitesSummaryJson;
-    private final PhrasesData phrasesData;
+    private final Phrases phrases;
     private Map<String, Object> data;
 
     public MessageData(Base base, Summary summary, String suitesSummaryJson, Phrases phrases) {
@@ -29,7 +29,7 @@ public class MessageData {
         this.buildData = new BuildData(base);
         this.summaryData = new SummaryData(base, summary);
         this.suitesSummaryJson = suitesSummaryJson;
-        this.phrasesData = new PhrasesData(phrases);
+        this.phrases = phrases;
     }
 
     public Map<String, Object> getValues() {
@@ -39,7 +39,7 @@ public class MessageData {
             data.putAll(buildData.map());
             data.putAll(summaryData.map());
             data.put("suitesSummaryJson", suitesSummaryJson);
-            data.putAll(phrasesData.map());
+            data.put("phrases", phrases);
             log.info("Template data: {}", data);
         }
         return data;

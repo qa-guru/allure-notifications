@@ -1,18 +1,18 @@
 <#compress>
-    **${results}:**
-    **-${environment}:** ${env}
-    **-${comment}:** ${comm}
-    **-${duration}:** **${time}**
-    **-${totalScenarios}:** ${total}
-    <#if passed != 0 > **-${totalPassed}:** ${passed} **(${passedPercentage} %)**</#if>
-    <#if failed != 0 > **-${totalFailed}:** ${failed} **(${failedPercentage} %)** </#if>
-    <#if broken != 0 > **-${totalBroken}:** ${broken} </#if>
-    <#if unknown != 0 > **-${totalUnknown}:** ${unknown} </#if>
-    <#if skipped != 0 > **-${totalSkipped}:** ${skipped} </#if>
+    **${phrases.results}:**
+    **-${phrases.environment}:** ${env}
+    **-${phrases.comment}:** ${comm}
+    **-${phrases.scenario.duration}:** **${time}**
+    **-${phrases.scenario.totalScenarios}:** ${total}
+    <#if passed != 0 > **-${phrases.scenario.totalPassed}:** ${passed} **(${passedPercentage} %)**</#if>
+    <#if failed != 0 > **-${phrases.scenario.totalFailed}:** ${failed} **(${failedPercentage} %)** </#if>
+    <#if broken != 0 > **-${phrases.scenario.totalBroken}:** ${broken} </#if>
+    <#if unknown != 0 > **-${phrases.scenario.totalUnknown}:** ${unknown} </#if>
+    <#if skipped != 0 > **-${phrases.scenario.totalSkipped}:** ${skipped} </#if>
 
     <#if suitesSummaryJson??>
     <#assign suitesData = suitesSummaryJson?eval_json>
-    **-${numberOfSuites}:** **${suitesData.total}**
+    **-${phrases.numberOfSuites}:** **${suitesData.total}**
     <#list suitesData.items as suite>
         <#assign suitePassed = suite.statistic.passed>
         <#assign suiteFailed = suite.statistic.failed>
@@ -20,14 +20,14 @@
         <#assign suiteUnknown = suite.statistic.unknown>
         <#assign suiteSkipped = suite.statistic.skipped>
 
-        **-${suiteName}:** **${suite.name}**
-        **-${totalScenarios}:** **${suite.statistic.total}**
-        <#if suitePassed != 0 > **-${totalPassed}:** ${suitePassed}</#if>
-        <#if suiteFailed != 0 > **-${totalFailed}:** ${suiteFailed}</#if>
-        <#if suiteBroken != 0 > **-${totalBroken}:** ${suiteBroken}</#if>
-        <#if suiteUnknown != 0 > **-${totalUnknown}:** ${suiteUnknown}</#if>
-        <#if suiteSkipped != 0 > **-${totalSkipped}:** ${suiteSkipped}</#if>
+        **-${phrases.suiteName}:** **${suite.name}**
+        **-${phrases.scenario.totalScenarios}:** **${suite.statistic.total}**
+        <#if suitePassed != 0 > **-${phrases.scenario.totalPassed}:** ${suitePassed}</#if>
+        <#if suiteFailed != 0 > **-${phrases.scenario.totalFailed}:** ${suiteFailed}</#if>
+        <#if suiteBroken != 0 > **-${phrases.scenario.totalBroken}:** ${suiteBroken}</#if>
+        <#if suiteUnknown != 0 > **-${phrases.scenario.totalUnknown}:** ${suiteUnknown}</#if>
+        <#if suiteSkipped != 0 > **-${phrases.scenario.totalSkipped}:** ${suiteSkipped}</#if>
     </#list>
     </#if>
-    <#if reportLink??>**${reportAvailableAtLink}:** ${reportLink}</#if>
+    <#if reportLink??>**${phrases.reportAvailableAtLink}:** ${reportLink}</#if>
 </#compress>
