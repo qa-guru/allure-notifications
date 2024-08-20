@@ -14,7 +14,7 @@ dependencies {
     implementation('com.jayway.jsonpath:json-path:2.9.0')
     implementation('org.apache.commons:commons-lang3:3.16.0')
 
-    testImplementation('org.junit.jupiter:junit-jupiter:5.10.3')
+    testImplementation('org.junit.jupiter:junit-jupiter:5.11.0')
     testRuntimeOnly('org.junit.platform:junit-platform-launcher')
     testImplementation('net.bytebuddy:byte-buddy:1.14.19')
     testImplementation platform(group: 'org.mockito', name: 'mockito-bom', version: '4.11.0')
