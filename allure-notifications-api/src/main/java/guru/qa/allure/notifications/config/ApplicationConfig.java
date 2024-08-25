@@ -23,12 +23,8 @@ public class ApplicationConfig {
     }
 
     public Config readConfig() {
-        if (configFile == null || configFile.isEmpty()) {
-            throw new IllegalArgumentException("'" + CONFIG_FILE_PROPERTY_NAME + "' property is not set or empty: "
-                    + configFile);
-        }
         try {
-            return new JSON().parseFile(configFile, Config.class);
+            return new JSON().parseFile("/Users/m.liakhavets/IdeaProjects/primexbt-mobile-java-tests/scripts/config.json", Config.class);
         } catch (FileNotFoundException e) {
             throw new ConfigNotFoundException("Unable to find config file at path " + configFile);
         }
