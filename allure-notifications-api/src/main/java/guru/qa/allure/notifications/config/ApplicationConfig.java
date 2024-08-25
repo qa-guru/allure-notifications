@@ -24,7 +24,7 @@ public class ApplicationConfig {
 
     public Config readConfig() {
         try {
-            return new JSON().parseFile("/Users/m.liakhavets/IdeaProjects/primexbt-mobile-java-tests/scripts/config.json", Config.class);
+            return new JSON().parseFile(configFile, Config.class);
         } catch (FileNotFoundException e) {
             throw new ConfigNotFoundException("Unable to find config file at path " + configFile);
         }
