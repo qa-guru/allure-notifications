@@ -10,23 +10,26 @@ import guru.qa.allure.notifications.exceptions.MessagingException;
 import guru.qa.allure.notifications.template.MessageTemplate;
 import guru.qa.allure.notifications.template.data.MessageData;
 import kong.unirest.ContentType;
-import kong.unirest.Unirest;
 import kong.unirest.json.JSONArray;
 import kong.unirest.json.JSONObject;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.http.HttpHeaders;
 import org.apache.http.HttpStatus;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpUriRequest;
 import org.apache.http.client.methods.RequestBuilder;
+import org.apache.http.entity.StringEntity;
 import org.apache.http.entity.mime.HttpMultipartMode;
 import org.apache.http.entity.mime.MultipartEntityBuilder;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
+import org.apache.http.util.EntityUtils;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.util.List;
+import java.io.UnsupportedEncodingException;
+import java.util.Arrays;
 
 @Slf4j
 public class SlackClient implements Notifier {
@@ -37,20 +40,24 @@ public class SlackClient implements Notifier {
     }
 
     @Override
-    public void sendText(MessageData messageData) throws MessagingException {
-        postMessage(messageData);
+    public void sendText(MessageData messageData) {
+        try (CloseableHttpClient client = HttpClients.createDefault()) {
+            postMessage(client, messageData);
+        } catch (IOException e) {
+            log.error("Failed to post message to Slack", e);
+        }
     }
 
     @Override
     @SneakyThrows
     public void sendPhoto(MessageData messageData, byte[] chartImage) {
-        String title = "chart.png";
-        JSONObject uploadResponse = getUploadURLExternal(title, chartImage);
-
-        String fileId = uploadResponse.getString("file_id");
-        String uploadUrl = uploadResponse.getString("upload_url");
-
         try (CloseableHttpClient client = HttpClients.createDefault()) {
+            String title = "chart.png";
+            JSONObject uploadResponse = getUploadURLExternal(client, title, chartImage);
+
+            String fileId = uploadResponse.getString("file_id");
+            String uploadUrl = uploadResponse.getString("upload_url");
+
             MultipartEntityBuilder multipartEntityBuilder = MultipartEntityBuilder.create()
                     .setMode(HttpMultipartMode.BROWSER_COMPATIBLE)
                     .addBinaryBody("file", new ByteArrayInputStream(chartImage), org.apache.http.entity.ContentType.DEFAULT_BINARY, "chart");
@@ -58,40 +65,50 @@ public class SlackClient implements Notifier {
             if (!uploadFile(uploadUrl, multipartEntityBuilder, client)) {
                 log.error("Failed to upload file to Slack");
             }
+
+            //todo wait until file processing to complete
+            Thread.sleep(2000);
+
+            JSONObject completeResponse = completeUploadExternal(client, fileId, title);
+
+            String filePermalink = completeResponse.getJSONArray("files").getJSONObject(0).getString("permalink");
+
+            postMessage(client, messageData, filePermalink);
+
         } catch (IOException e) {
-            log.error("Failed to upload file to Slack", e);
+            log.error("Failed to post message with file to Slack", e);
+        }
+    }
+
+    private void postMessage(CloseableHttpClient client, MessageData messageData) throws UnsupportedEncodingException {
+        postMessage(client, messageData, "");
+    }
+
+    private void postMessage(CloseableHttpClient client, MessageData messageData, String fileUrl) throws UnsupportedEncodingException {
+        HttpUriRequest request;
+        if (fileUrl.isEmpty()) {
+            request = RequestBuilder
+                    .post("https://slack.com/api/chat.postMessage")
+                    .addHeader(HttpHeaders.AUTHORIZATION, "Bearer " + slack.getToken())
+                    .addHeader(HttpHeaders.CONTENT_TYPE, ContentType.APPLICATION_FORM_URLENCODED.getMimeType())
+                    .setEntity(new StringEntity(getTextData(messageData)))
+                    .build();
+        } else {
+            request = RequestBuilder
+                    .post("https://slack.com/api/chat.postMessage")
+                    .addHeader(HttpHeaders.AUTHORIZATION, "Bearer " + slack.getToken())
+                    .addHeader(HttpHeaders.CONTENT_TYPE, ContentType.APPLICATION_FORM_URLENCODED.getMimeType())
+                    .addParameter("channel", slack.getChat())
+                    .addParameter("blocks", getBlocksForPostMessage(messageData, fileUrl))
+                    .build();
         }
 
-        //todo wait until file processing to complete
-        Thread.sleep(2000);
-
-        JSONObject completeResponse = completeUploadExternal(fileId, title);
-
-        String filePermalink = completeResponse.getJSONArray("files").getJSONObject(0).getString("permalink");
-
-        postMessage(messageData, filePermalink);
-    }
-
-    private void postMessage(MessageData messageData) {
-        postMessage(messageData, "");
-    }
-
-    private void postMessage(MessageData messageData, String fileUrl) {
-        if (fileUrl.isEmpty()) {
-            Unirest.post("https://slack.com/api/chat.postMessage")
-                    .header("Authorization", "Bearer " + slack.getToken())
-                    .header("Content-Type", ContentType.APPLICATION_FORM_URLENCODED.getMimeType())
-                    .body(getTextData(messageData))
-                    .asString()
-                    .getBody();
-        } else {
-            Unirest.post("https://slack.com/api/chat.postMessage")
-                    .header("Authorization", "Bearer " + slack.getToken())
-                    .header("Content-Type", ContentType.APPLICATION_FORM_URLENCODED.getMimeType())
-                    .queryString("channel", slack.getChat())
-                    .queryString("blocks", getBlocksForPostMessage(messageData, fileUrl))
-                    .asString()
-                    .getBody();
+        try (CloseableHttpResponse responseBody = client.execute(request)) {
+            if (responseBody.getStatusLine().getStatusCode() == HttpStatus.SC_OK) {
+                log.info(EntityUtils.toString(responseBody.getEntity()));
+            }
+        } catch (IOException | UnsupportedOperationException e) {
+            log.error("Error post message", e);
         }
     }
 
@@ -99,7 +116,7 @@ public class SlackClient implements Notifier {
         HttpUriRequest request = RequestBuilder
                 .post(uploadUrl)
                 .setEntity(multipartEntityBuilder.build())
-                .addHeader("Authorization", "Bearer " + slack.getToken())
+                .addHeader(HttpHeaders.AUTHORIZATION, "Bearer " + slack.getToken())
                 .build();
 
         try (CloseableHttpResponse responseBody = client.execute(request)) {
@@ -117,7 +134,7 @@ public class SlackClient implements Notifier {
     private String getBlocksForPostMessage(MessageData messageData, String imageUrl) {
         SectionBlock sectionBlock = SectionBlock.builder().text(TextObject.builder().text(proceedMessageData(messageData)).build()).build();
         ImageBlock imageBlock = ImageBlock.builder().imageUrl(imageUrl).altText("chart").build();
-        return new Gson().toJson(List.of(sectionBlock, imageBlock));
+        return new Gson().toJson(Arrays.asList(sectionBlock, imageBlock));
     }
 
     private String proceedMessageData(MessageData messageData) {
@@ -130,24 +147,45 @@ public class SlackClient implements Notifier {
         return text;
     }
 
-    private JSONObject completeUploadExternal(String fileId, String title) {
+    private JSONObject completeUploadExternal(CloseableHttpClient client, String fileId, String title) {
+        JSONObject completeUploadResponse = new JSONObject();
         JSONArray array = new JSONArray();
         JSONObject node = new JSONObject();
         node.put("id", fileId);
         node.put("title", title);
         array.put(node);
 
-        return Unirest.post("https://slack.com/api/files.completeUploadExternal")
-                .header("Authorization", "Bearer " + slack.getToken())
-                .queryString("files", array)
-                .asJson().getBody().getObject();
+        HttpUriRequest request = RequestBuilder
+                .post("https://slack.com/api/files.completeUploadExternal")
+                .addHeader(HttpHeaders.AUTHORIZATION, "Bearer " + slack.getToken())
+                .addParameter("files", array.toString())
+                .build();
+        try (CloseableHttpResponse responseBody = client.execute(request)) {
+            if (responseBody.getStatusLine().getStatusCode() == HttpStatus.SC_OK) {
+                completeUploadResponse = new JSONObject(EntityUtils.toString(responseBody.getEntity()));
+            }
+        } catch (IOException | UnsupportedOperationException e) {
+            log.error("Error complete upload file", e);
+        }
+        return completeUploadResponse;
     }
 
-    private JSONObject getUploadURLExternal(String fileName, byte[] chartImage) {
-        return Unirest.get("https://slack.com/api/files.getUploadURLExternal")
-                .header("Authorization", "Bearer " + slack.getToken())
-                .queryString("filename", fileName)
-                .queryString("length", chartImage.length)
-                .asJson().getBody().getObject();
+    private JSONObject getUploadURLExternal(CloseableHttpClient client, String fileName, byte[] chartImage) {
+        JSONObject uploadResponse = new JSONObject();
+        HttpUriRequest request = RequestBuilder
+                .get("https://slack.com/api/files.getUploadURLExternal")
+                .addHeader(HttpHeaders.AUTHORIZATION, "Bearer " + slack.getToken())
+                .addHeader(HttpHeaders.CONTENT_TYPE, ContentType.APPLICATION_JSON.getMimeType())
+                .addParameter("filename", fileName)
+                .addParameter("length", String.valueOf(chartImage.length))
+                .build();
+        try (CloseableHttpResponse responseBody = client.execute(request)) {
+            if (responseBody.getStatusLine().getStatusCode() == HttpStatus.SC_OK) {
+                uploadResponse = new JSONObject(EntityUtils.toString(responseBody.getEntity()));
+            }
+        } catch (IOException | UnsupportedOperationException e) {
+            log.error("Error getting upload URL", e);
+        }
+        return uploadResponse;
     }
 }
