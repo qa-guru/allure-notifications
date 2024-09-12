@@ -1,0 +1,16 @@
+**Results:**
+**-Environment:** Test
+**-Comment:** Test comment
+**-Duration:** **00:00:24.011**
+**-Total scenarios:** 3
+**-Total passed:** 2 **(66.7 %)**
+**-Total failed:** 1 **(33.3 %)**
+**-Number of test suites:** **2**
+**-Name of the test suite:** **batch-1**
+**-Total scenarios:** **2**
+**-Total passed:** 1
+**-Total failed:** 1
+**-Name of the test suite:** **batch-2**
+**-Total scenarios:** **1**
+**-Total passed:** 1
+**Report available at the link:** https://www.example.com

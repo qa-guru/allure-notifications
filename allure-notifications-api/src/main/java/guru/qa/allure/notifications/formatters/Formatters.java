@@ -6,8 +6,6 @@ import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.time.DurationFormatUtils;
 
-import java.text.*;
-
 /**
  * @author kadehar
  * @since 4.0
@@ -36,20 +34,6 @@ public class Formatters {
         String formattedDuration = DurationFormatUtils.formatDuration(durationMillis, format);
         log.debug("Formatted duration: {}", formattedDuration);
         return formattedDuration;
-    }
-
-    public static double formatDouble(double value) {
-        log.info("Formatting value {}", value);
-        DecimalFormat df = new DecimalFormat("##.#");
-        String tmp = df.format(value);
-        NumberFormat numberFormat = NumberFormat.getInstance();
-        try {
-            double result = numberFormat.parse(tmp).doubleValue();
-            log.info("Formatted value is {}", result);
-            return result;
-        } catch (ParseException e) {
-            return 0.0;
-        }
     }
 
     public static String formatReportLink(String link) {
