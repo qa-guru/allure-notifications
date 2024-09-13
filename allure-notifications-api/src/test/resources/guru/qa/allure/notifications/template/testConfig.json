@@ -1,0 +1,41 @@
+{
+  "base": {
+    "project": "TEST PROJECT",
+    "environment": "Test",
+    "comment": "Test comment",
+    "reportLink": "https://www.example.com",
+    "language": "en",
+    "allureFolder": "build/allure-report/",
+    "enableChart": true,
+    "logo": "logo.png",
+    "durationFormat": "HH:mm:ss.SSS",
+    "enableSuitesPublishing": "true"
+  },
+  "mail": {
+    "host": "smtp.gmail.com",
+    "port": "465",
+    "username": "user",
+    "password": "password",
+    "securityProtocol": "SSL",
+    "from": "test1@gmail.com",
+    "recipient": "test2@gmail.com"
+  },
+  "rocketChat" : {
+    "url": "https://www.example.com",
+    "auth_token": "authToken",
+    "user_id": "userId",
+    "channel": "channel",
+    "templatePath": "/templates/rocket.ftl"
+  },
+  "discord": {
+    "botToken": "testToken",
+    "channelId": "testChannelId",
+    "templatePath": "/templates/markdown.ftl"
+  },
+  "telegram": {
+    "token": "testToken",
+    "chat": "testChat",
+    "replyTo": "user",
+    "templatePath": "/templates/telegram.ftl"
+  }
+}

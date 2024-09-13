@@ -1,0 +1,30 @@
+<h3>Results:</h3>
+<b>Environment: </b>Test<br/>
+<b>Comment: </b>Test comment<br/>
+<b>Duration: </b>00:00:24.011<br/>
+<b>Total scenarios: </b>3
+<ul>
+<li><b>Total passed: </b>2 (66.7 %)</li>
+<li><b>Total failed: </b>1 (33.3 %)</li>
+</ul>
+<b>Number of test suites: </b>2<br/>
+<table style="border:1px solid black;">
+<tr>
+<td>
+<b>Name of the test suite: </b>batch-1<br/>
+<b>Total scenarios: </b>2<br/>
+<li><b>Total passed: </b>1</li>
+<li><b>Total failed: </b>1</li>
+</td>
+</tr>
+</table><br/>
+<table style="border:1px solid black;">
+<tr>
+<td>
+<b>Name of the test suite: </b>batch-2<br/>
+<b>Total scenarios: </b>1<br/>
+<li><b>Total passed: </b>1</li>
+</td>
+</tr>
+</table><br/>
+<b>Report available at the link:</b> <a href=https://www.example.com>https://www.example.com</a>

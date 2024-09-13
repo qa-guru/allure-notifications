@@ -4,8 +4,8 @@
     <b>${phrases.comment}: </b>${comm}
     <b>${phrases.scenario.duration}: </b>${time}
     <b>${phrases.scenario.totalScenarios}: </b>${total}
-    <#if passed != 0 ><b>${phrases.scenario.totalPassed}: </b>${passed} (${passedPercentage} %)</#if>
-    <#if failed != 0 ><b>${phrases.scenario.totalFailed}: </b>${failed} (${failedPercentage} %)</#if>
+    <#if passed != 0 ><b>${phrases.scenario.totalPassed}: </b>${passed} (${passedPercentage?string("##.#")} %)</#if>
+    <#if failed != 0 ><b>${phrases.scenario.totalFailed}: </b>${failed} (${failedPercentage?string("##.#")} %)</#if>
     <#if broken != 0 ><b>${phrases.scenario.totalBroken}: </b>${broken}</#if>
     <#if unknown != 0 ><b>${phrases.scenario.totalUnknown}: </b>${unknown}</#if>
     <#if skipped != 0 ><b>${phrases.scenario.totalSkipped}: </b>${skipped}</#if>

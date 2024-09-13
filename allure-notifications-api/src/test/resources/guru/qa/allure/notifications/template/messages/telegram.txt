@@ -1,0 +1,16 @@
+<b>Results:</b>
+<b>Environment: </b>Test
+<b>Comment: </b>Test comment
+<b>Duration: </b>00:00:24.011
+<b>Total scenarios: </b>3
+<b>Total passed: </b>2 (66.7 %)
+<b>Total failed: </b>1 (33.3 %)
+<b>Number of test suites: </b>2
+<b>Name of the test suite: </b>batch-1
+<code>Total scenarios: 2</code>
+<code>Total passed: 1</code>
+<code>Total failed: 1</code>
+<b>Name of the test suite: </b>batch-2
+<code>Total scenarios: 1</code>
+<code>Total passed: 1</code>
+<b>Report available at the link:</b> <a href="https://www.example.com">https://www.example.com</a>

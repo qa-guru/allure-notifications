@@ -5,8 +5,8 @@
     <b>${phrases.scenario.duration}: </b>${time}<br/>
     <b>${phrases.scenario.totalScenarios}: </b>${total}
     <ul>
-        <#if passed != 0 ><li><b>${phrases.scenario.totalPassed}: </b>${passed} (${passedPercentage} %)</li></#if>
-        <#if failed != 0 ><li><b>${phrases.scenario.totalFailed}: </b>${failed} (${failedPercentage} %)</li></#if>
+        <#if passed != 0 ><li><b>${phrases.scenario.totalPassed}: </b>${passed} (${passedPercentage?string("##.#")} %)</li></#if>
+        <#if failed != 0 ><li><b>${phrases.scenario.totalFailed}: </b>${failed} (${failedPercentage?string("##.#")} %)</li></#if>
         <#if broken != 0 ><li><b>${phrases.scenario.totalBroken}: </b>${broken}</li></#if>
         <#if unknown != 0 ><li><b>${phrases.scenario.totalUnknown}: </b>${unknown}</li></#if>
         <#if skipped != 0 ><li><b>${phrases.scenario.totalSkipped}: </b>${skipped}</li></#if>
