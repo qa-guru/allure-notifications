@@ -1,15 +1,25 @@
 <#import "utils.ftl" as utils>
 <#compress>
 *${phrases.results}:*
-    *${phrases.environment}:* ${env}
-    *${phrases.comment}:* ${comm}
+    *${phrases.environment}:* ${environment}
+    *${phrases.comment}:* ${comment}
     *${phrases.scenario.duration}:* ${time}
-    *${phrases.scenario.totalScenarios}:* ${total}
-    <#if passed != 0 > *${phrases.scenario.totalPassed}:* ${passed} <@utils.printPercentage input=passed total=total /></#if>
-    <#if failed != 0 > *${phrases.scenario.totalFailed}:* ${failed} <@utils.printPercentage input=failed total=total /></#if>
-    <#if broken != 0 > *${phrases.scenario.totalBroken}:* ${broken} </#if>
-    <#if unknown != 0 >*${phrases.scenario.totalUnknown}:* ${unknown} </#if>
-    <#if skipped != 0 >*${phrases.scenario.totalSkipped}:* ${skipped} </#if>
+    *${phrases.scenario.totalScenarios}:* ${statistic.total}
+    <#if statistic.passed != 0 >
+        *${phrases.scenario.totalPassed}:* ${statistic.passed} <@utils.printPercentage input=statistic.passed total=statistic.total />
+    </#if>
+    <#if statistic.failed != 0 >
+        *${phrases.scenario.totalFailed}:* ${statistic.failed} <@utils.printPercentage input=statistic.failed total=statistic.total />
+    </#if>
+    <#if statistic.broken != 0 >
+        *${phrases.scenario.totalBroken}:* ${statistic.broken}
+    </#if>
+    <#if statistic.unknown != 0 >
+        *${phrases.scenario.totalUnknown}:* ${statistic.unknown}
+    </#if>
+    <#if statistic.skipped != 0 >
+        *${phrases.scenario.totalSkipped}:* ${statistic.skipped}
+    </#if>
 
     <#if suitesSummaryJson??>
     <#assign suitesData = suitesSummaryJson?eval_json>
