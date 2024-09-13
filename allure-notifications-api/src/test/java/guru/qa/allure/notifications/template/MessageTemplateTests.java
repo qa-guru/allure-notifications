@@ -83,7 +83,8 @@ class MessageTemplateTests {
             "templates/html.ftl,     guru/qa/allure/notifications/template/messages/html.txt",
             "templates/markdown.ftl, guru/qa/allure/notifications/template/messages/markdown.txt",
             "templates/rocket.ftl,   guru/qa/allure/notifications/template/messages/rocket.txt",
-            "templates/telegram.ftl, guru/qa/allure/notifications/template/messages/telegram.txt"
+            "templates/telegram.ftl, guru/qa/allure/notifications/template/messages/telegram.txt",
+            "guru/qa/allure/notifications/template/testTemplate.ftl, guru/qa/allure/notifications/template/messages/customHtml.txt"
     })
     void shouldValidateGeneratedMessageFromTemplate(String templatePath, String expectedMessagePath)
             throws IOException, URISyntaxException, MessageBuildException {

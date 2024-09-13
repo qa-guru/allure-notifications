@@ -41,6 +41,7 @@ public class MessageData {
             data.put("environment", base.getEnvironment());
             data.put("comment", base.getComment());
             data.put("reportLink", Formatters.formatReportLink(base.getReportLink()));
+            data.put("customData", base.getCustomData());
 
             data.put("time", Formatters.formatDuration(summary.getTime().getDuration(), base.getDurationFormat()));
             data.put("statistic", summary.getStatistic());

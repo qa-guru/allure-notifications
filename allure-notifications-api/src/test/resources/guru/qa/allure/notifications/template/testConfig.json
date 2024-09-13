@@ -9,8 +9,12 @@
     "enableChart": true,
     "logo": "logo.png",
     "durationFormat": "HH:mm:ss.SSS",
-    "enableSuitesPublishing": "true"
-  },
+    "enableSuitesPublishing": "true",
+    "customData": {
+      "variable1": "value1",
+      "variable2": "value2"
+    }
+},
   "mail": {
     "host": "smtp.gmail.com",
     "port": "465",
