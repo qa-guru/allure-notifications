@@ -1,0 +1,14 @@
+<h3>Results:</h3>
+<b>Environment: </b>Test<br/>
+<b>Comment: </b>Test comment<br/>
+<b>Duration: </b>00:00:24.011<br/>
+<b>Total scenarios: </b>3
+<ul>
+<li><b>Total passed: </b>2 (66.7 %)</li>
+<li><b>Total failed: </b>1 (33.3 %)</li>
+</ul>
+<b>Report available at the link:</b> <a href=https://www.example.com>https://www.example.com</a>
+<br/>
+<h3>Custom section:</h3>
+Custom data 1: value1<br/>
+Custom data 2: value2

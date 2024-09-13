@@ -61,7 +61,8 @@ Example of a notification in Telegram
     "language": "ru",
     "allureFolder": "",
     "enableChart": false,
-    "enableSuitesPublishing": false
+    "enableSuitesPublishing": false,
+    "customData": {}
   },
   "telegram": {
     "token": "",
@@ -158,7 +159,11 @@ Example:
     "enableChart": true,
     "enableSuitesPublishing": true,
     "logo": "logo.png",
-    "durationFormat": "HH:mm:ss.SSS"
+    "durationFormat": "HH:mm:ss.SSS",
+    "customData": {
+      "variable1": "value1",
+      "variable2": "value2"
+    }
 }
 ```
 
@@ -171,6 +176,7 @@ Fields:
 + `enableSuitesPublishing` - whether the statistic per suite should be published (options: `true` / `false`, default `false`). Before enabling the option, make sure that the `<allureFolder>/widgets` folder contains JSON file `suites.json`
 + `logo` - path to the logo file (if filled, the corresponding logo will be displayed in the top left corner of the chart).
 + `durationFormat` (optional, default value is `HH:mm:ss.SSS`) - specifies the desired output format for the test duration.
++ `customData` - additional data that can be reused in custom Freemarker templates (optional field).
 6. Fill in the `config.json` file block with the information about the chosen messenger.
 7. Execute the following command in terminal:
 ```
