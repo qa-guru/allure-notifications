@@ -4,9 +4,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 import guru.qa.allure.notifications.config.base.Base;
+import guru.qa.allure.notifications.formatters.Formatters;
 import guru.qa.allure.notifications.model.phrases.Phrases;
 import guru.qa.allure.notifications.model.summary.Summary;
-import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
 /**
@@ -15,29 +15,36 @@ import lombok.extern.slf4j.Slf4j;
  * Utility class for mapping template data for template.
  */
 @Slf4j
-@Getter
 public class MessageData {
-    private final String project;
-    private final BuildData buildData;
-    private final SummaryData summaryData;
+    private final Base base;
+    private final Summary summary;
     private final String suitesSummaryJson;
     private final Phrases phrases;
     private Map<String, Object> data;
 
     public MessageData(Base base, Summary summary, String suitesSummaryJson, Phrases phrases) {
-        this.project = base.getProject();
-        this.buildData = new BuildData(base);
-        this.summaryData = new SummaryData(base, summary);
+        this.base = base;
+        this.summary = summary;
         this.suitesSummaryJson = suitesSummaryJson;
         this.phrases = phrases;
+    }
+
+    public String getProject() {
+        return base.getProject();
     }
 
     public Map<String, Object> getValues() {
         if (data == null) {
             this.data = new HashMap<>();
             log.info("Collecting template data");
-            data.putAll(buildData.map());
-            data.putAll(summaryData.map());
+
+            data.put("environment", base.getEnvironment());
+            data.put("comment", base.getComment());
+            data.put("reportLink", Formatters.formatReportLink(base.getReportLink()));
+
+            data.put("time", Formatters.formatDuration(summary.getTime().getDuration(), base.getDurationFormat()));
+            data.put("statistic", summary.getStatistic());
+
             data.put("suitesSummaryJson", suitesSummaryJson);
             data.put("phrases", phrases);
             log.info("Template data: {}", data);
