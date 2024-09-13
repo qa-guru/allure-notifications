@@ -1,11 +1,12 @@
+<#import "utils.ftl" as utils>
 <#compress>
     **${phrases.results}:**
     **-${phrases.environment}:** ${env}
     **-${phrases.comment}:** ${comm}
     **-${phrases.scenario.duration}:** **${time}**
     **-${phrases.scenario.totalScenarios}:** ${total}
-    <#if passed != 0 > **-${phrases.scenario.totalPassed}:** ${passed} **(${passedPercentage?string("##.#")} %)**</#if>
-    <#if failed != 0 > **-${phrases.scenario.totalFailed}:** ${failed} **(${failedPercentage?string("##.#")} %)** </#if>
+    <#if passed != 0 > **-${phrases.scenario.totalPassed}:** ${passed} **<@utils.printPercentage input=passed total=total />**</#if>
+    <#if failed != 0 > **-${phrases.scenario.totalFailed}:** ${failed} **<@utils.printPercentage input=failed total=total />** </#if>
     <#if broken != 0 > **-${phrases.scenario.totalBroken}:** ${broken} </#if>
     <#if unknown != 0 > **-${phrases.scenario.totalUnknown}:** ${unknown} </#if>
     <#if skipped != 0 > **-${phrases.scenario.totalSkipped}:** ${skipped} </#if>
