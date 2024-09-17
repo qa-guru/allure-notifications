@@ -1,5 +1,7 @@
 package guru.qa.allure.notifications.clients.mail;
 
+import static jakarta.mail.Message.RecipientType;
+
 import guru.qa.allure.notifications.config.mail.Mail;
 import guru.qa.allure.notifications.exceptions.MessageBuildException;
 import guru.qa.allure.notifications.exceptions.MessageSendException;
@@ -35,13 +37,37 @@ public class Letter {
         log.info("Setting recipients...");
         try {
             letter.setRecipients(
-                    Message.RecipientType.TO,
+                    RecipientType.TO,
                     MailUtil.recipients(to)
             );
         } catch (MessagingException e) {
             throw new MessageBuildException(String.format("Unable to set recipients %s!", to), e);
         }
         log.info("Done.");
+        return this;
+    }
+
+    public Letter cc(final String cc) throws MessageBuildException {
+        return setRecipientsWithTypeIfPresentedInConfig(RecipientType.CC, cc);
+    }
+
+    public Letter bcc(final String bcc) throws MessageBuildException {
+        return setRecipientsWithTypeIfPresentedInConfig(RecipientType.BCC, bcc);
+    }
+
+    private Letter setRecipientsWithTypeIfPresentedInConfig(RecipientType type, String recipients)
+            throws MessageBuildException {
+        try {
+            if (null != recipients) {
+                letter.setRecipients(
+                        type,
+                        MailUtil.recipients(recipients)
+                );
+            }
+        } catch (MessagingException e) {
+            throw new MessageBuildException(String.format("Unable to set recipients %s with type %s!",
+                    recipients, type), e);
+        }
         return this;
     }
 
