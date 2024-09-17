@@ -105,7 +105,9 @@ Example of a notification in Telegram
     "password": "",
     "securityProtocol": null,
     "from": "",
-    "recipient": "",
+    "to": "",
+    "cc": "",
+    "bcc": "",
     "templatePath": "/templates/html.ftl"
   },
   "discord": {
@@ -140,7 +142,9 @@ Example:
     "password": "password",
     "securityProtocol": "SSL",
     "from": "test@gmail.com",
-    "recipient": "test1@gmail.com",
+    "to": "test1@gmail.com",
+    "cc": "testCC1@gmail.com, testCC2@gmail.com",
+    "bcc": "testBCC1@gmail.com, testBCC2@gmail.com",
     "templatePath": "/templates/html_custom.ftl"
   }
 }

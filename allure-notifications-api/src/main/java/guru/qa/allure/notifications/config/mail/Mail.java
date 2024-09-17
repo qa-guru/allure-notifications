@@ -22,6 +22,12 @@ public class Mail {
     private SecurityProtocol securityProtocol;
     @SerializedName("from")
     private String from;
+    @SerializedName("to")
+    private String to;
+    @SerializedName("cc")
+    private String cc;
+    @SerializedName("bcc")
+    private String bcc;
     @SerializedName("recipient")
     private String recipient;
     @SerializedName("templatePath")
