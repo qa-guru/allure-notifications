@@ -45,8 +45,7 @@ public class MailUtil {
             try {
                 addressList.add(new InternetAddress(address));
             } catch (AddressException e) {
-                log.error("Invalid email address {}!", address);
-                System.exit(1);
+                throw new InvalidArgumentException("Invalid email address: " + address);
             }
         }
 
