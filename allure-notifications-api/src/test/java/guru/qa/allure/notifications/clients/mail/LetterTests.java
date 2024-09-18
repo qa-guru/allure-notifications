@@ -10,6 +10,8 @@ import java.util.function.Consumer;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.NullAndEmptySource;
 import org.mockito.MockedConstruction;
 import org.mockito.junit.jupiter.MockitoExtension;
 
@@ -58,12 +60,13 @@ class LetterTests {
         });
     }
 
-    @Test
-    void shouldNotSetCcBccIfNotPresent() {
+    @ParameterizedTest
+    @NullAndEmptySource
+    void shouldNotSetCcBccIfNotPresent(String value) {
         mockMessage(m -> {
             try {
-                letter.bcc(null);
-                letter.cc(null);
+                letter.bcc(value);
+                letter.cc(value);
             } catch (MessageBuildException e) {
                 throw new RuntimeException(e);
             }
