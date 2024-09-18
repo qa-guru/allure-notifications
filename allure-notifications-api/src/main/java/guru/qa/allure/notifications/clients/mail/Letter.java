@@ -2,6 +2,8 @@ package guru.qa.allure.notifications.clients.mail;
 
 import static jakarta.mail.Message.RecipientType;
 
+import org.apache.commons.lang3.StringUtils;
+
 import guru.qa.allure.notifications.config.mail.Mail;
 import guru.qa.allure.notifications.exceptions.MessageBuildException;
 import guru.qa.allure.notifications.exceptions.MessageSendException;
@@ -58,7 +60,7 @@ public class Letter {
     private Letter setRecipientsWithTypeIfPresentedInConfig(RecipientType type, String recipients)
             throws MessageBuildException {
         try {
-            if (null != recipients) {
+            if (StringUtils.isNotBlank(recipients)) {
                 letter.setRecipients(
                         type,
                         MailUtil.recipients(recipients)
