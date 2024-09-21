@@ -47,7 +47,7 @@ public class SlackClient implements Notifier {
     }
 
     @Override
-    public void sendPhoto(MessageData messageData, byte[] chartImage) {
+    public void sendPhoto(MessageData messageData, byte[] chartImage) throws MessagingException {
         try (CloseableHttpClient client = HttpClients.createDefault()) {
             String title = "chart.png";
             JSONObject uploadResponse = getUploadURLExternal(client, title, chartImage);
@@ -65,7 +65,7 @@ public class SlackClient implements Notifier {
 
             completeUploadExternal(client, fileId, proceedMessageData(messageData));
         } catch (IOException e) {
-            log.error("Failed to post message with file to Slack", e);
+            throw new MessagingException("Failed to post message with file to Slack", e);
         }
     }
 
