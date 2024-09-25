@@ -40,7 +40,7 @@ public class MailUtil {
             throw new InvalidArgumentException("Recipients can't be null!");
         }
 
-        String[] addressesArray = addresses.split(", ");
+        String[] addressesArray = addresses.split(",\\h*");
         for (String address : addressesArray) {
             try {
                 addressList.add(new InternetAddress(address));
