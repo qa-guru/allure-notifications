@@ -37,17 +37,13 @@ public class SlackClient implements Notifier {
 
     @Override
     public void sendText(MessageData messageData) throws MessagingException {
-        List<NameValuePair> params = new ArrayList<>();
-        params.add(new BasicNameValuePair("channel", slack.getChat()));
-        params.add(new BasicNameValuePair("text", createMessage(messageData)));
-
         String errorDescription = "Failed to post message to Slack";
         try (CloseableHttpClient client = HttpClients.createDefault()) {
-            HttpUriRequest request = RequestBuilder
-                    .post("https://slack.com/api/chat.postMessage")
-                    .setEntity(new UrlEncodedFormEntity(params, StandardCharsets.UTF_8))
-                    .build();
-            executeRequest(client, request, errorDescription);
+            List<NameValuePair> postMessageFormData = new ArrayList<>();
+            postMessageFormData.add(new BasicNameValuePair("channel", slack.getChat()));
+            postMessageFormData.add(new BasicNameValuePair("text", createMessage(messageData)));
+
+            executeRequest(client, "https://slack.com/api/chat.postMessage", postMessageFormData, errorDescription);
         } catch (IOException e) {
             throw new MessageSendException(errorDescription, e);
         }
@@ -58,7 +54,6 @@ public class SlackClient implements Notifier {
         try (CloseableHttpClient client = HttpClients.createDefault()) {
             HttpUriRequest uploadUrlRequest = RequestBuilder
                     .get("https://slack.com/api/files.getUploadURLExternal")
-                    .addHeader(HttpHeaders.CONTENT_TYPE, ContentType.APPLICATION_JSON.getMimeType())
                     .addParameter("filename", "chart.png")
                     .addParameter("length", String.valueOf(chartImage.length))
                     .build();
@@ -68,22 +63,22 @@ public class SlackClient implements Notifier {
             String fileId = uploadUrlResponse.getString("file_id");
             String uploadUrl = uploadUrlResponse.getString("upload_url");
 
-            HttpUriRequest request = RequestBuilder
+            HttpUriRequest uploadFileRequest = RequestBuilder
                     .post(uploadUrl)
                     .setEntity(MultipartEntityBuilder.create()
                             .setMode(HttpMultipartMode.BROWSER_COMPATIBLE)
                             .addBinaryBody("file", chartImage, ContentType.DEFAULT_BINARY, "chart")
                             .build())
                     .build();
-            executeRequest(client, request, "Failed to upload file to Slack");
+            executeRequest(client, uploadFileRequest, "Failed to upload file to Slack");
 
-            HttpUriRequest completeUploadRequest = RequestBuilder
-                    .post("https://slack.com/api/files.completeUploadExternal")
-                    .addParameter("files", "[{\"id\":\"" + fileId + "\"}]")
-                    .addParameter("initial_comment", createMessage(messageData))
-                    .addParameter("channel_id", slack.getChat())
-                    .build();
-            executeRequest(client, completeUploadRequest, "Error complete upload file");
+            List<NameValuePair> completeUploadFormData = new ArrayList<>();
+            completeUploadFormData.add(new BasicNameValuePair("files", "[{\"id\":\"" + fileId + "\"}]"));
+            completeUploadFormData.add(new BasicNameValuePair("initial_comment", createMessage(messageData)));
+            completeUploadFormData.add(new BasicNameValuePair("channel_id", slack.getChat()));
+
+            executeRequest(client, "https://slack.com/api/files.completeUploadExternal", completeUploadFormData,
+                    "Error complete upload file");
         } catch (IOException e) {
             throw new MessageSendException("Failed to post message with file to Slack", e);
         }
@@ -91,6 +86,15 @@ public class SlackClient implements Notifier {
 
     private String createMessage(MessageData messageData) throws MessageBuildException {
         return new MessageTemplate(messageData).createMessageFromTemplate(slack.getTemplatePath());
+    }
+
+    private void executeRequest(CloseableHttpClient client, String uri, List<NameValuePair> formData,
+            String errorDescription) throws MessageSendException {
+        HttpUriRequest request = RequestBuilder
+                .post(uri)
+                .setEntity(new UrlEncodedFormEntity(formData, StandardCharsets.UTF_8))
+                .build();
+        executeRequest(client, request, errorDescription);
     }
 
     private String executeRequest(CloseableHttpClient client, HttpUriRequest request, String errorDescription)
