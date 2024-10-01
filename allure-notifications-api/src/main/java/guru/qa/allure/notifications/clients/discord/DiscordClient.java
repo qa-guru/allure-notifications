@@ -23,7 +23,7 @@ public class DiscordClient implements Notifier {
                 .routeParam("channelId", discord.getChannelId())
                 .header("Authorization", "Bot " + discord.getBotToken())
                 .header("Content-Type", ContentType.APPLICATION_FORM_URLENCODED.getMimeType())
-                .field("content", new MessageTemplate(messageData).createMessageFromTemplate(discord.getTemplatePath()))
+                .field("content", MessageTemplate.createMessageFromTemplate(messageData, discord.getTemplatePath()))
                 .asString()
                 .getBody();
     }
@@ -34,7 +34,7 @@ public class DiscordClient implements Notifier {
                 .routeParam("channelId", discord.getChannelId())
                 .header("Authorization", "Bot " + discord.getBotToken())
                 .field("file", new ByteArrayInputStream(chartImage), ContentType.IMAGE_PNG, "chart.png")
-                .field("content", new MessageTemplate(messageData).createMessageFromTemplate(discord.getTemplatePath()))
+                .field("content", MessageTemplate.createMessageFromTemplate(messageData, discord.getTemplatePath()))
                 .asString()
                 .getBody();
     }

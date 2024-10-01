@@ -24,7 +24,7 @@ public class TelegramClient implements Notifier {
                 .header("Content-Type", ContentType.APPLICATION_FORM_URLENCODED.getMimeType())
                 .field("chat_id", telegram.getChat())
                 .field("reply_to_message_id", telegram.getReplyTo() + "")
-                .field("text", new MessageTemplate(messageData).createMessageFromTemplate(telegram.getTemplatePath()))
+                .field("text", MessageTemplate.createMessageFromTemplate(messageData, telegram.getTemplatePath()))
                 .field("parse_mode", "HTML")
                 .asString()
                 .getBody();
@@ -37,7 +37,7 @@ public class TelegramClient implements Notifier {
                 .field("photo", new ByteArrayInputStream(chartImage), ContentType.IMAGE_PNG, "chart.png")
                 .field("chat_id", telegram.getChat())
                 .field("reply_to_message_id", telegram.getReplyTo())
-                .field("caption", new MessageTemplate(messageData).createMessageFromTemplate(telegram.getTemplatePath()))
+                .field("caption", MessageTemplate.createMessageFromTemplate(messageData, telegram.getTemplatePath()))
                 .field("parse_mode", "HTML")
                 .asString()
                 .getBody();

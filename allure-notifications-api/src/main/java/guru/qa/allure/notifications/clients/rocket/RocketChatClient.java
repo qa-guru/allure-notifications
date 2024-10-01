@@ -22,7 +22,7 @@ public class RocketChatClient implements Notifier {
     public void sendText(MessageData messageData) throws MessagingException {
         Map<String, Object> body = new HashMap<>();
         body.put("channel", rocketChat.getChannel());
-        body.put("text", new MessageTemplate(messageData).createMessageFromTemplate(rocketChat.getTemplatePath()));
+        body.put("text", MessageTemplate.createMessageFromTemplate(messageData, rocketChat.getTemplatePath()));
         Unirest.post(rocketChat.getUrl() + "/api/v1/chat.postMessage")
             .header("X-Auth-Token", rocketChat.getToken())
             .header("X-User-Id", rocketChat.getUserId())
