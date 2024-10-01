@@ -68,7 +68,7 @@ public class SkypeClient implements Notifier {
         return SkypeMessage.builder()
                 .type("message")
                 .from(from)
-                .text(new MessageTemplate(messageData).createMessageFromTemplate(skype.getTemplatePath()))
+                .text(MessageTemplate.createMessageFromTemplate(messageData, skype.getTemplatePath()))
                 .build();
     }
 

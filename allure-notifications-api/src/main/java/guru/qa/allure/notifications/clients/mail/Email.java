@@ -21,13 +21,13 @@ public class Email implements Notifier {
     @Override
     public void sendText(MessageData messageData) throws MessagingException {
         getBaseLetter(messageData)
-                .text(new MessageTemplate(messageData).createMessageFromTemplate(mail.getTemplatePath()))
+                .text(MessageTemplate.createMessageFromTemplate(messageData, mail.getTemplatePath()))
                 .send();
     }
 
     @Override
     public void sendPhoto(MessageData messageData, byte[] chartImage)  throws MessagingException {
-        String message = "<img src='cid:image'/><br/>" + new MessageTemplate(messageData).createMessageFromTemplate(
+        String message = "<img src='cid:image'/><br/>" + MessageTemplate.createMessageFromTemplate(messageData, 
                 mail.getTemplatePath());
         getBaseLetter(messageData)
                 .text(message)

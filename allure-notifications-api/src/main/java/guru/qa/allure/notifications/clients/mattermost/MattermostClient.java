@@ -48,7 +48,7 @@ public class MattermostClient implements Notifier {
 
     private void send(MessageData messageData, Map<String, Object> body) throws MessageBuildException {
         body.put("channel_id", mattermost.getChat());
-        body.put("message", new MessageTemplate(messageData).createMessageFromTemplate(mattermost.getTemplatePath()));
+        body.put("message", MessageTemplate.createMessageFromTemplate(messageData, mattermost.getTemplatePath()));
 
         Unirest.post("https://{uri}/api/v4/posts")
                 .routeParam("uri", mattermost.getUrl())

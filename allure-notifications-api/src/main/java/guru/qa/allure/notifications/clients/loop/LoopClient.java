@@ -21,7 +21,7 @@ public class LoopClient implements Notifier {
     @Override
     public void sendText(MessageData messageData) throws MessagingException {
         Map<String, Object> body = new HashMap<>();
-        body.put("text", new MessageTemplate(messageData).createMessageFromTemplate(loop.getTemplatePath()));
+        body.put("text", MessageTemplate.createMessageFromTemplate(messageData, loop.getTemplatePath()));
 
         Unirest.post(loop.getWebhookUrl())
                 .header("Content-Type", ContentType.APPLICATION_JSON.getMimeType())
@@ -35,7 +35,7 @@ public class LoopClient implements Notifier {
         String encodedChartImage = Base64.getEncoder().encodeToString(chartImage);
 
         Map<String, Object> body = new HashMap<>();
-        body.put("text", new MessageTemplate(messageData).createMessageFromTemplate(loop.getTemplatePath()));
+        body.put("text", MessageTemplate.createMessageFromTemplate(messageData, loop.getTemplatePath()));
 
         Map<String, String> attachment = new HashMap<>();
         attachment.put("image_url", "data:image/png;base64," + encodedChartImage);

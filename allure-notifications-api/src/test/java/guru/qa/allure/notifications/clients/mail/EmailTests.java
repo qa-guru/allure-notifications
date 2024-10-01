@@ -28,7 +28,7 @@ class EmailTests {
     private static final String CC = "testCC@gmail.com, testCC2@gmail.com";
     private static final String BCC = "testBCC@gmail.com";
     private static final String PROJECT = "LETTER PROJECT";
-    private static final String EMPTY_TEMPLATE_PATH = "/guru/qa/allure/notifications/template/emptyTemplate.ftl";
+    private static final String EMPTY_TEMPLATE_PATH = "/template/emptyTemplate.ftl";
     private static final String TEXT_FROM_TEMPLATE = "for test purposes";
     private static final byte[] IMG = new byte[1];
 

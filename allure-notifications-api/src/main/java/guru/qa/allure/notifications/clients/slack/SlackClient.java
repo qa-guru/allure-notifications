@@ -85,7 +85,7 @@ public class SlackClient implements Notifier {
     }
 
     private String createMessage(MessageData messageData) throws MessageBuildException {
-        return new MessageTemplate(messageData).createMessageFromTemplate(slack.getTemplatePath());
+        return MessageTemplate.createMessageFromTemplate(messageData, slack.getTemplatePath());
     }
 
     private void executeRequest(CloseableHttpClient client, String uri, List<NameValuePair> formData,
