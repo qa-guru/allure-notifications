@@ -11,6 +11,7 @@ import guru.qa.allure.notifications.config.rocket.RocketChat;
 import guru.qa.allure.notifications.config.skype.Skype;
 import guru.qa.allure.notifications.config.slack.Slack;
 import guru.qa.allure.notifications.config.telegram.Telegram;
+import guru.qa.allure.notifications.config.cliq.Cliq;
 import lombok.Data;
 
 /**
@@ -40,4 +41,6 @@ public class Config {
     private RocketChat rocketChat;
     @SerializedName("proxy")
     private Proxy proxy;
+    @SerializedName("cliq")
+    private Cliq cliq;
 }
