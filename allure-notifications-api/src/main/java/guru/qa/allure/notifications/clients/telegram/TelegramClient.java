@@ -30,13 +30,11 @@ public class TelegramClient implements Notifier {
                 .field("text", MessageTemplate.createMessageFromTemplate(messageData, telegram.getTemplatePath()))
                 .field("parse_mode", "HTML");
 
-            if (telegram.getMessageThreadId() != null) {
-                multipartBody.field("message_thread_id", telegram.getMessageThreadId());
-            }
+        if (telegram.getMessageThreadId() != null) {
+            multipartBody.field("message_thread_id", telegram.getMessageThreadId());
+        }
 
-            multipartBody
-                .asString()
-                .getBody();
+        multipartBody.asString().getBody();
     }
 
     @Override
@@ -53,8 +51,6 @@ public class TelegramClient implements Notifier {
            multipartBody.field("message_thread_id", telegram.getMessageThreadId());
         }
 
-            multipartBody
-                .asString()
-                .getBody();
+        multipartBody.asString().getBody();
     }
 }
