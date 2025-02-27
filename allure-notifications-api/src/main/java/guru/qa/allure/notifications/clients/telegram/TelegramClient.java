@@ -10,8 +10,6 @@ import kong.unirest.MultipartBody;
 import kong.unirest.Unirest;
 
 import java.io.ByteArrayInputStream;
-import java.util.HashMap;
-import java.util.Map;
 
 public class TelegramClient implements Notifier {
     private final Telegram telegram;
