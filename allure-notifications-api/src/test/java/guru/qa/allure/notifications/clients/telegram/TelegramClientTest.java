@@ -1,33 +1,29 @@
 package guru.qa.allure.notifications.clients.telegram;
 
 import guru.qa.allure.notifications.config.telegram.Telegram;
+import guru.qa.allure.notifications.exceptions.MessagingException;
 import guru.qa.allure.notifications.template.data.MessageData;
 import kong.unirest.MatchStatus;
 import kong.unirest.MockClient;
-import org.junit.jupiter.api.BeforeEach;
+
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
-import static guru.qa.allure.notifications.clients.mail.EmailTests.EMPTY_TEMPLATE_PATH;
 import static kong.unirest.HttpMethod.POST;
 import static org.mockito.Mockito.RETURNS_DEEP_STUBS;
 import static org.mockito.Mockito.mock;
 
 class TelegramClientTest {
 
-    MockClient mock;
-    MessageData messageData;
+    private static final String EMPTY_TEMPLATE_PATH = "/template/emptyTemplate.ftl";
 
-    @BeforeEach
-    void setUp() {
-        mock = MockClient.register();
-        messageData = mock(MessageData.class, RETURNS_DEEP_STUBS);
-    }
+    private final MockClient mock = MockClient.register();
+    private final MessageData messageData = mock(MessageData.class, RETURNS_DEEP_STUBS);
 
     @Test
-    void topicIsSetTest() throws Exception {
-        Telegram telegram = telegram("topic");
+    void topicIsSetTest() throws MessagingException {
+        Telegram telegram = createConfig("topic");
 
         new TelegramClient(telegram).sendText(messageData);
 
@@ -36,8 +32,8 @@ class TelegramClientTest {
     }
 
     @Test
-    void topicIsOptionalTest() throws Exception {
-        Telegram telegram = telegram(null);
+    void topicIsOptionalTest() throws MessagingException {
+        Telegram telegram = createConfig(null);
 
         mock.expect(POST, "https://api.telegram.org/bottoken/sendMessage")
                 .body(TelegramClientTest::hasNoMessageThreadIdParameter);
@@ -48,8 +44,8 @@ class TelegramClientTest {
     }
 
     @Test
-    void topicIsSetForPhotoTest() throws Exception {
-        Telegram telegram = telegram("topic");
+    void topicIsSetForPhotoTest() throws MessagingException {
+        Telegram telegram = createConfig("topic");
 
         new TelegramClient(telegram).sendPhoto(messageData, new byte[0]);
 
@@ -58,8 +54,8 @@ class TelegramClientTest {
     }
 
     @Test
-    void topicIsNotSetForPhotoTest() throws Exception {
-        Telegram telegram = telegram(null);
+    void topicIsNotSetForPhotoTest() throws MessagingException {
+        Telegram telegram = createConfig(null);
 
         mock.expect(POST, "https://api.telegram.org/bottoken/sendPhoto")
                 .body(TelegramClientTest::hasNoMessageThreadIdParameter);
@@ -70,10 +66,14 @@ class TelegramClientTest {
     }
 
     private static MatchStatus hasNoMessageThreadIdParameter(List<String> body) {
-        return new MatchStatus(body.stream().map(x -> x.split("=")[0]).noneMatch(x -> x.equals("message_thread_id")), "параметр не задан: " + "message_thread_id");
+        return new MatchStatus(
+                body.stream()
+                        .map(x -> x.split("=")[0])
+                        .noneMatch(formParameterName -> formParameterName.equals("message_thread_id")),
+                "No parameter 'message_thread_id' was expected, but found");
     }
 
-    private static Telegram telegram(String topic) {
+    private static Telegram createConfig(String topic) {
         Telegram telegram = new Telegram();
         telegram.setChat("chat");
         telegram.setTopic(topic);

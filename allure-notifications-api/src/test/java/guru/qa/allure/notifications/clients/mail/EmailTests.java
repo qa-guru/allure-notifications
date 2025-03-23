@@ -1,9 +1,14 @@
 package guru.qa.allure.notifications.clients.mail;
 
-import guru.qa.allure.notifications.config.base.Base;
-import guru.qa.allure.notifications.config.mail.Mail;
-import guru.qa.allure.notifications.exceptions.MessagingException;
-import guru.qa.allure.notifications.template.data.MessageData;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.lenient;
+import static org.mockito.Mockito.mockConstruction;
+import static org.mockito.Mockito.verify;
+
+import java.util.function.Consumer;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -11,21 +16,19 @@ import org.mockito.Mock;
 import org.mockito.MockedConstruction;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.util.function.Consumer;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.*;
+import guru.qa.allure.notifications.config.base.Base;
+import guru.qa.allure.notifications.config.mail.Mail;
+import guru.qa.allure.notifications.exceptions.MessagingException;
+import guru.qa.allure.notifications.template.data.MessageData;
 
 @ExtendWith(MockitoExtension.class)
-public class EmailTests {
+class EmailTests {
     private static final String FROM = "testFROM@gmail.com";
     private static final String TO = "testTO@gmail.com";
     private static final String CC = "testCC@gmail.com, testCC2@gmail.com";
     private static final String BCC = "testBCC@gmail.com";
     private static final String PROJECT = "LETTER PROJECT";
-    public static final String EMPTY_TEMPLATE_PATH = "/template/emptyTemplate.ftl";
+    private static final String EMPTY_TEMPLATE_PATH = "/template/emptyTemplate.ftl";
     private static final String TEXT_FROM_TEMPLATE = "for test purposes";
     private static final byte[] IMG = new byte[1];
 
