@@ -19,7 +19,7 @@ subprojects {
         apply plugin: 'checkstyle'
 
         checkstyle {
-            toolVersion = '10.17.0'
+            toolVersion = '10.21.4'
             ignoreFailures = false
             showViolations = true
         }
