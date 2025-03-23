@@ -1,6 +1,6 @@
 allprojects {
-    group 'allure.notifications'
-    version '4.8.0'
+    group = 'allure.notifications'
+    version = '4.8.0'
 }
 
 subprojects {
