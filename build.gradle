@@ -13,6 +13,24 @@ subprojects {
     tasks.withType(JavaCompile) {
         options.encoding = 'UTF-8'
     }
+
+    // Checkstyle requires Java 11 starting from 10.0
+    if (JavaVersion.current().isJava11Compatible()) {
+        apply plugin: 'checkstyle'
+
+        checkstyle {
+            toolVersion = '10.17.0'
+            ignoreFailures = false
+            showViolations = true
+        }
+
+        tasks.withType(Checkstyle) {
+            reports {
+                xml.required = false
+                html.required = false
+            }
+        }
+    }
 }
 
 ext {

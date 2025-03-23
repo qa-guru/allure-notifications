@@ -31,8 +31,7 @@ class LetterTests {
     private Letter letter;
 
     @BeforeEach
-    void beforeEach()
-    {
+    void beforeEach() {
         mail.setFrom("from");
         mail.setHost("host");
         mail.setPort("port");

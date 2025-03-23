@@ -38,8 +38,7 @@ class EmailTests {
     @Mock private MessageData messageData;
 
     @BeforeEach
-    void beforeEach()
-    {
+    void beforeEach() {
         BASE.setProject(PROJECT);
         lenient().when(messageData.getProject()).thenReturn(PROJECT);
     }
