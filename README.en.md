@@ -67,6 +67,7 @@ Example of a notification in Telegram
   "telegram": {
     "token": "",
     "chat": "",
+    "topic": "",
     "replyTo": "",
     "templatePath": "/templates/telegram.ftl"
   },
@@ -127,6 +128,13 @@ Example of a notification in Telegram
   }
 }
 ```
+
+The `telegram` block parameters:
+
++ `topic` - optional parameter defines topic id in chat to send message,
+  check [stackoverflow](https://stackoverflow.com/questions/74773675/how-to-get-topic-id-for-telegram-group-chat) to get
+  parameter value
+
 The `proxy` block is used if you need to specify additional proxy configuration.\
 The `templatePath` parameter is optional and allows to set the path to custom Freemarker template for notification message.\
 Example:

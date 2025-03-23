@@ -85,6 +85,7 @@ Languages: 🇬🇧 🇫🇷 🇷🇺 🇺🇦 🇧🇾 🇨🇳
   "telegram": {
     "token": "",
     "chat": "",
+    "topic": "",
     "replyTo": "",
     "templatePath": "/templates/telegram.ftl"
   },
@@ -259,6 +260,8 @@ java "-DconfigFile=notifications/config.json" -jar ../allure-notifications-4.2.1
 
 ## Особенности заполнения файла config.json в зависимости от выбранного мессенджера
 + <a href="https://github.com/qa-guru/knowledge-base/wiki/11.-Телеграм-бот.-Отправляем-уведомления-о-результатах-прохождения-тестов" target="_blank">Telegram config</a>
+  + `topic` - необязательный параметр для отправки сообщений в топик в чате. один из вариантов получения описан
+    на [stackoverflow](https://stackoverflow.com/questions/74773675/how-to-get-topic-id-for-telegram-group-chat)
 + <a href="https://github.com/qa-guru/allure-notifications/wiki/Slack-configuration" target="_blank">Slack config</a>
 + <a href="https://github.com/qa-guru/allure-notifications/wiki/Email-configuration" target="_blank">Email config</a>
 + <a href="https://github.com/qa-guru/allure-notifications/wiki/Skype-configuration" target="_blank">Skype config</a>
