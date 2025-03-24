@@ -17,7 +17,8 @@ public class Application {
 
     private static void startApplication() {
         log.info("Start...");
-        Config config = ApplicationConfig.newInstance().readConfig();
+        Config config = ApplicationConfig.apply(new ApplicationConfig().readConfig(), System.getProperties());
+
         Unirest.config()
                 .interceptor(new LogInterceptor());
 

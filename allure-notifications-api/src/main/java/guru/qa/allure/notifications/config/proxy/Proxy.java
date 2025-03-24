@@ -1,16 +1,18 @@
 package guru.qa.allure.notifications.config.proxy;
 
 import com.google.gson.annotations.SerializedName;
-import lombok.Builder;
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.experimental.Accessors;
 
 /**
  * @author kadehar
  * @since 4.0
  * Model class representing proxy settings.
  */
-@Data
-@Builder
+@Accessors(chain = true)
+@Setter
+@Getter
 public class Proxy {
     @SerializedName("host")
     private String host;

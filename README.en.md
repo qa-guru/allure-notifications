@@ -193,6 +193,18 @@ Note:
 + by the time of execution the `summary.json` file should already be generated.
 + in the command-line text you need to specify the version of the `jar` file that you downloaded in the previous steps.
 
+8. configuration parameters can be changed by system properties:
+   If system property matched with parameter from configuration file, then system property value is used.
+   It is useful in parameterized pipelines:
+
+```shell
+  java "-DconfigFile=notifications/config.json" "-Dbase.environment=${STAND}" "-Dbase.reportLink=${ALLURE_SERVICE_URL}" -Dbase.project=${PROJECT_ID} "-Dtelegram.token=${TG_BOT_TOKEN}" "-Dtelegram.chat=${TG_CHAT_ID}" "-Dtelegram.topic=${TG_CHAT_TOPIC_ID}" -jar allure-notifications.jar
+```
+
+:information_source: prefixes for custom data parameters are removed:  
+System property `-Dbase.customData.variable1=someValue` is modified to `variable1` with `someValue`  
+:warning: customData parameter without name is allowed: `base.customData.`
+
 ## Messenger configurations
 + <details>
     <summary>Telegram config</summary>

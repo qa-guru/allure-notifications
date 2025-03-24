@@ -39,6 +39,7 @@
   "telegram": {
     "token": "testToken",
     "chat": "testChat",
+    "topic": "testTopic",
     "replyTo": "user",
     "templatePath": "/templates/telegram.ftl"
   }
