@@ -1,10 +1,11 @@
 package guru.qa.allure.notifications.config.base;
 
-import java.util.Map;
-
 import com.google.gson.annotations.SerializedName;
 import guru.qa.allure.notifications.config.enums.Language;
 import lombok.Data;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * @author kadehar
@@ -35,4 +36,11 @@ public class Base {
     private String durationFormat = "HH:mm:ss.SSS";
     @SerializedName("customData")
     private Map<String, String> customData;
+
+    public void addCustomData(String key, String value) {
+        if (customData == null) {
+            customData = new HashMap<>();
+        }
+        customData.put(key, value);
+    }
 }

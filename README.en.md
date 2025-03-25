@@ -193,6 +193,35 @@ Note:
 + by the time of execution the `summary.json` file should already be generated.
 + in the command-line text you need to specify the version of the `jar` file that you downloaded in the previous steps.
 
+8. telegram and base configuration can be modified by system properties:
+   It is useful in parameterized pipelines:
+
+```shell
+  java "-DconfigFile=notifications/config.json" "-Dbase.environment=${STAND}" "-Dbase.reportLink=${ALLURE_SERVICE_URL}" -Dbase.project=${PROJECT_ID} "-Dtelegram.token=${TG_BOT_TOKEN}" "-Dtelegram.chat=${TG_CHAT_ID}" "-Dtelegram.topic=${TG_CHAT_TOPIC_ID}" -jar allure-notifications.jar
+```
+
+| Parameter name            |
+|---------------------------|
+| **_Base parameters_**     |
+| base.environment          |
+| base.comment              |
+| base.allureFolder         |
+| base.project              |
+| base.reportLink           |
+| base.logo                 |
+| base.durationFormat       |
+| **_Telegram parameters_** |
+| telegram.token            |
+| telegram.chat             |
+| telegram.topic            |
+| telegram.replyTo          |
+| telegram.templatePath     |
+| base.customData.variable1 | 
+
+:information_source: prefixes for custom data parameters are removed:  
+System property `-Dbase.customData.variable1=someValue` is modified to `variable1` with `someValue`  
+:warning: customData parameters without names are ignored: `base.customData.`
+
 ## Messenger configurations
 + <details>
     <summary>Telegram config</summary>
