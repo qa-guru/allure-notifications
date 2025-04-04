@@ -215,7 +215,18 @@ java "-DconfigFile=notifications/config.json" -jar notifications/allure-notifica
 + в тексте команды нужно указать ту версию файла jar, которую вы скачали на предыдущих шагах
 
 В результате будет сформировано оповещение с результатами прохождения автотестов и направлено в выбранный мессенджер.
- 
+
+8. Базовые настройки и настройки телеграм можно переопределить через системные переменные:
+   Если название параметра совпадает с названием в файле, то будет использовано название из системной переменной.
+   Изменение параметров полезно при запуске через параметризованные пайплайны:
+
+```shell
+  java "-DconfigFile=notifications/config.json" "-Dbase.environment=${STAND}" "-Dbase.reportLink=${ALLURE_SERVICE_URL}" -Dbase.project=${PROJECT_ID} "-Dtelegram.token=${TG_BOT_TOKEN}" "-Dtelegram.chat=${TG_CHAT_ID}" "-Dtelegram.topic=${TG_CHAT_TOPIC_ID}" -jar allure-notifications.jar
+``` 
+
+:information_source: префиксы для дополнительных значений удаляются:  
+`-Dbase.customData.variable1=someValue` преобразуется в дополнительный параметр `variable1` со значением `someValue`  
+:warning: параметр без указания имени можно использовать : `base.customData.`
 
 <a name="Jenkins">
  

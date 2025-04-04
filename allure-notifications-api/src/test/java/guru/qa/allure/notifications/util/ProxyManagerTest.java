@@ -3,7 +3,6 @@ package guru.qa.allure.notifications.util;
 import guru.qa.allure.notifications.config.proxy.Proxy;
 import kong.unirest.Config;
 import kong.unirest.Unirest;
-
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
@@ -26,32 +25,29 @@ class ProxyManagerTest {
                 ),
                 Arguments.of(
                         "username is null",
-                        Proxy.builder()
-                                .password(UUID.randomUUID().toString())
-                                .host(UUID.randomUUID().toString())
-                                .port(443)
-                                .build(),
+                        new Proxy()
+                                .setPassword(UUID.randomUUID().toString())
+                                .setHost(UUID.randomUUID().toString())
+                                .setPort(443),
                         1,
                         0
                 ),
                 Arguments.of(
                         "password is null",
-                        Proxy.builder()
-                                .username(UUID.randomUUID().toString())
-                                .host(UUID.randomUUID().toString())
-                                .port(443)
-                                .build(),
+                        new Proxy()
+                                .setUsername(UUID.randomUUID().toString())
+                                .setHost(UUID.randomUUID().toString())
+                                .setPort(443),
                         1,
                         0
                 ),
                 Arguments.of(
                         "is proxy",
-                        Proxy.builder()
-                                .username(UUID.randomUUID().toString())
-                                .password(UUID.randomUUID().toString())
-                                .host(UUID.randomUUID().toString())
-                                .port(443)
-                                .build(),
+                        new Proxy()
+                                .setUsername(UUID.randomUUID().toString())
+                                .setPassword(UUID.randomUUID().toString())
+                                .setHost(UUID.randomUUID().toString())
+                                .setPort(443),
                         0,
                         1
                 )
