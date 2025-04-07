@@ -27,7 +27,7 @@ dependencies {
     testImplementation "com.konghq:unirest-mocks:${unirestVersion}"
 
     testImplementation('org.junit-pioneer:junit-pioneer:1.9.1')
-    testImplementation('net.javacrumbs.json-unit:json-unit:4.1.0')
+    testImplementation('net.javacrumbs.json-unit:json-unit:2.39.0')
 }
 
 tasks.withType(Test).configureEach {

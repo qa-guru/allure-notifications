@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.json.JsonMapper;
 
 import net.javacrumbs.jsonunit.core.Option;
+import net.javacrumbs.jsonunit.core.internal.Options;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -17,7 +18,6 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.stream.Stream;
 
@@ -61,7 +61,7 @@ class ApplicationConfigTest {
         ObjectMapper jsonMapper = new JsonMapper().setSerializationInclusion(Include.NON_NULL);
         String parsedConfig = jsonMapper.writeValueAsString(config);
         assertThat(parsedConfig,
-                jsonEquals(configFromFile).withOptions(Collections.singleton(Option.IGNORING_EXTRA_FIELDS)));
+                jsonEquals(configFromFile).withOptions(Options.empty().with(Option.IGNORING_EXTRA_FIELDS)));
     }
 
     @ParameterizedTest
