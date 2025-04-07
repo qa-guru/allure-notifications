@@ -219,7 +219,8 @@ java "-DconfigFile=notifications/config.json" -jar notifications/allure-notifica
     java "-DconfigFile=notifications/config.json" "-Dnotifications.base.environment=${STAND}" "-Dnotifications.base.reportLink=${ALLURE_SERVICE_URL}" "-Dnotifications.base.project=${PROJECT_ID}" "-Dnotifications.telegram.token=${TG_BOT_TOKEN}" "-Dnotifications.telegram.chat=${TG_CHAT_ID}" "-Dnotifications.telegram.topic=${TG_CHAT_TOPIC_ID}" -jar allure-notifications.jar
   ```
   :information_source: Префиксы для дополнительных значений удаляются:  
-  `-Dbase.customData.variable1=someValue` преобразуется в дополнительный параметр `variable1` со значением `someValue`  
+  `-Dbase.customData.variable1=someValue` преобразуется в дополнительный параметр `variable1` со значением `someValue`
+
   :warning: Параметр без указания имени можно использовать : `base.customData.`
 
 В результате будет сформировано оповещение с результатами прохождения автотестов и направлено в выбранный мессенджер.

@@ -199,7 +199,8 @@ Note:
   ```
 
   :information_source: The property prefixes for custom data parameters are removed: system property
-  `-Dbase.customData.variable1=someValue` will result in data with key `variable1` with value `someValue`. 
+  `-Dbase.customData.variable1=someValue` will result in data with key `variable1` with value `someValue`.
+
   :warning: `customData` parameter without name is allowed: `base.customData.`
 
 ## Messenger configurations
