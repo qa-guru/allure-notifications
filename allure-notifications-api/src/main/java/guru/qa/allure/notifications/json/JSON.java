@@ -24,11 +24,6 @@ public class JSON {
     private static final ResourcesUtil RESOURCES_UTIL = new ResourcesUtil();
     private static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
 
-    public <T> T parseFile(String file, Class<T> clazz) throws FileNotFoundException {
-        log.info("Mapping file at path {} to {} object", file, clazz.getSimpleName());
-        return GSON.fromJson(new FileReader(file), clazz);
-    }
-
     public <T> T parseFile(File file, Class<T> clazz) throws FileNotFoundException {
         log.info("Mapping file at path {} to {} object", file.getAbsolutePath(), clazz.getSimpleName());
         return GSON.fromJson(new FileReader(file), clazz);

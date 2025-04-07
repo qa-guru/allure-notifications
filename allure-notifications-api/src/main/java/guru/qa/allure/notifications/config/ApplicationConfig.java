@@ -1,14 +1,14 @@
 package guru.qa.allure.notifications.config;
 
+import com.fasterxml.jackson.core.JsonParser;
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.json.JsonMapper;
 import com.fasterxml.jackson.dataformat.javaprop.JavaPropsMapper;
-import guru.qa.allure.notifications.exceptions.ConfigNotFoundException;
-import guru.qa.allure.notifications.json.JSON;
-import lombok.SneakyThrows;
+import com.fasterxml.jackson.dataformat.javaprop.JavaPropsSchema;
 
-import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.Map;
-import java.util.Properties;
-import java.util.stream.Collectors;
 
 /**
  * @author kadehar
@@ -28,30 +28,20 @@ public class ApplicationConfig {
         this(getConfigFile());
     }
 
-    @SneakyThrows
-    public static Config apply(Config config, Properties properties) {
-        JavaPropsMapper javaPropsMapper = new JavaPropsMapper();
-
-        Properties propertiesFromConfig = javaPropsMapper.writeValueAsProperties(config);
-
-        //remove default keys with empty strings to avoid default values from pojo fields, e.g. Slack.template path
-        //may be default values are the feature and such filtration should be removed
-        propertiesFromConfig.entrySet().stream()
-                .filter(x -> x.getValue() == null || x.getValue().toString().isEmpty())
-                .map(Map.Entry::getKey)
-                .collect(Collectors.<Object>toSet())
-                .forEach(propertiesFromConfig::remove);
-
-        propertiesFromConfig.putAll(properties);
-
-        return javaPropsMapper.readPropertiesAs(propertiesFromConfig, Config.class);
+    public Config readConfig() throws IOException {
+        Config config = new JsonMapper().readValue(new FileReader(configFile), Config.class);
+        mergeWithSystemProperties(config);
+        return config;
     }
 
-    public Config readConfig() {
-        try {
-            return new JSON().parseFile(configFile, Config.class);
-        } catch (FileNotFoundException e) {
-            throw new ConfigNotFoundException("Unable to find config file at path " + configFile);
+    private static void mergeWithSystemProperties(Config config) throws IOException {
+        JavaPropsMapper javaPropsMapper = JavaPropsMapper.builder()
+                .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
+                .build();
+
+        try (JsonParser parser = javaPropsMapper.getFactory().createParser((Map<?, ?>) System.getProperties())) {
+            parser.setSchema(JavaPropsSchema.emptySchema().withPrefix("notifications"));
+            javaPropsMapper.readerForUpdating(config).readValue(parser, Config.class);
         }
     }
 

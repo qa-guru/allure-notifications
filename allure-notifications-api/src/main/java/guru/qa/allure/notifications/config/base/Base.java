@@ -1,10 +1,10 @@
 package guru.qa.allure.notifications.config.base;
 
+import java.util.Map;
+
 import com.google.gson.annotations.SerializedName;
 import guru.qa.allure.notifications.config.enums.Language;
 import lombok.Data;
-
-import java.util.Map;
 
 /**
  * @author kadehar
