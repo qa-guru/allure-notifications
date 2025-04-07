@@ -25,33 +25,47 @@ class ProxyManagerTest {
                 ),
                 Arguments.of(
                         "username is null",
-                        new Proxy()
-                                .setPassword(UUID.randomUUID().toString())
-                                .setHost(UUID.randomUUID().toString())
-                                .setPort(443),
+                        createProxyConfig(
+                                UUID.randomUUID().toString(),
+                                443,
+                                null,
+                                UUID.randomUUID().toString()
+                        ),
                         1,
                         0
                 ),
                 Arguments.of(
                         "password is null",
-                        new Proxy()
-                                .setUsername(UUID.randomUUID().toString())
-                                .setHost(UUID.randomUUID().toString())
-                                .setPort(443),
+                        createProxyConfig(
+                                UUID.randomUUID().toString(),
+                                443,
+                                UUID.randomUUID().toString(),
+                                null
+                        ),
                         1,
                         0
                 ),
                 Arguments.of(
                         "is proxy",
-                        new Proxy()
-                                .setUsername(UUID.randomUUID().toString())
-                                .setPassword(UUID.randomUUID().toString())
-                                .setHost(UUID.randomUUID().toString())
-                                .setPort(443),
+                        createProxyConfig(
+                                UUID.randomUUID().toString(),
+                                443,
+                                UUID.randomUUID().toString(),
+                                UUID.randomUUID().toString()
+                        ),
                         0,
                         1
                 )
         );
+    }
+
+    private static Proxy createProxyConfig(String host, Integer port, String username, String password) {
+        Proxy proxy = new Proxy();
+        proxy.setHost(host);
+        proxy.setPort(port);
+        proxy.setUsername(username);
+        proxy.setPassword(password);
+        return proxy;
     }
 
     @ParameterizedTest(name = "ProxyManager: {0}")

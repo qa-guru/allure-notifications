@@ -42,5 +42,11 @@
     "topic": "testTopic",
     "replyTo": "user",
     "templatePath": "/templates/telegram.ftl"
+  },
+  "proxy": {
+    "host": "localhost",
+    "port": 80,
+    "username": "bob",
+    "password": "p@$$"
   }
 }
