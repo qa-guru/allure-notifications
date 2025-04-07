@@ -3,6 +3,7 @@ package guru.qa.allure.notifications.util;
 import guru.qa.allure.notifications.config.proxy.Proxy;
 import kong.unirest.Config;
 import kong.unirest.Unirest;
+
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
