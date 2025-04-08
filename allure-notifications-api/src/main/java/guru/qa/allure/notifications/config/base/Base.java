@@ -2,7 +2,6 @@ package guru.qa.allure.notifications.config.base;
 
 import java.util.Map;
 
-import com.google.gson.annotations.SerializedName;
 import guru.qa.allure.notifications.config.enums.Language;
 import lombok.Data;
 
@@ -13,26 +12,15 @@ import lombok.Data;
  */
 @Data
 public class Base {
-    @SerializedName("project")
     private String project;
-    @SerializedName("environment")
     private String environment;
-    @SerializedName("comment")
     private String comment;
-    @SerializedName("reportLink")
     private String reportLink;
-    @SerializedName("language")
     private Language language;
-    @SerializedName("logo")
     private String logo;
-    @SerializedName("allureFolder")
     private String allureFolder;
-    @SerializedName("enableChart")
     private Boolean enableChart;
-    @SerializedName("enableSuitesPublishing")
     private Boolean enableSuitesPublishing;
-    @SerializedName("durationFormat")
     private String durationFormat = "HH:mm:ss.SSS";
-    @SerializedName("customData")
     private Map<String, String> customData;
 }

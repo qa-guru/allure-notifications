@@ -14,6 +14,9 @@ dependencies {
     implementation('org.knowm.xchart:xchart:3.8.8')
     implementation('com.jayway.jsonpath:json-path:2.9.0')
     implementation('org.apache.commons:commons-lang3:3.17.0')
+    implementation platform('com.fasterxml.jackson:jackson-bom:2.18.3')
+    implementation('com.fasterxml.jackson.core:jackson-databind')
+    implementation('com.fasterxml.jackson.dataformat:jackson-dataformat-properties')
 
     testImplementation('org.junit.jupiter:junit-jupiter:5.12.1')
     testRuntimeOnly('org.junit.platform:junit-platform-launcher')
@@ -22,6 +25,9 @@ dependencies {
     testImplementation(group: 'org.mockito', name: 'mockito-junit-jupiter')
     testImplementation(group: 'org.mockito', name: 'mockito-inline')
     testImplementation "com.konghq:unirest-mocks:${unirestVersion}"
+
+    testImplementation('org.junit-pioneer:junit-pioneer:1.9.1')
+    testImplementation('net.javacrumbs.json-unit:json-unit:2.39.0')
 }
 
 tasks.withType(Test).configureEach {

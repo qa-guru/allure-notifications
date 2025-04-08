@@ -1,7 +1,5 @@
 package guru.qa.allure.notifications.config.proxy;
 
-import com.google.gson.annotations.SerializedName;
-import lombok.Builder;
 import lombok.Data;
 
 /**
@@ -10,14 +8,9 @@ import lombok.Data;
  * Model class representing proxy settings.
  */
 @Data
-@Builder
 public class Proxy {
-    @SerializedName("host")
     private String host;
-    @SerializedName("port")
     private Integer port;
-    @SerializedName("username")
     private String username;
-    @SerializedName("password")
     private String password;
 }

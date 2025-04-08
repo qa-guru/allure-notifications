@@ -1,6 +1,5 @@
 package guru.qa.allure.notifications.config;
 
-import com.google.gson.annotations.SerializedName;
 import guru.qa.allure.notifications.config.base.Base;
 import guru.qa.allure.notifications.config.discord.Discord;
 import guru.qa.allure.notifications.config.loop.Loop;
@@ -20,24 +19,14 @@ import lombok.Data;
  */
 @Data
 public class Config {
-    @SerializedName("base")
     private Base base;
-    @SerializedName("telegram")
     private Telegram telegram;
-    @SerializedName("slack")
     private Slack slack;
-    @SerializedName("mattermost")
     private Mattermost mattermost;
-    @SerializedName("skype")
     private Skype skype;
-    @SerializedName("mail")
     private Mail mail;
-    @SerializedName("discord")
     private Discord discord;
-    @SerializedName("loop")
     private Loop loop;
-    @SerializedName("rocketChat")
     private RocketChat rocketChat;
-    @SerializedName("proxy")
     private Proxy proxy;
 }

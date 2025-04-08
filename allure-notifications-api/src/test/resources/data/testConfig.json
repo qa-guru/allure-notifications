@@ -9,7 +9,7 @@
     "enableChart": true,
     "logo": "logo.png",
     "durationFormat": "HH:mm:ss.SSS",
-    "enableSuitesPublishing": "true",
+    "enableSuitesPublishing": true,
     "customData": {
       "variable1": "value1",
       "variable2": "value2"
@@ -39,7 +39,14 @@
   "telegram": {
     "token": "testToken",
     "chat": "testChat",
+    "topic": "testTopic",
     "replyTo": "user",
     "templatePath": "/templates/telegram.ftl"
+  },
+  "proxy": {
+    "host": "localhost",
+    "port": 80,
+    "username": "bob",
+    "password": "p@$$"
   }
 }

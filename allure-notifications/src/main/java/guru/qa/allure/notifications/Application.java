@@ -1,5 +1,7 @@
 package guru.qa.allure.notifications;
 
+import java.io.IOException;
+
 import guru.qa.allure.notifications.clients.Notification;
 import guru.qa.allure.notifications.config.ApplicationConfig;
 import guru.qa.allure.notifications.config.Config;
@@ -11,13 +13,10 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class Application {
 
-    public static void main(String[] args) {
-        startApplication();
-    }
-
-    private static void startApplication() {
+    public static void main(String[] args) throws IOException {
         log.info("Start...");
-        Config config = ApplicationConfig.newInstance().readConfig();
+        Config config = new ApplicationConfig().readConfig();
+
         Unirest.config()
                 .interceptor(new LogInterceptor());
 

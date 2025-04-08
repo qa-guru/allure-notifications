@@ -1,9 +1,14 @@
 package guru.qa.allure.notifications.config;
 
-import java.io.FileNotFoundException;
+import com.fasterxml.jackson.core.JsonParser;
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.json.JsonMapper;
+import com.fasterxml.jackson.dataformat.javaprop.JavaPropsMapper;
+import com.fasterxml.jackson.dataformat.javaprop.JavaPropsSchema;
 
-import guru.qa.allure.notifications.exceptions.ConfigNotFoundException;
-import guru.qa.allure.notifications.json.JSON;
+import java.io.FileReader;
+import java.io.IOException;
+import java.util.Map;
 
 /**
  * @author kadehar
@@ -11,26 +16,43 @@ import guru.qa.allure.notifications.json.JSON;
  * Utility class for config creation.
  */
 public class ApplicationConfig {
-    private static final ApplicationConfig INSTANCE = new ApplicationConfig();
     private static final String CONFIG_FILE_PROPERTY_NAME = "configFile";
-    private final String configFile = System.getProperty(CONFIG_FILE_PROPERTY_NAME);
 
-    private ApplicationConfig() {
+    private final String configFile;
+
+    public ApplicationConfig(String configFile) {
+        this.configFile = configFile;
     }
 
-    public static ApplicationConfig newInstance() {
-        return INSTANCE;
+    public ApplicationConfig() {
+        this(getConfigFile());
     }
 
-    public Config readConfig() {
+    public Config readConfig() throws IOException {
+        Config config = new JsonMapper().readValue(new FileReader(configFile), Config.class);
+        mergeWithSystemProperties(config);
+        return config;
+    }
+
+    private static void mergeWithSystemProperties(Config config) throws IOException {
+        JavaPropsMapper javaPropsMapper = JavaPropsMapper.builder()
+                .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
+                .build();
+
+        try (JsonParser parser = javaPropsMapper.getFactory().createParser((Map<?, ?>) System.getProperties())) {
+            parser.setSchema(JavaPropsSchema.emptySchema().withPrefix("notifications"));
+            javaPropsMapper.readerForUpdating(config).readValue(parser, Config.class);
+        }
+    }
+
+    private static String getConfigFile() {
+        String configFile = System.getProperty(CONFIG_FILE_PROPERTY_NAME);
+
         if (configFile == null || configFile.isEmpty()) {
             throw new IllegalArgumentException("'" + CONFIG_FILE_PROPERTY_NAME + "' property is not set or empty: "
                     + configFile);
         }
-        try {
-            return new JSON().parseFile(configFile, Config.class);
-        } catch (FileNotFoundException e) {
-            throw new ConfigNotFoundException("Unable to find config file at path " + configFile);
-        }
+
+        return configFile;
     }
 }
