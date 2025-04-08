@@ -268,7 +268,7 @@ java "-DconfigFile=notifications/config.json" -jar ../allure-notifications-4.2.1
 <a name="config">
 
 ## Особенности заполнения файла config.json в зависимости от выбранного мессенджера
-+ <a href="https://github.com/qa-guru/knowledge-base/wiki/11.-Телеграм-бот.-Отправляем-уведомления-о-результатах-прохождения-тестов" target="_blank">Telegram config</a>
++ <a href="https://github.com/qa-guru/knowledge-base/wiki/12.-Телеграм-бот.-Отправляем-уведомления-о-результатах-прохождения-тестов" target="_blank">Telegram config</a>
   + Параметры блока `telegram`:
     <ul>
       <li><code>topic</code> - необязательный параметр, определяющий уникальный идентификатор топика чата, в который
