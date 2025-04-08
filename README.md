@@ -225,6 +225,7 @@ java "-DconfigFile=notifications/config.json" -jar notifications/allure-notifica
 
 В результате будет сформировано оповещение с результатами прохождения автотестов и направлено в выбранный мессенджер.
 
+
 <a name="Jenkins">
  
 ### Для запуска из Jenkins
