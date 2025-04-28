@@ -34,7 +34,7 @@ subprojects {
 }
 
 ext {
-    lombokVersion = '1.18.34'
+    lombokVersion = '1.18.38'
     slf4jVersion = '2.0.16'
     unirestVersion = '3.14.5'
 }
