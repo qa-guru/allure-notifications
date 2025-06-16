@@ -20,7 +20,7 @@ dependencies {
 
     testImplementation('org.junit.jupiter:junit-jupiter:5.13.1')
     testRuntimeOnly('org.junit.platform:junit-platform-launcher')
-    testImplementation('net.bytebuddy:byte-buddy:1.17.5')
+    testImplementation('net.bytebuddy:byte-buddy:1.17.6')
     testImplementation platform(group: 'org.mockito', name: 'mockito-bom', version: '4.11.0')
     testImplementation(group: 'org.mockito', name: 'mockito-junit-jupiter')
     testImplementation(group: 'org.mockito', name: 'mockito-inline')
