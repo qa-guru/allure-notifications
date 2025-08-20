@@ -16,7 +16,7 @@ dependencies {
     implementation(group: 'org.apache.logging.log4j', name: 'log4j-slf4j2-impl')
 }
 
-configurations.all {
+configurations.configureEach {
     exclude module: 'commons-logging' // Use jcl-over-slf4j bridge instead
 }
 
