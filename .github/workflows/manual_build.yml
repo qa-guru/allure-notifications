@@ -23,7 +23,10 @@ jobs:
         uses: actions/setup-java@v4
         with:
           distribution: 'temurin'
-          java-version: 8
+           # Gradle requires JVM 17+ to run
+          java-version: |
+              17
+              8
 
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v4
