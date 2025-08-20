@@ -35,8 +35,7 @@ class CliqClientTest {
             "in,cliq.zoho.in",
             "au,cliq.zoho.com.au",
             "jp,cliq.zoho.jp",
-            "ca,cliq.zohocloud.ca",
-            "unknown,cliq.zoho.eu"  // Default fallback
+            "ca,cliq.zohocloud.ca"
     })
     void testDataCenterUrlGeneration(String dataCenter, String expectedDomain) throws ReflectiveOperationException {
         Mockito.when(cliq.getDataCenter()).thenReturn(dataCenter);
@@ -48,6 +47,23 @@ class CliqClientTest {
 
         String expectedUrl = String.format("https://%s/api/v2/channelsbyname/testchat/message?zapikey=testtoken", expectedDomain);
         assertEquals(expectedUrl, url);
+    }
+    
+    @Test
+    void testUnsupportedDataCenterThrowsException() {
+        Cliq testCliq = new Cliq();
+        testCliq.setDataCenter("unknown");
+        testCliq.setChat("testchat");
+        testCliq.setToken("testtoken");
+        testCliq.setBot("");
+        
+        CliqClient testClient = new CliqClient(testCliq);
+
+        Exception exception = assertThrows(Exception.class, () -> 
+            MethodUtils.invokeMethod(testClient, true, "generateUrl", "message"));
+
+        assertInstanceOf(IllegalArgumentException.class, exception.getCause());
+        assertTrue(exception.getCause().getMessage().contains("Unsupported data center: unknown"));
     }
 
     @Test
