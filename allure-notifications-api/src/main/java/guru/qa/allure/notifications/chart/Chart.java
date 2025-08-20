@@ -39,7 +39,7 @@ public class Chart {
                 BufferedImage logo = ImageIO.read(new File(base.getLogo()));
                 chartImage.getGraphics().drawImage(logo, 3, 3, null);
             } catch (Exception e) {
-                log.warn("Logo file isn't existed: " + base.getLogo());
+                log.warn("Logo file does not exist: {}", base.getLogo());
             }
         }
 
