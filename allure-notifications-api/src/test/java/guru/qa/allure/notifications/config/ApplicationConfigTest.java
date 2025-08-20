@@ -82,7 +82,6 @@ class ApplicationConfigTest {
     @SetSystemProperty(key = "notifications.telegram.topic", value = "topicOverride")
     @SetSystemProperty(key = "notifications.telegram.replyTo", value = "replyToOverride")
     @SetSystemProperty(key = "notifications.telegram.templatePath", value = "templatePathOverride")
-    @SetSystemProperty(key = "notifications.skype.appId", value = "appIdOverride")
     void propertiesAreOverloadedTest(String configFilePath) throws IOException {
         Config config = new ApplicationConfig(configFilePath).readConfig();
 
@@ -107,9 +106,7 @@ class ApplicationConfigTest {
                 () -> assertEquals("chatOverride", config.getTelegram().getChat()),
                 () -> assertEquals("topicOverride", config.getTelegram().getTopic()),
                 () -> assertEquals("replyToOverride", config.getTelegram().getReplyTo()),
-                () -> assertEquals("templatePathOverride", config.getTelegram().getTemplatePath()),
-
-                () -> assertEquals("appIdOverride", config.getSkype().getAppId())
+                () -> assertEquals("templatePathOverride", config.getTelegram().getTemplatePath())
         );
     }
 }

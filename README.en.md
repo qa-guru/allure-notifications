@@ -1,7 +1,7 @@
 [![ru](https://img.shields.io/badge/lang-ru-red.svg)](https://github.com/qa-guru/allure-notifications/blob/master/README.md)
 
 # Allure notifications
-**Allure notifications** is the library that allows to send automatic notifications about the results of automated tests to your preferred messenger (Telegram, Slack, Skype, Email, Mattermost, Discord, Loop, Rocket.Chat).
+**Allure notifications** is the library that allows to send automatic notifications about the results of automated tests to your preferred messenger (Telegram, Slack, ~~Skype~~, Email, Mattermost, Discord, Loop, Rocket.Chat, Zoho Cliq).
 
 Notification languages: 🇬🇧 🇫🇷 🇷🇺 🇺🇦 🇧🇾 🇨🇳
 
@@ -89,15 +89,6 @@ Example of a notification in Telegram
     "user_id": "",
     "channel": "",
     "templatePath": "/templates/rocket.ftl"
-   },
-  "skype": {
-    "appId": "",
-    "appSecret": "",
-    "serviceUrl": "",
-    "conversationId": "",
-    "botId": "",
-    "botName": "",
-    "templatePath": "/templates/markdown.ftl"
   },
   "mail": {
     "host": "",
