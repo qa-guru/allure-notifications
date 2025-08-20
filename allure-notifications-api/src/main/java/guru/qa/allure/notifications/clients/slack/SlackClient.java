@@ -1,7 +1,9 @@
 package guru.qa.allure.notifications.clients.slack;
 
 import guru.qa.allure.notifications.clients.Notifier;
+import guru.qa.allure.notifications.http.HttpClientFactory;
 import guru.qa.allure.notifications.config.slack.Slack;
+import guru.qa.allure.notifications.config.proxy.Proxy;
 import guru.qa.allure.notifications.exceptions.MessageBuildException;
 import guru.qa.allure.notifications.exceptions.MessageSendException;
 import guru.qa.allure.notifications.exceptions.MessagingException;
@@ -19,7 +21,6 @@ import org.apache.http.entity.ContentType;
 import org.apache.http.entity.mime.HttpMultipartMode;
 import org.apache.http.entity.mime.MultipartEntityBuilder;
 import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.impl.client.HttpClients;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.EntityUtils;
 
@@ -30,15 +31,17 @@ import java.util.List;
 
 public class SlackClient implements Notifier {
     private final Slack slack;
+    private final Proxy proxy;
 
-    public SlackClient(Slack slack) {
+    public SlackClient(Slack slack, Proxy proxy) {
         this.slack = slack;
+        this.proxy = proxy;
     }
 
     @Override
     public void sendText(MessageData messageData) throws MessagingException {
         String errorDescription = "Failed to post message to Slack";
-        try (CloseableHttpClient client = HttpClients.createDefault()) {
+        try (CloseableHttpClient client = HttpClientFactory.createHttpClient(proxy)) {
             List<NameValuePair> postMessageFormData = new ArrayList<>();
             postMessageFormData.add(new BasicNameValuePair("channel", slack.getChat()));
             postMessageFormData.add(new BasicNameValuePair("text", createMessage(messageData)));
@@ -51,7 +54,7 @@ public class SlackClient implements Notifier {
 
     @Override
     public void sendPhoto(MessageData messageData, byte[] chartImage) throws MessagingException {
-        try (CloseableHttpClient client = HttpClients.createDefault()) {
+        try (CloseableHttpClient client = HttpClientFactory.createHttpClient(proxy)) {
             HttpUriRequest uploadUrlRequest = RequestBuilder
                     .get("https://slack.com/api/files.getUploadURLExternal")
                     .addParameter("filename", "chart.png")

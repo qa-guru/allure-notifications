@@ -1,7 +1,9 @@
 package guru.qa.allure.notifications.clients.cliq;
 
 import guru.qa.allure.notifications.clients.Notifier;
+import guru.qa.allure.notifications.http.HttpClientFactory;
 import guru.qa.allure.notifications.config.cliq.Cliq;
+import guru.qa.allure.notifications.config.proxy.Proxy;
 import guru.qa.allure.notifications.exceptions.MessageSendException;
 import guru.qa.allure.notifications.exceptions.MessagingException;
 import guru.qa.allure.notifications.template.MessageTemplate;
@@ -16,7 +18,6 @@ import org.apache.http.entity.ContentType;
 import org.apache.http.entity.mime.HttpMultipartMode;
 import org.apache.http.entity.mime.MultipartEntityBuilder;
 import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.impl.client.HttpClients;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.EntityUtils;
 import kong.unirest.json.JSONArray;
@@ -29,11 +30,12 @@ import java.util.List;
 import java.util.Map;
 
 public class CliqClient implements Notifier {
-    
+
     private static final Map<String, String> DATA_CENTER_DOMAINS = new HashMap<>();
-    
+
     private final Cliq cliq;
-    
+    private final Proxy proxy;
+
     static {
         DATA_CENTER_DOMAINS.put("com", "cliq.zoho.com");
         DATA_CENTER_DOMAINS.put("eu", "cliq.zoho.eu");
@@ -43,8 +45,9 @@ public class CliqClient implements Notifier {
         DATA_CENTER_DOMAINS.put("ca", "cliq.zohocloud.ca");
     }
 
-    public CliqClient(Cliq cliq) {
+    public CliqClient(Cliq cliq, Proxy proxy) {
         this.cliq = cliq;
+        this.proxy = proxy;
     }
 
     @Override
@@ -110,19 +113,19 @@ public class CliqClient implements Notifier {
     }
 
     private void executeRequest(HttpUriRequest request, String errorDescription) throws MessageSendException {
-        try (CloseableHttpClient client = HttpClients.createDefault();
-             CloseableHttpResponse responseBody = client.execute(request)) {
+        try (CloseableHttpClient client = HttpClientFactory.createHttpClient(proxy);
+            CloseableHttpResponse responseBody = client.execute(request)) {
             int statusCode = responseBody.getStatusLine().getStatusCode();
-            
+
             if (statusCode == HttpStatus.SC_OK || statusCode == HttpStatus.SC_NO_CONTENT) {
                 return;
             }
-            
+
             String responseAsString = "";
             if (responseBody.getEntity() != null) {
                 responseAsString = EntityUtils.toString(responseBody.getEntity());
             }
-            
+
             throw new MessageSendException(
                     String.format("%s. HTTP status code: %d, HTTP response: %s", errorDescription, statusCode,
                             responseAsString));

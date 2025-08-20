@@ -21,7 +21,7 @@ public class ClientFactory {
             notifiers.add(new TelegramClient(config.getTelegram()));
         }
         if (config.getSlack() != null) {
-            notifiers.add(new SlackClient(config.getSlack()));
+            notifiers.add(new SlackClient(config.getSlack(), config.getProxy()));
         }
         if (config.getMail() != null) {
             notifiers.add(new Email(config.getMail()));
@@ -39,7 +39,7 @@ public class ClientFactory {
             notifiers.add(new RocketChatClient(config.getRocketChat()));
         }
         if (config.getCliq() != null) {
-            notifiers.add(new CliqClient(config.getCliq()));
+            notifiers.add(new CliqClient(config.getCliq(), config.getProxy()));
         }
         return notifiers;
     }

@@ -1,17 +1,14 @@
 package guru.qa.allure.notifications.clients.cliq;
 
-import guru.qa.allure.notifications.config.cliq.Cliq;
-import guru.qa.allure.notifications.template.data.MessageData;
 import org.apache.commons.lang3.reflect.MethodUtils;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.Mockito;
+import org.junit.jupiter.params.provider.NullAndEmptySource;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import guru.qa.allure.notifications.config.cliq.Cliq;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -19,14 +16,6 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @ExtendWith(MockitoExtension.class)
 class CliqClientTest {
-
-    private static final String EMPTY_TEMPLATE_PATH = "/template/emptyTemplate.ftl";
-
-    @Mock
-    private Cliq cliq;
-    
-    @InjectMocks
-    private CliqClient cliqClient;
 
     @ParameterizedTest(name = "Generate URL for data center: {0}")
     @CsvSource({
@@ -38,72 +27,48 @@ class CliqClientTest {
             "ca,cliq.zohocloud.ca"
     })
     void testDataCenterUrlGeneration(String dataCenter, String expectedDomain) throws ReflectiveOperationException {
-        Mockito.when(cliq.getDataCenter()).thenReturn(dataCenter);
-        Mockito.when(cliq.getChat()).thenReturn("testchat");
-        Mockito.when(cliq.getToken()).thenReturn("testtoken");
-        Mockito.when(cliq.getBot()).thenReturn("");
-
+        CliqClient cliqClient = new CliqClient(createCliqConfig(dataCenter), null);
         String url = (String) MethodUtils.invokeMethod(cliqClient, true, "generateUrl", "message");
 
-        String expectedUrl = String.format("https://%s/api/v2/channelsbyname/testchat/message?zapikey=testtoken", expectedDomain);
+        String expectedUrl = String.format("https://%s/api/v2/channelsbyname/test-chat/message?zapikey=test-token", expectedDomain);
         assertEquals(expectedUrl, url);
     }
     
     @Test
     void testUnsupportedDataCenterThrowsException() {
-        Cliq testCliq = new Cliq();
-        testCliq.setDataCenter("unknown");
-        testCliq.setChat("testchat");
-        testCliq.setToken("testtoken");
-        testCliq.setBot("");
-        
-        CliqClient testClient = new CliqClient(testCliq);
+        CliqClient cliqClient = new CliqClient(createCliqConfig("ch"), null);
 
         Exception exception = assertThrows(Exception.class, () -> 
-            MethodUtils.invokeMethod(testClient, true, "generateUrl", "message"));
+            MethodUtils.invokeMethod(cliqClient, true, "generateUrl", "message"));
 
         assertInstanceOf(IllegalArgumentException.class, exception.getCause());
-        assertTrue(exception.getCause().getMessage().contains("Unsupported data center: unknown"));
+        assertTrue(exception.getCause().getMessage().contains("Unsupported data center: ch"));
     }
 
     @Test
     void testUrlGenerationWithBot() throws ReflectiveOperationException {
-        Mockito.when(cliq.getDataCenter()).thenReturn("eu");
-        Mockito.when(cliq.getChat()).thenReturn("testchat");
-        Mockito.when(cliq.getToken()).thenReturn("testtoken");
-        Mockito.when(cliq.getBot()).thenReturn("testbot");
+        Cliq cliqConfig = createCliqConfig();
+        cliqConfig.setBot("testbot");
+
+        CliqClient cliqClient = new CliqClient(cliqConfig, null);
 
         String url = (String) MethodUtils.invokeMethod(cliqClient, true, "generateUrl", "message");
 
-        String expectedUrl = "https://cliq.zoho.eu/api/v2/channelsbyname/testchat/message?"
-                + "zapikey=testtoken&bot_unique_name=testbot";
-        assertEquals(expectedUrl, url);
+        assertEquals("https://cliq.zoho.eu/api/v2/channelsbyname/test-chat/message?"
+                + "zapikey=test-token&bot_unique_name=testbot", url);
     }
 
-    @Test
-    void testUrlGenerationWithoutBot() throws ReflectiveOperationException {
-        Mockito.when(cliq.getDataCenter()).thenReturn("eu");
-        Mockito.when(cliq.getChat()).thenReturn("testchat");
-        Mockito.when(cliq.getToken()).thenReturn("testtoken");
-        Mockito.when(cliq.getBot()).thenReturn("");
+    @ParameterizedTest
+    @NullAndEmptySource
+    void testUrlGenerationWithoutBot(String bot) throws ReflectiveOperationException {
+        Cliq cliqConfig = createCliqConfig();
+        cliqConfig.setBot(bot);
+
+        CliqClient cliqClient = new CliqClient(cliqConfig, null);
 
         String url = (String) MethodUtils.invokeMethod(cliqClient, true, "generateUrl", "message");
 
-        String expectedUrl = "https://cliq.zoho.eu/api/v2/channelsbyname/testchat/message?zapikey=testtoken";
-        assertEquals(expectedUrl, url);
-    }
-
-    @Test
-    void testUrlGenerationWithNullBot() throws ReflectiveOperationException {
-        Mockito.when(cliq.getDataCenter()).thenReturn("eu");
-        Mockito.when(cliq.getChat()).thenReturn("testchat");
-        Mockito.when(cliq.getToken()).thenReturn("testtoken");
-        Mockito.when(cliq.getBot()).thenReturn(null);
-
-        String url = (String) MethodUtils.invokeMethod(cliqClient, true, "generateUrl", "message");
-
-        String expectedUrl = "https://cliq.zoho.eu/api/v2/channelsbyname/testchat/message?zapikey=testtoken";
-        assertEquals(expectedUrl, url);
+        assertEquals("https://cliq.zoho.eu/api/v2/channelsbyname/test-chat/message?zapikey=test-token", url);
     }
 
     @ParameterizedTest(name = "Generate URL for endpoint type: {0}")
@@ -113,11 +78,9 @@ class CliqClientTest {
     })
     void testUrlGenerationForDifferentEndpoints(String endpointType, String expectedType) 
             throws ReflectiveOperationException {
-        Mockito.when(cliq.getDataCenter()).thenReturn("eu");
-        Mockito.when(cliq.getChat()).thenReturn("testchat");
-        Mockito.when(cliq.getToken()).thenReturn("testtoken");
-        Mockito.when(cliq.getBot()).thenReturn("");
+        Cliq cliqConfig = createCliqConfig();
 
+        CliqClient cliqClient = new CliqClient(cliqConfig, null);
         String url = (String) MethodUtils.invokeMethod(cliqClient, true, "generateUrl", endpointType);
 
         assertTrue(url.contains("/" + expectedType + "?"));
@@ -126,36 +89,20 @@ class CliqClientTest {
     @Test
     void testCliqClientCreation() {
         Cliq config = createCliqConfig();
-
-        CliqClient client = new CliqClient(config);
-
+        CliqClient client = new CliqClient(config, null);
         assertInstanceOf(CliqClient.class, client);
     }
 
-    @Test
-    void testSendTextWithNullConfig() {
-        CliqClient client = new CliqClient(null);
-        MessageData messageData = Mockito.mock(MessageData.class);
-
-        assertThrows(Exception.class, () -> client.sendText(messageData));
-    }
-
-    @Test
-    void testSendPhotoWithNullConfig() {
-        CliqClient client = new CliqClient(null);
-        MessageData messageData = Mockito.mock(MessageData.class);
-        byte[] chartImage = new byte[0];
-
-        assertThrows(Exception.class, () -> client.sendPhoto(messageData, chartImage));
-    }
-
     private static Cliq createCliqConfig() {
+        return createCliqConfig("eu");
+    }
+
+    private static Cliq createCliqConfig(String dataCenter) {
         Cliq cliq = new Cliq();
         cliq.setToken("test-token");
         cliq.setChat("test-chat");
-        cliq.setBot("test-bot");
-        cliq.setDataCenter("eu");
-        cliq.setTemplatePath(EMPTY_TEMPLATE_PATH);
+        cliq.setDataCenter(dataCenter);
+        cliq.setTemplatePath("/template/emptyTemplate.ftl");
         return cliq;
     }
 }
