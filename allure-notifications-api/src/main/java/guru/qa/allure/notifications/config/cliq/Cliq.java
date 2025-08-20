@@ -3,8 +3,6 @@ package guru.qa.allure.notifications.config.cliq;
 import lombok.Data;
 
 /**
- * @author kadehar
- * @since 4.0
  * Model class representing Zoho Cliq settings.
  */
 @Data
