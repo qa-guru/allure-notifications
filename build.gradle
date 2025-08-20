@@ -10,7 +10,7 @@ subprojects {
         sourceCompatibility = 1.8
     }
 
-    tasks.withType(JavaCompile) {
+    tasks.withType(JavaCompile).configureEach {
         options.encoding = 'UTF-8'
     }
 
@@ -24,7 +24,7 @@ subprojects {
             showViolations = true
         }
 
-        tasks.withType(Checkstyle) {
+        tasks.withType(Checkstyle).configureEach {
             reports {
                 xml.required = false
                 html.required = false
