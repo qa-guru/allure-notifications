@@ -120,6 +120,13 @@ Example of a notification in Telegram
     "webhookUrl": "",
     "templatePath": "/templates/markdown.ftl"
   },
+  "cliq": {
+    "token": "",
+    "chat": "",
+    "bot": "",
+    "dataCenter": "eu",
+    "templatePath": "/templates/markdown.ftl"
+  },
   "proxy": {
     "host": "",
     "port": 0,
@@ -213,4 +220,31 @@ Note:
         to find out how to get the parameter value.
       </li>
     </ul>
+  </details>
++ <details>
+    <summary>Zoho Cliq config</summary>
+    To enable Zoho Cliq notifications, you need to provide the following configuration parameters:
+    <ul>
+      <li><code>token</code> - Your Zoho Cliq API token (zapikey). To get this token:
+        <ol>
+          <li>Go to your Zoho Cliq account settings</li>
+          <li>Navigate to "Bots & Tools" → "Bot"</li>
+          <li>Create a new bot or use an existing one</li>
+          <li>Copy the "Webhook URL" token parameter (zapikey)</li>
+        </ol>
+      </li>
+      <li><code>chat</code> - The name of the channel where you want to send notifications</li>
+      <li><code>bot</code> - (Optional) The unique name of your bot if you want to send messages as a specific bot</li>
+      <li><code>dataCenter</code> - The Zoho data center region. Supported values:
+        <ul>
+          <li><code>com</code> - United States (cliq.zoho.com)</li>
+          <li><code>eu</code> - Europe (cliq.zoho.eu) - Default</li>
+          <li><code>in</code> - India (cliq.zoho.in)</li>
+          <li><code>au</code> - Australia (cliq.zoho.com.au)</li>
+          <li><code>jp</code> - Japan (cliq.zoho.jp)</li>
+          <li><code>ca</code> - Canada (cliq.zohocloud.ca)</li>
+        </ul>
+      </li>
+    </ul>
+    For more information about Zoho Cliq API, visit the <a href="https://www.zoho.com/cliq/help/restapi/v2/" target="_blank">official documentation</a>.
   </details>
