@@ -1,6 +1,7 @@
 package guru.qa.allure.notifications.config;
 
 import guru.qa.allure.notifications.config.base.Base;
+import guru.qa.allure.notifications.config.cliq.Cliq;
 import guru.qa.allure.notifications.config.discord.Discord;
 import guru.qa.allure.notifications.config.loop.Loop;
 import guru.qa.allure.notifications.config.mail.Mail;
@@ -28,5 +29,6 @@ public class Config {
     private Discord discord;
     private Loop loop;
     private RocketChat rocketChat;
+    private Cliq cliq;
     private Proxy proxy;
 }
