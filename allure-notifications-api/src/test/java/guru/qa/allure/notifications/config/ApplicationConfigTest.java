@@ -107,6 +107,6 @@ class ApplicationConfigTest {
                 () -> assertEquals("topicOverride", config.getTelegram().getTopic()),
                 () -> assertEquals("replyToOverride", config.getTelegram().getReplyTo()),
                 () -> assertEquals("templatePathOverride", config.getTelegram().getTemplatePath())
-                );
+        );
     }
 }
