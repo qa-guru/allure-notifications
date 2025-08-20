@@ -50,66 +50,68 @@ public class CliqClient implements Notifier {
     @Override
     public void sendText(MessageData messageData) throws MessagingException {
         String errorDescription = "Failed to post message to Zoho Cliq";
-        try (CloseableHttpClient client = HttpClients.createDefault()) {
-            List<NameValuePair> formData = new ArrayList<>();
-            formData.add(new BasicNameValuePair("text", 
-                    MessageTemplate.createMessageFromTemplate(messageData, cliq.getTemplatePath())));
-            
-            executeRequest(client, generateUrl("message"), formData, errorDescription);
-        } catch (IOException e) {
-            throw new MessageSendException(errorDescription, e);
-        }
+        
+        List<NameValuePair> formData = new ArrayList<>();
+        formData.add(new BasicNameValuePair("text", 
+                MessageTemplate.createMessageFromTemplate(messageData, cliq.getTemplatePath())));
+        
+        HttpUriRequest request = RequestBuilder
+                .post(generateUrl("message"))
+                .setEntity(new UrlEncodedFormEntity(formData, StandardCharsets.UTF_8))
+                .build();
+                
+        executeRequest(request, errorDescription);
     }
 
     @Override
     public void sendPhoto(MessageData messageData, byte[] chartImage) throws MessagingException {
         String errorDescription = "Failed to post message with file to Zoho Cliq";
-        try (CloseableHttpClient client = HttpClients.createDefault()) {
-            JSONArray commentsArray = new JSONArray();
-            commentsArray.put(MessageTemplate.createMessageFromTemplate(messageData, cliq.getTemplatePath()));
-            
-            MultipartEntityBuilder entityBuilder = MultipartEntityBuilder.create()
-                    .setMode(HttpMultipartMode.BROWSER_COMPATIBLE)
-                    .addBinaryBody("files", chartImage, ContentType.IMAGE_PNG, "chart.png")
-                    .addTextBody("comments", commentsArray.toString());
-            
-            HttpUriRequest request = RequestBuilder
-                    .post(generateUrl("files"))
-                    .setEntity(entityBuilder.build())
-                    .build();
-                    
-            executeRequest(client, request, errorDescription);
-        } catch (IOException e) {
-            throw new MessageSendException(errorDescription, e);
-        }
+        
+        JSONArray commentsArray = new JSONArray();
+        commentsArray.put(MessageTemplate.createMessageFromTemplate(messageData, cliq.getTemplatePath()));
+        
+        MultipartEntityBuilder entityBuilder = MultipartEntityBuilder.create()
+                .setMode(HttpMultipartMode.BROWSER_COMPATIBLE)
+                .addBinaryBody("files", chartImage, ContentType.IMAGE_PNG, "chart.png")
+                .addTextBody("comments", commentsArray.toString());
+        
+        HttpUriRequest request = RequestBuilder
+                .post(generateUrl("files"))
+                .setEntity(entityBuilder.build())
+                .build();
+                
+        executeRequest(request, errorDescription);
     }
 
     private String generateUrl(String type) {
-        String domain = DATA_CENTER_DOMAINS.getOrDefault(cliq.getDataCenter().toLowerCase(), "cliq.zoho.eu");
-        String url = String.format(
-                "https://%s/api/v2/channelsbyname/%s/%s?zapikey=%s",
-                domain, cliq.getChat(), type, cliq.getToken()
-        );
-        
-        if (cliq.getBot() != null && !cliq.getBot().isEmpty()) {
-            url += "&bot_unique_name=" + cliq.getBot();
+        String dataCenter = cliq.getDataCenter().toLowerCase();
+        if (!DATA_CENTER_DOMAINS.containsKey(dataCenter)) {
+            throw new IllegalArgumentException("Unsupported data center: " + dataCenter + 
+                ". Supported data centers: " + DATA_CENTER_DOMAINS.keySet());
         }
         
-        return url;
+        String domain = DATA_CENTER_DOMAINS.get(dataCenter);
+        
+        StringBuilder urlBuilder = new StringBuilder();
+        urlBuilder.append("https://")
+                  .append(domain)
+                  .append("/api/v2/channelsbyname/")
+                  .append(cliq.getChat())
+                  .append("/")
+                  .append(type)
+                  .append("?zapikey=")
+                  .append(cliq.getToken());
+        
+        if (cliq.getBot() != null && !cliq.getBot().isEmpty()) {
+            urlBuilder.append("&bot_unique_name=").append(cliq.getBot());
+        }
+        
+        return urlBuilder.toString();
     }
 
-    private void executeRequest(CloseableHttpClient client, String uri, List<NameValuePair> formData,
-            String errorDescription) throws MessageSendException {
-        HttpUriRequest request = RequestBuilder
-                .post(uri)
-                .setEntity(new UrlEncodedFormEntity(formData, StandardCharsets.UTF_8))
-                .build();
-        executeRequest(client, request, errorDescription);
-    }
-
-    private void executeRequest(CloseableHttpClient client, HttpUriRequest request, String errorDescription)
-            throws MessageSendException {
-        try (CloseableHttpResponse responseBody = client.execute(request)) {
+    private void executeRequest(HttpUriRequest request, String errorDescription) throws MessageSendException {
+        try (CloseableHttpClient client = HttpClients.createDefault();
+             CloseableHttpResponse responseBody = client.execute(request)) {
             int statusCode = responseBody.getStatusLine().getStatusCode();
             
             if (statusCode == HttpStatus.SC_OK || statusCode == HttpStatus.SC_NO_CONTENT) {
