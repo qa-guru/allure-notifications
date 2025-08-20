@@ -4,6 +4,7 @@ import guru.qa.allure.notifications.clients.rocket.RocketChatClient;
 import java.util.ArrayList;
 import java.util.List;
 
+import guru.qa.allure.notifications.clients.cliq.CliqClient;
 import guru.qa.allure.notifications.clients.discord.DiscordClient;
 import guru.qa.allure.notifications.clients.loop.LoopClient;
 import guru.qa.allure.notifications.clients.mail.Email;
@@ -40,6 +41,9 @@ public class ClientFactory {
         }
         if (config.getRocketChat() != null) {
             notifiers.add(new RocketChatClient(config.getRocketChat()));
+        }
+        if (config.getCliq() != null) {
+            notifiers.add(new CliqClient(config.getCliq()));
         }
         return notifiers;
     }
