@@ -8,7 +8,6 @@ import guru.qa.allure.notifications.config.mail.Mail;
 import guru.qa.allure.notifications.config.mattermost.Mattermost;
 import guru.qa.allure.notifications.config.proxy.Proxy;
 import guru.qa.allure.notifications.config.rocket.RocketChat;
-import guru.qa.allure.notifications.config.skype.Skype;
 import guru.qa.allure.notifications.config.slack.Slack;
 import guru.qa.allure.notifications.config.telegram.Telegram;
 import lombok.Data;
@@ -24,7 +23,6 @@ public class Config {
     private Telegram telegram;
     private Slack slack;
     private Mattermost mattermost;
-    private Skype skype;
     private Mail mail;
     private Discord discord;
     private Loop loop;
