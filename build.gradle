@@ -14,12 +14,12 @@ subprojects {
         options.encoding = 'UTF-8'
     }
 
-    // Checkstyle requires Java 11 starting from 10.0
-    if (JavaVersion.current().isJava11Compatible()) {
+    // Checkstyle requires Java 17 starting from 11.0.0
+    if (JavaVersion.current().isCompatibleWith(JavaVersion.VERSION_17)) {
         apply plugin: 'checkstyle'
 
         checkstyle {
-            toolVersion = '10.21.4'
+            toolVersion = '11.0.0'
             ignoreFailures = false
             showViolations = true
         }
