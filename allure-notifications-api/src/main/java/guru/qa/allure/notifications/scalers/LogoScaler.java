@@ -25,9 +25,9 @@ public class LogoScaler {
     if (logo == null || chart == null) {
       throw new InvalidArgumentException("Logo or chart can't be null!");
     }
-    // 0.23 is a maximal length of logo in % between left edge of image and the top left edge of chart include padding 5px.
+    // 23% is a max width of logo: between left edge of image and the top left edge of chart including 5px padding
     double maxLogoWidth = chart.getWidth() * 0.23;
-    // 0.14 is a maximal height of logo in % between top left edge of chart and a top of image include padding 5px.
+    // 14% is a max height of logo: between top left edge of chart and a top of image including 5px padding
     double maxLogoHeight = chart.getHeight() * 0.14;
     if (logo.getWidth() > maxLogoWidth || logo.getHeight() > maxLogoHeight) {
       log.debug("Calculating scale: width {}, height {}", logo.getWidth(), logo.getHeight());
