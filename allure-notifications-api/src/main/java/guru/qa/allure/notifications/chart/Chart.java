@@ -8,7 +8,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.knowm.xchart.BitmapEncoder;
 import org.knowm.xchart.PieChart;
 
-import java.awt.*;
+import java.awt.Color;
+import java.awt.Image;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;

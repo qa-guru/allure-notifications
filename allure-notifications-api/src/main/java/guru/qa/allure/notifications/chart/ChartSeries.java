@@ -4,7 +4,7 @@ import guru.qa.allure.notifications.model.legend.Legend;
 import guru.qa.allure.notifications.model.summary.Summary;
 import org.knowm.xchart.PieChart;
 
-import java.awt.*;
+import java.awt.Color;
 import java.util.ArrayList;
 import java.util.List;
 

@@ -1,7 +1,14 @@
 package guru.qa.allure.notifications.util;
 
 import guru.qa.allure.notifications.json.JSON;
-import kong.unirest.*;
+import kong.unirest.Body;
+import kong.unirest.Config;
+import kong.unirest.ContentType;
+import kong.unirest.Headers;
+import kong.unirest.HttpRequest;
+import kong.unirest.HttpRequestSummary;
+import kong.unirest.HttpResponse;
+import kong.unirest.Interceptor;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j

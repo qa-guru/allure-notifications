@@ -3,7 +3,7 @@ package guru.qa.allure.notifications.scalers;
 import org.junit.jupiter.api.Test;
 import org.knowm.xchart.PieChart;
 
-import java.awt.*;
+import java.awt.Image;
 import java.awt.image.BufferedImage;
 
 import static java.awt.image.BufferedImage.TYPE_INT_RGB;
