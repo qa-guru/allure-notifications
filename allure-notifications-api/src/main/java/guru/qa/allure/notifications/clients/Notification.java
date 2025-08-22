@@ -54,7 +54,7 @@ public class Notification {
         byte[] chartImage = null;
         if (base.getEnableChart()) {
             Legend legend = json.parseResource("/legend/" + base.getLanguage() + ".json", Legend.class);
-            chartImage = Chart.createChart(base, summary, legend);
+            chartImage = Chart.createChart(base, summary.getStatistic(), legend);
         }
 
         for (Notifier notifier : notifiers) {

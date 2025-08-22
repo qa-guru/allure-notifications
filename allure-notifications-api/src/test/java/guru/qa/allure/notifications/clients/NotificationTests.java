@@ -79,7 +79,7 @@ class NotificationTests {
 
             clientFactoryMock.when(() -> ClientFactory.from(config)).thenReturn(Collections.singletonList(notifier));
             pathsMock.when(() -> Paths.get(ALLURE_PATH, SUITES_PATH)).thenReturn(path);
-            chartMock.when(() -> Chart.createChart(base, SUMMARY, legend)).thenReturn(chartImg);
+            chartMock.when(() -> Chart.createChart(base, SUMMARY.getStatistic(), legend)).thenReturn(chartImg);
 
             Notification.send(config);
 
@@ -87,7 +87,7 @@ class NotificationTests {
             JSON json = jsonUtilsMock.constructed().get(0);
             verify(json).parseResource(PHRASES_PATH, Phrases.class);
             verify(json, times(chartActionsCount)).parseResource(LEGEND_PATH, Legend.class);
-            chartMock.verify(() -> Chart.createChart(base, SUMMARY, legend), times(chartActionsCount));
+            chartMock.verify(() -> Chart.createChart(base, SUMMARY.getStatistic(), legend), times(chartActionsCount));
             filesMock.verify(() -> Files.exists(path));
             filesMock.verify(() -> Files.readAllBytes(path), never());
             verify(notifier, times(chartActionsCount)).sendPhoto(any(MessageData.class), eq(chartImg));
