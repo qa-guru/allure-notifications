@@ -53,8 +53,8 @@ class NotificationTests {
 
     static Stream<Arguments> inputData() {
         return Stream.of(
-                Arguments.of(false, null,         0, 1),
-                Arguments.of(true,  new Legend(), 1, 0)
+            Arguments.of(false, null,         0, 1),
+            Arguments.of(true,  new Legend(), 1, 0)
         );
     }
 
@@ -97,8 +97,8 @@ class NotificationTests {
 
     @ParameterizedTest
     @CsvSource({
-            "true,  1",
-            "false, 0"
+        "true,  1",
+        "false, 0"
     })
     void shouldSendNotificationWithSuitesData(boolean enableSuitesPublishing, int suitesActionsCount)
             throws MessagingException, IOException {

@@ -36,8 +36,8 @@ class MailPropertiesTests {
 
     @ParameterizedTest
     @CsvSource({
-            "SSL,      ssl",
-            "STARTTLS, starttls"
+        "SSL,      ssl",
+        "STARTTLS, starttls"
     })
     void shouldCreateMailPropertiesWithSecurityProtocolSpecified(SecurityProtocol securityProtocol,
             String propertyNamePart) {

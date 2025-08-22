@@ -19,12 +19,12 @@ class CliqClientTest {
 
     @ParameterizedTest(name = "Generate URL for data center: {0}")
     @CsvSource({
-            "com,cliq.zoho.com",
-            "eu,cliq.zoho.eu", 
-            "in,cliq.zoho.in",
-            "au,cliq.zoho.com.au",
-            "jp,cliq.zoho.jp",
-            "ca,cliq.zohocloud.ca"
+        "com,cliq.zoho.com",
+        "eu,cliq.zoho.eu",
+        "in,cliq.zoho.in",
+        "au,cliq.zoho.com.au",
+        "jp,cliq.zoho.jp",
+        "ca,cliq.zohocloud.ca"
     })
     void testDataCenterUrlGeneration(String dataCenter, String expectedDomain) throws ReflectiveOperationException {
         CliqClient cliqClient = new CliqClient(createCliqConfig(dataCenter), null);
@@ -73,8 +73,8 @@ class CliqClientTest {
 
     @ParameterizedTest(name = "Generate URL for endpoint type: {0}")
     @CsvSource({
-            "message,message",
-            "files,files"
+        "message,message",
+        "files,files"
     })
     void testUrlGenerationForDifferentEndpoints(String endpointType, String expectedType) 
             throws ReflectiveOperationException {
