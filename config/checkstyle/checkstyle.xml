@@ -24,6 +24,7 @@
         <property name="fileExtensions" value="java"/>
     </module>
     <module name="TreeWalker">
+        <module name="AvoidStarImport"/>
         <module name="OuterTypeFilename"/>
         <module name="IllegalTokenText">
             <property name="tokens" value="STRING_LITERAL, CHAR_LITERAL"/>

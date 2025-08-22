@@ -4,7 +4,7 @@ import guru.qa.allure.notifications.exceptions.InvalidArgumentException;
 import lombok.extern.slf4j.Slf4j;
 import org.knowm.xchart.PieChart;
 
-import java.awt.*;
+import java.awt.Image;
 import java.awt.image.BufferedImage;
 
 @Slf4j
