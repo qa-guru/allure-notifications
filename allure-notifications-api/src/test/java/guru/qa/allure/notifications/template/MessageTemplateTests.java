@@ -41,10 +41,11 @@ class MessageTemplateTests {
     void shouldValidateGeneratedMessageFromTemplate(String templatePath, String expectedMessagePath)
             throws IOException, URISyntaxException, MessageBuildException {
 
-        Config config = new JSON().parseResource("/data/testConfig.json", Config.class);
-        Summary summary = new JSON().parseResource("/data/testSummary.json", Summary.class);
+        JSON json = new JSON();
+        Config config = json.parseResource("/data/testConfig.json", Config.class);
+        Summary summary = json.parseResource("/data/testSummary.json", Summary.class);
         String suitesSummaryJson = readResource("data/testSuites.json");
-        Phrases phrases = new JSON().parseResource("/phrases/en.json", Phrases.class);
+        Phrases phrases = json.parseResource("/phrases/en.json", Phrases.class);
 
         MessageData messageData = new MessageData(config.getBase(), summary, suitesSummaryJson, phrases);
 

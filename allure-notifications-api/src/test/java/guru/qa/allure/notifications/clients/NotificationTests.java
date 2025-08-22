@@ -46,7 +46,6 @@ class NotificationTests {
     private static final String ALLURE_PATH = "/allure";
 
     private static final Summary SUMMARY = new Summary();
-    private static final Phrases PHRASES = new Phrases();
 
     @Mock private Notifier notifier;
     @Mock private Path path;
@@ -69,7 +68,7 @@ class NotificationTests {
         try (MockedConstruction<JSON> jsonUtilsMock = mockConstruction(JSON.class,
                 (mock, context) -> {
                     when(mock.parseFile(any(File.class), eq(Summary.class))).thenReturn(SUMMARY);
-                    when(mock.parseResource(PHRASES_PATH, Phrases.class)).thenReturn(PHRASES);
+                    when(mock.parseResource(PHRASES_PATH, Phrases.class)).thenCallRealMethod();
                     when(mock.parseResource(LEGEND_PATH, Legend.class)).thenReturn(legend);
                 });
              MockedStatic<ClientFactory> clientFactoryMock = mockStatic(ClientFactory.class);
