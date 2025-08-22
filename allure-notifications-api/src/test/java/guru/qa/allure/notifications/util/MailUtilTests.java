@@ -16,9 +16,9 @@ import jakarta.mail.internet.InternetAddress;
 class MailUtilTests {
     @ParameterizedTest()
     @CsvSource(delimiter = ';', value = {
-            "test@gmail.com;                   1",
-            "test1@gmail.com,test2@gmail.com;  2",
-            "test1@gmail.com, test2@gmail.com; 2"
+        "test@gmail.com;                   1",
+        "test1@gmail.com,test2@gmail.com;  2",
+        "test1@gmail.com, test2@gmail.com; 2"
     })
     void shouldParseRecipients(String recipients, int numberOfMails) {
         InternetAddress[] addresses = MailUtil.recipients(recipients);
