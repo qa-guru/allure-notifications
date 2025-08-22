@@ -3,11 +3,12 @@ package guru.qa.allure.notifications.chart;
 import guru.qa.allure.notifications.exceptions.MessageBuildException;
 import guru.qa.allure.notifications.model.legend.Legend;
 import guru.qa.allure.notifications.model.summary.Summary;
+import guru.qa.allure.notifications.scalers.LogoScaler;
 import lombok.extern.slf4j.Slf4j;
 import org.knowm.xchart.BitmapEncoder;
 import org.knowm.xchart.PieChart;
 
-import java.awt.Color;
+import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -36,7 +37,8 @@ public class Chart {
 
         if (base.getLogo() != null) {
             try {
-                BufferedImage logo = ImageIO.read(new File(base.getLogo()));
+                Image logo = LogoScaler.scaleLogo(
+                    ImageIO.read(new File(base.getLogo())), chart);
                 chartImage.getGraphics().drawImage(logo, 3, 3, null);
             } catch (Exception e) {
                 log.warn("Logo file does not exist: {}", base.getLogo());
