@@ -8,7 +8,7 @@ dependencies {
     implementation('org.slf4j:slf4j-api')
 
     api("com.konghq:unirest-java:${unirestVersion}")
-    implementation('jakarta.mail:jakarta.mail-api:2.1.4')
+    implementation('jakarta.mail:jakarta.mail-api:2.1.5')
     runtimeOnly('org.eclipse.angus:smtp:2.0.4')
     implementation('org.freemarker:freemarker:2.3.34')
     implementation('org.knowm.xchart:xchart:3.8.8')
