@@ -44,6 +44,7 @@ public class MessageData {
             data.put("customData", base.getCustomData());
 
             data.put("time", Formatters.formatDuration(summary.getTime().getDuration(), base.getDurationFormat()));
+            data.put("timeData", summary.getTime());
             data.put("statistic", summary.getStatistic());
 
             data.put("suitesSummaryJson", suitesSummaryJson);

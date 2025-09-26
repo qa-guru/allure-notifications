@@ -12,4 +12,6 @@ import lombok.Getter;
 public class Time {
     @SerializedName("duration")
     private Long duration;
+    @SerializedName("stop")
+    private Long stop;
 }

@@ -1,7 +1,7 @@
 [![en](https://img.shields.io/badge/lang-en-red.svg)](https://github.com/qa-guru/allure-notifications/blob/master/README.en.md)
 
 # Allure notifications
-**Allure notifications** - это библиотека, позволяющая выполнять автоматическое оповещение о результатах прохождения автотестов, которое направляется в нужный вам мессенджер (Telegram, Slack, ~~Skype~~, Email, Mattermost, Discord, Loop, Rocket.Chat, Zoho Cliq).
+**Allure notifications** - это библиотека, позволяющая выполнять автоматическое оповещение о результатах прохождения автотестов, которое направляется в нужный вам мессенджер (Telegram, Slack, ~~Skype~~, Email, Mattermost, Discord, Loop, Rocket.Chat, Zoho Cliq) или TSDB InfluxDB.
 
 Languages: 🇬🇧 🇫🇷 🇷🇺 🇺🇦 🇧🇾 🇨🇳
  
@@ -141,6 +141,18 @@ Languages: 🇬🇧 🇫🇷 🇷🇺 🇺🇦 🇧🇾 🇨🇳
     "port": 0,
     "username": "",
     "password": ""
+  },
+  "influxdb": {
+    "url": "",
+    "org": "",
+    "bucket": "",
+    "token": "",
+    "measurement": "",
+    "tags": {
+      "tag1": "val1",
+      "tag2": "val2",
+      "tag3": "val3"
+    }
   }
 }
 ```
@@ -350,4 +362,19 @@ java "-DconfigFile=notifications/config.json" -jar ../allure-notifications-4.2.1
       </li>
     </ul>
     Для получения дополнительной информации об API Zoho Cliq посетите <a href="https://www.zoho.com/cliq/help/restapi/v2/" target="_blank">официальную документацию</a>.
+  </details>
++ <details>
+    <summary>Influxdb config</summary>
+    Для включения отправки в InfluxDB необходимо предоставить следующие параметры конфигурации:
+    <ul>
+      <li><code>enabled</code> - Признак отправки в InfluxDB</li>
+      <li><code>url</code> - адрес инстанса InfluxDB</li>
+      <li><code>org</code> - имя организации в InfluxDB</li>
+      <li><code>token</code> - Ваш API токен в InfluxDB</li>
+      <li><code>bucket</code> - Имя корзины (InfluxDB2) / базы данных (InfluxDB3)</li>
+      <li><code>measurement</code> - имя метрики (InfluxDB2) / таблицы (InfluxDB3)</li>
+      <li><code>tags</code> - набор тегов метрики</li>
+    </ul>
+    Fields, которые отправляются в InfluxDB, включают поля из класса Statistic.
+    Timestamp берется из поля stop класса Time.
   </details>
