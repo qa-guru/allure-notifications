@@ -13,7 +13,7 @@ dependencies {
     implementation('org.freemarker:freemarker:2.3.34')
     implementation('org.knowm.xchart:xchart:3.8.8')
     implementation('com.jayway.jsonpath:json-path:2.9.0')
-    implementation('org.apache.commons:commons-lang3:3.18.0')
+    implementation('org.apache.commons:commons-lang3:3.19.0')
     implementation platform('com.fasterxml.jackson:jackson-bom:2.20.0')
     implementation('com.fasterxml.jackson.core:jackson-databind')
     implementation('com.fasterxml.jackson.dataformat:jackson-dataformat-properties')
