@@ -18,7 +18,7 @@ dependencies {
     implementation('com.fasterxml.jackson.core:jackson-databind')
     implementation('com.fasterxml.jackson.dataformat:jackson-dataformat-properties')
 
-    testImplementation('org.junit.jupiter:junit-jupiter:5.13.4')
+    testImplementation('org.junit.jupiter:junit-jupiter:6.0.0')
     testRuntimeOnly('org.junit.platform:junit-platform-launcher')
     testImplementation('net.bytebuddy:byte-buddy:1.17.8')
     testImplementation platform(group: 'org.mockito', name: 'mockito-bom', version: '4.11.0')
