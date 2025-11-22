@@ -18,6 +18,8 @@ dependencies {
     implementation('com.fasterxml.jackson.core:jackson-databind')
     implementation('com.fasterxml.jackson.dataformat:jackson-dataformat-properties')
 
+    implementation('com.influxdb:influxdb-client-java:7.3.0')
+
     testImplementation('org.junit.jupiter:junit-jupiter:5.13.4')
     testRuntimeOnly('org.junit.platform:junit-platform-launcher')
     testImplementation('net.bytebuddy:byte-buddy:1.17.8')
