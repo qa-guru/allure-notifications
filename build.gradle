@@ -19,7 +19,7 @@ subprojects {
         apply plugin: 'checkstyle'
 
         checkstyle {
-            toolVersion = '13.2.0'
+            toolVersion = libs.versions.checkstyle.get()
             ignoreFailures = false
             showViolations = true
         }
@@ -31,10 +31,4 @@ subprojects {
             }
         }
     }
-}
-
-ext {
-    lombokVersion = '1.18.38'
-    slf4jVersion = '2.0.16'
-    unirestVersion = '3.14.5'
 }

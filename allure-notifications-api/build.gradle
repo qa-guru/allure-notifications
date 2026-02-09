@@ -1,33 +1,33 @@
 project.description = 'Library for sending notifications about autotest results (API only)'
 
 dependencies {
-    annotationProcessor(group: 'org.projectlombok', name: 'lombok', version: lombokVersion)
-    compileOnly(group: 'org.projectlombok', name: 'lombok', version: lombokVersion)
+    annotationProcessor(libs.lombok)
+    compileOnly(libs.lombok)
 
-    implementation platform(group: 'org.slf4j', name: 'slf4j-bom', version: slf4jVersion)
-    implementation('org.slf4j:slf4j-api')
+    implementation platform(libs.slf4j.bom)
+    implementation(libs.slf4j.api)
 
-    api("com.konghq:unirest-java:${unirestVersion}")
-    implementation('jakarta.mail:jakarta.mail-api:2.1.5')
-    runtimeOnly('org.eclipse.angus:smtp:2.0.5')
-    implementation('org.freemarker:freemarker:2.3.34')
-    implementation('org.knowm.xchart:xchart:3.8.8')
-    implementation('com.jayway.jsonpath:json-path:2.10.0')
-    implementation('org.apache.commons:commons-lang3:3.20.0')
-    implementation platform('com.fasterxml.jackson:jackson-bom:2.21.0')
-    implementation('com.fasterxml.jackson.core:jackson-databind')
-    implementation('com.fasterxml.jackson.dataformat:jackson-dataformat-properties')
+    api(libs.unirest)
+    implementation(libs.jakarta.mail.api)
+    runtimeOnly(libs.angus.smtp)
+    implementation(libs.freemarker)
+    implementation(libs.xchart)
+    implementation(libs.json.path)
+    implementation(libs.commons.lang3)
+    implementation platform(libs.jackson.bom)
+    implementation(libs.jackson.databind)
+    implementation(libs.jackson.dataformat.properties)
 
-    testImplementation('org.junit.jupiter:junit-jupiter:5.14.2')
-    testRuntimeOnly('org.junit.platform:junit-platform-launcher')
-    testImplementation('net.bytebuddy:byte-buddy:1.18.4')
-    testImplementation platform(group: 'org.mockito', name: 'mockito-bom', version: '4.11.0')
-    testImplementation(group: 'org.mockito', name: 'mockito-junit-jupiter')
-    testImplementation(group: 'org.mockito', name: 'mockito-inline')
-    testImplementation "com.konghq:unirest-mocks:${unirestVersion}"
+    testImplementation(libs.junit.jupiter)
+    testRuntimeOnly(libs.junit.platform.launcher)
+    testImplementation(libs.byte.buddy)
+    testImplementation platform(libs.mockito.bom)
+    testImplementation(libs.mockito.junit.jupiter)
+    testImplementation(libs.mockito.inline)
+    testImplementation(libs.unirest.mocks)
 
-    testImplementation('org.junit-pioneer:junit-pioneer:1.9.1')
-    testImplementation('net.javacrumbs.json-unit:json-unit:2.39.0')
+    testImplementation(libs.junit.pioneer)
+    testImplementation(libs.json.unit)
 }
 
 tasks.withType(Test).configureEach {
