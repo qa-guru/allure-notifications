@@ -1,0 +1,49 @@
+[versions]
+checkstyle = "13.2.0"
+commons-lang3 = "3.20.0"
+freemarker = "2.3.34"
+jackson = "2.21.0"
+jakarta-mail = "2.1.5"
+json-path = "2.10.0"
+json-unit = "2.39.0"
+junit-jupiter = "5.14.2"
+junit-pioneer = "1.9.1"
+log4j = "2.25.3"
+lombok = "1.18.38"
+mockito = "4.11.0"
+slf4j = "2.0.16"
+unirest = "3.14.5"
+xchart = "3.8.8"
+angus-smtp = "2.0.5"
+byte-buddy = "1.18.4"
+
+[libraries]
+angus-smtp = { module = "org.eclipse.angus:smtp", version.ref = "angus-smtp" }
+byte-buddy = { module = "net.bytebuddy:byte-buddy", version.ref = "byte-buddy" }
+commons-lang3 = { module = "org.apache.commons:commons-lang3", version.ref = "commons-lang3" }
+freemarker = { module = "org.freemarker:freemarker", version.ref = "freemarker" }
+jackson-bom = { module = "com.fasterxml.jackson:jackson-bom", version.ref = "jackson" }
+jackson-databind = { module = "com.fasterxml.jackson.core:jackson-databind" }
+jackson-dataformat-properties = { module = "com.fasterxml.jackson.dataformat:jackson-dataformat-properties" }
+jakarta-mail-api = { module = "jakarta.mail:jakarta.mail-api", version.ref = "jakarta-mail" }
+json-path = { module = "com.jayway.jsonpath:json-path", version.ref = "json-path" }
+json-unit = { module = "net.javacrumbs.json-unit:json-unit", version.ref = "json-unit" }
+junit-jupiter = { module = "org.junit.jupiter:junit-jupiter", version.ref = "junit-jupiter" }
+junit-pioneer = { module = "org.junit-pioneer:junit-pioneer", version.ref = "junit-pioneer" }
+junit-platform-launcher = { module = "org.junit.platform:junit-platform-launcher" }
+log4j-bom = { module = "org.apache.logging.log4j:log4j-bom", version.ref = "log4j" }
+log4j-api = { module = "org.apache.logging.log4j:log4j-api" }
+log4j-core = { module = "org.apache.logging.log4j:log4j-core" }
+log4j-slf4j2-impl = { module = "org.apache.logging.log4j:log4j-slf4j2-impl" }
+lombok = { module = "org.projectlombok:lombok", version.ref = "lombok" }
+mockito-bom = { module = "org.mockito:mockito-bom", version.ref = "mockito" }
+mockito-inline = { module = "org.mockito:mockito-inline" }
+mockito-junit-jupiter = { module = "org.mockito:mockito-junit-jupiter" }
+slf4j-api = { module = "org.slf4j:slf4j-api" }
+slf4j-bom = { module = "org.slf4j:slf4j-bom", version.ref = "slf4j" }
+slf4j-jcl = { module = "org.slf4j:jcl-over-slf4j" }
+slf4j-jul = { module = "org.slf4j:jul-to-slf4j" }
+unirest = { module = "com.konghq:unirest-java", version.ref = "unirest" }
+unirest-mocks = { module = "com.konghq:unirest-mocks", version.ref = "unirest" }
+xchart = { module = "org.knowm.xchart:xchart", version.ref = "xchart" }
+
