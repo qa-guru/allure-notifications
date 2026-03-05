@@ -38,7 +38,7 @@ jobs:
         run: echo $version
 
       - name: Upload jar artifact
-        uses: actions/upload-artifact@v6
+        uses: actions/upload-artifact@v7
         with:
           name: 'allure-notifications-${{env.version}}.jar'
           path: allure-notifications/build/libs/*.jar
