@@ -1,5 +1,6 @@
 package guru.qa.allure.notifications.chart;
 
+import guru.qa.allure.notifications.config.base.Base;
 import guru.qa.allure.notifications.exceptions.MessageBuildException;
 import guru.qa.allure.notifications.model.legend.Legend;
 import guru.qa.allure.notifications.model.summary.Statistic;
@@ -7,7 +8,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.knowm.xchart.BitmapEncoder;
 import org.knowm.xchart.PieChart;
 import org.knowm.xchart.PieChartBuilder;
-
 import java.awt.Color;
 import java.awt.Image;
 import java.awt.image.BufferedImage;
@@ -17,9 +17,9 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.imageio.ImageIO;
 import java.io.File;
-
-import guru.qa.allure.notifications.config.base.Base;
+import static java.awt.Color.BLACK;
 import static java.awt.Color.WHITE;
+import static java.lang.Boolean.TRUE;
 import static org.knowm.xchart.PieSeries.PieSeriesRenderStyle.Donut;
 import static org.knowm.xchart.style.Styler.LegendLayout.Vertical;
 import static org.knowm.xchart.style.Styler.LegendPosition.OutsideE;
@@ -27,9 +27,18 @@ import static org.knowm.xchart.style.Styler.LegendPosition.OutsideE;
 @Slf4j
 public class Chart {
 
+    private static final Color DARK_MODE_BG = new Color(50, 50, 50);
+    private static final Color DARK_MODE_TEXT = new Color(220, 220, 220);
+    private static final Color LIGHT_MODE_BG = WHITE;
+    private static final Color LIGHT_MODE_TEXT = BLACK;
+
     public static byte[] createChart(Base base, Statistic statistic, Legend legend) throws MessageBuildException {
         final String title = base.getProject();
         log.info("Creating chart with title {}...", title);
+
+        boolean dark = TRUE.equals(base.getDarkMode());
+        Color bgColor = dark ? DARK_MODE_BG : LIGHT_MODE_BG;
+        Color textColor = dark ? DARK_MODE_TEXT : LIGHT_MODE_TEXT;
 
         PieChart chart = new PieChartBuilder()
                 .title(title)
@@ -38,7 +47,7 @@ public class Chart {
                 .build();
 
         log.debug("Adding legend to chart...");
-        addLegend(chart);
+        addLegend(chart, bgColor);
 
         log.debug("Adding view to chart...");
         chart.getStyler()
@@ -50,8 +59,9 @@ public class Chart {
         chart.getStyler()
                 .setChartPadding(0)
                 .setPlotContentSize(.9)
-                .setPlotBorderColor(WHITE)
-                .setChartBackgroundColor(WHITE)
+                .setChartFontColor(textColor)
+                .setPlotBorderColor(bgColor)
+                .setChartBackgroundColor(bgColor)
                 .setDecimalPattern("#");
 
         log.debug("Adding series to chart...");
@@ -71,12 +81,12 @@ public class Chart {
         }
     }
 
-    private static void addLegend(PieChart chart) {
+    private static void addLegend(PieChart chart, Color bgColor) {
         chart.getStyler()
                 .setLegendVisible(true)
                 .setLegendPosition(OutsideE)
                 .setLegendPadding(8)
-                .setLegendBorderColor(WHITE)
+                .setLegendBorderColor(bgColor)
                 .setLegendLayout(Vertical);
     }
 

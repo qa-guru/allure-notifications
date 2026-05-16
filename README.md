@@ -79,6 +79,7 @@ Languages: 🇬🇧 🇫🇷 🇷🇺 🇺🇦 🇧🇾 🇨🇳
     "language": "ru",
     "allureFolder": "",
     "enableChart": false,
+    "darkMode": false,
     "enableSuitesPublishing": false,
     "customData": {}
   },
@@ -181,6 +182,7 @@ Languages: 🇬🇧 🇫🇷 🇷🇺 🇺🇦 🇧🇾 🇨🇳
     "language": "en",
     "allureFolder": "build/allure-report/",
     "enableChart": true,
+    "darkMode": true,
     "enableSuitesPublishing": true,
     "logo": "logo.png",
     "durationFormat": "HH:mm:ss.SSS",
@@ -197,6 +199,7 @@ Languages: 🇬🇧 🇫🇷 🇷🇺 🇺🇦 🇧🇾 🇨🇳
 + `language` - язык, на котором будет сформирован текст для оповещения (варианты: en / fr / ru / ua / by / cn).
 + `allureFolder` - путь к папке с результатами работы Allure.
 + `enableChart` - требуется ли отображать диаграмму (варианты: true / false).
++ `darkMode` - требуется ли отображать диаграмму в темной версии (варианты: true / false).
 + `enableSuitesPublishing` - требуется ли публиковать отдельно статистику каждого тестового набора (варианты: `true` / `false`, по-умолчанию `false`). Перед включением данной опции убедитесь, что папка `<allureFolder>/widgets` содержит JSON файл `suites.json`
 + `logo` - путь к файлу с логотипом (если заполнено, то в левом верхнем углу диаграммы будет отображаться соответствующий логотип).
 + `durationFormat` (optional, default value is `HH:mm:ss.SSS`) - specifies the desired output format for tests duration.
