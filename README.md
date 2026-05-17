@@ -1,30 +1,33 @@
-[![en](https://img.shields.io/badge/lang-en-red.svg)](https://github.com/qa-guru/allure-notifications/blob/master/README.en.md)
+[![en](https://img.shields.io/badge/lang-en-blue.svg)](#) [![ru](https://img.shields.io/badge/lang-ru-white.svg)](README.ru.md) [![fr](https://img.shields.io/badge/lang-fr-white.svg)](README.fr.md)
 
 # Allure notifications
-**Allure notifications** - это библиотека, позволяющая выполнять автоматическое оповещение о результатах прохождения автотестов, которое направляется в нужный вам мессенджер (Telegram, Slack, ~~Skype~~, Email, Mattermost, Discord, Loop, Rocket.Chat, Zoho Cliq).
+**Allure notifications** is a library that sends automatic notifications about automated test results to your preferred messenger (Telegram, Slack, ~~Skype~~, Email, Mattermost, Discord, Loop, Rocket.Chat, Zoho Cliq).
 
-Languages: 🇬🇧 🇫🇷 🇷🇺 🇺🇦 🇧🇾 🇨🇳
- 
-## Содержание
-+ [Принцип работы](#Принцип)
-+ [Как выглядят оповещения](#Примеры)
-+ [Как использовать в своем проекте:](#Настройка)
-   + [для запуска локально](#Локально)
-   + [для запуска из Jenkins](#Jenkins)
-+ [Особенности заполнения файла config.json в зависимости от выбранного мессенджера](#config)
+Notification languages: 🇬🇧 🇫🇷 🇷🇺 🇺🇦 🇧🇾 🇨🇳
 
- 
-<a name="Принцип">
- 
-## Принцип работы
-По итогам выполнения автотестов генерируется файл summary.json в папке allure-report/widgets. 
-Этот файл содержит общую статистику о результатах прохождения тестов, на основании которой как раз и формируется уведомление, которое отправляет бот (отрисовывается диаграмма и добавляется соответствующий текст).
- 
-<img width="1021" alt="image" src="https://user-images.githubusercontent.com/109241600/213257051-977acd4d-5793-4b2e-b16b-c0e0c6c10194.png">
- 
+## Table of contents
++ [How it works](#how-it-works)
++ [What the notifications look like](#what-the-notifications-look-like)
++ [How to use in your project](#how-to-use-in-your-project)
+  + [Running locally](#running-locally)
+  + [Running from Jenkins](#running-from-jenkins)
++ [Messenger-specific config.json settings](#messenger-specific-configjson-settings)
 
-Пример файла summary.json
+
+## How it works
+After automated tests finish, a `summary.json` file is generated in the `allure-report/widgets` folder. This file contains general test result statistics, which the library uses to build the notification (drawing a chart and adding the corresponding text).
+
+```mermaid
+flowchart LR
+    A[Running\nautomated tests] --> B[Generating\nsummary.json]
+    B --> C
+    subgraph C[Allure Notifications]
+        D[Building notification\nchart and text] --> E[Sending notification\nto messenger]
+    end
 ```
+
+Example `summary.json`:
+```json
 {
   "reportName" : "Allure Report",
   "testRuns" : [ ],
@@ -46,29 +49,23 @@ Languages: 🇬🇧 🇫🇷 🇷🇺 🇺🇦 🇧🇾 🇨🇳
   }
 }
 ```
-Кроме этого, если подключен Allure Summary плагин также будет сгенерирован файл `suites.json` данные из которого также будут включены в статистику.
+If the Allure Summary plugin is connected, a `suites.json` file will also be generated and its data will be included in the statistics.
 
 
-<a name="Примеры">
- 
-## Как выглядят оповещения
-Пример оповещения в Telegram
+## What the notifications look like
+Example notification in Telegram
 
 <img width="333" alt="image" src="https://user-images.githubusercontent.com/109241600/213396660-c70adc4c-7a0f-4926-8d9d-473c6c433dd2.png">
 
-<a name="Настройка">
 
-## Как использовать в своем проекте
+## How to use in your project
 
- 
-<a name="Локально">
-
-### Для запуска локально
-1. Для локальной отладки нужно установить java (для запуска в Jenkins она не понадобится)
-2. Создать в корне проекта папку `notifications`.
-3. <a href="https://github.com/qa-guru/allure-notifications/releases" target="_blank">Скачать</a> актуальную версию файла `allure-notifications-version.jar`, и разместить его в папке `notifications` в своем проекте.
-4. В папке `notifications` создать файл `config.json` со следующей структурой (оставить раздел `base` и тот мессенджер, на который требуется отправлять оповещения): 
-```
+### Running locally
+1. Install Java (not required when running from Jenkins).
+2. Create a `notifications` folder in the root of your project.
+3. [Download](https://github.com/qa-guru/allure-notifications/releases) the latest `allure-notifications-<version>.jar` and place it in the `notifications` folder.
+4. Inside `notifications`, create a `config.json` file with the following structure (keep the `base` section and only the messenger block you need):
+```json
 {
   "base": {
     "logo": "",
@@ -76,7 +73,7 @@ Languages: 🇬🇧 🇫🇷 🇷🇺 🇺🇦 🇧🇾 🇨🇳
     "environment": "",
     "comment": "",
     "reportLink": "",
-    "language": "ru",
+    "language": "en",
     "allureFolder": "",
     "enableChart": false,
     "darkMode": false,
@@ -145,14 +142,11 @@ Languages: 🇬🇧 🇫🇷 🇷🇺 🇺🇦 🇧🇾 🇨🇳
   }
 }
 ```
-Блок `proxy` используется если нужно указать дополнительную конфигурацию proxy.\
-Параметр `templatePath` является опциональным и позволяет установить путь к собственному Freemarker шаблону для сообщения. 
-Пример:
-```
+The `proxy` block is used to specify additional proxy configuration.  
+The `templatePath` parameter is optional and allows you to provide a path to a custom Freemarker template. Example:
+```json
 {
-  "base": {
-    ...
-  },
+  "base": { "..." : "..." },
   "mail": {
     "host": "smtp.gmail.com",
     "port": "465",
@@ -168,12 +162,8 @@ Languages: 🇬🇧 🇫🇷 🇷🇺 🇺🇦 🇧🇾 🇨🇳
 }
 ```
 
-<a name="Base"></a>
-
-5. Заполнить в файле `config.json` блок `base`: 
-
-Пример заполнения блока `base`:
-```
+5. Fill in the `base` block:
+```json
 "base": {
     "project": "some project",
     "environment": "some env",
@@ -191,166 +181,147 @@ Languages: 🇬🇧 🇫🇷 🇷🇺 🇺🇦 🇧🇾 🇨🇳
       "variable2": "value2"
     }
 }
-```  
-Порядок заполнения:
-+ `project`, `environment`, `comment` - имя проекта, название окружения и произвольный комментарий. 
-+ `reportLink` - ссылка на Allure report с результатами прохождения автотестов (целесообразно заполнять при запуске 
-  автотестов из Jenkins - об этом ниже).
-+ `language` - язык, на котором будет сформирован текст для оповещения (варианты: en / fr / ru / ua / by / cn).
-+ `allureFolder` - путь к папке с результатами работы Allure.
-+ `enableChart` - требуется ли отображать диаграмму (варианты: true / false).
-+ `darkMode` - требуется ли отображать диаграмму в темной версии (варианты: true / false).
-+ `enableSuitesPublishing` - требуется ли публиковать отдельно статистику каждого тестового набора (варианты: `true` / `false`, по-умолчанию `false`). Перед включением данной опции убедитесь, что папка `<allureFolder>/widgets` содержит JSON файл `suites.json`
-+ `logo` - путь к файлу с логотипом (если заполнено, то в левом верхнем углу диаграммы будет отображаться соответствующий логотип).
-+ `durationFormat` (optional, default value is `HH:mm:ss.SSS`) - specifies the desired output format for tests duration.
-+ `customData` - дополнительные данные, которые могут быть переиспользованы в собственных Freemarker шаблонах (опциональное поле).
-
-6. Заполнить в файле `config.json` блок с информацией о выбранном мессенджере: [особенности заполнения файла config.json в зависимости от выбранного мессенджера](#config)
- 
-7. Выполнить в терминале следующую команду:
 ```
-java "-DconfigFile=notifications/config.json" -jar notifications/allure-notifications-4.2.1.jar
-``` 
-Примечание:
-+ На момент запуска уже должен быть сформирован файл `summary.json`.
-+ В тексте команды нужно указать ту версию файла jar, которую вы скачали на предыдущих шагах.
-+ Настройки можно переопределить через системные переменные (Системная переменная имеет больший приоритет, чем 
-  значение в конфигурационном файле)
-  ```shell
-    java "-DconfigFile=notifications/config.json" "-Dnotifications.base.environment=${STAND}" "-Dnotifications.base.reportLink=${ALLURE_SERVICE_URL}" "-Dnotifications.base.project=${PROJECT_ID}" "-Dnotifications.telegram.token=${TG_BOT_TOKEN}" "-Dnotifications.telegram.chat=${TG_CHAT_ID}" "-Dnotifications.telegram.topic=${TG_CHAT_TOPIC_ID}" -jar allure-notifications.jar
-  ```
-  :information_source: Префиксы для дополнительных значений удаляются:  
-  `-Dbase.customData.variable1=someValue` преобразуется в дополнительный параметр `variable1` со значением `someValue`
+Fields:
++ `project`, `environment`, `comment` — project name, environment name, and an arbitrary comment.
++ `reportLink` — link to the Allure report with test results (useful when running from Jenkins).
++ `language` — notification language (`en` / `fr` / `ru` / `ua` / `by` / `cn`).
++ `allureFolder` — path to the folder containing Allure results.
++ `enableChart` — whether to display the chart (`true` / `false`).
++ `darkMode` — whether to render the chart in dark mode (`true` / `false`).
++ `enableSuitesPublishing` — whether to publish per-suite statistics (`true` / `false`, default `false`). Requires `suites.json` inside `<allureFolder>/widgets`.
++ `logo` — path to a logo file; if set, the logo is displayed in the top-left corner of the chart.
++ `durationFormat` (optional, default `HH:mm:ss.SSS`) — output format for test duration.
++ `customData` — extra key-value data available in custom Freemarker templates (optional).
 
-  :warning: Параметр без указания имени можно использовать : `base.customData.`
+6. Fill in the messenger block: see [Messenger-specific config.json settings](#messenger-specific-configjson-settings).
 
-В результате будет сформировано оповещение с результатами прохождения автотестов и направлено в выбранный мессенджер.
+7. Run the following command in your terminal:
+```shell
+java "-DconfigFile=notifications/config.json" -jar notifications/allure-notifications-4.11.0.jar
+```
+Notes:
++ `summary.json` must already be generated before running this command.
++ Replace the jar version with the one you downloaded.
++ Settings can be overridden via system properties (system properties take precedence over `config.json`):
+```shell
+java "-DconfigFile=notifications/config.json" \
+  "-Dnotifications.base.environment=${STAND}" \
+  "-Dnotifications.base.reportLink=${ALLURE_SERVICE_URL}" \
+  "-Dnotifications.base.project=${PROJECT_ID}" \
+  "-Dnotifications.telegram.token=${TG_BOT_TOKEN}" \
+  "-Dnotifications.telegram.chat=${TG_CHAT_ID}" \
+  "-Dnotifications.telegram.topic=${TG_CHAT_TOPIC_ID}" \
+  -jar allure-notifications.jar
+```
+ℹ️ Custom data property prefixes are stripped: `-Dbase.customData.variable1=someValue` becomes the key `variable1` with value `someValue`.  
+⚠️ Using `base.customData.` without a trailing name is also valid.
 
 
-<a name="Jenkins">
- 
-### Для запуска из Jenkins
-1. Перейти в настройки сборки в Jenkins
-2. В разделе `Сборка` нажать кнопку `Добавить шаг собрки`, в появившемся меню выбрать `Create/Update Text File`
+### Running from Jenkins
+1. Open the build configuration in Jenkins.
+2. Under **Build**, click **Add build step** and choose **Create/Update Text File**.
+
 <img width="739" alt="image" src="https://user-images.githubusercontent.com/109241600/213293791-75eecef5-9e6d-449b-9b10-520561e2f112.png">
 
-Заполнить следующим образом:
+Fill it in as shown below:
 
 <img width="745" alt="image" src="https://user-images.githubusercontent.com/109241600/213294133-164df8c0-85da-4059-97e7-3e4c8a386538.png">
 <img width="744" alt="image" src="https://user-images.githubusercontent.com/109241600/213294275-31a5efeb-d400-496d-b963-c6071f187e94.png">
 
-Примечание:
-+ Общая информация о заполнении блока `base` описана [в этом разделе](#Base)
-+ В следующих параметрах в качестве значений указываем переменные: `"project": "${JOB_BASE_NAME}"` и `"reportLink": "${BUILD_URL}"`. При формировании уведомления в данных полях будут указаны название `JOB` и ссылка на `BUILD` в Jenkins.
-+ Особенности заполнения файла config.json в зависимости от выбранного мессенджера описаны [в этом разделе](#config)
+Notes:
++ General `base` block settings are described [above](#5-fill-in-the-base-block).
++ Use Jenkins variables as values: `"project": "${JOB_BASE_NAME}"` and `"reportLink": "${BUILD_URL}"`.
++ Messenger-specific settings are described in the [next section](#messenger-specific-configjson-settings).
 
-3. В разделе `Послесборочные операции` нажать кнопку `Добавить шаг после собрки`, в появившемся меню выбрать `Post build task`
+3. Under **Post-build Actions**, click **Add post-build action** → **Post build task**.
+
 <img width="743" alt="image" src="https://user-images.githubusercontent.com/109241600/213299612-d28334c1-5dba-4e53-9f8d-32ef40b713ad.png">
 
-+ В поле `Script` указываем следующее:
-```
+In the **Script** field, enter:
+```bash
 cd ..
-FILE=allure-notifications-4.2.1.jar
+FILE=allure-notifications-4.11.0.jar
 if [ ! -f "$FILE" ]; then
-   wget https://github.com/qa-guru/allure-notifications/releases/download/4.2.1/allure-notifications-4.2.1.jar
+   wget https://github.com/qa-guru/allure-notifications/releases/download/4.11.0/allure-notifications-4.11.0.jar
 fi
 ```
-Примечание: 
-В этом скрипте мы переходим на папку выше, если там нет jar файла, то скачиваем его. Необходимо указать <a href="https://github.com/qa-guru/allure-notifications/releases" target="_blank">актуальную версию файла jar</a>
-
-+ Нажимаем `Add another task` и во втором поле `Script` указываем следующее:
+Click **Add another task** and in the second **Script** field enter:
+```bash
+java "-DconfigFile=notifications/config.json" -jar ../allure-notifications-4.11.0.jar
 ```
-java "-DconfigFile=notifications/config.json" -jar ../allure-notifications-4.2.1.jar
-```
- 
-4. Сохраняем изменения настроек и запускаем автотесты. По завершении в мессенджер будет направлено уведомление о результатах.
- 
 
-<a name="config">
+4. Save the configuration and run your tests. A notification will be sent to the configured messenger upon completion.
 
-## Особенности заполнения файла config.json в зависимости от выбранного мессенджера
+
+## Messenger-specific config.json settings
 + <a href="https://github.com/qa-guru/knowledge-base/wiki/12.-Телеграм-бот.-Отправляем-уведомления-о-результатах-прохождения-тестов" target="_blank">Telegram config</a>
-  + Параметры блока `telegram`:
+  + `telegram` block parameters:
     <ul>
-      <li><code>topic</code> - необязательный параметр, определяющий уникальный идентификатор топика чата, в который
-        нужно отправить сообщение; посмотрите [ответы на Stackoverflow](https://stackoverflow.com/questions/74773675/how-to-get-topic-id-for-telegram-group-chat),
-        чтобы узнать, как получить значение параметра.
-      </li>
+      <li><code>topic</code> — optional; unique identifier of the target message thread (topic) of the chat to send the message to. See <a href="https://stackoverflow.com/questions/74773675/how-to-get-topic-id-for-telegram-group-chat">Stackoverflow answers</a> for how to get this value.</li>
     </ul>
 + <a href="https://github.com/qa-guru/allure-notifications/wiki/Slack-configuration" target="_blank">Slack config</a>
 + <a href="https://github.com/qa-guru/allure-notifications/wiki/Email-configuration" target="_blank">Email config</a>
 + <a href="https://github.com/qa-guru/allure-notifications/wiki/Mattermost-configuration" target="_blank">Mattermost config</a>
 + <details>
     <summary>Discord config</summary>
-    To enable Discord notifications it's required to provide 2 configuration parameters: <code>botToken</code> and <code>channelId</code>.
+    To enable Discord notifications provide 2 parameters: <code>botToken</code> and <code>channelId</code>.
     <ul>
-    <li>To create your own Discord bot and get its token follow these steps.
-      <ol>
-        <li>Turn on “Developer mode” in your Discord account.</li>
-        <li>Click on “Discord API”.</li>
-        <li>In the Developer portal, click on “Applications”. Log in again and then, back in the “Applications” menu, click on “New Application”.</li>
-        <li>Name the bot and then click “Create”.</li>
-        <li>Go to the “Bot” menu and generate a token using “Add Bot”.</li>
-        <li>Copy the bot’s token and paste it into the JSON config</li>
-        <li>Define other details for your bot under “General Information”.</li>
-        <li>Click on “OAuth2”, activate “bot”, set the permissions, and then click on “Copy”.</li>
-        <li>Select your server to add your bot to it.</li>
-    </ol>
-    </li>
-    <li>To get a Channel ID right click the channel and click on "Copy ID" then paste it into the JSON config. Alternatively type the channel as a mention and place a backslash \ in front of the mention.</li>
+      <li>To create a Discord bot and get its token:
+        <ol>
+          <li>Enable "Developer mode" in your Discord account.</li>
+          <li>Open the Discord API developer portal and click "Applications".</li>
+          <li>Click "New Application", name it, and click "Create".</li>
+          <li>Go to "Bot" and generate a token with "Add Bot".</li>
+          <li>Copy the token and paste it into the JSON config.</li>
+          <li>Under "OAuth2", activate "bot", set permissions, and copy the invite URL to add the bot to your server.</li>
+        </ol>
+      </li>
+      <li>To get a Channel ID: right-click the channel and click "Copy ID", then paste it into the JSON config.</li>
     </ul>
   </details>
 + <details>
     <summary>Loop config</summary>
-    To create your own Loop webhook URL follow these steps.
+    To create a Loop webhook URL:
     <ul>
-      <li>Go to main menu of Loop application.</li>
-      <li>Click "Integrations".</li>
-      <li>Choose "Incoming Webhooks".</li>
-      <li>Click "Add Incoming Webhook".</li>
-      <li>Fill out the form fields on your choice, make sure to select a channel for messages.</li>
-      <li>Click "Save".</li>
-      <li>Copy URL of webhook.</li>
+      <li>Open the main menu of the Loop application.</li>
+      <li>Click "Integrations" → "Incoming Webhooks".</li>
+      <li>Click "Add Incoming Webhook", fill in the form, select a channel, and click "Save".</li>
+      <li>Copy the generated webhook URL into the JSON config.</li>
     </ul>
   </details>
 + <details>
-      <summary>Rocket.Chat config</summary>
-      To enable Rocket.Chat notifications it's required to provide 4 configuration parameters: 
-  <code>url</code>, <code>auth_token</code>,<code>user_id</code>,<code>channel</code>
-      <ul>
-    <li>
-      <ol>
-        <li>First of all you need to generate auth_token from user setting.</li>
-        <li>After generation you can get auth_token and user_id.</li>
-        <li>You can get the channel parameter using previously generated tokens and following the <a href="https://developer.rocket.chat/reference/api/rest-api/endpoints/rooms/channels-endpoints/info" target="_blank">documentation</a>.</li>
+    <summary>Rocket.Chat config</summary>
+    Required parameters: <code>url</code>, <code>auth_token</code>, <code>user_id</code>, <code>channel</code>.
+    <ol>
+      <li>Generate an <code>auth_token</code> from your user settings — this also provides the <code>user_id</code>.</li>
+      <li>Retrieve the channel name using the generated tokens via the <a href="https://developer.rocket.chat/reference/api/rest-api/endpoints/rooms/channels-endpoints/info" target="_blank">Rocket.Chat REST API</a>.</li>
     </ol>
-    </li>
-    </ul>
   </details>
 + <details>
     <summary>Zoho Cliq config</summary>
-    Для включения уведомлений Zoho Cliq необходимо предоставить следующие параметры конфигурации:
+    Required parameters:
     <ul>
-      <li><code>token</code> - Ваш API токен Zoho Cliq (zapikey). Чтобы получить этот токен:
+      <li><code>token</code> — your Zoho Cliq API token (zapikey). To obtain it:
         <ol>
-          <li>Перейдите в настройки вашего аккаунта Zoho Cliq</li>
-          <li>Перейдите в "Боты и инструменты" → "Бот"</li>
-          <li>Создайте нового бота или используйте существующего</li>
-          <li>Скопируйте параметр токена из "Webhook URL" (zapikey)</li>
+          <li>Go to your Zoho Cliq account settings.</li>
+          <li>Navigate to "Bots &amp; Tools" → "Bot".</li>
+          <li>Create a new bot or use an existing one.</li>
+          <li>Copy the token (zapikey) from the "Webhook URL".</li>
         </ol>
       </li>
-      <li><code>chat</code> - Имя канала, в который вы хотите отправлять уведомления</li>
-      <li><code>bot</code> - (Необязательно) Уникальное имя вашего бота, если вы хотите отправлять сообщения от имени конкретного бота</li>
-      <li><code>dataCenter</code> - Регион центра данных Zoho. Поддерживаемые значения:
+      <li><code>chat</code> — the name of the channel to send notifications to.</li>
+      <li><code>bot</code> — (optional) unique name of the bot to send messages as.</li>
+      <li><code>dataCenter</code> — Zoho data center region:
         <ul>
-          <li><code>com</code> - США (cliq.zoho.com)</li>
-          <li><code>eu</code> - Европа (cliq.zoho.eu) - По умолчанию</li>
-          <li><code>in</code> - Индия (cliq.zoho.in)</li>
-          <li><code>au</code> - Австралия (cliq.zoho.com.au)</li>
-          <li><code>jp</code> - Япония (cliq.zoho.jp)</li>
-          <li><code>ca</code> - Канада (cliq.zohocloud.ca)</li>
+          <li><code>com</code> — United States (cliq.zoho.com)</li>
+          <li><code>eu</code> — Europe (cliq.zoho.eu) — default</li>
+          <li><code>in</code> — India (cliq.zoho.in)</li>
+          <li><code>au</code> — Australia (cliq.zoho.com.au)</li>
+          <li><code>jp</code> — Japan (cliq.zoho.jp)</li>
+          <li><code>ca</code> — Canada (cliq.zohocloud.ca)</li>
         </ul>
       </li>
     </ul>
-    Для получения дополнительной информации об API Zoho Cliq посетите <a href="https://www.zoho.com/cliq/help/restapi/v2/" target="_blank">официальную документацию</a>.
+    See the <a href="https://www.zoho.com/cliq/help/restapi/v2/" target="_blank">official Zoho Cliq API documentation</a> for more details.
   </details>
