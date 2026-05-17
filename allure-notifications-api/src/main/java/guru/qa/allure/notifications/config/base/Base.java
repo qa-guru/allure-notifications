@@ -20,6 +20,7 @@ public class Base {
     private String logo;
     private String allureFolder;
     private Boolean enableChart;
+    private Boolean darkMode;
     private Boolean enableSuitesPublishing;
     private String durationFormat = "HH:mm:ss.SSS";
     private Map<String, String> customData;
