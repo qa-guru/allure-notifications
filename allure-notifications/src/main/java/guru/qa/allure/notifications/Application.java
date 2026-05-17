@@ -15,7 +15,9 @@ public class Application {
 
     public static void main(String[] args) throws IOException {
         log.info("Start...");
-        Config config = new ApplicationConfig().readConfig();
+        ApplicationConfig applicationConfig = new ApplicationConfig();
+        Config config = applicationConfig.readConfig();
+        String configDirectory = applicationConfig.getConfigDirectory();
 
         Unirest.config()
                 .interceptor(new LogInterceptor());
@@ -24,7 +26,7 @@ public class Application {
 
         boolean successfulSending;
         try {
-            successfulSending = Notification.send(config);
+            successfulSending = Notification.send(config, configDirectory);
         } catch (Exception e) {
             log.error(e.getMessage(), e);
             successfulSending = false;

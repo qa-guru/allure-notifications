@@ -28,6 +28,10 @@ public class Notification {
     private static final String SUITES_DATA_PATH = "widgets/suites.json";
 
     public static boolean send(Config config) throws IOException, MessageBuildException {
+        return send(config, null);
+    }
+
+    public static boolean send(Config config, String chartOutputDir) throws IOException, MessageBuildException {
         boolean successfulSending = true;
 
         final List<Notifier> notifiers = ClientFactory.from(config);
@@ -55,6 +59,11 @@ public class Notification {
         if (base.getEnableChart()) {
             Legend legend = json.parseResource("/legend/" + base.getLanguage() + ".json", Legend.class);
             chartImage = Chart.createChart(base, summary.getStatistic(), legend);
+            if (chartOutputDir != null) {
+                Path chartPath = Paths.get(chartOutputDir, "chart.png");
+                Files.write(chartPath, chartImage);
+                log.info("Chart saved to {}", chartPath.toAbsolutePath());
+            }
         }
 
         for (Notifier notifier : notifiers) {

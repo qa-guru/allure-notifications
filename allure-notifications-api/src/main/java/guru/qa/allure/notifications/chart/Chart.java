@@ -60,9 +60,14 @@ public class Chart {
                 .setChartPadding(0)
                 .setPlotContentSize(.9)
                 .setChartFontColor(textColor)
+                .setPlotBackgroundColor(bgColor)
                 .setPlotBorderColor(bgColor)
                 .setChartBackgroundColor(bgColor)
+                .setLegendBackgroundColor(bgColor)
                 .setDecimalPattern("#");
+        chart.getStyler()
+                .setLabelsFontColor(textColor)
+                .setLabelsFontColorAutomaticEnabled(false);
 
         log.debug("Adding series to chart...");
         addSeries(chart, statistic, legend);

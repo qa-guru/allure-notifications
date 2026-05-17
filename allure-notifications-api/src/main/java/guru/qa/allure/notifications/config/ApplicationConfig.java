@@ -6,6 +6,7 @@ import com.fasterxml.jackson.databind.json.JsonMapper;
 import com.fasterxml.jackson.dataformat.javaprop.JavaPropsMapper;
 import com.fasterxml.jackson.dataformat.javaprop.JavaPropsSchema;
 
+import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.Map;
@@ -43,6 +44,12 @@ public class ApplicationConfig {
             parser.setSchema(JavaPropsSchema.emptySchema().withPrefix("notifications"));
             javaPropsMapper.readerForUpdating(config).readValue(parser, Config.class);
         }
+    }
+
+    public String getConfigDirectory() {
+        File file = new File(configFile);
+        String parent = file.getParent();
+        return parent != null ? parent : ".";
     }
 
     private static String getConfigFile() {
