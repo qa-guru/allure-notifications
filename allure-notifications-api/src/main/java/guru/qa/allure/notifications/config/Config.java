@@ -3,6 +3,7 @@ package guru.qa.allure.notifications.config;
 import guru.qa.allure.notifications.config.base.Base;
 import guru.qa.allure.notifications.config.cliq.Cliq;
 import guru.qa.allure.notifications.config.discord.Discord;
+import guru.qa.allure.notifications.config.gitlab.Gitlab;
 import guru.qa.allure.notifications.config.loop.Loop;
 import guru.qa.allure.notifications.config.mail.Mail;
 import guru.qa.allure.notifications.config.mattermost.Mattermost;
@@ -29,4 +30,5 @@ public class Config {
     private RocketChat rocketChat;
     private Cliq cliq;
     private Proxy proxy;
+    private Gitlab gitlab;
 }

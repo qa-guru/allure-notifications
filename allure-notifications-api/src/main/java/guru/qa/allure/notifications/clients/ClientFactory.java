@@ -1,5 +1,6 @@
 package guru.qa.allure.notifications.clients;
 
+import guru.qa.allure.notifications.clients.gitlab.GitlabClient;
 import guru.qa.allure.notifications.clients.rocket.RocketChatClient;
 import java.util.ArrayList;
 import java.util.List;
@@ -40,6 +41,9 @@ public class ClientFactory {
         }
         if (config.getCliq() != null) {
             notifiers.add(new CliqClient(config.getCliq(), config.getProxy()));
+        }
+        if (config.getGitlab() != null && Boolean.TRUE.equals(config.getGitlab().getEnabled())) {
+            notifiers.add(new GitlabClient(config.getGitlab()));
         }
         return notifiers;
     }

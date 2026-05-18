@@ -1,7 +1,7 @@
 [![en](https://img.shields.io/badge/lang-en-red.svg)](https://github.com/qa-guru/allure-notifications/blob/master/README.en.md)
 
 # Allure notifications
-**Allure notifications** - это библиотека, позволяющая выполнять автоматическое оповещение о результатах прохождения автотестов, которое направляется в нужный вам мессенджер (Telegram, Slack, ~~Skype~~, Email, Mattermost, Discord, Loop, Rocket.Chat, Zoho Cliq).
+**Allure notifications** - это библиотека, позволяющая выполнять автоматическое оповещение о результатах прохождения автотестов, которое направляется в нужный вам мессенджер (Telegram, Slack, ~~Skype~~, Email, Mattermost, Discord, Loop, Rocket.Chat, Zoho Cliq, Gitlab).
 
 Languages: 🇬🇧 🇫🇷 🇷🇺 🇺🇦 🇧🇾 🇨🇳
  
@@ -142,6 +142,15 @@ Languages: 🇬🇧 🇫🇷 🇷🇺 🇺🇦 🇧🇾 🇨🇳
     "port": 0,
     "username": "",
     "password": ""
+  },
+  "gitlab": {
+    "enabled": true,
+    "url": "",
+    "apiKey": "",
+    "apiToken": "",
+    "projectId": "",
+    "mergeRequestIid": "",
+    "templatePath": "/templates/gitlab.ftl"
   }
 }
 ```
@@ -354,3 +363,18 @@ java "-DconfigFile=notifications/config.json" -jar ../allure-notifications-4.2.1
     </ul>
     Для получения дополнительной информации об API Zoho Cliq посетите <a href="https://www.zoho.com/cliq/help/restapi/v2/" target="_blank">официальную документацию</a>.
   </details>
++ <details>
+    <summary>gitlab</summary>
+    Поддерживается публикация отчета в комментариях к merge request. Для публикации необходимо указать следующие параметры конфигурации:
+    <ul>
+      <li><code>enabled</code> - признак выполнения публикации. Если ключ отсутствует или равен true, то публикация выполняется</li>
+      <li><code>url</code> - адрес сервера gitlab</li>
+      <li><code>apiKey</code> - имя пользователя для аутентификации</li>
+      <li><code>apiToken</code> - токен для аутентификации</li>
+      <li><code>projectId</code> - идентификатор проекта в gitlab</li>
+      <li><code>mergeRequestIid</code> - номер (iid) мерж реквеста в gitlab</li>
+    </ul>
+    Отчет публикуется в новом комментарии к мерж реквесту, на который указывает параметр <code>mergeRequestIid</code>.
+  </details>
+
+
