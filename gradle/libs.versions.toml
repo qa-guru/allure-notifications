@@ -13,7 +13,7 @@ lombok = "1.18.46"
 mockito = "4.11.0"
 slf4j = "2.0.17"
 unirest = "3.14.5"
-xchart = "3.9.0"
+xchart = "4.0.0"
 angus-smtp = "2.0.5"
 byte-buddy = "1.18.8"
 
