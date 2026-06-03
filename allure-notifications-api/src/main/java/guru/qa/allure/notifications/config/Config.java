@@ -9,6 +9,7 @@ import guru.qa.allure.notifications.config.mattermost.Mattermost;
 import guru.qa.allure.notifications.config.proxy.Proxy;
 import guru.qa.allure.notifications.config.rocket.RocketChat;
 import guru.qa.allure.notifications.config.slack.Slack;
+import guru.qa.allure.notifications.config.teams.Teams;
 import guru.qa.allure.notifications.config.telegram.Telegram;
 import lombok.Data;
 
@@ -28,5 +29,6 @@ public class Config {
     private Loop loop;
     private RocketChat rocketChat;
     private Cliq cliq;
+    private Teams teams;
     private Proxy proxy;
 }

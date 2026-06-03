@@ -1,7 +1,7 @@
 [![en](https://img.shields.io/badge/lang-en-white.svg)](README.md) [![ru](https://img.shields.io/badge/lang-ru-white.svg)](README.ru.md) [![fr](https://img.shields.io/badge/lang-fr-blue.svg)](#)
 
 # Allure notifications
-**Allure notifications** est une bibliothèque qui envoie automatiquement des notifications sur les résultats des tests automatisés vers la messagerie de votre choix (Telegram, Slack, ~~Skype~~, Email, Mattermost, Discord, Loop, Rocket.Chat, Zoho Cliq).
+**Allure notifications** est une bibliothèque qui envoie automatiquement des notifications sur les résultats des tests automatisés vers la messagerie de votre choix (Telegram, Slack, ~~Skype~~, Email, Mattermost, Discord, Loop, Rocket.Chat, Zoho Cliq, Microsoft Teams).
 
 Langues des notifications : 🇬🇧 🇫🇷 🇷🇺 🇺🇦 🇧🇾 🇨🇳
 
@@ -132,6 +132,10 @@ Exemple de notification dans Telegram
     "bot": "",
     "dataCenter": "eu",
     "templatePath": "/templates/markdown.ftl"
+  },
+  "teams": {
+    "webhookUrl": "",
+    "templatePath": "/templates/teams.ftl"
   },
   "proxy": {
     "host": "",
@@ -322,4 +326,25 @@ java "-DconfigFile=notifications/config.json" -jar ../allure-notifications-4.11.
       </li>
     </ul>
     Pour plus d'informations, consultez la <a href="https://www.zoho.com/cliq/help/restapi/v2/" target="_blank">documentation officielle de l'API Zoho Cliq</a>.
+  </details>
++ <details>
+    <summary>Configuration Microsoft Teams</summary>
+    Les notifications sont envoyées sous forme d'Adaptive Card vers une URL de webhook Teams générée par l'application <strong>Workflows</strong> (Power Automate). Les connecteurs Microsoft 365 (l'ancien « Incoming Webhook ») sont <a href="https://devblogs.microsoft.com/microsoft365dev/retirement-of-office-365-connectors-within-microsoft-teams/" target="_blank">en cours de retrait</a> — utilisez Workflows pour les nouvelles intégrations.
+    <p>Le seul paramètre requis est <code>webhookUrl</code>.</p>
+    <strong>Comment obtenir l'URL du webhook :</strong>
+    <ol>
+      <li>Dans Microsoft Teams, ouvrez l'équipe et le canal cibles.</li>
+      <li>Cliquez sur <strong>Autres options (…)</strong> à côté du canal → <strong>Workflows</strong>.</li>
+      <li>Choisissez le modèle <em>« Post to a channel when a webhook request is received »</em>.</li>
+      <li>Configurez les paramètres et cliquez sur <strong>Save</strong>.</li>
+      <li>Copiez l'URL de webhook générée et collez-la dans le champ <code>teams.webhookUrl</code> de <code>config.json</code>.</li>
+    </ol>
+    Pour plus de détails, consultez la <a href="https://learn.microsoft.com/en-us/microsoftteams/platform/webhooks-and-connectors/how-to/add-incoming-webhook" target="_blank">documentation officielle de Microsoft Teams</a>.
+    <p><strong>Notes et limitations</strong> (selon la documentation Teams) :</p>
+    <ul>
+      <li>Le graphique (si <code>enableChart=true</code>) est intégré à l'Adaptive Card en tant qu'image base64 — aucun hébergement externe n'est requis.</li>
+      <li>La taille totale du message doit être ≤ <strong>28 Ko</strong>. Pour des graphiques très volumineux, il peut être nécessaire de les désactiver ou de les héberger en externe.</li>
+      <li>Teams limite la fréquence des requêtes à <strong>4 requêtes/seconde</strong>.</li>
+      <li>L'Adaptive Card utilise <code>$schema</code> <code>http://adaptivecards.io/schemas/adaptive-card.json</code>, version <code>1.5</code>. Pour personnaliser la carte, fournissez votre propre modèle via <code>templatePath</code> — son contenu devient le champ <code>TextBlock.text</code> (Markdown supporté par Teams : <code>**gras**</code>, <code>_italique_</code>, listes, liens).</li>
+    </ul>
   </details>

@@ -10,6 +10,7 @@ import guru.qa.allure.notifications.clients.loop.LoopClient;
 import guru.qa.allure.notifications.clients.mail.Email;
 import guru.qa.allure.notifications.clients.mattermost.MattermostClient;
 import guru.qa.allure.notifications.clients.slack.SlackClient;
+import guru.qa.allure.notifications.clients.teams.TeamsClient;
 import guru.qa.allure.notifications.clients.telegram.TelegramClient;
 import guru.qa.allure.notifications.config.Config;
 
@@ -40,6 +41,9 @@ public class ClientFactory {
         }
         if (config.getCliq() != null) {
             notifiers.add(new CliqClient(config.getCliq(), config.getProxy()));
+        }
+        if (config.getTeams() != null) {
+            notifiers.add(new TeamsClient(config.getTeams()));
         }
         return notifiers;
     }
