@@ -15,7 +15,7 @@ slf4j = "2.0.18"
 unirest = "3.14.5"
 xchart = "3.9.0"
 angus-smtp = "2.0.5"
-byte-buddy = "1.18.8"
+byte-buddy = "1.18.9"
 
 [libraries]
 angus-smtp = { module = "org.eclipse.angus:smtp", version.ref = "angus-smtp" }
