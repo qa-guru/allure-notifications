@@ -1,7 +1,7 @@
 [![en](https://img.shields.io/badge/lang-en-white.svg)](README.md) [![ru](https://img.shields.io/badge/lang-ru-blue.svg)](#) [![fr](https://img.shields.io/badge/lang-fr-white.svg)](README.fr.md)
 
 # Allure notifications
-**Allure notifications** — это библиотека, позволяющая выполнять автоматическое оповещение о результатах прохождения автотестов, которое направляется в нужный вам мессенджер (Telegram, Slack, ~~Skype~~, Email, Mattermost, Discord, Loop, Rocket.Chat, Zoho Cliq).
+**Allure notifications** — это библиотека, позволяющая выполнять автоматическое оповещение о результатах прохождения автотестов, которое направляется в нужный вам мессенджер (Telegram, Slack, ~~Skype~~, Email, Mattermost, Discord, Loop, Rocket.Chat, Zoho Cliq, Microsoft Teams).
 
 Языки оповещений: 🇬🇧 🇫🇷 🇷🇺 🇺🇦 🇧🇾 🇨🇳
 
@@ -132,6 +132,10 @@ flowchart LR
     "bot": "",
     "dataCenter": "eu",
     "templatePath": "/templates/markdown.ftl"
+  },
+  "teams": {
+    "webhookUrl": "",
+    "templatePath": "/templates/teams.ftl"
   },
   "proxy": {
     "host": "",
@@ -322,4 +326,25 @@ java "-DconfigFile=notifications/config.json" -jar ../allure-notifications-4.11.
       </li>
     </ul>
     Подробнее — в <a href="https://www.zoho.com/cliq/help/restapi/v2/" target="_blank">официальной документации Zoho Cliq API</a>.
+  </details>
++ <details>
+    <summary>Конфигурация Microsoft Teams</summary>
+    Уведомления отправляются как Adaptive Card на webhook-URL, сгенерированный приложением <strong>Workflows</strong> (Power Automate). Legacy-коннекторы Microsoft 365 (старый «Incoming Webhook») <a href="https://devblogs.microsoft.com/microsoft365dev/retirement-of-office-365-connectors-within-microsoft-teams/" target="_blank">выводятся из эксплуатации</a> — для новых интеграций используйте Workflows.
+    <p>Единственный обязательный параметр — <code>webhookUrl</code>.</p>
+    <strong>Как получить webhook-URL:</strong>
+    <ol>
+      <li>В Microsoft Teams откройте нужную команду и канал.</li>
+      <li>Нажмите <strong>Дополнительные параметры (…)</strong> рядом с каналом → <strong>Workflows</strong>.</li>
+      <li>Выберите шаблон <em>«Post to a channel when a webhook request is received»</em>.</li>
+      <li>Заполните параметры и нажмите <strong>Save</strong>.</li>
+      <li>Скопируйте сгенерированный webhook-URL и вставьте в поле <code>teams.webhookUrl</code> в <code>config.json</code>.</li>
+    </ol>
+    Подробнее — в <a href="https://learn.microsoft.com/en-us/microsoftteams/platform/webhooks-and-connectors/how-to/add-incoming-webhook" target="_blank">официальной документации Microsoft Teams</a>.
+    <p><strong>Замечания и ограничения</strong> (согласно документации Teams):</p>
+    <ul>
+      <li>График (при <code>enableChart=true</code>) встраивается в Adaptive Card как base64-картинка — внешний хостинг не нужен.</li>
+      <li>Общий размер сообщения должен быть ≤ <strong>28 KB</strong>. При очень больших графиках их, возможно, придётся отключить либо размещать снаружи.</li>
+      <li>Teams ограничивает частоту запросов: <strong>не более 4 запросов в секунду</strong>.</li>
+      <li>Adaptive Card использует <code>$schema</code> <code>http://adaptivecards.io/schemas/adaptive-card.json</code>, версия <code>1.5</code>. Для кастомизации карточки передайте собственный шаблон через <code>templatePath</code> — его содержимое подставляется в поле <code>TextBlock.text</code> (Teams-Markdown: <code>**жирный**</code>, <code>_курсив_</code>, списки, ссылки).</li>
+    </ul>
   </details>
