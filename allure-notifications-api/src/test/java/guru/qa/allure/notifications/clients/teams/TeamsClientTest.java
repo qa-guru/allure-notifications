@@ -10,8 +10,6 @@ import kong.unirest.MockClient;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 
-import java.util.List;
-
 import static kong.unirest.HttpMethod.POST;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.RETURNS_DEEP_STUBS;
@@ -85,7 +83,8 @@ class TeamsClientTest {
             String joined = String.join("\n", body);
             for (String fragment : fragments) {
                 if (joined.contains(fragment)) {
-                    return new MatchStatus(false, "Expected body to NOT contain '" + fragment + "', but was: " + joined);
+                    return new MatchStatus(false,
+                            "Expected body to NOT contain '" + fragment + "', but was: " + joined);
                 }
             }
             return new MatchStatus(true, "OK");
