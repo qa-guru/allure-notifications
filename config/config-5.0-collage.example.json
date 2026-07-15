@@ -1,0 +1,31 @@
+{
+  "base": {
+    "project": "${JOB_BASE_NAME}",
+    "environment": "${STAND}",
+    "comment": "Automated test run",
+    "language": "en",
+    "allureFolder": "build/allure-report/",
+    "allureResultsFolder": "build/allure-results/",
+    "enableChart": true,
+    "darkMode": true,
+    "enableSuitesPublishing": false,
+    "chart": {
+      "mode": "collage",
+      "panels": ["pie", "testingPyramid", "durations"],
+      "pyramidFallback": "suites",
+      "width": 1000,
+      "height": 600
+    },
+    "links": {
+      "report": "${ALLURE_REPORT_URL}",
+      "dashboard": "${ALLURE_DASHBOARD_URL}",
+      "testops": "${ALLURE_JOB_RUN_URL}",
+      "build": "${BUILD_URL}"
+    }
+  },
+  "telegram": {
+    "token": "${TELEGRAM_BOT_TOKEN}",
+    "chat": "${TELEGRAM_CHAT_ID}",
+    "templatePath": "/templates/telegram.ftl"
+  }
+}

@@ -8,6 +8,7 @@ Notification languages: 🇬🇧 🇫🇷 🇷🇺 🇺🇦 🇧🇾 🇨🇳
 ## Table of contents
 + [How it works](#how-it-works)
 + [What the notifications look like](#what-the-notifications-look-like)
++ [What's new in 5.0](#whats-new-in-50)
 + [How to use in your project](#how-to-use-in-your-project)
   + [Running locally](#running-locally)
   + [Running from Jenkins](#running-from-jenkins)
@@ -15,7 +16,12 @@ Notification languages: 🇬🇧 🇫🇷 🇷🇺 🇺🇦 🇧🇾 🇨🇳
 
 
 ## How it works
-After automated tests finish, a `summary.json` file is generated in the `allure-report/widgets` folder. This file contains general test result statistics, which the library uses to build the notification (drawing a chart and adding the corresponding text).
+After automated tests finish, Allure generates a `summary.json` with test statistics. The library locates it automatically:
+
+- **Allure 2** — `<allureFolder>/widgets/summary.json`
+- **Allure 3** — `<allureFolder>/summary.json`
+
+The summary drives notification text and chart rendering. In **collage** mode (`chart.mode: "collage"`, 5.0+), the library also reads `*-result.json` from `allure-results` for pyramid, suites, and duration panels.
 
 ```mermaid
 flowchart LR
@@ -57,6 +63,39 @@ Example notification in Telegram
 
 <img width="660" alt="Telegram notification example" src="docs/telegram_notification.png">
 
+In **5.0 collage** mode the chart is a single 1000×600 PNG: status pie (top-left), testing pyramid or suites bar (top-right), duration histogram (bottom). See [migration guide](docs/migration-5.0.md).
+
+
+## What's new in 5.0
+
+| Feature | Description |
+|---------|-------------|
+| **Collage chart** | `chart.mode: "collage"` — pie + pyramid + durations in one PNG |
+| **Links block** | `links.report`, `dashboard`, `testops`, `build` in templates (i18n) |
+| **Allure 3** | Auto-detect `summary.json` at report root (`stats` → legacy model) |
+| **Results analytics** | `allureResultsFolder` for layer labels, suites, per-test durations |
+| **Backward compat** | Default `chart.mode: "pie"` and deprecated `reportLink` still work |
+
+**Docs:** [Migration 4.x → 5.0](docs/migration-5.0.md) · [CI cookbook](docs/ci-cookbook-5.0.md) · [Example config](config/config-5.0-collage.example.json)
+
+Minimal 5.0 config sketch:
+
+```json
+{
+  "base": {
+    "allureFolder": "build/allure-report/",
+    "allureResultsFolder": "build/allure-results/",
+    "enableChart": true,
+    "chart": { "mode": "collage" },
+    "links": {
+      "report": "${ALLURE_REPORT_URL}",
+      "dashboard": "${ALLURE_DASHBOARD_URL}",
+      "build": "${BUILD_URL}"
+    }
+  }
+}
+```
+
 
 ## How to use in your project
 
@@ -73,9 +112,23 @@ Example notification in Telegram
     "environment": "",
     "comment": "",
     "reportLink": "",
+    "links": {
+      "report": "",
+      "dashboard": "",
+      "testops": "",
+      "build": ""
+    },
     "language": "en",
     "allureFolder": "",
+    "allureResultsFolder": "",
     "enableChart": false,
+    "chart": {
+      "mode": "pie",
+      "panels": ["pie", "testingPyramid", "durations"],
+      "pyramidFallback": "suites",
+      "width": 1000,
+      "height": 600
+    },
     "darkMode": false,
     "enableSuitesPublishing": false,
     "customData": {}
@@ -172,10 +225,22 @@ The `templatePath` parameter is optional and allows you to provide a path to a c
     "project": "some project",
     "environment": "some env",
     "comment": "some comment",
-    "reportLink": "",
+    "links": {
+      "report": "https://ci.example.com/allure-report/",
+      "dashboard": "https://ci.example.com/dashboard/",
+      "testops": "https://testops.example.com/job/42",
+      "build": "https://ci.example.com/job/42"
+    },
     "language": "en",
     "allureFolder": "build/allure-report/",
+    "allureResultsFolder": "build/allure-results/",
     "enableChart": true,
+    "chart": {
+      "mode": "collage",
+      "pyramidFallback": "suites",
+      "width": 1000,
+      "height": 600
+    },
     "darkMode": true,
     "enableSuitesPublishing": true,
     "logo": "logo.png",
@@ -188,13 +253,18 @@ The `templatePath` parameter is optional and allows you to provide a path to a c
 ```
 Fields:
 + `project`, `environment`, `comment` — project name, environment name, and an arbitrary comment.
-+ `reportLink` — link to the Allure report with test results (useful when running from Jenkins).
++ `links` — notification URLs (5.0+): `report`, `dashboard`, `testops`, `build`. Only non-empty links appear in templates.
++ `reportLink` — **deprecated** since 5.0; use `links.report`. Still supported as fallback.
 + `language` — notification language (`en` / `fr` / `ru` / `ua` / `by` / `cn`).
-+ `allureFolder` — path to the folder containing Allure results.
-+ `enableChart` — whether to display the chart (`true` / `false`).
++ `allureFolder` — path to the generated Allure report folder.
++ `allureResultsFolder` — path to raw `allure-results` (for collage pyramid / durations; optional for pie-only).
++ `enableChart` — whether to attach a chart image (`true` / `false`).
++ `chart.mode` — `pie` (default, 4.x compatible) or `collage` (1000×600 PNG, 5.0+).
++ `chart.pyramidFallback` — `suites` when no `layer` labels in results (default `suites`).
++ `chart.width` / `chart.height` — collage PNG size in pixels (default 1000×600).
 + `darkMode` — whether to render the chart in dark mode (`true` / `false`).
 + `enableSuitesPublishing` — whether to publish per-suite statistics (`true` / `false`, default `false`). Requires `suites.json` inside `<allureFolder>/widgets`.
-+ `logo` — path to a logo file; if set, the logo is displayed in the top-left corner of the chart.
++ `logo` — path to a logo file; if set, the logo is displayed in the top-left corner of the pie chart.
 + `durationFormat` (optional, default `HH:mm:ss.SSS`) — output format for test duration.
 + `customData` — extra key-value data available in custom Freemarker templates (optional).
 
@@ -202,7 +272,7 @@ Fields:
 
 7. Run the following command in your terminal:
 ```shell
-java "-DconfigFile=notifications/config.json" -jar notifications/allure-notifications-4.11.0.jar
+java "-DconfigFile=notifications/config.json" -jar notifications/allure-notifications-5.0.0.jar
 ```
 Notes:
 + `summary.json` must already be generated before running this command.
@@ -211,7 +281,8 @@ Notes:
 ```shell
 java "-DconfigFile=notifications/config.json" \
   "-Dnotifications.base.environment=${STAND}" \
-  "-Dnotifications.base.reportLink=${ALLURE_SERVICE_URL}" \
+  "-Dnotifications.base.links.report=${ALLURE_SERVICE_URL}" \
+  "-Dnotifications.base.chart.mode=collage" \
   "-Dnotifications.base.project=${PROJECT_ID}" \
   "-Dnotifications.telegram.token=${TG_BOT_TOKEN}" \
   "-Dnotifications.telegram.chat=${TG_CHAT_ID}" \
@@ -235,7 +306,7 @@ Fill it in as shown below:
 
 Notes:
 + General `base` block settings are described [above](#5-fill-in-the-base-block).
-+ Use Jenkins variables as values: `"project": "${JOB_BASE_NAME}"` and `"reportLink": "${BUILD_URL}"`.
++ Use Jenkins variables as values: `"project": "${JOB_BASE_NAME}"`, `"links.report": "${ALLURE_REPORT_URL}"`, `"links.build": "${BUILD_URL}"`. See [CI cookbook](docs/ci-cookbook-5.0.md).
 + Messenger-specific settings are described in the [next section](#messenger-specific-configjson-settings).
 
 3. Under **Post-build Actions**, click **Add post-build action** → **Post build task**.
@@ -245,14 +316,14 @@ Notes:
 In the **Script** field, enter:
 ```bash
 cd ..
-FILE=allure-notifications-4.11.0.jar
+FILE=allure-notifications-5.0.0.jar
 if [ ! -f "$FILE" ]; then
-   wget https://github.com/qa-guru/allure-notifications/releases/download/4.11.0/allure-notifications-4.11.0.jar
+   wget https://github.com/qa-guru/allure-notifications/releases/download/5.0.0/allure-notifications-5.0.0.jar
 fi
 ```
 Click **Add another task** and in the second **Script** field enter:
 ```bash
-java "-DconfigFile=notifications/config.json" -jar ../allure-notifications-4.11.0.jar
+java "-DconfigFile=notifications/config.json" -jar ../allure-notifications-5.0.0.jar
 ```
 
 4. Save the configuration and run your tests. A notification will be sent to the configured messenger upon completion.
