@@ -1,0 +1,13 @@
+{
+  "uuid": "22222222-2222-2222-2222-222222222222",
+  "name": "integrationTest",
+  "fullName": "com.example.IntegrationTest.integrationTest",
+  "status": "passed",
+  "start": 2000,
+  "stop": 3500,
+  "labels": [
+    {"name": "layer", "value": "integration"},
+    {"name": "parentSuite", "value": "IntegrationParent"},
+    {"name": "suite", "value": "IntegrationSuite"}
+  ]
+}

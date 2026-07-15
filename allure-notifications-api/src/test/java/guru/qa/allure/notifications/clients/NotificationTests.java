@@ -9,7 +9,6 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -36,24 +35,27 @@ import guru.qa.allure.notifications.json.JSON;
 import guru.qa.allure.notifications.model.legend.Legend;
 import guru.qa.allure.notifications.model.phrases.Phrases;
 import guru.qa.allure.notifications.model.summary.Summary;
+import guru.qa.allure.notifications.report.AllureReportVersion;
+import guru.qa.allure.notifications.report.LocatedReport;
+import guru.qa.allure.notifications.report.ReportLocator;
+import guru.qa.allure.notifications.report.SummaryReader;
 import guru.qa.allure.notifications.template.data.MessageData;
 
 @ExtendWith(MockitoExtension.class)
 class NotificationTests {
-    private static final String SUITES_PATH = "widgets/suites.json";
     private static final String PHRASES_PATH = "/phrases/en.json";
     private static final String LEGEND_PATH = "/legend/en.json";
     private static final String ALLURE_PATH = "/allure";
 
     private static final Summary SUMMARY = new Summary();
 
-    @Mock private Notifier notifier;
-    @Mock private Path path;
+    @Mock
+    private Notifier notifier;
 
     static Stream<Arguments> inputData() {
         return Stream.of(
-            Arguments.of(false, null,         0, 1),
-            Arguments.of(true,  new Legend(), 1, 0)
+                Arguments.of(false, null, 0, 1),
+                Arguments.of(true, new Legend(), 1, 0)
         );
     }
 
@@ -64,20 +66,27 @@ class NotificationTests {
         Config config = getConfig(chartEnabled, true);
         Base base = config.getBase();
         byte[] chartImg = new byte[]{};
+        Path reportRoot = Paths.get(ALLURE_PATH);
+        Path summaryPath = reportRoot.resolve("widgets/summary.json");
+        Path suitesPath = reportRoot.resolve("widgets/suites.json");
+        LocatedReport located = new LocatedReport(
+                reportRoot, summaryPath, AllureReportVersion.ALLURE_2, suitesPath, null);
 
         try (MockedConstruction<JSON> jsonUtilsMock = mockConstruction(JSON.class,
                 (mock, context) -> {
-                    when(mock.parseFile(any(File.class), eq(Summary.class))).thenReturn(SUMMARY);
                     when(mock.parseResource(PHRASES_PATH, Phrases.class)).thenCallRealMethod();
                     when(mock.parseResource(LEGEND_PATH, Legend.class)).thenReturn(legend);
                 });
              MockedStatic<ClientFactory> clientFactoryMock = mockStatic(ClientFactory.class);
-             MockedStatic<Paths> pathsMock = mockStatic(Paths.class);
+             MockedStatic<ReportLocator> reportLocatorMock = mockStatic(ReportLocator.class);
+             MockedStatic<SummaryReader> summaryReaderMock = mockStatic(SummaryReader.class);
              MockedStatic<Files> filesMock = mockStatic(Files.class);
              MockedStatic<Chart> chartMock = mockStatic(Chart.class)) {
 
             clientFactoryMock.when(() -> ClientFactory.from(config)).thenReturn(Collections.singletonList(notifier));
-            pathsMock.when(() -> Paths.get(ALLURE_PATH, SUITES_PATH)).thenReturn(path);
+            reportLocatorMock.when(() -> ReportLocator.locate(any(Path.class))).thenReturn(located);
+            summaryReaderMock.when(() -> SummaryReader.read(any(JSON.class), eq(located))).thenReturn(SUMMARY);
+            filesMock.when(() -> Files.readAllBytes(suitesPath)).thenReturn(new byte[]{});
             chartMock.when(() -> Chart.createChart(base, SUMMARY.getStatistic(), legend)).thenReturn(chartImg);
 
             Notification.send(config);
@@ -87,8 +96,7 @@ class NotificationTests {
             verify(json).parseResource(PHRASES_PATH, Phrases.class);
             verify(json, times(chartActionsCount)).parseResource(LEGEND_PATH, Legend.class);
             chartMock.verify(() -> Chart.createChart(base, SUMMARY.getStatistic(), legend), times(chartActionsCount));
-            filesMock.verify(() -> Files.exists(path));
-            filesMock.verify(() -> Files.readAllBytes(path), never());
+            filesMock.verify(() -> Files.readAllBytes(suitesPath));
             verify(notifier, times(chartActionsCount)).sendPhoto(any(MessageData.class), eq(chartImg));
             verify(notifier, times(textActionsCount)).sendText(any(MessageData.class));
         }
@@ -96,26 +104,40 @@ class NotificationTests {
 
     @ParameterizedTest
     @CsvSource({
-        "true,  1",
+        "true, 1",
         "false, 0"
     })
     void shouldSendNotificationWithSuitesData(boolean enableSuitesPublishing, int suitesActionsCount)
             throws MessagingException, IOException {
         Config config = getConfig(false, enableSuitesPublishing);
+        Path reportRoot = Paths.get(ALLURE_PATH);
+        Path summaryPath = reportRoot.resolve("widgets/summary.json");
+        Path suitesPath = reportRoot.resolve("widgets/suites.json");
+        LocatedReport located = new LocatedReport(
+                reportRoot,
+                summaryPath,
+                AllureReportVersion.ALLURE_2,
+                enableSuitesPublishing ? suitesPath : null,
+                null);
 
-        try (MockedConstruction<JSON> jsonUtilsMock = mockConstruction(JSON.class);
+        try (MockedConstruction<JSON> ignored = mockConstruction(JSON.class,
+                (mock, context) -> when(mock.parseResource(PHRASES_PATH, Phrases.class)).thenCallRealMethod());
              MockedStatic<ClientFactory> clientFactoryMock = mockStatic(ClientFactory.class);
-             MockedStatic<Paths> pathsMock = mockStatic(Paths.class);
+             MockedStatic<ReportLocator> reportLocatorMock = mockStatic(ReportLocator.class);
+             MockedStatic<SummaryReader> summaryReaderMock = mockStatic(SummaryReader.class);
              MockedStatic<Files> filesMock = mockStatic(Files.class)) {
+
             clientFactoryMock.when(() -> ClientFactory.from(config)).thenReturn(Collections.singletonList(notifier));
-            pathsMock.when(() -> Paths.get(ALLURE_PATH, SUITES_PATH)).thenReturn(path);
-            filesMock.when(() -> Files.exists(path)).thenReturn(true);
-            filesMock.when(() -> Files.readAllBytes(path)).thenReturn(new byte[]{});
+            reportLocatorMock.when(() -> ReportLocator.locate(any(Path.class))).thenReturn(located);
+            summaryReaderMock.when(() -> SummaryReader.read(any(JSON.class), eq(located))).thenReturn(SUMMARY);
+            filesMock.when(() -> Files.readAllBytes(suitesPath)).thenReturn(new byte[]{});
 
             Notification.send(config);
 
-            filesMock.verify(() -> Files.exists(path), times(suitesActionsCount));
-            filesMock.verify(() -> Files.readAllBytes(path), times(suitesActionsCount));
+            filesMock.verify(() -> Files.readAllBytes(suitesPath), times(suitesActionsCount));
+            if (suitesActionsCount == 0) {
+                filesMock.verify(() -> Files.readAllBytes(any(Path.class)), never());
+            }
         }
     }
 

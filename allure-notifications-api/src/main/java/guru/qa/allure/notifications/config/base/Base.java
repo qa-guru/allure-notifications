@@ -19,6 +19,11 @@ public class Base {
     private Language language;
     private String logo;
     private String allureFolder;
+    /**
+     * Optional path to allure-results (for charts / analytics).
+     * When null, sibling {@code allure-results/} next to {@link #allureFolder} is used.
+     */
+    private String allureResultsFolder;
     private Boolean enableChart;
     private Boolean darkMode;
     private Boolean enableSuitesPublishing;

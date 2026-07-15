@@ -4,7 +4,6 @@ import static java.lang.Boolean.TRUE;
 
 import guru.qa.allure.notifications.chart.Chart;
 
-import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -20,12 +19,14 @@ import guru.qa.allure.notifications.json.JSON;
 import guru.qa.allure.notifications.model.legend.Legend;
 import guru.qa.allure.notifications.model.phrases.Phrases;
 import guru.qa.allure.notifications.model.summary.Summary;
+import guru.qa.allure.notifications.report.LocatedReport;
+import guru.qa.allure.notifications.report.ReportLocator;
+import guru.qa.allure.notifications.report.SummaryReader;
 import guru.qa.allure.notifications.template.data.MessageData;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 public class Notification {
-    private static final String SUITES_DATA_PATH = "widgets/suites.json";
 
     public static boolean send(Config config) throws IOException, MessageBuildException {
         return send(config, null);
@@ -42,15 +43,16 @@ public class Notification {
         Base base = config.getBase();
         JSON json = new JSON();
         String allureFolderPath = base.getAllureFolder();
-        Summary summary = json.parseFile(new File(allureFolderPath, "widgets/summary.json"), Summary.class);
+        LocatedReport located = ReportLocator.locate(Paths.get(allureFolderPath));
+        Summary summary = SummaryReader.read(json, located);
         String suitesSummaryJson = null;
-        Path path = Paths.get(allureFolderPath, SUITES_DATA_PATH);
         if (TRUE.equals(base.getEnableSuitesPublishing())) {
-            if (Files.exists(path)) {
-                suitesSummaryJson = new String(Files.readAllBytes(path), StandardCharsets.UTF_8);
+            if (located.getSuitesPath().isPresent()) {
+                Path suitesPath = located.getSuitesPath().get();
+                suitesSummaryJson = new String(Files.readAllBytes(suitesPath), StandardCharsets.UTF_8);
             } else {
                 log.warn("Suites statistic publishing is enabled, but JSON file with data cannot be found! "
-                        + "Check \"{}\" file in Allure folder.", SUITES_DATA_PATH);
+                        + "Check \"widgets/suites.json\" in Allure folder.");
             }
         }
         Phrases phrases = json.parseResource("/phrases/" + base.getLanguage() + ".json", Phrases.class);

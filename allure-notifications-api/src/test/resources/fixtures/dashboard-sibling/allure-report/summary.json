@@ -1,0 +1,13 @@
+{
+  "name": "Test Suite",
+  "stats": {
+    "total": 10,
+    "passed": 8,
+    "failed": 1,
+    "broken": 0,
+    "skipped": 1
+  },
+  "status": "failed",
+  "duration": 24011,
+  "plugin": "Awesome"
+}

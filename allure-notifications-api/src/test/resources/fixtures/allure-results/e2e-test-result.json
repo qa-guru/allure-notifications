@@ -1,0 +1,12 @@
+{
+  "uuid": "33333333-3333-3333-3333-333333333333",
+  "name": "e2eTest",
+  "fullName": "com.example.E2ETest.e2eTest",
+  "status": "failed",
+  "start": 4000,
+  "stop": 7000,
+  "labels": [
+    {"name": "layer", "value": "e2e"},
+    {"name": "suite", "value": "E2ESuite"}
+  ]
+}
