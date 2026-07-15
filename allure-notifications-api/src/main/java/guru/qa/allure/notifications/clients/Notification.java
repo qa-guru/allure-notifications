@@ -60,7 +60,7 @@ public class Notification {
         byte[] chartImage = null;
         if (base.getEnableChart()) {
             Legend legend = json.parseResource("/legend/" + base.getLanguage() + ".json", Legend.class);
-            chartImage = Chart.createChart(base, summary.getStatistic(), legend);
+            chartImage = Chart.createChart(base, summary, legend);
             if (chartOutputDir != null) {
                 Path chartPath = Paths.get(chartOutputDir, "chart.png");
                 Files.write(chartPath, chartImage);

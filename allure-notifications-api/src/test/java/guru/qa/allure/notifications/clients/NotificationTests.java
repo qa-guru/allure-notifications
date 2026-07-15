@@ -87,7 +87,7 @@ class NotificationTests {
             reportLocatorMock.when(() -> ReportLocator.locate(any(Path.class))).thenReturn(located);
             summaryReaderMock.when(() -> SummaryReader.read(any(JSON.class), eq(located))).thenReturn(SUMMARY);
             filesMock.when(() -> Files.readAllBytes(suitesPath)).thenReturn(new byte[]{});
-            chartMock.when(() -> Chart.createChart(base, SUMMARY.getStatistic(), legend)).thenReturn(chartImg);
+            chartMock.when(() -> Chart.createChart(base, SUMMARY, legend)).thenReturn(chartImg);
 
             Notification.send(config);
 
@@ -95,7 +95,7 @@ class NotificationTests {
             JSON json = jsonUtilsMock.constructed().get(0);
             verify(json).parseResource(PHRASES_PATH, Phrases.class);
             verify(json, times(chartActionsCount)).parseResource(LEGEND_PATH, Legend.class);
-            chartMock.verify(() -> Chart.createChart(base, SUMMARY.getStatistic(), legend), times(chartActionsCount));
+            chartMock.verify(() -> Chart.createChart(base, SUMMARY, legend), times(chartActionsCount));
             filesMock.verify(() -> Files.readAllBytes(suitesPath));
             verify(notifier, times(chartActionsCount)).sendPhoto(any(MessageData.class), eq(chartImg));
             verify(notifier, times(textActionsCount)).sendText(any(MessageData.class));
