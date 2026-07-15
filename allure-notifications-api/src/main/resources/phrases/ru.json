@@ -3,6 +3,12 @@
   "environment": "Рабочее окружение",
   "comment": "Комментарий",
   "reportAvailableAtLink": "Отчет доступен по ссылке",
+  "links": {
+    "report": "Отчёт",
+    "dashboard": "Дашборд",
+    "testops": "TestOps",
+    "build": "Сборка"
+  },
   "scenario": {
     "duration": "Продолжительность",
     "totalScenarios": "Всего сценариев",

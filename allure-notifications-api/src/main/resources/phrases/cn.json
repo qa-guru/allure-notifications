@@ -3,6 +3,12 @@
   "environment": "环境",
   "comment": "评论",
   "reportAvailableAtLink": "测试报告链接",
+  "links": {
+    "report": "报告",
+    "dashboard": "仪表盘",
+    "testops": "TestOps",
+    "build": "构建"
+  },
   "scenario": {
     "duration": "持续时间",
     "totalScenarios": "脚本总数",

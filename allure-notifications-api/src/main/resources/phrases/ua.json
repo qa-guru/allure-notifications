@@ -3,6 +3,12 @@
   "environment": "Середовище",
   "comment": "Коментар",
   "reportAvailableAtLink": "Звіт доступний за посиланням",
+  "links": {
+    "report": "Звіт",
+    "dashboard": "Дашборд",
+    "testops": "TestOps",
+    "build": "Збірка"
+  },
   "scenario": {
     "duration": "Тривалість",
     "totalScenarios": "Усього сценаріїв",

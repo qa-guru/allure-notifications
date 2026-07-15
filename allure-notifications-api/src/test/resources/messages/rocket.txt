@@ -13,4 +13,4 @@
 **-Name of the test suite:** **batch-2**
 **-Total scenarios:** **1**
 **-Total passed:** 1
-**Report available at the link:** https://www.example.com
+**Report:** https://www.example.com

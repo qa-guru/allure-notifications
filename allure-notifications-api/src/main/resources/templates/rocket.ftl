@@ -40,5 +40,5 @@
         <#if suiteSkipped != 0 > **-${phrases.scenario.totalSkipped}:** ${suiteSkipped}</#if>
     </#list>
     </#if>
-    <#if reportLink??>**${phrases.reportAvailableAtLink}:** ${reportLink}</#if>
+    <@utils.printRocketLinks links=links phrases=phrases />
 </#compress>

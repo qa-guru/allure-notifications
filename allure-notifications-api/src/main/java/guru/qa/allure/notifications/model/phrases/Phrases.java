@@ -18,6 +18,8 @@ public class Phrases {
     private String comment;
     @SerializedName("reportAvailableAtLink")
     private String reportAvailableAtLink;
+    @SerializedName("links")
+    private LinkPhrases links;
     @SerializedName("scenario")
     private Scenario scenario;
     @SerializedName("numberOfSuites")

@@ -3,6 +3,12 @@
   "environment": "Environment",
   "comment": "Comment",
   "reportAvailableAtLink": "Report available at the link",
+  "links": {
+    "report": "Report",
+    "dashboard": "Dashboard",
+    "testops": "TestOps",
+    "build": "Build"
+  },
   "scenario": {
     "duration": "Duration",
     "totalScenarios": "Total scenarios",

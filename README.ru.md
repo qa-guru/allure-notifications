@@ -8,6 +8,7 @@
 ## Содержание
 + [Принцип работы](#принцип-работы)
 + [Как выглядят оповещения](#как-выглядят-оповещения)
++ [Что нового в 5.0](#что-нового-в-50)
 + [Как использовать в своём проекте](#как-использовать-в-своём-проекте)
   + [Для запуска локально](#для-запуска-локально)
   + [Для запуска из Jenkins](#для-запуска-из-jenkins)
@@ -15,7 +16,12 @@
 
 
 ## Принцип работы
-По итогам выполнения автотестов генерируется файл `summary.json` в папке `allure-report/widgets`. Этот файл содержит общую статистику о результатах прохождения тестов, на основании которой формируется уведомление (отрисовывается диаграмма и добавляется соответствующий текст).
+После выполнения автотестов Allure генерирует `summary.json` со статистикой. Библиотека находит его автоматически:
+
+- **Allure 2** — `<allureFolder>/widgets/summary.json`
+- **Allure 3** — `<allureFolder>/summary.json`
+
+По summary формируется текст уведомления и диаграмма. В режиме **collage** (`chart.mode: "collage"`, 5.0+) дополнительно читаются `*-result.json` из `allure-results` для пирамид, сьютов и длительностей.
 
 ```mermaid
 flowchart LR
@@ -57,6 +63,40 @@ flowchart LR
 
 <img width="660" alt="Telegram notification example" src="docs/telegram_notification.png">
 
+В режиме **collage 5.0** диаграмма — один PNG 1000×600: pie статусов (слева сверху), testing pyramid или suites bar (справа сверху), гистограмма длительностей (снизу). См. [гайд по миграции](docs/migration-5.0.md).
+
+
+## Что нового в 5.0
+
+| Возможность | Описание |
+|-------------|----------|
+| **Collage chart** | `chart.mode: "collage"` — pie + pyramid + durations в одном PNG |
+| **Блок links** | `links.report`, `dashboard`, `testops`, `build` в шаблонах (i18n) |
+| **Allure 3** | Автоопределение `summary.json` в корне отчёта (`stats` → legacy-модель) |
+| **Аналитика results** | `allureResultsFolder` для layer labels, suites, длительностей |
+| **Обратная совместимость** | По умолчанию `chart.mode: "pie"` и deprecated `reportLink` работают |
+
+**Документация:** [Миграция 4.x → 5.0](docs/migration-5.0.md) · [CI cookbook](docs/ci-cookbook-5.0.md) · [Пример config](config/config-5.0-collage.example.json)
+
+Минимальный sketch config 5.0:
+
+```json
+{
+  "base": {
+    "allureFolder": "build/allure-report/",
+    "allureResultsFolder": "build/allure-results/",
+    "enableChart": true,
+    "chart": { "mode": "collage" },
+    "links": {
+      "report": "${ALLURE_REPORT_URL}",
+      "dashboard": "${ALLURE_DASHBOARD_URL}",
+      "build": "${BUILD_URL}"
+    }
+  }
+}
+```
+
+
 ## Как использовать в своём проекте
 
 ### Для запуска локально
@@ -72,9 +112,23 @@ flowchart LR
     "environment": "",
     "comment": "",
     "reportLink": "",
+    "links": {
+      "report": "",
+      "dashboard": "",
+      "testops": "",
+      "build": ""
+    },
     "language": "ru",
     "allureFolder": "",
+    "allureResultsFolder": "",
     "enableChart": false,
+    "chart": {
+      "mode": "pie",
+      "panels": ["pie", "testingPyramid", "durations"],
+      "pyramidFallback": "suites",
+      "width": 1000,
+      "height": 600
+    },
     "darkMode": false,
     "enableSuitesPublishing": false,
     "customData": {}
@@ -171,10 +225,22 @@ flowchart LR
     "project": "some project",
     "environment": "some env",
     "comment": "some comment",
-    "reportLink": "",
+    "links": {
+      "report": "https://ci.example.com/allure-report/",
+      "dashboard": "https://ci.example.com/dashboard/",
+      "testops": "https://testops.example.com/job/42",
+      "build": "https://ci.example.com/job/42"
+    },
     "language": "ru",
     "allureFolder": "build/allure-report/",
+    "allureResultsFolder": "build/allure-results/",
     "enableChart": true,
+    "chart": {
+      "mode": "collage",
+      "pyramidFallback": "suites",
+      "width": 1000,
+      "height": 600
+    },
     "darkMode": true,
     "enableSuitesPublishing": true,
     "logo": "logo.png",
@@ -187,13 +253,18 @@ flowchart LR
 ```
 Описание полей:
 + `project`, `environment`, `comment` — имя проекта, название окружения и произвольный комментарий.
-+ `reportLink` — ссылка на Allure report с результатами тестов (целесообразно заполнять при запуске из Jenkins).
++ `links` — ссылки в уведомлении (5.0+): `report`, `dashboard`, `testops`, `build`. В шаблон попадают только непустые.
++ `reportLink` — **устарел** с 5.0; используйте `links.report`. Пока поддерживается как fallback.
 + `language` — язык оповещения (`en` / `fr` / `ru` / `ua` / `by` / `cn`).
-+ `allureFolder` — путь к папке с результатами Allure.
-+ `enableChart` — отображать ли диаграмму (`true` / `false`).
++ `allureFolder` — путь к сгенерированному Allure report.
++ `allureResultsFolder` — путь к сырым `allure-results` (для collage pyramid / durations; для pie-only необязателен).
++ `enableChart` — прикреплять ли изображение диаграммы (`true` / `false`).
++ `chart.mode` — `pie` (по умолчанию, как в 4.x) или `collage` (PNG 1000×600, 5.0+).
++ `chart.pyramidFallback` — `suites`, если в results нет `layer` labels (по умолчанию `suites`).
++ `chart.width` / `chart.height` — размер collage PNG в пикселях (по умолчанию 1000×600).
 + `darkMode` — отображать ли диаграмму в тёмном режиме (`true` / `false`).
 + `enableSuitesPublishing` — публиковать ли статистику по каждому набору тестов (`true` / `false`, по умолчанию `false`). Требует наличия `suites.json` в `<allureFolder>/widgets`.
-+ `logo` — путь к файлу логотипа; если задан, отображается в левом верхнем углу диаграммы.
++ `logo` — путь к файлу логотипа; если задан, отображается в левом верхнем углу pie chart.
 + `durationFormat` (опционально, по умолчанию `HH:mm:ss.SSS`) — формат отображения продолжительности тестов.
 + `customData` — дополнительные данные для использования в собственных Freemarker-шаблонах (опционально).
 
@@ -201,7 +272,7 @@ flowchart LR
 
 7. Выполнить в терминале:
 ```shell
-java "-DconfigFile=notifications/config.json" -jar notifications/allure-notifications-4.11.0.jar
+java "-DconfigFile=notifications/config.json" -jar notifications/allure-notifications-5.0.0.jar
 ```
 Примечания:
 + На момент запуска файл `summary.json` уже должен быть сформирован.
@@ -210,7 +281,8 @@ java "-DconfigFile=notifications/config.json" -jar notifications/allure-notifica
 ```shell
 java "-DconfigFile=notifications/config.json" \
   "-Dnotifications.base.environment=${STAND}" \
-  "-Dnotifications.base.reportLink=${ALLURE_SERVICE_URL}" \
+  "-Dnotifications.base.links.report=${ALLURE_SERVICE_URL}" \
+  "-Dnotifications.base.chart.mode=collage" \
   "-Dnotifications.base.project=${PROJECT_ID}" \
   "-Dnotifications.telegram.token=${TG_BOT_TOKEN}" \
   "-Dnotifications.telegram.chat=${TG_CHAT_ID}" \
@@ -234,7 +306,7 @@ java "-DconfigFile=notifications/config.json" \
 
 Примечания:
 + Описание блока `base` приведено [выше](#5-заполнить-блок-base-в-файле-configjson).
-+ В качестве значений используйте переменные Jenkins: `"project": "${JOB_BASE_NAME}"` и `"reportLink": "${BUILD_URL}"`.
++ В качестве значений используйте переменные Jenkins: `"project": "${JOB_BASE_NAME}"`, `"links.report": "${ALLURE_REPORT_URL}"`, `"links.build": "${BUILD_URL}"`. См. [CI cookbook](docs/ci-cookbook-5.0.md).
 + Особенности заполнения блока мессенджера описаны в [следующем разделе](#особенности-заполнения-configjson-в-зависимости-от-мессенджера).
 
 3. В разделе **Послесборочные операции** нажать **Добавить шаг после сборки** → **Post build task**.
@@ -244,14 +316,14 @@ java "-DconfigFile=notifications/config.json" \
 В поле **Script** указать:
 ```bash
 cd ..
-FILE=allure-notifications-4.11.0.jar
+FILE=allure-notifications-5.0.0.jar
 if [ ! -f "$FILE" ]; then
-   wget https://github.com/qa-guru/allure-notifications/releases/download/4.11.0/allure-notifications-4.11.0.jar
+   wget https://github.com/qa-guru/allure-notifications/releases/download/5.0.0/allure-notifications-5.0.0.jar
 fi
 ```
 Нажать **Add another task** и во втором поле **Script** указать:
 ```bash
-java "-DconfigFile=notifications/config.json" -jar ../allure-notifications-4.11.0.jar
+java "-DconfigFile=notifications/config.json" -jar ../allure-notifications-5.0.0.jar
 ```
 
 4. Сохранить настройки и запустить тесты. По завершении в мессенджер будет направлено уведомление.

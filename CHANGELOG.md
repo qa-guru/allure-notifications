@@ -1,5 +1,29 @@
 # Changelog
 
+## v 5.0.0
+
+### English
+
+- **Collage chart** — `chart.mode: collage` renders a 1000×600 PNG with three panels: pie (status), testing pyramid (or suites fallback), and durations
+- **Chart panels** — `PiePanel`, `SuitesPanel`, `DurationsPanel`, `TestingPyramidPanel` via `CollageRenderer`; default `chart.mode: pie` keeps 4.x behaviour
+- **Links block** — `base.links` with report, dashboard, testops, and build URLs; i18n labels in all templates
+- **Allure 3 support** — `ReportLocator` auto-detects Allure 2 (`widgets/summary.json`) vs Allure 3 (`summary.json` at report root)
+- **`reportLink` deprecated** — maps to `links.report`; backward compatible fallback
+- **Report analytics** — `ReportAnalytics` from `allure-results` for pyramid layers, top suites, and duration histogram
+- **Pyramid colors** — Palette A (`PyramidLayerColors`) aligned with monorepo test-layer canon
+- Docs: [migration-5.0.md](docs/migration-5.0.md), [ci-cookbook-5.0.md](docs/ci-cookbook-5.0.md), example [config-5.0-collage.example.json](config/config-5.0-collage.example.json)
+
+### Russian
+
+- **Collage chart** — `chart.mode: collage` формирует PNG 1000×600 с тремя панелями: pie (статусы), testing pyramid (или fallback suites), durations
+- **Панели диаграммы** — `PiePanel`, `SuitesPanel`, `DurationsPanel`, `TestingPyramidPanel` через `CollageRenderer`; по умолчанию `chart.mode: pie` — поведение как в 4.x
+- **Блок links** — `base.links`: report, dashboard, testops, build; i18n-подписи во всех шаблонах
+- **Поддержка Allure 3** — `ReportLocator` автоматически определяет Allure 2 (`widgets/summary.json`) и Allure 3 (`summary.json` в корне отчёта)
+- **`reportLink` устарел** — маппится в `links.report`; обратная совместимость сохранена
+- **Аналитика отчёта** — `ReportAnalytics` из `allure-results`: слои pyramid, top suites, гистограмма durations
+- **Цвета pyramid** — Palette A (`PyramidLayerColors`) по канону test-layers monorepo
+- Документация: [migration-5.0.md](docs/migration-5.0.md), [ci-cookbook-5.0.md](docs/ci-cookbook-5.0.md), пример [config-5.0-collage.example.json](config/config-5.0-collage.example.json)
+
 ## v 2.0.1
 
 ### English

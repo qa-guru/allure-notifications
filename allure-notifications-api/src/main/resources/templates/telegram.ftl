@@ -40,5 +40,5 @@
         <#if suiteSkipped != 0 ><code>${phrases.scenario.totalSkipped}: ${suiteSkipped}</code></#if>
     </#list>
     </#if>
-    <#if reportLink??><b>${phrases.reportAvailableAtLink}:</b> <a href="${reportLink}">${reportLink}</a></#if>
+    <@utils.printTelegramLinks links=links phrases=phrases />
 </#compress>
