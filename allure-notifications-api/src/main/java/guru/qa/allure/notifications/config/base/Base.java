@@ -2,6 +2,7 @@ package guru.qa.allure.notifications.config.base;
 
 import java.util.Map;
 
+import guru.qa.allure.notifications.config.chart.ChartConfig;
 import guru.qa.allure.notifications.config.enums.Language;
 import guru.qa.allure.notifications.config.links.Links;
 import lombok.Data;
@@ -31,6 +32,7 @@ public class Base {
      */
     private String allureResultsFolder;
     private Boolean enableChart;
+    private ChartConfig chart;
     private Boolean darkMode;
     private Boolean enableSuitesPublishing;
     private String durationFormat = "HH:mm:ss.SSS";
