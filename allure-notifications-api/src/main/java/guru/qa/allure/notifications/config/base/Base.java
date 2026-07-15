@@ -3,6 +3,7 @@ package guru.qa.allure.notifications.config.base;
 import java.util.Map;
 
 import guru.qa.allure.notifications.config.enums.Language;
+import guru.qa.allure.notifications.config.links.Links;
 import lombok.Data;
 
 /**
@@ -15,7 +16,12 @@ public class Base {
     private String project;
     private String environment;
     private String comment;
+    /**
+     * @deprecated use {@code links.report} since 5.0
+     */
+    @Deprecated
     private String reportLink;
+    private Links links;
     private Language language;
     private String logo;
     private String allureFolder;

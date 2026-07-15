@@ -3,6 +3,12 @@
   "environment": "Працоўнае асяроддзе",
   "comment": "Каментар",
   "reportAvailableAtLink": "Справаздача даступна па спасылцы",
+  "links": {
+    "report": "Справаздача",
+    "dashboard": "Дашборд",
+    "testops": "TestOps",
+    "build": "Зборка"
+  },
   "scenario": {
     "duration": "Працягласць",
     "totalScenarios": "Усяго сцэнарыяў",

@@ -48,5 +48,5 @@
         </table><br/>
     </#list>
     </#if>
-    <#if reportLink??><b>${phrases.reportAvailableAtLink}:</b> <a href=${reportLink}>${reportLink}</a></#if>
+    <@utils.printHtmlLinks links=links phrases=phrases />
 </#compress>

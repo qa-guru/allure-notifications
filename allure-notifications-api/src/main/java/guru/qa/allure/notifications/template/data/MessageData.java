@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import guru.qa.allure.notifications.config.base.Base;
+import guru.qa.allure.notifications.config.links.LinksResolver;
 import guru.qa.allure.notifications.formatters.Formatters;
 import guru.qa.allure.notifications.model.phrases.Phrases;
 import guru.qa.allure.notifications.model.summary.Summary;
@@ -40,8 +41,18 @@ public class MessageData {
 
             data.put("environment", base.getEnvironment());
             data.put("comment", base.getComment());
-            data.put("reportLink", Formatters.formatReportLink(base.getReportLink()));
             data.put("customData", base.getCustomData());
+
+            Map<String, String> links = LinksResolver.resolve(base);
+            if (!links.isEmpty()) {
+                data.put("links", links);
+            }
+            String reportLink = links.get("report");
+            if (reportLink != null) {
+                data.put("reportLink", reportLink);
+            } else if (base.getReportLink() != null) {
+                data.put("reportLink", Formatters.formatReportLink(base.getReportLink()));
+            }
 
             data.put("time", Formatters.formatDuration(summary.getTime().getDuration(), base.getDurationFormat()));
             data.put("statistic", summary.getStatistic());
