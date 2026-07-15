@@ -43,7 +43,7 @@ class ReportLocatorTest {
 
         assertEquals(AllureReportVersion.ALLURE_3, located.getVersion());
         assertTrue(located.getSummaryPath().toString().replace('\\', '/')
-                .endsWith("out/build/allure-report/summary.json"));
+                .endsWith("ci-output/allure-report/summary.json"));
         assertTrue(located.getReportRoot().endsWith(Paths.get("allure-report")));
     }
 
