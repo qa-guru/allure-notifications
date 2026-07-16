@@ -9,7 +9,7 @@ import java.util.Locale;
 import java.util.Map;
 
 /**
- * Testing pyramid layer colors — Palette A (cool → warm).
+ * Testing pyramid layer colors — Palette A / Allure3 F5.
  *
  * <p>
  * SSOT in monorepo: {@code stacks/java-spring/.../tokens.css} {@code --layer-*},
@@ -35,21 +35,21 @@ public final class PyramidLayerColors {
     private static final Color OTHER_DARK = Color.decode("#94a3b8");
 
     private static final Map<String, Color> LIGHT = layerMap(
-            "#94a3b8",
-            "#2563eb",
-            "#0891b2",
-            "#7c3aed",
-            "#d97706",
-            "#ea580c"
+            "#3bc95d",
+            "#ff8200",
+            "#c165c1",
+            "#ffd833",
+            "#f43f3b",
+            "#459bde"
     );
 
     private static final Map<String, Color> DARK = layerMap(
-            "#64748b",
-            "#3b82f6",
-            "#06b6d4",
-            "#8b5cf6",
-            "#f59e0b",
-            "#f97316"
+            "#60d87a",
+            "#ffa833",
+            "#dd7edd",
+            "#ffe04a",
+            "#ff6f67",
+            "#61b6fb"
     );
 
     private PyramidLayerColors() {
