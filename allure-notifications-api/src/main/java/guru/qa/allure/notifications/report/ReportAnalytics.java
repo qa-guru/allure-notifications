@@ -15,6 +15,7 @@ public final class ReportAnalytics {
     private final List<SuiteStat> suites;
     private final List<Long> durationsMs;
     private final boolean hasLayerLabels;
+    private final boolean hasKnownLayerLabels;
     private final int resultCount;
 
     public ReportAnalytics(Statistic statistic,
@@ -23,11 +24,22 @@ public final class ReportAnalytics {
                              List<Long> durationsMs,
                              boolean hasLayerLabels,
                              int resultCount) {
+        this(statistic, layers, suites, durationsMs, hasLayerLabels, false, resultCount);
+    }
+
+    public ReportAnalytics(Statistic statistic,
+                             Map<String, Integer> layers,
+                             List<SuiteStat> suites,
+                             List<Long> durationsMs,
+                             boolean hasLayerLabels,
+                             boolean hasKnownLayerLabels,
+                             int resultCount) {
         this.statistic = statistic;
         this.layers = Collections.unmodifiableMap(layers);
         this.suites = Collections.unmodifiableList(suites);
         this.durationsMs = Collections.unmodifiableList(durationsMs);
         this.hasLayerLabels = hasLayerLabels;
+        this.hasKnownLayerLabels = hasKnownLayerLabels;
         this.resultCount = resultCount;
     }
 
@@ -49,6 +61,10 @@ public final class ReportAnalytics {
 
     public boolean hasLayerLabels() {
         return hasLayerLabels;
+    }
+
+    public boolean hasKnownLayerLabels() {
+        return hasKnownLayerLabels;
     }
 
     public int getResultCount() {

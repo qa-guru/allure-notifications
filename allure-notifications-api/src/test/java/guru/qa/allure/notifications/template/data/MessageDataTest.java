@@ -2,6 +2,7 @@ package guru.qa.allure.notifications.template.data;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.Map;
 
@@ -38,7 +39,7 @@ class MessageDataTest {
     }
 
     @Test
-    void omitsLinksWhenNoneConfigured() throws Exception {
+    void putsEmptyLinksMapWhenNoneConfigured() throws Exception {
         Base base = new Base();
         JSON json = new JSON();
         Summary summary = json.parseResource("/data/testSummary.json", Summary.class);
@@ -46,7 +47,9 @@ class MessageDataTest {
 
         Map<String, Object> values = new MessageData(base, summary, null, phrases).getValues();
 
-        assertFalse(values.containsKey("links"));
+        @SuppressWarnings("unchecked")
+        Map<String, String> resolvedLinks = (Map<String, String>) values.get("links");
+        assertTrue(resolvedLinks.isEmpty());
         assertFalse(values.containsKey("reportLink"));
     }
 }

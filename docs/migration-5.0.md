@@ -157,7 +157,16 @@ Resolution order:
 }
 ```
 
-**Testing pyramid** needs `layer` labels on test results (e.g. `@Layer("unit")` / Allure label `layer`). Without labels, `pyramidFallback: "suites"` shows a horizontal bar chart of top suites.
+**Testing pyramid** needs `layer` labels on test results (e.g. `@Layer("unit")` / Allure label `layer`). Without labels — or with only non-SSOT labels such as `UI Tests` / `visual` — `pyramidFallback: "suites"` shows a horizontal bar chart of top suites. Known SSOT layers plus unknown labels render an extra gray **`other`** band at the top of the pyramid.
+
+## Suites publishing (`enableSuitesPublishing`)
+
+| Report | Source |
+|--------|--------|
+| Allure 2 | `widgets/suites.json` when present |
+| Allure 3 / missing widgets | Built from `*-result.json` via `base.allureResultsFolder` (or sibling `allure-results/`) |
+
+If neither widgets nor results are available, a warning is logged and the suites block is omitted from the message.
 
 ## Allure 2 vs Allure 3
 

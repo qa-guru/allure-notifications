@@ -10,15 +10,18 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import guru.qa.allure.notifications.chart.PyramidLayerColors;
 import guru.qa.allure.notifications.config.base.Base;
 import guru.qa.allure.notifications.json.JSON;
 import guru.qa.allure.notifications.model.summary.Statistic;
 import guru.qa.allure.notifications.model.summary.Summary;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 
 /**
  * Builds {@link ReportAnalytics} from report summary and allure-results files.
  */
+@Slf4j
 public final class ReportAnalyticsBuilder {
     static final int DEFAULT_TOP_SUITES = 10;
 
@@ -39,6 +42,7 @@ public final class ReportAnalyticsBuilder {
     public static ReportAnalytics build(Summary summary, List<AllureTestResult> results, int topSuites) {
         Statistic statistic = summary != null ? summary.getStatistic() : null;
         boolean hasLayerLabels = false;
+        boolean hasKnownLayerLabels = false;
         Map<String, Integer> layerCounts = new LinkedHashMap<String, Integer>();
         Map<String, Integer> suiteCounts = new LinkedHashMap<String, Integer>();
         List<Long> durations = new ArrayList<Long>();
@@ -49,6 +53,9 @@ public final class ReportAnalyticsBuilder {
                 if (StringUtils.isNotBlank(layer)) {
                     hasLayerLabels = true;
                     String key = layer.trim().toLowerCase(Locale.ROOT);
+                    if (PyramidLayerColors.isKnownLayer(key)) {
+                        hasKnownLayerLabels = true;
+                    }
                     layerCounts.merge(key, 1, Integer::sum);
                 }
 
@@ -74,6 +81,33 @@ public final class ReportAnalyticsBuilder {
         durations.sort(Long::compareTo);
 
         int resultCount = results == null ? 0 : results.size();
-        return new ReportAnalytics(statistic, layerCounts, topSuiteStats, durations, hasLayerLabels, resultCount);
+        warnIfSummaryDivergesFromResults(statistic, resultCount);
+
+        return new ReportAnalytics(
+                statistic,
+                layerCounts,
+                topSuiteStats,
+                durations,
+                hasLayerLabels,
+                hasKnownLayerLabels,
+                resultCount);
+    }
+
+    private static void warnIfSummaryDivergesFromResults(Statistic statistic, int resultCount) {
+        if (statistic == null || statistic.getTotal() == null) {
+            return;
+        }
+        int summaryTotal = statistic.getTotal();
+        if (resultCount == 0 && summaryTotal > 0) {
+            log.warn("No allure-results loaded while summary.total={}. "
+                    + "Collage pyramid/durations may be empty; pie/text still use summary.",
+                    summaryTotal);
+            return;
+        }
+        if (resultCount > 0 && summaryTotal != resultCount) {
+            log.warn("Summary total ({}) differs from allure-results count ({}). "
+                    + "Pie/text use summary; pyramid/durations use results.",
+                    summaryTotal, resultCount);
+        }
     }
 }

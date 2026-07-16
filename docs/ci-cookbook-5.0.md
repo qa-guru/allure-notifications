@@ -43,6 +43,8 @@ See [config/config-5.0-collage.example.json](../config/config-5.0-collage.exampl
 
 Placeholders like `${ALLURE_REPORT_URL}` are expanded from environment variables at runtime (see below).
 
+For Allure 3, set `enableSuitesPublishing: true` only together with `allureResultsFolder` (suites JSON is synthesized from `*-result.json` when `widgets/suites.json` is absent). See [migration-5.0.md](migration-5.0.md#suites-publishing-enablesuitespublishing).
+
 ## Environment variables
 
 | Variable | Maps to | Typical source |

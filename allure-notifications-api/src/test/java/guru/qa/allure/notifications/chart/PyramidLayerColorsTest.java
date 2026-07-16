@@ -53,6 +53,9 @@ class PyramidLayerColorsTest {
         assertNull(PyramidLayerColors.colorFor(null, false));
         assertFalse(PyramidLayerColors.isKnownLayer("visual"));
         assertTrue(PyramidLayerColors.isKnownLayer("api"));
+        assertEquals(Color.decode("#64748b"), PyramidLayerColors.colorForOther(false));
+        assertEquals(Color.decode("#94a3b8"), PyramidLayerColors.colorForOther(true));
+        assertEquals("other", PyramidLayerColors.OTHER_LAYER);
     }
 
     private static void assertColor(String hex, Color actual) {

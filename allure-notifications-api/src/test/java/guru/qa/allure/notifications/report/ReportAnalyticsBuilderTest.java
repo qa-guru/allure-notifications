@@ -86,7 +86,32 @@ class ReportAnalyticsBuilderTest {
         ReportAnalytics analytics = ReportAnalyticsBuilder.build(null, Collections.singletonList(parsed));
 
         assertTrue(analytics.hasLayerLabels());
+        assertTrue(analytics.hasKnownLayerLabels());
         assertEquals(1, analytics.getLayers().get("e2e").intValue());
+    }
+
+    @Test
+    void marksUnknownLayersWithoutKnownFlag() {
+        AllureTestResult parsed = parseResult(
+                "{\"name\":\"t\",\"labels\":[{\"name\":\"layer\",\"value\":\"UI Tests\"}]}");
+
+        ReportAnalytics analytics = ReportAnalyticsBuilder.build(null, Collections.singletonList(parsed));
+
+        assertTrue(analytics.hasLayerLabels());
+        assertFalse(analytics.hasKnownLayerLabels());
+        assertEquals(1, analytics.getLayers().get("ui tests").intValue());
+    }
+
+    @Test
+    void keepsStatisticWhenResultCountDiverges() throws Exception {
+        Summary summary = new JSON().parseResource("/data/testSummary.json", Summary.class);
+        AllureTestResult onlyOne = parseResult(
+                "{\"name\":\"t\",\"status\":\"passed\",\"labels\":[{\"name\":\"suite\",\"value\":\"s\"}]}");
+
+        ReportAnalytics analytics = ReportAnalyticsBuilder.build(summary, Collections.singletonList(onlyOne));
+
+        assertEquals(1, analytics.getResultCount());
+        assertEquals(3, analytics.getStatistic().getTotal());
     }
 
     private static int suiteCount(List<SuiteStat> suites, String name) {

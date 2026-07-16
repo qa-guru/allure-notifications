@@ -1,5 +1,11 @@
 project.description = 'Library for sending notifications about autotest results (API only)'
 
+apply plugin: 'jacoco'
+
+jacoco {
+    toolVersion = '0.8.13'
+}
+
 dependencies {
     annotationProcessor(libs.lombok)
     compileOnly(libs.lombok)
@@ -32,4 +38,36 @@ dependencies {
 
 tasks.withType(Test).configureEach {
     useJUnitPlatform()
+    finalizedBy(tasks.named('jacocoTestReport'))
 }
+
+jacocoTestReport {
+    dependsOn test
+    reports {
+        xml.required = true
+        html.required = true
+        csv.required = false
+    }
+}
+
+jacocoTestCoverageVerification {
+    dependsOn jacocoTestReport
+    violationRules {
+        rule {
+            limit {
+                counter = 'LINE'
+                value = 'COVEREDRATIO'
+                minimum = 0.80
+            }
+        }
+        rule {
+            limit {
+                counter = 'BRANCH'
+                value = 'COVEREDRATIO'
+                minimum = 0.60
+            }
+        }
+    }
+}
+
+check.dependsOn jacocoTestCoverageVerification

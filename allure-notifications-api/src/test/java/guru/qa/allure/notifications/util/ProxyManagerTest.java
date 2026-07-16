@@ -1,85 +1,82 @@
 package guru.qa.allure.notifications.util;
 
-import guru.qa.allure.notifications.config.proxy.Proxy;
-import kong.unirest.Config;
-import kong.unirest.Unirest;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
-import org.junit.jupiter.api.Disabled;
+import java.util.stream.Stream;
+
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
-import org.mockito.Mockito;
 
-import java.util.UUID;
-import java.util.stream.Stream;
+import guru.qa.allure.notifications.config.proxy.Proxy;
+import kong.unirest.Unirest;
 
-@Disabled
 class ProxyManagerTest {
 
-    public static Stream<Arguments> proxySource() {
+    @BeforeEach
+    @AfterEach
+    void resetUnirest() {
+        Unirest.shutDown();
+    }
+
+    static Stream<Arguments> proxySource() {
         return Stream.of(
+                Arguments.of("proxy is null", null, false, false),
                 Arguments.of(
-                        "proxy is null",
-                        null,
-                        0,
-                        0
-                ),
+                        "host/port only",
+                        createProxy("proxy.example", 8080, null, null),
+                        true,
+                        false),
                 Arguments.of(
-                        "username is null",
-                        createProxyConfig(
-                                UUID.randomUUID().toString(),
-                                443,
-                                null,
-                                UUID.randomUUID().toString()
-                        ),
-                        1,
-                        0
-                ),
+                        "authenticated proxy",
+                        createProxy("proxy.example", 443, "user", "secret"),
+                        true,
+                        true),
                 Arguments.of(
-                        "password is null",
-                        createProxyConfig(
-                                UUID.randomUUID().toString(),
-                                443,
-                                UUID.randomUUID().toString(),
-                                null
-                        ),
-                        1,
-                        0
-                ),
+                        "incomplete credentials (username only)",
+                        createProxy("proxy.example", 443, "user", null),
+                        true,
+                        false),
                 Arguments.of(
-                        "is proxy",
-                        createProxyConfig(
-                                UUID.randomUUID().toString(),
-                                443,
-                                UUID.randomUUID().toString(),
-                                UUID.randomUUID().toString()
-                        ),
-                        0,
-                        1
-                )
+                        "port zero ignored",
+                        createProxy("proxy.example", 0, "user", "secret"),
+                        false,
+                        false)
         );
     }
 
-    private static Proxy createProxyConfig(String host, Integer port, String username, String password) {
+    @ParameterizedTest(name = "ProxyManager: {0}")
+    @MethodSource("proxySource")
+    void manageProxyConfiguresUnirest(String condition,
+                                      Proxy proxy,
+                                      boolean expectProxy,
+                                      boolean expectAuth) {
+        ProxyManager.manageProxy(proxy);
+
+        if (!expectProxy) {
+            assertNull(Unirest.config().getProxy(), condition);
+            return;
+        }
+
+        assertNotNull(Unirest.config().getProxy(), condition);
+        assertEquals(proxy.getHost(), Unirest.config().getProxy().getHost());
+        assertEquals(proxy.getPort().intValue(), Unirest.config().getProxy().getPort());
+        if (expectAuth) {
+            assertEquals(proxy.getUsername(), Unirest.config().getProxy().getUsername());
+            assertEquals(proxy.getPassword(), Unirest.config().getProxy().getPassword());
+        }
+    }
+
+    private static Proxy createProxy(String host, Integer port, String username, String password) {
         Proxy proxy = new Proxy();
         proxy.setHost(host);
         proxy.setPort(port);
         proxy.setUsername(username);
         proxy.setPassword(password);
         return proxy;
-    }
-
-    @ParameterizedTest(name = "ProxyManager: {0}")
-    @MethodSource("proxySource")
-    void manageProxyProxyIsNullTest(String condition, Proxy proxy, Integer notProxyTimes, Integer withProxyTimes) {
-        Config config = Mockito.mock(Config.class);
-        Unirest unirest = Mockito.mock(Unirest.class);
-        ProxyManager.manageProxy(proxy);
-//        Mockito.verify(unirest, Mockito.times(1));
-
-        Mockito.verify(config, Mockito.times(withProxyTimes))
-                .proxy(Mockito.anyString(), Mockito.anyInt(), Mockito.anyString(), Mockito.anyString());
-        Mockito.verify(config, Mockito.times(notProxyTimes))
-                .proxy(Mockito.anyString(), Mockito.anyInt());
     }
 }

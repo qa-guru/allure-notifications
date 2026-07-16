@@ -18,6 +18,9 @@ import java.util.Map;
  */
 public final class PyramidLayerColors {
 
+    /** Label for non-SSOT layer values aggregated into a gray top band. */
+    public static final String OTHER_LAYER = "other";
+
     /** Bottom → top band order in the testing pyramid chart. */
     public static final List<String> ORDER_BOTTOM_TO_TOP = Collections.unmodifiableList(Arrays.asList(
             "unit",
@@ -27,6 +30,9 @@ public final class PyramidLayerColors {
             "e2e",
             "manual"
     ));
+
+    private static final Color OTHER_LIGHT = Color.decode("#64748b");
+    private static final Color OTHER_DARK = Color.decode("#94a3b8");
 
     private static final Map<String, Color> LIGHT = layerMap(
             "#94a3b8",
@@ -64,6 +70,10 @@ public final class PyramidLayerColors {
 
     public static boolean isKnownLayer(String layer) {
         return layer != null && LIGHT.containsKey(layer.trim().toLowerCase(Locale.ROOT));
+    }
+
+    public static Color colorForOther(boolean darkMode) {
+        return darkMode ? OTHER_DARK : OTHER_LIGHT;
     }
 
     private static Map<String, Color> layerMap(String unit,

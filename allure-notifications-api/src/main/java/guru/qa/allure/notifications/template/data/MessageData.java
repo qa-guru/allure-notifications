@@ -44,9 +44,7 @@ public class MessageData {
             data.put("customData", base.getCustomData());
 
             Map<String, String> links = LinksResolver.resolve(base);
-            if (!links.isEmpty()) {
-                data.put("links", links);
-            }
+            data.put("links", links);
             String reportLink = links.get("report");
             if (reportLink != null) {
                 data.put("reportLink", reportLink);

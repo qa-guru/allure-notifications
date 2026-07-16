@@ -1,7 +1,6 @@
 package guru.qa.allure.notifications.report;
 
 import java.io.IOException;
-import java.nio.file.FileVisitOption;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -62,7 +61,7 @@ public final class AllureResultsReader {
         }
 
         List<Path> resultFiles;
-        try (Stream<Path> walk = Files.walk(resultsFolder, MAX_WALK_DEPTH, FileVisitOption.FOLLOW_LINKS)) {
+        try (Stream<Path> walk = Files.walk(resultsFolder, MAX_WALK_DEPTH)) {
             resultFiles = walk
                     .filter(Files::isRegularFile)
                     .filter(p -> p.getFileName().toString().endsWith(RESULT_SUFFIX))

@@ -3,7 +3,6 @@ package guru.qa.allure.notifications.report;
 import java.io.IOException;
 import java.io.Reader;
 import java.nio.charset.StandardCharsets;
-import java.nio.file.FileVisitOption;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
@@ -97,7 +96,7 @@ public final class ReportLocator {
 
     private static Path findSummaryRecursively(Path folder) throws ReportNotFoundException {
         List<Path> candidates = new ArrayList<Path>();
-        try (Stream<Path> walk = Files.walk(folder, MAX_WALK_DEPTH, FileVisitOption.FOLLOW_LINKS)) {
+        try (Stream<Path> walk = Files.walk(folder, MAX_WALK_DEPTH)) {
             candidates = walk
                     .filter(Files::isRegularFile)
                     .filter(p -> SUMMARY_FILE.equals(p.getFileName().toString()))

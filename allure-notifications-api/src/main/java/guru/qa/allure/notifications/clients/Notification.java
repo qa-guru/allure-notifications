@@ -19,10 +19,14 @@ import guru.qa.allure.notifications.json.JSON;
 import guru.qa.allure.notifications.model.legend.Legend;
 import guru.qa.allure.notifications.model.phrases.Phrases;
 import guru.qa.allure.notifications.model.summary.Summary;
+import guru.qa.allure.notifications.report.AllureResultsReader;
+import guru.qa.allure.notifications.report.AllureTestResult;
 import guru.qa.allure.notifications.report.LocatedReport;
 import guru.qa.allure.notifications.report.ReportLocator;
+import guru.qa.allure.notifications.report.SuitesJsonBuilder;
 import guru.qa.allure.notifications.report.SummaryReader;
 import guru.qa.allure.notifications.template.data.MessageData;
+import guru.qa.allure.notifications.util.ProxyManager;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -35,6 +39,8 @@ public class Notification {
     public static boolean send(Config config, String chartOutputDir) throws IOException, MessageBuildException {
         boolean successfulSending = true;
 
+        ProxyManager.manageProxy(config.getProxy());
+
         final List<Notifier> notifiers = ClientFactory.from(config);
         if (notifiers.isEmpty()) {
             return successfulSending;
@@ -45,16 +51,7 @@ public class Notification {
         String allureFolderPath = base.getAllureFolder();
         LocatedReport located = ReportLocator.locate(Paths.get(allureFolderPath));
         Summary summary = SummaryReader.read(json, located);
-        String suitesSummaryJson = null;
-        if (TRUE.equals(base.getEnableSuitesPublishing())) {
-            if (located.getSuitesPath().isPresent()) {
-                Path suitesPath = located.getSuitesPath().get();
-                suitesSummaryJson = new String(Files.readAllBytes(suitesPath), StandardCharsets.UTF_8);
-            } else {
-                log.warn("Suites statistic publishing is enabled, but JSON file with data cannot be found! "
-                        + "Check \"widgets/suites.json\" in Allure folder.");
-            }
-        }
+        String suitesSummaryJson = resolveSuitesSummaryJson(base, located, json);
         Phrases phrases = json.parseResource("/phrases/" + base.getLanguage() + ".json", Phrases.class);
         MessageData messageData = new MessageData(config.getBase(), summary, suitesSummaryJson, phrases);
         byte[] chartImage = null;
@@ -84,5 +81,27 @@ public class Notification {
         }
 
         return successfulSending;
+    }
+
+    static String resolveSuitesSummaryJson(Base base, LocatedReport located, JSON json) throws IOException {
+        if (!TRUE.equals(base.getEnableSuitesPublishing())) {
+            return null;
+        }
+        if (located.getSuitesPath().isPresent()) {
+            Path suitesPath = located.getSuitesPath().get();
+            return new String(Files.readAllBytes(suitesPath), StandardCharsets.UTF_8);
+        }
+
+        Path resultsFolder = AllureResultsReader.resolveResultsFolder(
+                base.getAllureResultsFolder(), located.getReportRoot());
+        List<AllureTestResult> results = AllureResultsReader.read(json, resultsFolder);
+        if (results.isEmpty()) {
+            log.warn("Suites statistic publishing is enabled, but neither widgets/suites.json "
+                    + "nor allure-results were found. Set base.allureResultsFolder for Allure 3.");
+            return null;
+        }
+        log.info("Building suites summary from {} allure-results file(s) (Allure 3 / missing widgets).",
+                results.size());
+        return SuitesJsonBuilder.fromResults(results);
     }
 }

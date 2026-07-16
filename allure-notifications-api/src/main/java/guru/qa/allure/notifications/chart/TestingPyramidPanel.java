@@ -30,10 +30,11 @@ public class TestingPyramidPanel implements ChartPanel {
     @Override
     public BufferedImage render(PanelContext context) throws MessageBuildException {
         ReportAnalytics analytics = context.getAnalytics();
-        if (!analytics.hasLayerLabels() && "suites".equalsIgnoreCase(resolveFallback(context.getBase()))) {
+        LayerBreakdown breakdown = LayerBreakdown.from(analytics.getLayers());
+        if (!breakdown.hasKnownLayers() && "suites".equalsIgnoreCase(resolveFallback(context.getBase()))) {
             return new SuitesPanel().render(context);
         }
-        return renderPyramid(context);
+        return renderPyramid(context, breakdown);
     }
 
     private static String resolveFallback(Base base) {
@@ -43,19 +44,21 @@ public class TestingPyramidPanel implements ChartPanel {
         return "suites";
     }
 
-    private static BufferedImage renderPyramid(PanelContext context) {
+    private static BufferedImage renderPyramid(PanelContext context, LayerBreakdown breakdown) {
         int width = context.getWidth();
         int height = context.getHeight();
         ChartTheme theme = context.getTheme();
         boolean darkMode = theme.isDark();
-        Map<String, Integer> layers = context.getAnalytics().getLayers();
 
         List<LayerBand> bands = new ArrayList<LayerBand>();
         for (String layer : PyramidLayerColors.ORDER_BOTTOM_TO_TOP) {
-            int count = layers.getOrDefault(layer, 0);
+            int count = breakdown.knownCounts.getOrDefault(layer, 0);
             if (count > 0) {
                 bands.add(new LayerBand(layer, count));
             }
+        }
+        if (breakdown.unknownCount > 0) {
+            bands.add(new LayerBand(PyramidLayerColors.OTHER_LAYER, breakdown.unknownCount));
         }
 
         BufferedImage image = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
@@ -103,7 +106,9 @@ public class TestingPyramidPanel implements ChartPanel {
                     centerX + topHalfWidth, centerX - topHalfWidth};
                 int[] yPoints = {yBottom, yBottom, yTop, yTop};
 
-                Color color = PyramidLayerColors.colorFor(band.layer, darkMode);
+                Color color = PyramidLayerColors.OTHER_LAYER.equals(band.layer)
+                        ? PyramidLayerColors.colorForOther(darkMode)
+                        : PyramidLayerColors.colorFor(band.layer, darkMode);
                 if (color == null) {
                     color = theme.getAccent();
                 }
@@ -169,6 +174,39 @@ public class TestingPyramidPanel implements ChartPanel {
         private LayerBand(String layer, int count) {
             this.layer = layer;
             this.count = count;
+        }
+    }
+
+    static final class LayerBreakdown {
+        private final Map<String, Integer> knownCounts;
+        private final int unknownCount;
+
+        private LayerBreakdown(Map<String, Integer> knownCounts, int unknownCount) {
+            this.knownCounts = knownCounts;
+            this.unknownCount = unknownCount;
+        }
+
+        static LayerBreakdown from(Map<String, Integer> layers) {
+            java.util.LinkedHashMap<String, Integer> known = new java.util.LinkedHashMap<String, Integer>();
+            int unknown = 0;
+            if (layers != null) {
+                for (Map.Entry<String, Integer> entry : layers.entrySet()) {
+                    Integer count = entry.getValue();
+                    if (count == null || count <= 0) {
+                        continue;
+                    }
+                    if (PyramidLayerColors.isKnownLayer(entry.getKey())) {
+                        known.merge(entry.getKey().trim().toLowerCase(java.util.Locale.ROOT), count, Integer::sum);
+                    } else {
+                        unknown += count;
+                    }
+                }
+            }
+            return new LayerBreakdown(known, unknown);
+        }
+
+        boolean hasKnownLayers() {
+            return !knownCounts.isEmpty();
         }
     }
 }
