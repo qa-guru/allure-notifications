@@ -24,21 +24,21 @@ class PyramidLayerColorsTest {
 
     @Test
     void paletteADarkColors() {
-        assertColor("#60d87a", PyramidLayerColors.colorFor("unit", true));
+        assertColor("#31bd58", PyramidLayerColors.colorFor("unit", true));
         assertColor("#ffa833", PyramidLayerColors.colorFor("component", true));
-        assertColor("#dd7edd", PyramidLayerColors.colorFor("integration", true));
-        assertColor("#ffe04a", PyramidLayerColors.colorFor("api", true));
-        assertColor("#ff6f67", PyramidLayerColors.colorFor("e2e", true));
+        assertColor("#a65ac4", PyramidLayerColors.colorFor("integration", true));
+        assertColor("#ffd833", PyramidLayerColors.colorFor("api", true));
+        assertColor("#ff574f", PyramidLayerColors.colorFor("e2e", true));
         assertColor("#61b6fb", PyramidLayerColors.colorFor("manual", true));
     }
 
     @Test
     void paletteALightColors() {
-        assertColor("#3bc95d", PyramidLayerColors.colorFor("unit", false));
+        assertColor("#15803d", PyramidLayerColors.colorFor("unit", false));
         assertColor("#ff8200", PyramidLayerColors.colorFor("component", false));
-        assertColor("#c165c1", PyramidLayerColors.colorFor("integration", false));
-        assertColor("#ffd833", PyramidLayerColors.colorFor("api", false));
-        assertColor("#f43f3b", PyramidLayerColors.colorFor("e2e", false));
+        assertColor("#7e22ce", PyramidLayerColors.colorFor("integration", false));
+        assertColor("#e8bd00", PyramidLayerColors.colorFor("api", false));
+        assertColor("#dc2626", PyramidLayerColors.colorFor("e2e", false));
         assertColor("#459bde", PyramidLayerColors.colorFor("manual", false));
     }
 
@@ -54,7 +54,7 @@ class PyramidLayerColorsTest {
         assertFalse(PyramidLayerColors.isKnownLayer("visual"));
         assertTrue(PyramidLayerColors.isKnownLayer("api"));
         assertEquals(Color.decode("#64748b"), PyramidLayerColors.colorForOther(false));
-        assertEquals(Color.decode("#94a3b8"), PyramidLayerColors.colorForOther(true));
+        assertEquals(Color.decode("#5d6876"), PyramidLayerColors.colorForOther(true));
         assertEquals("other", PyramidLayerColors.OTHER_LAYER);
     }
 

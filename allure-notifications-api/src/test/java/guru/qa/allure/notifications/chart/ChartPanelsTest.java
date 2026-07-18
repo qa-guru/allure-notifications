@@ -6,6 +6,8 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.awt.image.BufferedImage;
 import java.net.URISyntaxException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
@@ -15,6 +17,8 @@ import guru.qa.allure.notifications.config.base.Base;
 import guru.qa.allure.notifications.json.JSON;
 import guru.qa.allure.notifications.model.legend.Legend;
 import guru.qa.allure.notifications.model.summary.Summary;
+import guru.qa.allure.notifications.report.HistoryAnalytics;
+import guru.qa.allure.notifications.report.HistoryReader;
 import guru.qa.allure.notifications.report.ReportAnalytics;
 import guru.qa.allure.notifications.report.ReportAnalyticsBuilder;
 
@@ -69,6 +73,48 @@ class ChartPanelsTest {
     }
 
     @Test
+    void statusDynamicsPanelRendersFromHistory() throws Exception {
+        Base base = baseWithProject();
+        ReportAnalytics analytics = ReportAnalyticsBuilder.build(summary(), java.util.Collections.emptyList());
+        analytics.setHistory(HistoryAnalytics.from(HistoryReader.read(historyFixture(), 20)));
+
+        BufferedImage image = new StatusDynamicsPanel().render(
+                PanelContext.of(base, 400, 220, analytics, legend()));
+
+        assertEquals("statusdynamics", new StatusDynamicsPanel().getId());
+        assertEquals(400, image.getWidth());
+        assertTrue(hasNonBackgroundPixels(image));
+    }
+
+    @Test
+    void successRateDistributionPanelRendersFromHistory() throws Exception {
+        Base base = baseWithProject();
+        ReportAnalytics analytics = ReportAnalyticsBuilder.build(summary(), java.util.Collections.emptyList());
+        analytics.setHistory(HistoryAnalytics.from(HistoryReader.read(historyFixture(), 20)));
+
+        BufferedImage image = new SuccessRateDistributionPanel().render(
+                PanelContext.of(base, 400, 220, analytics, legend()));
+
+        assertEquals("successratedistribution", new SuccessRateDistributionPanel().getId());
+        assertEquals(400, image.getWidth());
+        assertTrue(hasNonBackgroundPixels(image));
+    }
+
+    @Test
+    void historyPanelsShowPlaceholderWithoutHistory() throws Exception {
+        Base base = baseWithProject();
+        ReportAnalytics analytics = ReportAnalyticsBuilder.build(summary(), java.util.Collections.emptyList());
+
+        BufferedImage dynamics = new StatusDynamicsPanel().render(
+                PanelContext.of(base, 300, 180, analytics, legend()));
+        BufferedImage distribution = new SuccessRateDistributionPanel().render(
+                PanelContext.of(base, 300, 180, analytics, legend()));
+
+        assertNotNull(dynamics);
+        assertNotNull(distribution);
+    }
+
+    @Test
     void legacyChartFacadeStillReturnsPngBytes() throws Exception {
         Base base = baseWithProject();
         byte[] chart = Chart.createChart(base, summary().getStatistic(), legend());
@@ -105,5 +151,26 @@ class ChartPanelsTest {
 
     private static Path fixture(String resource) throws URISyntaxException {
         return Paths.get(ChartPanelsTest.class.getClassLoader().getResource(resource).toURI());
+    }
+
+    /** Writes a small Allure 3 history.jsonl (3 runs, 3 cases) to a temp file. */
+    private static Path historyFixture() throws java.io.IOException {
+        String jsonl = String.join("\n",
+                "{\"uuid\":\"r1\",\"timestamp\":1000,\"testResults\":{"
+                        + "\"a\":{\"id\":\"a\",\"status\":\"passed\"},"
+                        + "\"b\":{\"id\":\"b\",\"status\":\"failed\"},"
+                        + "\"c\":{\"id\":\"c\",\"status\":\"passed\"}}}",
+                "{\"uuid\":\"r2\",\"timestamp\":2000,\"testResults\":{"
+                        + "\"a\":{\"id\":\"a\",\"status\":\"passed\"},"
+                        + "\"b\":{\"id\":\"b\",\"status\":\"passed\"},"
+                        + "\"c\":{\"id\":\"c\",\"status\":\"broken\"}}}",
+                "{\"uuid\":\"r3\",\"timestamp\":3000,\"testResults\":{"
+                        + "\"a\":{\"id\":\"a\",\"status\":\"failed\"},"
+                        + "\"b\":{\"id\":\"b\",\"status\":\"skipped\"},"
+                        + "\"c\":{\"id\":\"c\",\"status\":\"passed\"}}}");
+        Path file = Files.createTempFile("history-fixture", ".jsonl");
+        Files.write(file, jsonl.getBytes(StandardCharsets.UTF_8));
+        file.toFile().deleteOnExit();
+        return file;
     }
 }

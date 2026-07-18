@@ -17,6 +17,7 @@ public final class ReportAnalytics {
     private final boolean hasLayerLabels;
     private final boolean hasKnownLayerLabels;
     private final int resultCount;
+    private HistoryAnalytics history;
 
     public ReportAnalytics(Statistic statistic,
                              Map<String, Integer> layers,
@@ -69,5 +70,17 @@ public final class ReportAnalytics {
 
     public int getResultCount() {
         return resultCount;
+    }
+
+    /**
+     * Optional history-derived analytics for the statusDynamics / successRateDistribution
+     * panels. {@code null} when no {@code chart.historyPath} is configured.
+     */
+    public HistoryAnalytics getHistory() {
+        return history;
+    }
+
+    public void setHistory(HistoryAnalytics history) {
+        this.history = history;
     }
 }

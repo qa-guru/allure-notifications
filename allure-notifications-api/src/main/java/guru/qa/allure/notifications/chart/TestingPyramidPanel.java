@@ -21,6 +21,10 @@ public class TestingPyramidPanel implements ChartPanel {
     private static final int MARGIN = 16;
     private static final int TITLE_HEIGHT = 24;
     private static final int MIN_BAND_HEIGHT = 10;
+    // Canon "rounded tiers" (#071): gap between tiers + corner radius, both as a
+    // fraction of the band height. Keep in sync with dashboard-overrides.js.
+    private static final double TIER_GAP_RATIO = 0.14d;
+    private static final double CORNER_RATIO = 0.3d;
 
     @Override
     public String getId() {
@@ -68,43 +72,48 @@ public class TestingPyramidPanel implements ChartPanel {
             graphics.setColor(theme.getBackground());
             graphics.fillRect(0, 0, width, height);
 
-            graphics.setColor(theme.getText());
-            graphics.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 14));
-            graphics.drawString("Testing pyramid", MARGIN, MARGIN + 12);
+            boolean showTitle = context.isShowTitle();
+            if (showTitle) {
+                graphics.setColor(theme.getText());
+                graphics.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 14));
+                graphics.drawString("Testing pyramid", MARGIN, MARGIN + 12);
+            }
 
             if (bands.isEmpty()) {
+                graphics.setColor(theme.getText());
                 graphics.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 12));
                 graphics.drawString("No layer data", MARGIN, MARGIN + TITLE_HEIGHT + 16);
                 return image;
             }
 
-            int chartTop = MARGIN + TITLE_HEIGHT;
+            int chartTop = showTitle ? MARGIN + TITLE_HEIGHT : MARGIN;
             int chartHeight = height - chartTop - MARGIN;
             int chartWidth = width - (MARGIN * 2);
             int centerX = MARGIN + chartWidth / 2;
-            int totalCount = 0;
-            for (LayerBand band : bands) {
-                totalCount += band.count;
-            }
-
-            int[] bandHeights = allocateBandHeights(bands, chartHeight, totalCount);
-            int yBottom = chartTop + chartHeight;
             int layerCount = bands.size();
+
+            // Canon "rounded tiers" (#071): every tier has the SAME height; only
+            // the width steps per layer. Count is shown in the label, not the
+            // thickness — so keep bands equal-height regardless of test counts.
+            int bandHeight = chartHeight / layerCount;
+            int yBottom = chartTop + bandHeight * layerCount;
 
             for (int index = 0; index < layerCount; index++) {
                 LayerBand band = bands.get(index);
-                int bandHeight = bandHeights[index];
                 int yTop = yBottom - bandHeight;
 
-                double bottomFraction = (layerCount - index) / (double) layerCount;
-                double topFraction = (layerCount - index - 1) / (double) layerCount;
-                int bottomHalfWidth = (int) (chartWidth * bottomFraction / 2.0d);
-                int topHalfWidth = (int) (chartWidth * topFraction / 2.0d);
-
-                int[] xPoints = {
-                    centerX - bottomHalfWidth, centerX + bottomHalfWidth,
-                    centerX + topHalfWidth, centerX - topHalfWidth};
-                int[] yPoints = {yBottom, yBottom, yTop, yTop};
+                // Centered rounded rectangle with a constant width per tier and a
+                // vertical gap between tiers.
+                double widthFraction = (layerCount - index) / (double) layerCount;
+                int bandWidth = Math.max(MIN_BAND_HEIGHT, (int) (chartWidth * widthFraction));
+                int gap = Math.max(2, (int) Math.round(bandHeight * TIER_GAP_RATIO));
+                int tierTop = yTop + gap / 2;
+                int tierHeight = Math.max(1, bandHeight - gap);
+                int tierX = centerX - bandWidth / 2;
+                double radius = Math.min(
+                        Math.min(bandWidth / 2.0d, tierHeight / 2.0d),
+                        tierHeight * CORNER_RATIO);
+                int arc = (int) Math.round(radius * 2.0d);
 
                 Color color = PyramidLayerColors.OTHER_LAYER.equals(band.layer)
                         ? PyramidLayerColors.colorForOther(darkMode)
@@ -113,9 +122,9 @@ public class TestingPyramidPanel implements ChartPanel {
                     color = theme.getAccent();
                 }
                 graphics.setColor(color);
-                graphics.fillPolygon(xPoints, yPoints, 4);
+                graphics.fillRoundRect(tierX, tierTop, bandWidth, tierHeight, arc, arc);
                 graphics.setColor(color.darker());
-                graphics.drawPolygon(xPoints, yPoints, 4);
+                graphics.drawRoundRect(tierX, tierTop, bandWidth, tierHeight, arc, arc);
 
                 graphics.setColor(contrastText(color, theme.getText()));
                 graphics.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 10));
@@ -123,7 +132,7 @@ public class TestingPyramidPanel implements ChartPanel {
                 FontMetrics metrics = graphics.getFontMetrics();
                 int labelWidth = metrics.stringWidth(label);
                 graphics.drawString(label, centerX - labelWidth / 2,
-                        (yTop + yBottom) / 2 + metrics.getAscent() / 2 - 2);
+                        tierTop + tierHeight / 2 + metrics.getAscent() / 2 - 2);
 
                 yBottom = yTop;
             }
@@ -133,33 +142,6 @@ public class TestingPyramidPanel implements ChartPanel {
 
         log.info("Testing pyramid panel is created with {} layer(s).", bands.size());
         return image;
-    }
-
-    private static int[] allocateBandHeights(List<LayerBand> bands, int chartHeight, int totalCount) {
-        int[] heights = new int[bands.size()];
-        int allocated = 0;
-        for (int index = 0; index < bands.size(); index++) {
-            int proportional = (int) Math.round(bands.get(index).count / (double) totalCount * chartHeight);
-            heights[index] = Math.max(MIN_BAND_HEIGHT, proportional);
-            allocated += heights[index];
-        }
-        if (allocated > chartHeight) {
-            double scale = chartHeight / (double) allocated;
-            allocated = 0;
-            for (int index = 0; index < heights.length; index++) {
-                heights[index] = Math.max(1, (int) Math.round(heights[index] * scale));
-                allocated += heights[index];
-            }
-            while (allocated > chartHeight) {
-                for (int index = 0; index < heights.length && allocated > chartHeight; index++) {
-                    if (heights[index] > 1) {
-                        heights[index]--;
-                        allocated--;
-                    }
-                }
-            }
-        }
-        return heights;
     }
 
     private static Color contrastText(Color fill, Color fallback) {

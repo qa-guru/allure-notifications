@@ -2,9 +2,13 @@ package guru.qa.allure.notifications.report;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.net.URISyntaxException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Arrays;
@@ -46,6 +50,47 @@ class ReportAnalyticsBuilderTest {
 
         List<Long> durations = analytics.getDurationsMs();
         assertEquals(Arrays.asList(500L, 1500L, 3000L), durations);
+    }
+
+    @Test
+    void autoDiscoversHistoryNextToResults() throws Exception {
+        Path temp = Files.createTempDirectory("an-history-auto");
+        Path report = Files.createDirectories(temp.resolve("allure-report"));
+        Path results = Files.createDirectories(temp.resolve("allure-results"));
+        // Allure 3 writes history.jsonl as a sibling of the report/results folders.
+        Files.write(temp.resolve("history.jsonl"), String.join("\n",
+                "{\"uuid\":\"r1\",\"timestamp\":1000,\"testResults\":{"
+                        + "\"a\":{\"id\":\"a\",\"status\":\"passed\"}}}",
+                "{\"uuid\":\"r2\",\"timestamp\":2000,\"testResults\":{"
+                        + "\"a\":{\"id\":\"a\",\"status\":\"failed\"}}}")
+                .getBytes(StandardCharsets.UTF_8));
+
+        Base base = new Base();
+        base.setAllureFolder(report.toString());
+        base.setAllureResultsFolder(results.toString());
+
+        Summary summary = new JSON().parseResource("/data/testSummary.json", Summary.class);
+        ReportAnalytics analytics = ReportAnalyticsBuilder.build(base, summary);
+
+        assertNotNull(analytics.getHistory());
+        assertFalse(analytics.getHistory().isEmpty());
+        assertEquals(2, analytics.getHistory().getRunCount());
+    }
+
+    @Test
+    void leavesHistoryNullWhenNoHistoryFileFound() throws Exception {
+        Path temp = Files.createTempDirectory("an-history-none");
+        Path report = Files.createDirectories(temp.resolve("allure-report"));
+        Path results = Files.createDirectories(temp.resolve("allure-results"));
+
+        Base base = new Base();
+        base.setAllureFolder(report.toString());
+        base.setAllureResultsFolder(results.toString());
+
+        Summary summary = new JSON().parseResource("/data/testSummary.json", Summary.class);
+        ReportAnalytics analytics = ReportAnalyticsBuilder.build(base, summary);
+
+        assertNull(analytics.getHistory());
     }
 
     @Test

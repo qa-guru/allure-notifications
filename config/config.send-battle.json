@@ -1,0 +1,32 @@
+{
+  "base": {
+    "project": "Reference App (autotests-ai)",
+    "environment": "CI · GitHub Actions",
+    "comment": "Nightly regression — full suite",
+    "language": "ru",
+    "allureFolder": "/Users/stanislav/zero-design-system/projects/allure-notifications-home/allure-notifications/build/pyramid-showcase/allure-report/",
+    "allureResultsFolder": "/Users/stanislav/zero-design-system/projects/allure-notifications-home/allure-notifications/build/pyramid-showcase/allure-results/",
+    "enableChart": true,
+    "darkMode": true,
+    "enableSuitesPublishing": false,
+    "chart": {
+      "mode": "collage",
+      "panels": ["pie", "testingPyramid"],
+      "pyramidFallback": "suites",
+      "layout": "stacked",
+      "width": 1000,
+      "height": 640
+    },
+    "links": {
+      "report": "https://autotests-ai.github.io/reference-app/reports/latest/awesome/index.html",
+      "dashboard": "https://autotests-ai.github.io/reference-app/reports/latest/dashboard/index.html",
+      "testops": "https://allure.autotests.cloud",
+      "build": "https://github.com/autotests-ai/reference-app/actions"
+    }
+  },
+  "telegram": {
+    "token": "8732997002:AAHIBQC4b_2WoiDSqhVKT52IOm0lIq0dc28",
+    "chat": "-1001587609458",
+    "templatePath": "/templates/telegram.ftl"
+  }
+}

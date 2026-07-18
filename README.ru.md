@@ -272,7 +272,7 @@ flowchart LR
 
 7. Выполнить в терминале:
 ```shell
-java "-DconfigFile=notifications/config.json" -jar notifications/allure-notifications-5.0.0.jar
+java "-DconfigFile=notifications/config.json" -jar notifications/allure-notifications-5.0.1.jar
 ```
 Примечания:
 + На момент запуска файл `summary.json` уже должен быть сформирован.
@@ -316,14 +316,14 @@ java "-DconfigFile=notifications/config.json" \
 В поле **Script** указать:
 ```bash
 cd ..
-FILE=allure-notifications-5.0.0.jar
+FILE=allure-notifications-5.0.1.jar
 if [ ! -f "$FILE" ]; then
-   wget https://github.com/qa-guru/allure-notifications/releases/download/5.0.0/allure-notifications-5.0.0.jar
+   wget https://github.com/qa-guru/allure-notifications/releases/download/v5.0.1/allure-notifications-5.0.1.jar
 fi
 ```
 Нажать **Add another task** и во втором поле **Script** указать:
 ```bash
-java "-DconfigFile=notifications/config.json" -jar ../allure-notifications-5.0.0.jar
+java "-DconfigFile=notifications/config.json" -jar ../allure-notifications-5.0.1.jar
 ```
 
 4. Сохранить настройки и запустить тесты. По завершении в мессенджер будет направлено уведомление.

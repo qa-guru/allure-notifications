@@ -9,12 +9,19 @@ import java.util.Locale;
 import java.util.Map;
 
 /**
- * Testing pyramid layer colors — Palette A / Allure3 F5.
+ * Testing pyramid layer colors — accessible palette.
  *
  * <p>
- * SSOT in monorepo: {@code stacks/java-spring/.../tokens.css} {@code --layer-*},
- * {@code generators/ethalon/tests-java/.github/assets/dashboard-overrides.css}.
- * Layers: {@code docs/rag/testing/test-layers.md} · {@code PYRAMID_LAYERS} in {@code allure/constants.mjs}.
+ * Layers use an accessible palette with distinct light/dark variants per layer,
+ * decoupled from the pie status hues so the pyramid stays colour-blind-friendly
+ * without changing the status pie; component/manual remain brand orange/blue.
+ * The pie status colors live in {@code ChartTheme.STATUS_*} and are unchanged.
+ *
+ * <p>
+ * SSOT (monorepo): {@code stacks/java-spring/tests/allure/pyramid-layers.json}.
+ * Consumers verified by {@code scripts/pyramid_palette_sync.py --check}. Mirrored in
+ * {@code tokens.css} {@code --layer-*} and {@code pyramid-layer-colors.mjs}.
+ * Layer keys: {@code docs/rag/testing/test-layers.md}.
  */
 public final class PyramidLayerColors {
 
@@ -32,24 +39,24 @@ public final class PyramidLayerColors {
     ));
 
     private static final Color OTHER_LIGHT = Color.decode("#64748b");
-    private static final Color OTHER_DARK = Color.decode("#94a3b8");
+    private static final Color OTHER_DARK = Color.decode("#5d6876");
 
     private static final Map<String, Color> LIGHT = layerMap(
-            "#3bc95d",
-            "#ff8200",
-            "#c165c1",
-            "#ffd833",
-            "#f43f3b",
-            "#459bde"
+            "#15803d", // unit
+            "#ff8200", // component — brand orange
+            "#7e22ce", // integration
+            "#e8bd00", // api
+            "#dc2626", // e2e
+            "#459bde"  // manual — brand blue
     );
 
     private static final Map<String, Color> DARK = layerMap(
-            "#60d87a",
-            "#ffa833",
-            "#dd7edd",
-            "#ffe04a",
-            "#ff6f67",
-            "#61b6fb"
+            "#31bd58", // unit
+            "#ffa833", // component — brand orange
+            "#a65ac4", // integration
+            "#ffd833", // api
+            "#ff574f", // e2e
+            "#61b6fb"  // manual — brand blue
     );
 
     private PyramidLayerColors() {

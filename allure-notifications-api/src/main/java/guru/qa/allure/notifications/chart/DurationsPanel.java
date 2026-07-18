@@ -35,11 +35,15 @@ public class DurationsPanel implements ChartPanel {
             graphics.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
             graphics.setColor(theme.getBackground());
             graphics.fillRect(0, 0, width, height);
-            graphics.setColor(theme.getText());
-            graphics.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 14));
-            graphics.drawString("Durations (s)", MARGIN, MARGIN + 12);
+            boolean showTitle = context.isShowTitle();
+            if (showTitle) {
+                graphics.setColor(theme.getText());
+                graphics.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 14));
+                graphics.drawString("Durations (s)", MARGIN, MARGIN + 12);
+            }
 
             if (durationsMs.isEmpty()) {
+                graphics.setColor(theme.getText());
                 graphics.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 12));
                 graphics.drawString("No duration data", MARGIN, MARGIN + TITLE_HEIGHT + 16);
                 return image;
@@ -51,7 +55,7 @@ public class DurationsPanel implements ChartPanel {
             int bins = Math.min(DEFAULT_BINS, Math.max(3, values.length / 2));
             int[] histogram = histogram(values, bins);
 
-            int chartTop = MARGIN + TITLE_HEIGHT;
+            int chartTop = showTitle ? MARGIN + TITLE_HEIGHT : MARGIN;
             int chartHeight = height - chartTop - MARGIN;
             int chartWidth = width - (MARGIN * 2);
             int barWidth = Math.max(1, chartWidth / bins);

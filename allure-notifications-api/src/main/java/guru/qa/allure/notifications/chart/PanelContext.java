@@ -14,6 +14,9 @@ public final class PanelContext {
     private final int height;
     private final ReportAnalytics analytics;
     private final Legend legend;
+    // When false the panel omits its own in-canvas title (the collage card's header
+    // bar already captions it) and reclaims that top strip as chart area.
+    private final boolean showTitle;
 
     public PanelContext(Base base,
                         ChartTheme theme,
@@ -21,12 +24,23 @@ public final class PanelContext {
                         int height,
                         ReportAnalytics analytics,
                         Legend legend) {
+        this(base, theme, width, height, analytics, legend, true);
+    }
+
+    public PanelContext(Base base,
+                        ChartTheme theme,
+                        int width,
+                        int height,
+                        ReportAnalytics analytics,
+                        Legend legend,
+                        boolean showTitle) {
         this.base = base;
         this.theme = theme;
         this.width = width;
         this.height = height;
         this.analytics = analytics;
         this.legend = legend;
+        this.showTitle = showTitle;
     }
 
     public static PanelContext of(Base base,
@@ -34,7 +48,16 @@ public final class PanelContext {
                                   int height,
                                   ReportAnalytics analytics,
                                   Legend legend) {
-        return new PanelContext(base, ChartTheme.from(base), width, height, analytics, legend);
+        return new PanelContext(base, ChartTheme.from(base), width, height, analytics, legend, true);
+    }
+
+    public static PanelContext of(Base base,
+                                  int width,
+                                  int height,
+                                  ReportAnalytics analytics,
+                                  Legend legend,
+                                  boolean showTitle) {
+        return new PanelContext(base, ChartTheme.from(base), width, height, analytics, legend, showTitle);
     }
 
     public Base getBase() {
@@ -59,5 +82,9 @@ public final class PanelContext {
 
     public Legend getLegend() {
         return legend;
+    }
+
+    public boolean isShowTitle() {
+        return showTitle;
     }
 }
