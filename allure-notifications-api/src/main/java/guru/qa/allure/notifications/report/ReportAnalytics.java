@@ -15,7 +15,9 @@ public final class ReportAnalytics {
     private final List<SuiteStat> suites;
     private final List<Long> durationsMs;
     private final boolean hasLayerLabels;
+    private final boolean hasKnownLayerLabels;
     private final int resultCount;
+    private HistoryAnalytics history;
 
     public ReportAnalytics(Statistic statistic,
                              Map<String, Integer> layers,
@@ -23,11 +25,22 @@ public final class ReportAnalytics {
                              List<Long> durationsMs,
                              boolean hasLayerLabels,
                              int resultCount) {
+        this(statistic, layers, suites, durationsMs, hasLayerLabels, false, resultCount);
+    }
+
+    public ReportAnalytics(Statistic statistic,
+                             Map<String, Integer> layers,
+                             List<SuiteStat> suites,
+                             List<Long> durationsMs,
+                             boolean hasLayerLabels,
+                             boolean hasKnownLayerLabels,
+                             int resultCount) {
         this.statistic = statistic;
         this.layers = Collections.unmodifiableMap(layers);
         this.suites = Collections.unmodifiableList(suites);
         this.durationsMs = Collections.unmodifiableList(durationsMs);
         this.hasLayerLabels = hasLayerLabels;
+        this.hasKnownLayerLabels = hasKnownLayerLabels;
         this.resultCount = resultCount;
     }
 
@@ -51,7 +64,23 @@ public final class ReportAnalytics {
         return hasLayerLabels;
     }
 
+    public boolean hasKnownLayerLabels() {
+        return hasKnownLayerLabels;
+    }
+
     public int getResultCount() {
         return resultCount;
+    }
+
+    /**
+     * Optional history-derived analytics for the statusDynamics / successRateDistribution
+     * panels. {@code null} when no {@code chart.historyPath} is configured.
+     */
+    public HistoryAnalytics getHistory() {
+        return history;
+    }
+
+    public void setHistory(HistoryAnalytics history) {
+        this.history = history;
     }
 }

@@ -32,3 +32,6 @@ target/
 .project
 .settings/org.eclipse.buildship.core.prefs
 .vscode
+
+# Local secrets — never commit real tokens
+config/*.local.json

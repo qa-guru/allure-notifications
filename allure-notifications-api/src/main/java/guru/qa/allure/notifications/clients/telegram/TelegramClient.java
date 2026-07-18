@@ -44,8 +44,11 @@ public class TelegramClient implements Notifier {
         bodyBuilder
                 .routeParam("token", telegram.getToken())
                 .field("chat_id", telegram.getChat())
-                .field("reply_to_message_id", telegram.getReplyTo())
                 .field("parse_mode", "HTML");
+
+        if (this.telegram.getReplyTo() != null) {
+            bodyBuilder.field("reply_to_message_id", this.telegram.getReplyTo());
+        }
 
         if (this.telegram.getTopic() != null) {
             bodyBuilder.field("message_thread_id", this.telegram.getTopic());

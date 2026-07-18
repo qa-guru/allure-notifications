@@ -43,6 +43,40 @@ class CollageRendererTest {
     }
 
     @Test
+    void rendersDashboardGridWithHistoryPanels() throws Exception {
+        Base base = collageBase();
+        base.getChart().setPanels(java.util.Arrays.asList(
+                java.util.Arrays.asList("pie", "testingPyramid"),
+                java.util.Arrays.asList("statusDynamics", "successRateDistribution")));
+        base.getChart().setHistoryPath(historyFixture().toString());
+
+        Summary summary = summary();
+        Legend legend = legend();
+        ReportAnalytics analytics = ReportAnalyticsBuilder.build(base, summary);
+
+        byte[] png = CollageRenderer.render(base, analytics, legend);
+
+        BufferedImage image = ImageIO.read(new ByteArrayInputStream(png));
+        assertEquals(1000, image.getWidth());
+        assertEquals(600, image.getHeight());
+        assertTrue(hasNonBackgroundPixels(image));
+    }
+
+    private static Path historyFixture() throws java.io.IOException {
+        String jsonl = String.join("\n",
+                "{\"uuid\":\"r1\",\"timestamp\":1000,\"testResults\":{"
+                        + "\"a\":{\"id\":\"a\",\"status\":\"passed\"},"
+                        + "\"b\":{\"id\":\"b\",\"status\":\"failed\"}}}",
+                "{\"uuid\":\"r2\",\"timestamp\":2000,\"testResults\":{"
+                        + "\"a\":{\"id\":\"a\",\"status\":\"passed\"},"
+                        + "\"b\":{\"id\":\"b\",\"status\":\"broken\"}}}");
+        Path file = java.nio.file.Files.createTempFile("collage-history", ".jsonl");
+        java.nio.file.Files.write(file, jsonl.getBytes(java.nio.charset.StandardCharsets.UTF_8));
+        file.toFile().deleteOnExit();
+        return file;
+    }
+
+    @Test
     void chartFacadeUsesCollageMode() throws Exception {
         Base base = collageBase();
         byte[] chart = Chart.createChart(base, summary(), legend());
@@ -60,7 +94,9 @@ class CollageRendererTest {
 
         ChartConfig chartConfig = new ChartConfig();
         chartConfig.setMode("collage");
-        chartConfig.setPanels(java.util.Arrays.asList("pie", "testingPyramid", "durations"));
+        chartConfig.setPanels(java.util.Arrays.asList(
+                java.util.Arrays.asList("pie", "testingPyramid"),
+                java.util.Arrays.asList("durations")));
         chartConfig.setPyramidFallback("suites");
         chartConfig.setWidth(1000);
         chartConfig.setHeight(600);

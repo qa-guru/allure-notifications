@@ -7,7 +7,7 @@
 <#macro printHtmlLinks links phrases>
 <#if links??>
 <#list linkKeys as key>
-<#if links[key]??><b>${phrases.links[key]}:</b> <a href=${links[key]}>${links[key]}</a></#if>
+<#if links[key]??><b>${phrases.links[key]}:</b> <a href="${links[key]}">${links[key]}</a></#if>
 </#list>
 </#if>
 </#macro>

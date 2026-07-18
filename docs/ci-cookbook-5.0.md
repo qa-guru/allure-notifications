@@ -43,6 +43,8 @@ See [config/config-5.0-collage.example.json](../config/config-5.0-collage.exampl
 
 Placeholders like `${ALLURE_REPORT_URL}` are expanded from environment variables at runtime (see below).
 
+For Allure 3, set `enableSuitesPublishing: true` only together with `allureResultsFolder` (suites JSON is synthesized from `*-result.json` when `widgets/suites.json` is absent). See [migration-5.0.md](migration-5.0.md#suites-publishing-enablesuitespublishing).
+
 ## Environment variables
 
 | Variable | Maps to | Typical source |
@@ -80,7 +82,7 @@ Placeholders like `${ALLURE_REPORT_URL}` are expanded from environment variables
       "-Dnotifications.base.chart.mode=collage" \
       "-Dnotifications.telegram.token=${TELEGRAM_BOT_TOKEN}" \
       "-Dnotifications.telegram.chat=${TELEGRAM_CHAT_ID}" \
-      -jar notifications/allure-notifications-5.0.0.jar
+      -jar notifications/allure-notifications-5.0.1.jar
 ```
 
 **Prerequisites**
@@ -97,9 +99,9 @@ Placeholders like `${ALLURE_REPORT_URL}` are expanded from environment variables
 
 ```bash
 cd "${WORKSPACE}/.."
-FILE=allure-notifications-5.0.0.jar
+FILE=allure-notifications-5.0.1.jar
 if [ ! -f "$FILE" ]; then
-  wget -q "https://github.com/qa-guru/allure-notifications/releases/download/5.0.0/${FILE}"
+  wget -q "https://github.com/qa-guru/allure-notifications/releases/download/v5.0.1/${FILE}"
 fi
 ```
 
@@ -117,7 +119,7 @@ java \
   "-Dnotifications.base.chart.mode=collage" \
   "-Dnotifications.telegram.token=${TELEGRAM_BOT_TOKEN}" \
   "-Dnotifications.telegram.chat=${TELEGRAM_CHAT_ID}" \
-  -jar "${WORKSPACE}/../allure-notifications-5.0.0.jar"
+  -jar "${WORKSPACE}/../allure-notifications-5.0.1.jar"
 ```
 
 Set `ALLURE_REPORT_URL`, `TELEGRAM_*`, etc. as Jenkins credentials or injected env vars.
@@ -129,7 +131,7 @@ Omit `chart.mode` or set `pie` explicitly — no `allureResultsFolder` required:
 ```shell
 java "-DconfigFile=notifications/config.json" \
   "-Dnotifications.base.links.report=${ALLURE_REPORT_URL}" \
-  -jar notifications/allure-notifications-5.0.0.jar
+  -jar notifications/allure-notifications-5.0.1.jar
 ```
 
 ## Allure 3 note

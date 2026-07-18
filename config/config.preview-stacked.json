@@ -1,0 +1,36 @@
+{
+  "base": {
+    "project": "Reference App \u2014 pyramid canon (Allure3 F5)",
+    "environment": "local dogfood",
+    "comment": "Collage preset \u2014 stacked layout (pie \u00b7 pyramid \u00b7 durations)",
+    "language": "ru",
+    "allureFolder": "/Users/stanislav/zero-design-system/projects/allure-notifications-home/allure-notifications/build/pyramid-showcase/allure-report/",
+    "allureResultsFolder": "/Users/stanislav/zero-design-system/projects/allure-notifications-home/allure-notifications/build/pyramid-showcase/allure-results/",
+    "enableChart": true,
+    "darkMode": true,
+    "enableSuitesPublishing": false,
+    "chart": {
+      "mode": "collage",
+      "panels": [
+        "pie",
+        "testingPyramid",
+        "durations"
+      ],
+      "pyramidFallback": "suites",
+      "layout": "stacked",
+      "width": 1000,
+      "height": 414
+    },
+    "links": {
+      "report": "https://autotests-ai.github.io/reference-app/reports/latest/awesome/index.html",
+      "dashboard": "https://autotests-ai.github.io/reference-app/reports/latest/dashboard/index.html",
+      "testops": "https://allure.autotests.cloud",
+      "build": "https://github.com/autotests-ai/reference-app/actions"
+    }
+  },
+  "telegram": {
+    "token": "0:preview-no-send",
+    "chat": "0",
+    "templatePath": "/templates/telegram.ftl"
+  }
+}

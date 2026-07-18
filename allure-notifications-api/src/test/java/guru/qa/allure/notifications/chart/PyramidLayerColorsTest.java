@@ -24,22 +24,22 @@ class PyramidLayerColorsTest {
 
     @Test
     void paletteADarkColors() {
-        assertColor("#64748b", PyramidLayerColors.colorFor("unit", true));
-        assertColor("#3b82f6", PyramidLayerColors.colorFor("component", true));
-        assertColor("#06b6d4", PyramidLayerColors.colorFor("integration", true));
-        assertColor("#8b5cf6", PyramidLayerColors.colorFor("api", true));
-        assertColor("#f59e0b", PyramidLayerColors.colorFor("e2e", true));
-        assertColor("#f97316", PyramidLayerColors.colorFor("manual", true));
+        assertColor("#31bd58", PyramidLayerColors.colorFor("unit", true));
+        assertColor("#ffa833", PyramidLayerColors.colorFor("component", true));
+        assertColor("#a65ac4", PyramidLayerColors.colorFor("integration", true));
+        assertColor("#ffd833", PyramidLayerColors.colorFor("api", true));
+        assertColor("#ff574f", PyramidLayerColors.colorFor("e2e", true));
+        assertColor("#61b6fb", PyramidLayerColors.colorFor("manual", true));
     }
 
     @Test
     void paletteALightColors() {
-        assertColor("#94a3b8", PyramidLayerColors.colorFor("unit", false));
-        assertColor("#2563eb", PyramidLayerColors.colorFor("component", false));
-        assertColor("#0891b2", PyramidLayerColors.colorFor("integration", false));
-        assertColor("#7c3aed", PyramidLayerColors.colorFor("api", false));
-        assertColor("#d97706", PyramidLayerColors.colorFor("e2e", false));
-        assertColor("#ea580c", PyramidLayerColors.colorFor("manual", false));
+        assertColor("#15803d", PyramidLayerColors.colorFor("unit", false));
+        assertColor("#ff8200", PyramidLayerColors.colorFor("component", false));
+        assertColor("#7e22ce", PyramidLayerColors.colorFor("integration", false));
+        assertColor("#e8bd00", PyramidLayerColors.colorFor("api", false));
+        assertColor("#dc2626", PyramidLayerColors.colorFor("e2e", false));
+        assertColor("#459bde", PyramidLayerColors.colorFor("manual", false));
     }
 
     @Test
@@ -53,6 +53,9 @@ class PyramidLayerColorsTest {
         assertNull(PyramidLayerColors.colorFor(null, false));
         assertFalse(PyramidLayerColors.isKnownLayer("visual"));
         assertTrue(PyramidLayerColors.isKnownLayer("api"));
+        assertEquals(Color.decode("#64748b"), PyramidLayerColors.colorForOther(false));
+        assertEquals(Color.decode("#5d6876"), PyramidLayerColors.colorForOther(true));
+        assertEquals("other", PyramidLayerColors.OTHER_LAYER);
     }
 
     private static void assertColor(String hex, Color actual) {

@@ -27,4 +27,4 @@
 </td>
 </tr>
 </table><br/>
-<b>Report:</b> <a href=https://www.example.com>https://www.example.com</a>
+<b>Report:</b> <a href="https://www.example.com">https://www.example.com</a>
