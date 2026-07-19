@@ -12,7 +12,11 @@ import lombok.Data;
  *
  * <p>{@code panels} is a list of rows (each inner list is one horizontal row of the
  * collage grid). A flat array of ids is also accepted and treated as a single row
- * (see {@link PanelsDeserializer}).
+ * (see {@link PanelsDeserializer}). Used by {@code layout} {@code grid}/{@code stacked}/
+ * {@code row} (lossy equal columns within a row).
+ *
+ * <p>When {@code layout} is {@code free}, placements come from {@link #items} on a
+ * {@link #gridCols}×{@link #gridRows} cell grid (collage-builder CB-870 lossless path).
  */
 @Data
 public class ChartConfig {
@@ -22,6 +26,17 @@ public class ChartConfig {
     private List<List<String>> panels = Arrays.asList(
             Arrays.asList("pie", "testingPyramid"),
             Arrays.asList("statusDynamics", "successRateDistribution"));
+
+    /**
+     * Free-grid placements ({@code layout = "free"}). Ignored for legacy layouts.
+     */
+    private List<ChartPanelItem> items;
+
+    /** Cell columns for free layout (default 10 — CB-870-grid). */
+    private Integer gridCols = 10;
+
+    /** Cell rows for free layout (default 10 — CB-870-grid). */
+    private Integer gridRows = 10;
 
     private String pyramidFallback = "suites";
     private String layout = "grid";
