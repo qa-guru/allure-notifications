@@ -272,7 +272,7 @@ Fields:
 
 7. Run the following command in your terminal:
 ```shell
-java "-DconfigFile=notifications/config.json" -jar notifications/allure-notifications-5.0.1.jar
+java "-DconfigFile=notifications/config.json" -jar notifications/allure-notifications-5.0.2.jar
 ```
 Notes:
 + `summary.json` must already be generated before running this command.
@@ -316,14 +316,14 @@ Notes:
 In the **Script** field, enter:
 ```bash
 cd ..
-FILE=allure-notifications-5.0.1.jar
+FILE=allure-notifications-5.0.2.jar
 if [ ! -f "$FILE" ]; then
-   wget https://github.com/qa-guru/allure-notifications/releases/download/v5.0.1/allure-notifications-5.0.1.jar
+   wget https://github.com/qa-guru/allure-notifications/releases/download/v5.0.2/allure-notifications-5.0.2.jar
 fi
 ```
 Click **Add another task** and in the second **Script** field enter:
 ```bash
-java "-DconfigFile=notifications/config.json" -jar ../allure-notifications-5.0.1.jar
+java "-DconfigFile=notifications/config.json" -jar ../allure-notifications-5.0.2.jar
 ```
 
 4. Save the configuration and run your tests. A notification will be sent to the configured messenger upon completion.

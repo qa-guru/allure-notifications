@@ -102,7 +102,7 @@ Omitting `chart` entirely keeps 4.x pie chart behaviour.
 }
 ```
 
-**Collage layout** (fixed in 5.0.0):
+**Collage layout** (default `grid` since 5.0.1; `free` since **5.0.2**):
 
 ```
 ┌─────────────┬──────────────────┐
@@ -117,14 +117,40 @@ Omitting `chart` entirely keeps 4.x pie chart behaviour.
 - **Top-right** — testing pyramid when `layer` labels exist in `allure-results`; otherwise horizontal suites bar (`pyramidFallback`, default `suites`).
 - **Bottom** — per-test duration distribution from `*-result.json`.
 
-`chart.panels` is parsed and reserved for future panel selection; 5.0.0 always renders the layout above.
+`chart.layout` selects the placement engine:
+
+| `layout` | Placement | Notes |
+|----------|-----------|-------|
+| `grid` (default) | 2×2 from `panels` rows | Equal columns per row (lossy vs editor) |
+| `stacked` / `row` | Full-width stack / single row | Legacy |
+| `free` (**5.0.2**) | `items: [{type,x,y,w,h}]` on `gridCols`×`gridRows` | CB-870 lossless (e.g. 870×1080, 10×10) |
+
+Example free (CB-870 default):
+
+```json
+{
+  "layout": "free",
+  "width": 870,
+  "height": 1080,
+  "gridCols": 10,
+  "gridRows": 10,
+  "items": [
+    {"type": "pie", "x": 0, "y": 0, "w": 5, "h": 5},
+    {"type": "testingPyramid", "x": 5, "y": 0, "w": 5, "h": 5},
+    {"type": "durations", "x": 0, "y": 5, "w": 10, "h": 5}
+  ]
+}
+```
 
 ### `chart` fields
 
 | Field | Default | Description |
 |-------|---------|-------------|
 | `mode` | `pie` | `pie` or `collage` |
-| `panels` | `["pie","testingPyramid","durations"]` | Reserved; fixed layout in 5.0.0 |
+| `layout` | `grid` | `grid` \| `stacked` \| `row` \| `free` (5.0.2) |
+| `panels` | `["pie","testingPyramid","durations"]` | Panel order for `grid`/`stacked`/`row` |
+| `items` | — | Free-grid cells `{type,x,y,w,h}` (required when `layout: free`) |
+| `gridCols` / `gridRows` | `10` / `10` | Free-grid substrate |
 | `pyramidFallback` | `suites` | Panel shown when no `layer` labels in results (`suites` = top suites bar) |
 | `width` | `1000` | Collage PNG width (pixels) |
 | `height` | `600` | Collage PNG height (pixels) |
