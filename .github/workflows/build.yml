@@ -30,5 +30,115 @@ jobs:
     - name: Setup Gradle
       uses: gradle/actions/setup-gradle@v5
 
-    - name: Build
-      run: ./gradlew build
+    - name: Assemble fat jar
+      run: ./gradlew :allure-notifications:assemble
+
+    - name: Test + check
+      id: tests
+      continue-on-error: true
+      run: ./gradlew :allure-notifications-api:test :allure-notifications-api:check
+
+    - name: Upload Allure results (Java 21)
+      if: always() && matrix.java == 21 && hashFiles('allure-notifications-api/build/allure-results/**') != ''
+      uses: actions/upload-artifact@v4
+      with:
+        name: allure-results
+        path: allure-notifications-api/build/allure-results/
+        if-no-files-found: ignore
+
+    - name: Upload Allure report inputs (Java 21)
+      if: always() && matrix.java == 21
+      uses: actions/upload-artifact@v4
+      with:
+        name: notifications-jar
+        path: allure-notifications/build/libs/allure-notifications-*.jar
+        if-no-files-found: ignore
+
+    - name: Fail job if tests/check failed
+      if: steps.tests.outcome == 'failure'
+      run: exit 1
+
+  notify:
+    name: Telegram (dogfood)
+    needs: build
+    if: always() && (github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository)
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v7
+
+    - name: Set up JDK
+      uses: actions/setup-java@v5
+      with:
+        java-version: 21
+        distribution: 'temurin'
+
+    - name: Download Allure results
+      uses: actions/download-artifact@v4
+      with:
+        name: allure-results
+        path: allure-notifications-api/build/allure-results
+      continue-on-error: true
+
+    - name: Download fat jar
+      uses: actions/download-artifact@v4
+      with:
+        name: notifications-jar
+        path: allure-notifications/build/libs
+      continue-on-error: true
+
+    - name: Install Allure CLI
+      run: |
+        curl -fsSL -o allure.tgz \
+          https://github.com/allure-framework/allure2/releases/download/2.32.0/allure-2.32.0.tgz
+        tar -xzf allure.tgz
+        echo "$PWD/allure-2.32.0/bin" >> "$GITHUB_PATH"
+
+    - name: Generate Allure report
+      id: report
+      run: |
+        RESULTS=allure-notifications-api/build/allure-results
+        if [ ! -d "$RESULTS" ] || [ -z "$(ls -A "$RESULTS" 2>/dev/null)" ]; then
+          echo "No allure-results — skip report"
+          echo "skip=true" >> "$GITHUB_OUTPUT"
+          exit 0
+        fi
+        allure generate "$RESULTS" -o allure-notifications-api/build/allure-report --clean
+        echo "skip=false" >> "$GITHUB_OUTPUT"
+
+    - name: Send Telegram notification
+      if: steps.report.outputs.skip != 'true'
+      continue-on-error: true
+      env:
+        TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_TOKEN }}
+        TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+        BUILD_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        GITHUB_RUN_NUMBER: ${{ github.run_number }}
+      run: |
+        if [ -z "${TELEGRAM_BOT_TOKEN}" ] || [ -z "${TELEGRAM_CHAT_ID}" ]; then
+          echo "TELEGRAM_TOKEN / TELEGRAM_CHAT_ID missing — skip"
+          exit 0
+        fi
+        JAR=$(ls allure-notifications/build/libs/allure-notifications-*.jar 2>/dev/null | head -1 || true)
+        if [ -z "$JAR" ]; then
+          curl -fsSL -o allure-notifications-5.0.1.jar \
+            https://github.com/qa-guru/allure-notifications/releases/download/v5.0.1/allure-notifications-5.0.1.jar
+          JAR=allure-notifications-5.0.1.jar
+        fi
+        CONFIG=config/ci-telegram.runtime.json
+        python - <<'PY'
+        import json, os
+        from pathlib import Path
+        cfg = json.loads(Path("config/ci-telegram.json").read_text())
+        cfg["base"]["project"] = f"allure-notifications #{os.environ.get('GITHUB_RUN_NUMBER', '')}"
+        cfg["base"]["links"] = {
+            "report": "",
+            "dashboard": "",
+            "testops": "",
+            "build": os.environ["BUILD_URL"],
+        }
+        cfg["telegram"]["token"] = os.environ["TELEGRAM_BOT_TOKEN"]
+        cfg["telegram"]["chat"] = os.environ["TELEGRAM_CHAT_ID"]
+        Path("config/ci-telegram.runtime.json").write_text(json.dumps(cfg, indent=2))
+        PY
+        java "-DconfigFile=${CONFIG}" -jar "$JAR"

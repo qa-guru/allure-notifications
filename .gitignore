@@ -35,3 +35,4 @@ target/
 
 # Local secrets — never commit real tokens
 config/*.local.json
+config/*.runtime.json

@@ -1,0 +1,37 @@
+{
+  "base": {
+    "project": "allure-notifications",
+    "environment": "CI",
+    "comment": "Library unit tests (dogfood)",
+    "language": "en",
+    "allureFolder": "allure-notifications-api/build/allure-report/",
+    "allureResultsFolder": "allure-notifications-api/build/allure-results/",
+    "enableChart": true,
+    "darkMode": true,
+    "enableSuitesPublishing": false,
+    "chart": {
+      "mode": "collage",
+      "panels": [
+        ["pie", "testingPyramid"],
+        ["durations"]
+      ],
+      "pyramidFallback": "suites",
+      "layout": "grid",
+      "width": 1000,
+      "height": 600
+    },
+    "links": {
+      "report": "",
+      "dashboard": "",
+      "testops": "",
+      "build": ""
+    }
+  },
+  "telegram": {
+    "token": "",
+    "chat": "",
+    "topic": "",
+    "replyTo": "",
+    "templatePath": "/templates/telegram.ftl"
+  }
+}
