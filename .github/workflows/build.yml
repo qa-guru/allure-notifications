@@ -110,8 +110,10 @@ jobs:
       if: steps.report.outputs.skip != 'true'
       continue-on-error: true
       env:
-        TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_TOKEN }}
-        TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+        # ADR 008 — Monitoring forum; topic Allure-notifications
+        TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_TOKEN || secrets.TELEGRAM_BOT_TOKEN }}
+        TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID || '-1004381150566' }}
+        TELEGRAM_TOPIC_ID: ${{ secrets.TELEGRAM_ALLURE_NOTIFICATIONS_TOPIC_ID || vars.TELEGRAM_ALLURE_NOTIFICATIONS_TOPIC_ID || secrets.TELEGRAM_TOPIC_ID || vars.TELEGRAM_TOPIC_ID }}
         BUILD_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
         GITHUB_RUN_NUMBER: ${{ github.run_number }}
       run: |
@@ -121,9 +123,9 @@ jobs:
         fi
         JAR=$(ls allure-notifications/build/libs/allure-notifications-*.jar 2>/dev/null | head -1 || true)
         if [ -z "$JAR" ]; then
-          curl -fsSL -o allure-notifications-5.0.1.jar \
-            https://github.com/qa-guru/allure-notifications/releases/download/v5.0.1/allure-notifications-5.0.1.jar
-          JAR=allure-notifications-5.0.1.jar
+          curl -fsSL -o allure-notifications-5.0.2.jar \
+            https://github.com/qa-guru/allure-notifications/releases/download/v5.0.2/allure-notifications-5.0.2.jar
+          JAR=allure-notifications-5.0.2.jar
         fi
         CONFIG=config/ci-telegram.runtime.json
         python - <<'PY'
@@ -139,6 +141,8 @@ jobs:
         }
         cfg["telegram"]["token"] = os.environ["TELEGRAM_BOT_TOKEN"]
         cfg["telegram"]["chat"] = os.environ["TELEGRAM_CHAT_ID"]
+        cfg["telegram"]["topic"] = os.environ.get("TELEGRAM_TOPIC_ID") or ""
+        cfg["telegram"]["replyTo"] = ""
         Path("config/ci-telegram.runtime.json").write_text(json.dumps(cfg, indent=2))
         PY
         java "-DconfigFile=${CONFIG}" -jar "$JAR"
