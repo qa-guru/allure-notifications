@@ -21,7 +21,7 @@
     "links": {
       "report": "https://autotests-ai.github.io/reference-app/reports/latest/awesome/index.html",
       "dashboard": "https://autotests-ai.github.io/reference-app/reports/latest/dashboard/index.html",
-      "testops": "https://allure.autotests.cloud",
+      "testops": "https://allure.qa.guru",
       "build": "https://github.com/autotests-ai/reference-app/actions"
     }
   },
