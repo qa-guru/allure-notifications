@@ -34,10 +34,13 @@ dependencies {
 
     testImplementation(libs.junit.pioneer)
     testImplementation(libs.json.unit)
+    testImplementation(libs.allure.junit5)
 }
 
 tasks.withType(Test).configureEach {
     useJUnitPlatform()
+    systemProperty 'allure.results.directory',
+            layout.buildDirectory.dir('allure-results').get().asFile.absolutePath
     finalizedBy(tasks.named('jacocoTestReport'))
 }
 
