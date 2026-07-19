@@ -42,6 +42,30 @@ class ChartConfigTest {
     }
 
     @Test
+    void parsesFreeLayoutItems() throws Exception {
+        ChartConfig config = new JsonMapper().readValue(
+                "{"
+                        + "\"layout\":\"free\","
+                        + "\"gridCols\":10,"
+                        + "\"gridRows\":10,"
+                        + "\"items\":["
+                        + "{\"type\":\"pie\",\"x\":0,\"y\":0,\"w\":5,\"h\":5},"
+                        + "{\"type\":\"testingPyramid\",\"x\":5,\"y\":0,\"w\":5,\"h\":5},"
+                        + "{\"type\":\"durations\",\"x\":0,\"y\":5,\"w\":10,\"h\":5}"
+                        + "]"
+                        + "}",
+                ChartConfig.class);
+
+        assertEquals("free", config.getLayout());
+        assertEquals(Integer.valueOf(10), config.getGridCols());
+        assertEquals(3, config.getItems().size());
+        assertEquals("pie", config.getItems().get(0).getType());
+        assertEquals(Integer.valueOf(5), config.getItems().get(0).getW());
+        assertEquals("durations", config.getItems().get(2).getType());
+        assertEquals(Integer.valueOf(10), config.getItems().get(2).getW());
+    }
+
+    @Test
     void defaultPanelsAreDashboardGrid() {
         ChartConfig config = new ChartConfig();
         assertEquals(2, config.getPanels().size());

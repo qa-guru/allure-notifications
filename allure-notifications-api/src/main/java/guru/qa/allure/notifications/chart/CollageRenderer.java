@@ -16,6 +16,7 @@ import java.util.Locale;
 
 import guru.qa.allure.notifications.config.base.Base;
 import guru.qa.allure.notifications.config.chart.ChartConfig;
+import guru.qa.allure.notifications.config.chart.ChartPanelItem;
 import guru.qa.allure.notifications.exceptions.MessageBuildException;
 import guru.qa.allure.notifications.model.legend.Legend;
 import guru.qa.allure.notifications.report.ReportAnalytics;
@@ -36,13 +37,19 @@ import lombok.extern.slf4j.Slf4j;
  *
  * <p>Row layout ({@code chart.layout = "row"}): pie, pyramid, durations side by side in a single
  * horizontal row — a wide image.
+ *
+ * <p>Free layout ({@code chart.layout = "free"}): panels from {@code chart.items}
+ * ({@code type,x,y,w,h}) on a {@code gridCols × gridRows} cell grid (CB-870 lossless).
  */
 @Slf4j
 public final class CollageRenderer {
     private static final int DEFAULT_WIDTH = 1000;
     private static final int DEFAULT_HEIGHT = 600;
+    private static final int DEFAULT_GRID_COLS = 10;
+    private static final int DEFAULT_GRID_ROWS = 10;
     private static final String LAYOUT_STACKED = "stacked";
     private static final String LAYOUT_ROW = "row";
+    private static final String LAYOUT_FREE = "free";
     // Container ("card") geometry: gap around/between panels + corner radius.
     private static final int CARD_GAP = 14;
     private static final int CARD_ARC = 18;
@@ -212,7 +219,123 @@ public final class CollageRenderer {
         if (LAYOUT_ROW.equalsIgnoreCase(layout)) {
             return renderRow(base, analytics, legend, collageWidth, collageHeight, headerHeight);
         }
+        if (LAYOUT_FREE.equalsIgnoreCase(layout)) {
+            return renderFree(base, analytics, legend, collageWidth, collageHeight, headerHeight);
+        }
         return renderGrid(base, analytics, legend, collageWidth, collageHeight, headerHeight);
+    }
+
+    /**
+     * Free-grid: place each {@link ChartPanelItem} on a cell grid (default 10×10).
+     * Pixel bounds = cell slots with the same CARD_GAP / half-gap inset as {@link #renderGrid}.
+     */
+    private static byte[] renderFree(Base base, ReportAnalytics analytics, Legend legend,
+                                     int collageWidth, int collageHeight, int headerHeight)
+            throws MessageBuildException {
+        ChartConfig chartConfig = base != null ? base.getChart() : null;
+        int cols = chartConfig != null && chartConfig.getGridCols() != null && chartConfig.getGridCols() > 0
+                ? chartConfig.getGridCols()
+                : DEFAULT_GRID_COLS;
+        int rows = chartConfig != null && chartConfig.getGridRows() != null && chartConfig.getGridRows() > 0
+                ? chartConfig.getGridRows()
+                : DEFAULT_GRID_ROWS;
+        List<ChartPanelItem> items = selectedFreeItems(chartConfig);
+        int half = CARD_GAP / 2;
+        int cellW = collageWidth / cols;
+        int cellH = collageHeight / rows;
+
+        ChartTheme theme = ChartTheme.from(base);
+        BufferedImage collage = new BufferedImage(collageWidth, collageHeight, BufferedImage.TYPE_INT_RGB);
+        Graphics2D graphics = collage.createGraphics();
+        try {
+            graphics.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+            graphics.setColor(outerBackground(theme));
+            graphics.fillRect(0, 0, collageWidth, collageHeight);
+
+            for (ChartPanelItem item : items) {
+                String key = normalize(item.getType());
+                if (key == null) {
+                    continue;
+                }
+                int x = clamp(item.getX(), 0, cols - 1);
+                int y = clamp(item.getY(), 0, rows - 1);
+                int w = Math.max(1, item.getW() == null ? 1 : item.getW());
+                int h = Math.max(1, item.getH() == null ? 1 : item.getH());
+                if (x + w > cols) {
+                    w = cols - x;
+                }
+                if (y + h > rows) {
+                    h = rows - y;
+                }
+
+                int rawLeft = x * cellW;
+                int rawTop = y * cellH;
+                int rawRight = (x + w) * cellW;
+                int rawBottom = (y + h) * cellH;
+                int cellLeft = x == 0 ? CARD_GAP : rawLeft + half;
+                int cellTop = y == 0 ? CARD_GAP : rawTop + half;
+                int cellRight = x + w == cols ? collageWidth - CARD_GAP : rawRight - half;
+                int cellBottom = y + h == rows ? collageHeight - CARD_GAP : rawBottom - half;
+                int cellWidth = Math.max(1, cellRight - cellLeft);
+                int cellHeight = Math.max(1, cellBottom - cellTop);
+                int bodyHeight = Math.max(1, cellHeight - headerHeight);
+                BufferedImage panel = renderPanel(key, base, cellWidth, bodyHeight, analytics, legend);
+                Rect rect = new Rect(cellLeft, cellTop, cellWidth, cellHeight);
+                drawCard(graphics, panel, rect, theme, panelTitle(key, base, analytics), headerHeight);
+            }
+        } finally {
+            graphics.dispose();
+        }
+
+        log.info("Collage chart is created ({}x{}, free, items={}, grid={}x{}).",
+                collageWidth, collageHeight, items.size(), cols, rows);
+        return ChartImageEncoder.toPngBytes(collage);
+    }
+
+    private static int clamp(Integer value, int min, int max) {
+        if (value == null) {
+            return min;
+        }
+        return Math.max(min, Math.min(max, value));
+    }
+
+    /**
+     * Valid free-grid items; falls back to CB-870-grid default when {@code items} is empty.
+     */
+    private static List<ChartPanelItem> selectedFreeItems(ChartConfig chartConfig) {
+        List<ChartPanelItem> configured = chartConfig != null ? chartConfig.getItems() : null;
+        List<ChartPanelItem> items = new ArrayList<>();
+        if (configured != null) {
+            for (ChartPanelItem raw : configured) {
+                if (raw == null || normalize(raw.getType()) == null) {
+                    continue;
+                }
+                items.add(raw);
+            }
+        }
+        if (!items.isEmpty()) {
+            return items;
+        }
+        // CB-870-grid default: pie | pyramid top 5×5, durations full-width 10×5 bottom.
+        ChartPanelItem pie = new ChartPanelItem();
+        pie.setType(PANEL_PIE);
+        pie.setX(0);
+        pie.setY(0);
+        pie.setW(5);
+        pie.setH(5);
+        ChartPanelItem pyramid = new ChartPanelItem();
+        pyramid.setType(PANEL_PYRAMID);
+        pyramid.setX(5);
+        pyramid.setY(0);
+        pyramid.setW(5);
+        pyramid.setH(5);
+        ChartPanelItem durations = new ChartPanelItem();
+        durations.setType(PANEL_DURATIONS);
+        durations.setX(0);
+        durations.setY(5);
+        durations.setW(10);
+        durations.setH(5);
+        return Arrays.asList(pie, pyramid, durations);
     }
 
     private static byte[] renderRow(Base base, ReportAnalytics analytics, Legend legend,

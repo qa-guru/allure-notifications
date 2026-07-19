@@ -16,6 +16,7 @@ import org.junit.jupiter.api.Test;
 
 import guru.qa.allure.notifications.config.base.Base;
 import guru.qa.allure.notifications.config.chart.ChartConfig;
+import guru.qa.allure.notifications.config.chart.ChartPanelItem;
 import guru.qa.allure.notifications.json.JSON;
 import guru.qa.allure.notifications.model.legend.Legend;
 import guru.qa.allure.notifications.model.summary.Summary;
@@ -84,6 +85,45 @@ class CollageRendererTest {
         BufferedImage image = ImageIO.read(new ByteArrayInputStream(chart));
         assertEquals(1000, image.getWidth());
         assertEquals(600, image.getHeight());
+    }
+
+    @Test
+    void rendersFreeLayoutCb870DefaultLossless() throws Exception {
+        Base base = collageBase();
+        ChartConfig chart = base.getChart();
+        chart.setLayout("free");
+        chart.setWidth(870);
+        chart.setHeight(1080);
+        chart.setGridCols(10);
+        chart.setGridRows(10);
+        chart.setHeaderHeight(68);
+
+        ChartPanelItem pie = new ChartPanelItem();
+        pie.setType("pie");
+        pie.setX(0);
+        pie.setY(0);
+        pie.setW(5);
+        pie.setH(5);
+        ChartPanelItem pyramid = new ChartPanelItem();
+        pyramid.setType("testingPyramid");
+        pyramid.setX(5);
+        pyramid.setY(0);
+        pyramid.setW(5);
+        pyramid.setH(5);
+        ChartPanelItem durations = new ChartPanelItem();
+        durations.setType("durations");
+        durations.setX(0);
+        durations.setY(5);
+        durations.setW(10);
+        durations.setH(5);
+        chart.setItems(java.util.Arrays.asList(pie, pyramid, durations));
+
+        byte[] png = CollageRenderer.render(base, ReportAnalyticsBuilder.build(base, summary()), legend());
+
+        BufferedImage image = ImageIO.read(new ByteArrayInputStream(png));
+        assertEquals(870, image.getWidth());
+        assertEquals(1080, image.getHeight());
+        assertTrue(hasNonBackgroundPixels(image));
     }
 
     private static Base collageBase() throws URISyntaxException {
