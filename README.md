@@ -1,5 +1,15 @@
 [![en](https://img.shields.io/badge/lang-en-blue.svg)](#) [![ru](https://img.shields.io/badge/lang-ru-white.svg)](README.ru.md) [![fr](https://img.shields.io/badge/lang-fr-white.svg)](README.fr.md)
 
+
+## Visual canon (5.0.3)
+
+Locked collage rules + PNG: [`docs/canon/CANON.md`](docs/canon/CANON.md) · [`docs/canon/collage-cb870-free-dogfood-5.0.3.png`](docs/canon/collage-cb870-free-dogfood-5.0.3.png).
+
+- Pyramid: quieter corners/gaps, compact single-layer (not full-bleed)
+- `unit` = pie success (`ChartTheme.STATUS_PASSED` / `#94ca66`) — do not reintroduce a separate green
+- Rounded durations / success-rate tops; suites pills
+- Consumers: `base.darkMode: true` + jar `5.0.3`
+
 # Allure notifications
 **Allure notifications** is a library that sends automatic notifications about automated test results to your preferred messenger (Telegram, Slack, ~~Skype~~, Email, Mattermost, Discord, Loop, Rocket.Chat, Zoho Cliq, Microsoft Teams).
 
