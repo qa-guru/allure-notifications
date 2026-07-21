@@ -20,11 +20,23 @@ public class TestingPyramidPanel implements ChartPanel {
     public static final String ID = "testingPyramid";
     private static final int MARGIN = 16;
     private static final int TITLE_HEIGHT = 24;
-    private static final int MIN_BAND_HEIGHT = 10;
+    private static final int MIN_BAND_WIDTH = 24;
+    // Few populated layers must still read as a small centred pyramid, not one
+    // full-bleed block: reserve a floor of vertical slots so tiers keep a sane
+    // height, and cap a single tier so tall panels don't stretch it edge to edge.
+    private static final int MIN_TIERS_FOR_HEIGHT = 4;
+    private static final int MAX_TIER_HEIGHT = 160;
+    // Tier width follows the layer's rank in the FULL canonical pyramid (unit
+    // widest ... manual/other narrowest), independent of how many layers are
+    // populated — so a lone e2e stays narrow instead of spanning the whole card,
+    // and gaps between present layers don't inflate widths. Base tier keeps a
+    // margin inside the card (MAX < 1.0).
+    private static final double MAX_WIDTH_FRACTION = 0.92d;
+    private static final double MIN_WIDTH_FRACTION = 0.30d;
     // Canon "rounded tiers" (#071): gap between tiers + corner radius, both as a
     // fraction of the band height. Keep in sync with dashboard-overrides.js.
-    private static final double TIER_GAP_RATIO = 0.14d;
-    private static final double CORNER_RATIO = 0.3d;
+    private static final double TIER_GAP_RATIO = 0.11d;
+    private static final double CORNER_RATIO = 0.18d;
 
     @Override
     public String getId() {
@@ -95,17 +107,22 @@ public class TestingPyramidPanel implements ChartPanel {
             // Canon "rounded tiers" (#071): every tier has the SAME height; only
             // the width steps per layer. Count is shown in the label, not the
             // thickness — so keep bands equal-height regardless of test counts.
-            int bandHeight = chartHeight / layerCount;
-            int yBottom = chartTop + bandHeight * layerCount;
+            // Reserve a floor of vertical slots (and cap a single tier) so one or
+            // two populated layers render as a small centred pyramid instead of a
+            // full-bleed block, then centre the stack in the chart area.
+            int heightSlots = Math.max(layerCount, MIN_TIERS_FOR_HEIGHT);
+            int bandHeight = Math.min(chartHeight / heightSlots, MAX_TIER_HEIGHT);
+            int stackHeight = bandHeight * layerCount;
+            int yBottom = chartTop + (chartHeight + stackHeight) / 2;
 
             for (int index = 0; index < layerCount; index++) {
                 LayerBand band = bands.get(index);
                 int yTop = yBottom - bandHeight;
 
-                // Centered rounded rectangle with a constant width per tier and a
-                // vertical gap between tiers.
-                double widthFraction = (layerCount - index) / (double) layerCount;
-                int bandWidth = Math.max(MIN_BAND_HEIGHT, (int) (chartWidth * widthFraction));
+                // Width follows the layer's rank in the FULL canonical pyramid, not
+                // its position among the present layers — so a lone e2e stays narrow.
+                double widthFraction = widthFractionFor(band.layer);
+                int bandWidth = Math.max(MIN_BAND_WIDTH, (int) (chartWidth * widthFraction));
                 int gap = Math.max(2, (int) Math.round(bandHeight * TIER_GAP_RATIO));
                 int tierTop = yTop + gap / 2;
                 int tierHeight = Math.max(1, bandHeight - gap);
@@ -142,6 +159,24 @@ public class TestingPyramidPanel implements ChartPanel {
 
         log.info("Testing pyramid panel is created with {} layer(s).", bands.size());
         return image;
+    }
+
+    /**
+     * Tier width as a fraction of the chart width, by the layer's rank in the full
+     * canonical pyramid (unit widest ... manual/other narrowest). Independent of how
+     * many layers are actually populated, so gaps between present layers don't distort
+     * the shape and a single layer keeps its natural (narrow) width.
+     */
+    private static double widthFractionFor(String layer) {
+        int fullTiers = PyramidLayerColors.ORDER_BOTTOM_TO_TOP.size();
+        int rankFromBottom = PyramidLayerColors.ORDER_BOTTOM_TO_TOP.indexOf(layer);
+        if (rankFromBottom < 0) {
+            // OTHER / unknown aggregate sits above the top known layer → narrowest.
+            rankFromBottom = fullTiers;
+        }
+        double span = MAX_WIDTH_FRACTION - MIN_WIDTH_FRACTION;
+        double fraction = MAX_WIDTH_FRACTION - span * (rankFromBottom / (double) (fullTiers - 1));
+        return Math.max(MIN_WIDTH_FRACTION, Math.min(MAX_WIDTH_FRACTION, fraction));
     }
 
     private static Color contrastText(Color fill, Color fallback) {

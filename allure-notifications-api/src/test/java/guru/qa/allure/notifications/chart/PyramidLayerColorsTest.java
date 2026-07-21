@@ -24,7 +24,7 @@ class PyramidLayerColorsTest {
 
     @Test
     void paletteADarkColors() {
-        assertColor("#31bd58", PyramidLayerColors.colorFor("unit", true));
+        assertEquals(ChartTheme.STATUS_PASSED, PyramidLayerColors.colorFor("unit", true));
         assertColor("#ffa833", PyramidLayerColors.colorFor("component", true));
         assertColor("#a65ac4", PyramidLayerColors.colorFor("integration", true));
         assertColor("#ffd833", PyramidLayerColors.colorFor("api", true));
@@ -34,7 +34,7 @@ class PyramidLayerColorsTest {
 
     @Test
     void paletteALightColors() {
-        assertColor("#15803d", PyramidLayerColors.colorFor("unit", false));
+        assertEquals(ChartTheme.STATUS_PASSED, PyramidLayerColors.colorFor("unit", false));
         assertColor("#ff8200", PyramidLayerColors.colorFor("component", false));
         assertColor("#7e22ce", PyramidLayerColors.colorFor("integration", false));
         assertColor("#e8bd00", PyramidLayerColors.colorFor("api", false));

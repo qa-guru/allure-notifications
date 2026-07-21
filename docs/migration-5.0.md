@@ -125,6 +125,13 @@ Omitting `chart` entirely keeps 4.x pie chart behaviour.
 | `stacked` / `row` | Full-width stack / single row | Legacy |
 | `free` (**5.0.2**) | `items: [{type,x,y,w,h}]` on `gridCols`×`gridRows` | CB-870 lossless (e.g. 870×1080, 10×10) |
 
+
+### 5.0.3 chart polish
+
+- Pyramid: quieter corner radius, tighter tier gaps, single-layer stays compact (not full-bleed).
+- Pyramid `unit` layer reuses Allure 3 pie success (`ChartTheme.STATUS_PASSED` / `#94ca66`).
+- Durations / success-rate / suites bars: rounded tops (or pills).
+
 Example free (CB-870 default):
 
 ```json

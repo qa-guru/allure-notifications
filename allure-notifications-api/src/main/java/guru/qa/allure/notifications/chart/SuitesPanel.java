@@ -1,6 +1,5 @@
 package guru.qa.allure.notifications.chart;
 
-import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
@@ -77,9 +76,7 @@ public class SuitesPanel implements ChartPanel {
                 int barX = MARGIN + labelWidth;
                 int barY = y + 4;
                 graphics.setColor(theme.getAccent());
-                graphics.fillRect(barX, barY, Math.max(barWidth, 2), 12);
-                graphics.setColor(darker(theme.getAccent()));
-                graphics.drawRect(barX, barY, Math.max(barWidth, 2), 12);
+                Bars.fillPill(graphics, barX, barY, Math.max(barWidth, 2), 12);
 
                 graphics.setColor(theme.getText());
                 graphics.drawString(String.valueOf(suite.getCount()), barX + barWidth + 6, y + 14);
@@ -100,9 +97,5 @@ public class SuitesPanel implements ChartPanel {
             return value;
         }
         return value.substring(0, maxLength - 3) + "...";
-    }
-
-    private static Color darker(Color color) {
-        return color.darker();
     }
 }

@@ -66,10 +66,9 @@ public class DurationsPanel implements ChartPanel {
                 int barHeight = (int) ((count / (double) maxCount) * (chartHeight - 20));
                 int x = MARGIN + index * barWidth;
                 int y = chartTop + chartHeight - barHeight;
+                int bw = Math.max(barWidth - 2, 1);
                 graphics.setColor(theme.getAccent());
-                graphics.fillRect(x + 1, y, Math.max(barWidth - 2, 1), barHeight);
-                graphics.setColor(theme.getAccent().darker());
-                graphics.drawRect(x + 1, y, Math.max(barWidth - 2, 1), barHeight);
+                Bars.fillTopRounded(graphics, x + 1, y, bw, barHeight, Bars.DEFAULT_ARC);
             }
         } finally {
             graphics.dispose();

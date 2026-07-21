@@ -73,7 +73,7 @@ public class SuccessRateDistributionPanel implements ChartPanel {
                 int x = MARGIN + i * barWidth;
                 int y = chartTop + chartHeight - barHeight;
                 graphics.setColor(bucketColor(i, bins));
-                graphics.fillRect(x + 1, y, Math.max(barWidth - 2, 1), barHeight);
+                Bars.fillTopRounded(graphics, x + 1, y, Math.max(barWidth - 2, 1), barHeight, Bars.DEFAULT_ARC);
             }
         } finally {
             graphics.dispose();

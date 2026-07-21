@@ -82,6 +82,32 @@ class TestingPyramidPanelTest {
     }
 
     @Test
+    void rendersSingleKnownLayerAsCompactCentredTier() throws Exception {
+        Base base = baseWithProject();
+        AllureTestResult e2e = parseResult(
+                "{\"name\":\"e\",\"status\":\"passed\",\"labels\":["
+                        + "{\"name\":\"layer\",\"value\":\"e2e\"},"
+                        + "{\"name\":\"suite\",\"value\":\"E2ESuite\"}]}");
+        ReportAnalytics analytics = ReportAnalyticsBuilder.build(summary(), Collections.singletonList(e2e));
+        assertTrue(analytics.hasKnownLayerLabels());
+
+        int width = 400;
+        int height = 280;
+        BufferedImage image = new TestingPyramidPanel().render(
+                PanelContext.of(base, width, height, analytics, legend()));
+
+        int background = image.getRGB(0, 0);
+        // A lone e2e must NOT fill the whole card: it is a narrow, vertically
+        // centred tier, so the left interior column and the top interior band
+        // stay background (this is the regression guard for the "red blob").
+        assertEquals(background, image.getRGB(4, height / 2),
+                "left edge at mid-height should be background (tier is centred, not full-width)");
+        assertEquals(background, image.getRGB(width / 2, 4),
+                "top band should be background (single tier is centred, not full-height)");
+        assertTrue(hasNonBackgroundPixels(image));
+    }
+
+    @Test
     void rendersOtherBandWhenKnownAndUnknownLayersPresent() throws Exception {
         Base base = baseWithProject();
         AllureTestResult unit = parseResult(

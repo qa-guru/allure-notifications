@@ -123,9 +123,9 @@ jobs:
         fi
         JAR=$(ls allure-notifications/build/libs/allure-notifications-*.jar 2>/dev/null | head -1 || true)
         if [ -z "$JAR" ]; then
-          curl -fsSL -o allure-notifications-5.0.2.jar \
-            https://github.com/qa-guru/allure-notifications/releases/download/v5.0.2/allure-notifications-5.0.2.jar
-          JAR=allure-notifications-5.0.2.jar
+          curl -fsSL -o allure-notifications-5.0.3.jar \
+            https://github.com/qa-guru/allure-notifications/releases/download/v5.0.3/allure-notifications-5.0.3.jar
+          JAR=allure-notifications-5.0.3.jar
         fi
         CONFIG=config/ci-telegram.runtime.json
         python - <<'PY'

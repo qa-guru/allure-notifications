@@ -12,10 +12,11 @@ import java.util.Map;
  * Testing pyramid layer colors — accessible palette.
  *
  * <p>
- * Layers use an accessible palette with distinct light/dark variants per layer,
- * decoupled from the pie status hues so the pyramid stays colour-blind-friendly
- * without changing the status pie; component/manual remain brand orange/blue.
- * The pie status colors live in {@code ChartTheme.STATUS_*} and are unchanged.
+ * Layers use an accessible palette with distinct light/dark variants, except
+ * {@code unit}, which deliberately reuses the Allure 3 passed color from
+ * {@link ChartTheme#STATUS_PASSED}. This keeps the pyramid base visually tied to
+ * the success segment in the pie and prevents duplicated color constants from
+ * drifting again; component/manual remain brand orange/blue.
  *
  * <p>
  * SSOT (monorepo): {@code stacks/java-spring/tests/allure/pyramid-layers.json}.
@@ -42,7 +43,7 @@ public final class PyramidLayerColors {
     private static final Color OTHER_DARK = Color.decode("#5d6876");
 
     private static final Map<String, Color> LIGHT = layerMap(
-            "#15803d", // unit
+            ChartTheme.STATUS_PASSED, // unit = Allure 3 passed / pie success
             "#ff8200", // component — brand orange
             "#7e22ce", // integration
             "#e8bd00", // api
@@ -51,7 +52,7 @@ public final class PyramidLayerColors {
     );
 
     private static final Map<String, Color> DARK = layerMap(
-            "#31bd58", // unit
+            ChartTheme.STATUS_PASSED, // unit = Allure 3 passed / pie success
             "#ffa833", // component — brand orange
             "#a65ac4", // integration
             "#ffd833", // api
@@ -83,14 +84,14 @@ public final class PyramidLayerColors {
         return darkMode ? OTHER_DARK : OTHER_LIGHT;
     }
 
-    private static Map<String, Color> layerMap(String unit,
+    private static Map<String, Color> layerMap(Color unit,
                                                String component,
                                                String integration,
                                                String api,
                                                String e2e,
                                                String manual) {
         Map<String, Color> map = new LinkedHashMap<String, Color>();
-        map.put("unit", Color.decode(unit));
+        map.put("unit", unit);
         map.put("component", Color.decode(component));
         map.put("integration", Color.decode(integration));
         map.put("api", Color.decode(api));
