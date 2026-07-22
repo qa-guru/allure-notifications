@@ -1,5 +1,23 @@
 # Changelog
 
+## v 5.0.4
+
+### English
+
+- **`chart.cardGap`** — configurable inter-card gap (default **14**, former hard-coded `CARD_GAP`); `CollageRenderer` resolves via `resolveCardGap` alongside existing `headerHeight`
+- **`testResultSeverities` panel** — horizontal severity bars from `allure-results` severity labels (awesome-charts catalog #3); aliases `severities` / `severity`
+- **Alias** `pie` ↔ `currentStatus` unchanged for free-grid `items`
+- **Skipped (no analytics/history series yet):** `statusTransitions`, `testBaseGrowthDynamics`, `coverageDiff`, `problemsDistribution`, `stabilityDistribution`, `durationDynamics`, `statusAgePyramid` — deferred until data model exists
+- Dogfood: `config/config.preview-cb870-cardgap.json` (+ wide gap spot-check)
+- CB-870 free `items` shape unchanged
+
+### Russian
+
+- **`chart.cardGap`** — настраиваемый зазор между карточками (по умолчанию **14**, бывший `CARD_GAP`); `CollageRenderer` читает через `resolveCardGap` вместе с `headerHeight`
+- **Панель `testResultSeverities`** — горизонтальные бары severity из labels `allure-results`
+- Алиас `pie` ↔ `currentStatus` сохранён; форма CB-870 `items` без изменений
+- Остальные типы каталога 17 без данных — stub/skip до появления analytics/history
+
 ## v 5.0.0
 
 ### English

@@ -97,6 +97,7 @@ class CollageRendererTest {
         chart.setGridCols(10);
         chart.setGridRows(10);
         chart.setHeaderHeight(68);
+        chart.setCardGap(14);
 
         ChartPanelItem pie = new ChartPanelItem();
         pie.setType("pie");
@@ -124,6 +125,65 @@ class CollageRendererTest {
         assertEquals(870, image.getWidth());
         assertEquals(1080, image.getHeight());
         assertTrue(hasNonBackgroundPixels(image));
+    }
+
+    @Test
+    void freeLayoutAcceptsCurrentStatusAliasAndCardGap() throws Exception {
+        Base base = collageBase();
+        ChartConfig chart = base.getChart();
+        chart.setLayout("free");
+        chart.setWidth(870);
+        chart.setHeight(1080);
+        chart.setHeaderHeight(68);
+        chart.setCardGap(40);
+
+        ChartPanelItem status = new ChartPanelItem();
+        status.setType("currentStatus");
+        status.setX(0);
+        status.setY(0);
+        status.setW(5);
+        status.setH(5);
+        ChartPanelItem pyramid = new ChartPanelItem();
+        pyramid.setType("testingPyramid");
+        pyramid.setX(5);
+        pyramid.setY(0);
+        pyramid.setW(5);
+        pyramid.setH(5);
+        ChartPanelItem durations = new ChartPanelItem();
+        durations.setType("durations");
+        durations.setX(0);
+        durations.setY(5);
+        durations.setW(10);
+        durations.setH(5);
+        chart.setItems(java.util.Arrays.asList(status, pyramid, durations));
+
+        byte[] tight = CollageRenderer.render(copyWithGap(base, 14),
+                ReportAnalyticsBuilder.build(base, summary()), legend());
+        byte[] wide = CollageRenderer.render(base,
+                ReportAnalyticsBuilder.build(base, summary()), legend());
+
+        BufferedImage tightImage = ImageIO.read(new ByteArrayInputStream(tight));
+        BufferedImage wideImage = ImageIO.read(new ByteArrayInputStream(wide));
+        assertEquals(870, wideImage.getWidth());
+        assertEquals(1080, wideImage.getHeight());
+        // Outer background strip at (0,0) stays, but card inset differs → pixel at (20,20) changes.
+        assertTrue(tightImage.getRGB(20, 20) != wideImage.getRGB(20, 20)
+                || tightImage.getRGB(40, 40) != wideImage.getRGB(40, 40));
+    }
+
+    private static Base copyWithGap(Base source, int cardGap) throws URISyntaxException {
+        Base base = collageBase();
+        ChartConfig chart = base.getChart();
+        ChartConfig from = source.getChart();
+        chart.setLayout(from.getLayout());
+        chart.setWidth(from.getWidth());
+        chart.setHeight(from.getHeight());
+        chart.setHeaderHeight(from.getHeaderHeight());
+        chart.setCardGap(cardGap);
+        chart.setGridCols(from.getGridCols());
+        chart.setGridRows(from.getGridRows());
+        chart.setItems(from.getItems());
+        return base;
     }
 
     private static Base collageBase() throws URISyntaxException {

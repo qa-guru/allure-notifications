@@ -153,6 +153,7 @@ public final class ReportAnalyticsBuilder {
         boolean hasKnownLayerLabels = false;
         Map<String, Integer> layerCounts = new LinkedHashMap<String, Integer>();
         Map<String, Integer> suiteCounts = new LinkedHashMap<String, Integer>();
+        Map<String, Integer> severityCounts = new LinkedHashMap<String, Integer>();
         List<Long> durations = new ArrayList<Long>();
 
         if (results != null) {
@@ -165,6 +166,11 @@ public final class ReportAnalyticsBuilder {
                         hasKnownLayerLabels = true;
                     }
                     layerCounts.merge(key, 1, Integer::sum);
+                }
+
+                String severity = result.getSeverity();
+                if (StringUtils.isNotBlank(severity)) {
+                    severityCounts.merge(severity.trim().toLowerCase(Locale.ROOT), 1, Integer::sum);
                 }
 
                 String suiteName = result.getSuiteName();
@@ -196,6 +202,7 @@ public final class ReportAnalyticsBuilder {
                 layerCounts,
                 topSuiteStats,
                 durations,
+                severityCounts,
                 hasLayerLabels,
                 hasKnownLayerLabels,
                 resultCount);

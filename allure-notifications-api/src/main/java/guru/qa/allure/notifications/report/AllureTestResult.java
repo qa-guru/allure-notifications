@@ -51,6 +51,13 @@ public class AllureTestResult {
     }
 
     /**
+     * Allure severity label ({@code blocker}/{@code critical}/{@code normal}/…).
+     */
+    public String getSeverity() {
+        return getLabel("severity");
+    }
+
+    /**
      * Suite display name: parentSuite &gt; suite &gt; subSuite &gt; fullName &gt; name.
      */
     public String getSuiteName() {

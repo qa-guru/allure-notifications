@@ -74,6 +74,7 @@ flowchart LR
 | **Блок links** | `links.report`, `dashboard`, `testops`, `build` в шаблонах (i18n) |
 | **Allure 3** | Автоопределение `summary.json` в корне отчёта (`stats` → legacy-модель) |
 | **Аналитика results** | `allureResultsFolder` для layer labels, suites, длительностей |
+| **Chrome карточек (5.0.4)** | `chart.headerHeight` (68) + `chart.cardGap` (14); панель `testResultSeverities` |
 | **Обратная совместимость** | По умолчанию `chart.mode: "pie"` и deprecated `reportLink` работают |
 
 **Документация:** [Миграция 4.x → 5.0](docs/migration-5.0.md) · [CI cookbook](docs/ci-cookbook-5.0.md) · [Пример config](config/config-5.0-collage.example.json)
@@ -262,6 +263,8 @@ flowchart LR
 + `chart.mode` — `pie` (по умолчанию, как в 4.x) или `collage` (PNG 1000×600, 5.0+).
 + `chart.pyramidFallback` — `suites`, если в results нет `layer` labels (по умолчанию `suites`).
 + `chart.width` / `chart.height` — размер collage PNG в пикселях (по умолчанию 1000×600).
++ `chart.headerHeight` — высота шапки карточки в px (по умолчанию 68).
++ `chart.cardGap` — зазор вокруг/между карточками в px (по умолчанию 14, **5.0.4**).
 + `darkMode` — отображать ли диаграмму в тёмном режиме (`true` / `false`).
 + `enableSuitesPublishing` — публиковать ли статистику по каждому набору тестов (`true` / `false`, по умолчанию `false`). Требует наличия `suites.json` в `<allureFolder>/widgets`.
 + `logo` — путь к файлу логотипа; если задан, отображается в левом верхнем углу pie chart.
