@@ -8,6 +8,7 @@
   "labels": [
     {"name": "layer", "value": "integration"},
     {"name": "parentSuite", "value": "IntegrationParent"},
-    {"name": "suite", "value": "IntegrationSuite"}
+    {"name": "suite", "value": "IntegrationSuite"},
+    {"name": "severity", "value": "critical"}
   ]
 }

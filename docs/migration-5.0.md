@@ -161,6 +161,8 @@ Example free (CB-870 default):
 | `pyramidFallback` | `suites` | Panel shown when no `layer` labels in results (`suites` = top suites bar) |
 | `width` | `1000` | Collage PNG width (pixels) |
 | `height` | `600` | Collage PNG height (pixels) |
+| `headerHeight` | `68` | Card title-bar height (px); null → canon 68 |
+| `cardGap` | `14` | Gap around/between cards (px); null → canon 14 (**5.0.4**) |
 
 **System property overrides**
 

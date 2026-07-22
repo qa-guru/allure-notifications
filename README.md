@@ -8,7 +8,16 @@ Locked collage rules + PNG: [`docs/canon/CANON.md`](docs/canon/CANON.md) · [`do
 - Pyramid: quieter corners/gaps, compact single-layer (not full-bleed)
 - `unit` = pie success (`ChartTheme.STATUS_PASSED` / `#94ca66`) — do not reintroduce a separate green
 - Rounded durations / success-rate tops; suites pills
-- Consumers: `base.darkMode: true` + jar `5.0.3`
+- Consumers: `base.darkMode: true` + jar pin (released **5.0.3**; **5.0.4** adds `chart.cardGap` — default **14** keeps this lock)
+
+### 5.0.4 (unreleased)
+
+- `chart.cardGap` (default 14) + existing `chart.headerHeight` (default 68) drive collage spacing/chrome
+- New panel: `testResultSeverities` (from `severity` labels); `pie` ↔ `currentStatus` alias for free `items`
+- Dogfood: [`config/config.preview-cb870-cardgap.json`](config/config.preview-cb870-cardgap.json) → [`config/chart-cb870-cardgap-dogfood.png`](config/chart-cb870-cardgap-dogfood.png)
+- **Jar Panel coverage vs awesome-charts catalog (17 slots / 13 unique types)**
+  - **Implemented:** `currentStatus`/`pie`, `testingPyramid` (+ `suites` fallback), `durations`, `statusDynamics`, `successRateDistribution`, `testResultSeverities`
+  - **Missing Panel (skipped — no analytics/history series yet):** `statusTransitions`, `testBaseGrowthDynamics`, `coverageDiff`, `problemsDistribution`, `stabilityDistribution`, `durationDynamics`, `statusAgePyramid`
 
 # Allure notifications
 **Allure notifications** is a library that sends automatic notifications about automated test results to your preferred messenger (Telegram, Slack, ~~Skype~~, Email, Mattermost, Discord, Loop, Rocket.Chat, Zoho Cliq, Microsoft Teams).
@@ -84,6 +93,7 @@ In **5.0 collage** mode the chart is a single 1000×600 PNG: status pie (top-lef
 | **Links block** | `links.report`, `dashboard`, `testops`, `build` in templates (i18n) |
 | **Allure 3** | Auto-detect `summary.json` at report root (`stats` → legacy model) |
 | **Results analytics** | `allureResultsFolder` for layer labels, suites, per-test durations |
+| **Card chrome (5.0.4)** | `chart.headerHeight` (68) + `chart.cardGap` (14); panel `testResultSeverities` |
 | **Backward compat** | Default `chart.mode: "pie"` and deprecated `reportLink` still work |
 
 **Docs:** [Migration 4.x → 5.0](docs/migration-5.0.md) · [CI cookbook](docs/ci-cookbook-5.0.md) · [Example config](config/config-5.0-collage.example.json)
@@ -272,6 +282,8 @@ Fields:
 + `chart.mode` — `pie` (default, 4.x compatible) or `collage` (1000×600 PNG, 5.0+).
 + `chart.pyramidFallback` — `suites` when no `layer` labels in results (default `suites`).
 + `chart.width` / `chart.height` — collage PNG size in pixels (default 1000×600).
++ `chart.headerHeight` — card title-bar height in px (default 68).
++ `chart.cardGap` — gap around/between cards in px (default 14, **5.0.4**).
 + `darkMode` — whether to render the chart in dark mode (`true` / `false`).
 + `enableSuitesPublishing` — whether to publish per-suite statistics (`true` / `false`, default `false`). Requires `suites.json` inside `<allureFolder>/widgets`.
 + `logo` — path to a logo file; if set, the logo is displayed in the top-left corner of the pie chart.

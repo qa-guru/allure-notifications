@@ -14,6 +14,7 @@ public final class ReportAnalytics {
     private final Map<String, Integer> layers;
     private final List<SuiteStat> suites;
     private final List<Long> durationsMs;
+    private final Map<String, Integer> severities;
     private final boolean hasLayerLabels;
     private final boolean hasKnownLayerLabels;
     private final int resultCount;
@@ -25,7 +26,8 @@ public final class ReportAnalytics {
                              List<Long> durationsMs,
                              boolean hasLayerLabels,
                              int resultCount) {
-        this(statistic, layers, suites, durationsMs, hasLayerLabels, false, resultCount);
+        this(statistic, layers, suites, durationsMs, Collections.<String, Integer>emptyMap(),
+                hasLayerLabels, false, resultCount);
     }
 
     public ReportAnalytics(Statistic statistic,
@@ -35,10 +37,24 @@ public final class ReportAnalytics {
                              boolean hasLayerLabels,
                              boolean hasKnownLayerLabels,
                              int resultCount) {
+        this(statistic, layers, suites, durationsMs, Collections.<String, Integer>emptyMap(),
+                hasLayerLabels, hasKnownLayerLabels, resultCount);
+    }
+
+    public ReportAnalytics(Statistic statistic,
+                             Map<String, Integer> layers,
+                             List<SuiteStat> suites,
+                             List<Long> durationsMs,
+                             Map<String, Integer> severities,
+                             boolean hasLayerLabels,
+                             boolean hasKnownLayerLabels,
+                             int resultCount) {
         this.statistic = statistic;
         this.layers = Collections.unmodifiableMap(layers);
         this.suites = Collections.unmodifiableList(suites);
         this.durationsMs = Collections.unmodifiableList(durationsMs);
+        this.severities = Collections.unmodifiableMap(
+                severities == null ? Collections.<String, Integer>emptyMap() : severities);
         this.hasLayerLabels = hasLayerLabels;
         this.hasKnownLayerLabels = hasKnownLayerLabels;
         this.resultCount = resultCount;
@@ -58,6 +74,14 @@ public final class ReportAnalytics {
 
     public List<Long> getDurationsMs() {
         return durationsMs;
+    }
+
+    /**
+     * Counts of Allure {@code severity} labels from {@code *-result.json}
+     * (blocker / critical / normal / minor / trivial / …). Empty when none present.
+     */
+    public Map<String, Integer> getSeverities() {
+        return severities;
     }
 
     public boolean hasLayerLabels() {

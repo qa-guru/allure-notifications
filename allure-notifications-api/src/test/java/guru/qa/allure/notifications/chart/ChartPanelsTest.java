@@ -101,6 +101,22 @@ class ChartPanelsTest {
     }
 
     @Test
+    void testResultSeveritiesPanelRendersFromResults() throws Exception {
+        Base base = baseWithProject();
+        base.setAllureFolder(fixture("fixtures/allure3-report").toString());
+        base.setAllureResultsFolder(fixture("fixtures/allure-results").toString());
+        ReportAnalytics analytics = ReportAnalyticsBuilder.build(base, summary());
+
+        BufferedImage image = new TestResultSeveritiesPanel().render(
+                PanelContext.of(base, 400, 220, analytics, legend()));
+
+        assertEquals("testresultseverities", new TestResultSeveritiesPanel().getId());
+        assertEquals(3, analytics.getSeverities().size());
+        assertEquals(400, image.getWidth());
+        assertTrue(hasNonBackgroundPixels(image));
+    }
+
+    @Test
     void historyPanelsShowPlaceholderWithoutHistory() throws Exception {
         Base base = baseWithProject();
         ReportAnalytics analytics = ReportAnalyticsBuilder.build(summary(), java.util.Collections.emptyList());

@@ -7,6 +7,7 @@
   "stop": 7000,
   "labels": [
     {"name": "layer", "value": "e2e"},
-    {"name": "suite", "value": "E2ESuite"}
+    {"name": "suite", "value": "E2ESuite"},
+    {"name": "severity", "value": "blocker"}
   ]
 }
