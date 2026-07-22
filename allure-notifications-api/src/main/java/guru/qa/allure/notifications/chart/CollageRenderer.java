@@ -78,7 +78,7 @@ public final class CollageRenderer {
     // Aliases: pie ↔ currentStatus (awesome-charts catalog).
     // Implemented: pie/currentStatus, testingPyramid, durations, statusDynamics,
     // successRateDistribution, testResultSeverities (+ suites via pyramidFallback).
-    // Catalog-17 missing (no analytics/history yet — normalize drops; do not map to durations):
+    // Catalog stubs (empty-state — keep free-grid tiles, do not silent-drop):
     // statusTransitions, testBaseGrowthDynamics, coverageDiff, problemsDistribution,
     // stabilityDistribution, durationDynamics, statusAgePyramid.
     private static final String PANEL_PIE = "pie";
@@ -87,6 +87,13 @@ public final class CollageRenderer {
     private static final String PANEL_STATUS_DYNAMICS = "statusdynamics";
     private static final String PANEL_SUCCESS_RATE = "successratedistribution";
     private static final String PANEL_SEVERITIES = "testresultseverities";
+    private static final String PANEL_STATUS_TRANSITIONS = "statustransitions";
+    private static final String PANEL_TEST_BASE_GROWTH = "testbasegrowthdynamics";
+    private static final String PANEL_COVERAGE_DIFF = "coveragediff";
+    private static final String PANEL_PROBLEMS = "problemsdistribution";
+    private static final String PANEL_STABILITY = "stabilitydistribution";
+    private static final String PANEL_DURATION_DYNAMICS = "durationdynamics";
+    private static final String PANEL_STATUS_AGE = "statusagepyramid";
     // Default grid: dashboard-style 2x2 (pie + pyramid on top, history charts below).
     private static final List<List<String>> DEFAULT_ROWS = Arrays.asList(
             Arrays.asList(PANEL_PIE, PANEL_PYRAMID),
@@ -151,7 +158,38 @@ public final class CollageRenderer {
         if (PANEL_SEVERITIES.equals(key) || "severities".equals(key) || "severity".equals(key)) {
             return PANEL_SEVERITIES;
         }
+        if (PANEL_STATUS_TRANSITIONS.equals(key)) {
+            return PANEL_STATUS_TRANSITIONS;
+        }
+        if (PANEL_TEST_BASE_GROWTH.equals(key)) {
+            return PANEL_TEST_BASE_GROWTH;
+        }
+        if (PANEL_COVERAGE_DIFF.equals(key)) {
+            return PANEL_COVERAGE_DIFF;
+        }
+        if (PANEL_PROBLEMS.equals(key)) {
+            return PANEL_PROBLEMS;
+        }
+        if (PANEL_STABILITY.equals(key)) {
+            return PANEL_STABILITY;
+        }
+        if (PANEL_DURATION_DYNAMICS.equals(key)) {
+            return PANEL_DURATION_DYNAMICS;
+        }
+        if (PANEL_STATUS_AGE.equals(key)) {
+            return PANEL_STATUS_AGE;
+        }
         return null;
+    }
+
+    private static boolean isEmptyStatePanel(String key) {
+        return PANEL_STATUS_TRANSITIONS.equals(key)
+                || PANEL_TEST_BASE_GROWTH.equals(key)
+                || PANEL_COVERAGE_DIFF.equals(key)
+                || PANEL_PROBLEMS.equals(key)
+                || PANEL_STABILITY.equals(key)
+                || PANEL_DURATION_DYNAMICS.equals(key)
+                || PANEL_STATUS_AGE.equals(key);
     }
 
     /** Flattens rows into a single ordered list (for stacked / row layouts). */
@@ -166,8 +204,16 @@ public final class CollageRenderer {
     private static BufferedImage renderPanel(String key, Base base, int width, int height,
                                              ReportAnalytics analytics, Legend legend)
             throws MessageBuildException {
+        return renderPanel(key, base, width, height, analytics, legend, null, null);
+    }
+
+    private static BufferedImage renderPanel(String key, Base base, int width, int height,
+                                             ReportAnalytics analytics, Legend legend,
+                                             String groupBy, String by)
+            throws MessageBuildException {
         // The card's header bar captions each panel, so panels skip their own title.
-        PanelContext context = PanelContext.of(base, width, height, analytics, legend, false);
+        PanelContext context = PanelContext.of(base, width, height, analytics, legend, false,
+                groupBy, by);
         if (PANEL_PIE.equals(key)) {
             return new PiePanel().render(context);
         }
@@ -186,17 +232,11 @@ public final class CollageRenderer {
         if (PANEL_DURATIONS.equals(key)) {
             return new DurationsPanel().render(context);
         }
-        // Unknown keys must not reach here (normalize drops them). Fail closed → empty tile.
-        BufferedImage empty = new BufferedImage(Math.max(1, width), Math.max(1, height),
-                BufferedImage.TYPE_INT_RGB);
-        Graphics2D g = empty.createGraphics();
-        try {
-            g.setColor(ChartTheme.from(base).getBackground());
-            g.fillRect(0, 0, empty.getWidth(), empty.getHeight());
-        } finally {
-            g.dispose();
+        if (isEmptyStatePanel(key) || key == null) {
+            return EmptyStatePanel.renderEmpty(context, "No data");
         }
-        return empty;
+        // Unknown keys must not reach here for legacy layouts (normalize drops them).
+        return EmptyStatePanel.renderEmpty(context, "No data");
     }
 
     private static String panelTitle(String key, Base base, ReportAnalytics analytics) {
@@ -215,7 +255,31 @@ public final class CollageRenderer {
         if (PANEL_SEVERITIES.equals(key)) {
             return "Results by severity";
         }
-        return "Durations (s)";
+        if (PANEL_STATUS_TRANSITIONS.equals(key)) {
+            return "Переходы статусов";
+        }
+        if (PANEL_TEST_BASE_GROWTH.equals(key)) {
+            return "Рост тестовой базы";
+        }
+        if (PANEL_COVERAGE_DIFF.equals(key)) {
+            return "Дельта покрытия";
+        }
+        if (PANEL_PROBLEMS.equals(key)) {
+            return "Распределение проблем";
+        }
+        if (PANEL_STABILITY.equals(key)) {
+            return "Распределение стабильности";
+        }
+        if (PANEL_DURATION_DYNAMICS.equals(key)) {
+            return "Динамика длительности";
+        }
+        if (PANEL_STATUS_AGE.equals(key)) {
+            return "Возраст статусов";
+        }
+        if (PANEL_DURATIONS.equals(key)) {
+            return "Durations (s)";
+        }
+        return key == null ? "Panel" : key;
     }
 
     /**
@@ -288,15 +352,25 @@ public final class CollageRenderer {
         ChartTheme theme = ChartTheme.from(base);
         BufferedImage collage = new BufferedImage(collageWidth, collageHeight, BufferedImage.TYPE_INT_RGB);
         Graphics2D graphics = collage.createGraphics();
+        int drawn = 0;
         try {
             graphics.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
             graphics.setColor(outerBackground(theme));
             graphics.fillRect(0, 0, collageWidth, collageHeight);
 
             for (ChartPanelItem item : items) {
-                String key = normalize(item.getType());
-                if (key == null) {
-                    continue;
+                String rawType = item.getType();
+                String key = normalize(rawType);
+                // Free layout never silent-drops a placed item: unknown → empty-state card.
+                String title;
+                if (PANEL_DURATIONS.equals(key) && DurationsPanel.isLayerGroupBy(item.getGroupBy())) {
+                    title = "Durations by layer (s)";
+                } else if (key != null) {
+                    title = panelTitle(key, base, analytics);
+                } else if (rawType == null || rawType.trim().isEmpty()) {
+                    title = "Panel";
+                } else {
+                    title = rawType.trim();
                 }
                 int x = clamp(item.getX(), 0, cols - 1);
                 int y = clamp(item.getY(), 0, rows - 1);
@@ -320,16 +394,18 @@ public final class CollageRenderer {
                 int cellWidth = Math.max(1, cellRight - cellLeft);
                 int cellHeight = Math.max(1, cellBottom - cellTop);
                 int bodyHeight = Math.max(1, cellHeight - headerHeight);
-                BufferedImage panel = renderPanel(key, base, cellWidth, bodyHeight, analytics, legend);
+                BufferedImage panel = renderPanel(key, base, cellWidth, bodyHeight, analytics, legend,
+                        item.getGroupBy(), item.getBy());
                 Rect rect = new Rect(cellLeft, cellTop, cellWidth, cellHeight);
-                drawCard(graphics, panel, rect, theme, panelTitle(key, base, analytics), headerHeight);
+                drawCard(graphics, panel, rect, theme, title, headerHeight);
+                drawn++;
             }
         } finally {
             graphics.dispose();
         }
 
         log.info("Collage chart is created ({}x{}, free, items={}, grid={}x{}).",
-                collageWidth, collageHeight, items.size(), cols, rows);
+                collageWidth, collageHeight, drawn, cols, rows);
         return ChartImageEncoder.toPngBytes(collage);
     }
 
@@ -341,14 +417,16 @@ public final class CollageRenderer {
     }
 
     /**
-     * Valid free-grid items; falls back to CB-870-grid default when {@code items} is empty.
+     * Free-grid items from config. Keeps every item with a non-blank {@code type}
+     * (unknown types render as empty-state cards — no silent drop). Falls back to
+     * CB-870-grid default when {@code items} is empty.
      */
     private static List<ChartPanelItem> selectedFreeItems(ChartConfig chartConfig) {
         List<ChartPanelItem> configured = chartConfig != null ? chartConfig.getItems() : null;
         List<ChartPanelItem> items = new ArrayList<>();
         if (configured != null) {
             for (ChartPanelItem raw : configured) {
-                if (raw == null || normalize(raw.getType()) == null) {
+                if (raw == null || raw.getType() == null || raw.getType().trim().isEmpty()) {
                     continue;
                 }
                 items.add(raw);

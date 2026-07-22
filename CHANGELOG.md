@@ -1,5 +1,24 @@
 # Changelog
 
+## v 5.0.5
+
+### English
+
+- **SQ-1080 dense 12-tile** — free layout keeps all catalog tiles (empty-state instead of silent drop)
+- **`ChartPanelItem.by` / `groupBy`** — parsed for catalog variants; unknown JSON (incl. `tilePad`) ignored
+- **`chart.tilePad`** — retained for builder/preview parity (renderer unchanged)
+- **Stub panels (empty-state):** `statusTransitions`, `problemsDistribution`, `coverageDiff`, `statusAgePyramid`, `stabilityDistribution`, `durationDynamics`, `testBaseGrowthDynamics`
+- **`durations` + `groupBy: layer`** — per-layer average bars; falls back to histogram when no layer samples
+- Dogfood: `config/config.preview-sq1080.json` → `config/chart-sq1080-dogfood.png` (1080×1080)
+- CB-870 free `items` + legacy `grid|stacked|row` unchanged
+
+### Russian
+
+- **SQ-1080 dense 12-tile** — free layout не silent-drop: stub-панели → empty-state
+- **`by` / `groupBy`** на `ChartPanelItem`; `tilePad` парсится и игнорируется рендерером
+- **`durations` + `groupBy: layer`** — средние по слоям, иначе fallback на гистограмму
+- Dogfood: `config/config.preview-sq1080.json`
+
 ## v 5.0.4
 
 ### English

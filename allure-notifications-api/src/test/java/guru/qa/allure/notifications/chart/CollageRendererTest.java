@@ -171,6 +171,85 @@ class CollageRendererTest {
                 || tightImage.getRGB(40, 40) != wideImage.getRGB(40, 40));
     }
 
+    @Test
+    void rendersSq1080DenseTwelveTilesWithoutDroppingStubs() throws Exception {
+        Base base = collageBase();
+        ChartConfig chart = base.getChart();
+        chart.setLayout("free");
+        chart.setWidth(1080);
+        chart.setHeight(1080);
+        chart.setGridCols(10);
+        chart.setGridRows(10);
+        chart.setHeaderHeight(68);
+        chart.setCardGap(14);
+        chart.setTilePad(6);
+        chart.setItems(sq1080Items());
+
+        byte[] png = CollageRenderer.render(base, ReportAnalyticsBuilder.build(base, summary()), legend());
+
+        BufferedImage image = ImageIO.read(new ByteArrayInputStream(png));
+        assertEquals(1080, image.getWidth());
+        assertEquals(1080, image.getHeight());
+        assertEquals(12, chart.getItems().size());
+        assertTrue(hasNonBackgroundPixels(image));
+    }
+
+    @Test
+    void freeLayoutKeepsUnknownTypeAsEmptyCard() throws Exception {
+        Base base = collageBase();
+        ChartConfig chart = base.getChart();
+        chart.setLayout("free");
+        chart.setWidth(400);
+        chart.setHeight(400);
+        chart.setGridCols(2);
+        chart.setGridRows(2);
+        chart.setHeaderHeight(34);
+        chart.setCardGap(8);
+
+        ChartPanelItem unknown = new ChartPanelItem();
+        unknown.setType("notARealPanel");
+        unknown.setX(0);
+        unknown.setY(0);
+        unknown.setW(2);
+        unknown.setH(2);
+        chart.setItems(java.util.Collections.singletonList(unknown));
+
+        byte[] png = CollageRenderer.render(base, ReportAnalyticsBuilder.build(base, summary()), legend());
+        BufferedImage image = ImageIO.read(new ByteArrayInputStream(png));
+        assertEquals(400, image.getWidth());
+        assertEquals(400, image.getHeight());
+        assertTrue(hasNonBackgroundPixels(image));
+    }
+
+    private static java.util.List<ChartPanelItem> sq1080Items() {
+        return java.util.Arrays.asList(
+                item("testingPyramid", 0, 0, 3, 3, null, null),
+                item("pie", 3, 0, 3, 3, null, null),
+                item("statusDynamics", 6, 0, 4, 3, null, null),
+                item("testResultSeverities", 0, 3, 3, 2, null, null),
+                item("statusTransitions", 3, 3, 3, 2, null, null),
+                item("problemsDistribution", 6, 3, 4, 2, "environment", null),
+                item("statusAgePyramid", 0, 5, 3, 3, null, null),
+                item("successRateDistribution", 3, 5, 4, 2, null, null),
+                item("coverageDiff", 7, 5, 3, 2, null, null),
+                item("stabilityDistribution", 3, 7, 4, 3, null, "label-name:component"),
+                item("durationDynamics", 7, 7, 3, 3, null, null),
+                item("durations", 0, 8, 3, 2, null, "layer"));
+    }
+
+    private static ChartPanelItem item(String type, int x, int y, int w, int h,
+                                       String by, String groupBy) {
+        ChartPanelItem panel = new ChartPanelItem();
+        panel.setType(type);
+        panel.setX(x);
+        panel.setY(y);
+        panel.setW(w);
+        panel.setH(h);
+        panel.setBy(by);
+        panel.setGroupBy(groupBy);
+        return panel;
+    }
+
     private static Base copyWithGap(Base source, int cardGap) throws URISyntaxException {
         Base base = collageBase();
         ChartConfig chart = base.getChart();

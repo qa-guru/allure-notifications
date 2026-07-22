@@ -1,0 +1,36 @@
+{
+  "base": {
+    "project": "CB-870-grid dogfood",
+    "environment": "local dogfood",
+    "comment": "P1 dogfood: collage-builder Export jar chart (CB-870 default, rows lossy)",
+    "language": "ru",
+    "allureFolder": "/Users/stanislav/zero-design-system/projects/allure-notifications-home/allure-notifications/build/pyramid-showcase/allure-report/",
+    "allureResultsFolder": "/Users/stanislav/zero-design-system/projects/allure-notifications-home/allure-notifications/build/pyramid-showcase/allure-results/",
+    "enableChart": true,
+    "darkMode": true,
+    "enableSuitesPublishing": false,
+    "chart": {
+      "mode": "collage",
+      "layout": "grid",
+      "width": 870,
+      "height": 1080,
+      "headerHeight": 68,
+      "panels": [
+        ["pie", "testingPyramid"],
+        ["durations"]
+      ],
+      "pyramidFallback": "suites"
+    },
+    "links": {
+      "report": "https://autotests-ai.github.io/reference-app/reports/latest/awesome/index.html",
+      "dashboard": "https://autotests-ai.github.io/reference-app/reports/latest/dashboard/index.html",
+      "testops": "https://allure.qa.guru",
+      "build": "https://github.com/autotests-ai/reference-app/actions"
+    }
+  },
+  "telegram": {
+    "token": "0:preview-no-send",
+    "chat": "0",
+    "templatePath": "/templates/telegram.ftl"
+  }
+}

@@ -1,0 +1,58 @@
+{
+  "base": {
+    "project": "builder-dogfood-cb870",
+    "environment": "local dogfood",
+    "comment": "Exported shape from allure-notifications-builder DEFAULT (CB-870 free)",
+    "language": "en",
+    "allureFolder": "/Users/stanislav/zero-design-system/projects/allure-notifications-home/allure-notifications/build/pyramid-showcase/allure-report/",
+    "allureResultsFolder": "/Users/stanislav/zero-design-system/projects/allure-notifications-home/allure-notifications/build/pyramid-showcase/allure-results/",
+    "enableChart": true,
+    "darkMode": true,
+    "chart": {
+      "mode": "collage",
+      "layout": "free",
+      "width": 870,
+      "height": 1080,
+      "headerHeight": 68,
+      "gridCols": 10,
+      "gridRows": 10,
+      "items": [
+        {
+          "type": "pie",
+          "x": 0,
+          "y": 0,
+          "w": 5,
+          "h": 5
+        },
+        {
+          "type": "testingPyramid",
+          "x": 5,
+          "y": 0,
+          "w": 5,
+          "h": 5
+        },
+        {
+          "type": "durations",
+          "x": 0,
+          "y": 5,
+          "w": 10,
+          "h": 5
+        }
+      ],
+      "pyramidFallback": "suites"
+    },
+    "links": {
+      "report": "",
+      "dashboard": "",
+      "testops": "",
+      "build": ""
+    }
+  },
+  "telegram": {
+    "token": "0:preview-no-send",
+    "chat": "0",
+    "topic": "",
+    "replyTo": "",
+    "templatePath": "/templates/telegram.ftl"
+  }
+}
