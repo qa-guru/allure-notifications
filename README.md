@@ -8,16 +8,24 @@ Locked collage rules + PNG: [`docs/canon/CANON.md`](docs/canon/CANON.md) · [`do
 - Pyramid: quieter corners/gaps, compact single-layer (not full-bleed)
 - `unit` = pie success (`ChartTheme.STATUS_PASSED` / `#94ca66`) — do not reintroduce a separate green
 - Rounded durations / success-rate tops; suites pills
-- Consumers: `base.darkMode: true` + jar pin (released **5.0.3**; **5.0.4** adds `chart.cardGap` — default **14** keeps this lock)
+- Consumers: `base.darkMode: true` + jar pin (released **5.0.3**; **5.0.5** SQ-1080 dense 12-tile + empty-state stubs)
 
-### 5.0.4 (unreleased)
+### 5.0.5 (unreleased)
+
+- SQ-1080 dense 12-tile free layout: all catalog tiles kept (empty-state, no silent drop)
+- `ChartPanelItem.by` / `groupBy`; `chart.tilePad` parsed (preview parity)
+- Stub panels: `statusTransitions`, `problemsDistribution`, `coverageDiff`, `statusAgePyramid`, `stabilityDistribution`, `durationDynamics` (+ `testBaseGrowthDynamics`)
+- `durations` + `groupBy: layer` → layer averages, else histogram fallback
+- Dogfood: [`config/config.preview-sq1080.json`](config/config.preview-sq1080.json) → [`config/chart-sq1080-dogfood.png`](config/chart-sq1080-dogfood.png)
+
+### 5.0.4
 
 - `chart.cardGap` (default 14) + existing `chart.headerHeight` (default 68) drive collage spacing/chrome
 - New panel: `testResultSeverities` (from `severity` labels); `pie` ↔ `currentStatus` alias for free `items`
 - Dogfood: [`config/config.preview-cb870-cardgap.json`](config/config.preview-cb870-cardgap.json) → [`config/chart-cb870-cardgap-dogfood.png`](config/chart-cb870-cardgap-dogfood.png)
 - **Jar Panel coverage vs awesome-charts catalog (17 slots / 13 unique types)**
-  - **Implemented:** `currentStatus`/`pie`, `testingPyramid` (+ `suites` fallback), `durations`, `statusDynamics`, `successRateDistribution`, `testResultSeverities`
-  - **Missing Panel (skipped — no analytics/history series yet):** `statusTransitions`, `testBaseGrowthDynamics`, `coverageDiff`, `problemsDistribution`, `stabilityDistribution`, `durationDynamics`, `statusAgePyramid`
+  - **Implemented:** `currentStatus`/`pie`, `testingPyramid` (+ `suites` fallback), `durations` (+ `groupBy: layer`), `statusDynamics`, `successRateDistribution`, `testResultSeverities`
+  - **Empty-state (no analytics yet):** `statusTransitions`, `testBaseGrowthDynamics`, `coverageDiff`, `problemsDistribution`, `stabilityDistribution`, `durationDynamics`, `statusAgePyramid`
 
 # Allure notifications
 **Allure notifications** is a library that sends automatic notifications about automated test results to your preferred messenger (Telegram, Slack, ~~Skype~~, Email, Mattermost, Discord, Loop, Rocket.Chat, Zoho Cliq, Microsoft Teams).

@@ -1,6 +1,7 @@
 package guru.qa.allure.notifications.chart;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -128,6 +129,53 @@ class ChartPanelsTest {
 
         assertNotNull(dynamics);
         assertNotNull(distribution);
+    }
+
+    @Test
+    void emptyStatePanelRendersPlaceholder() throws Exception {
+        Base base = baseWithProject();
+        ReportAnalytics analytics = ReportAnalyticsBuilder.build(summary(), java.util.Collections.emptyList());
+
+        BufferedImage image = EmptyStatePanel.renderEmpty(
+                PanelContext.of(base, 320, 180, analytics, legend(), false), "No data");
+
+        assertEquals(320, image.getWidth());
+        assertEquals(180, image.getHeight());
+        assertTrue(hasNonBackgroundPixels(image));
+    }
+
+    @Test
+    void durationsPanelGroupByLayerFallsBackToHistogramWithoutLayerSamples() throws Exception {
+        Base base = baseWithProject();
+        ReportAnalytics analytics = ReportAnalyticsBuilder.build(summary(), java.util.Collections.emptyList());
+        // Inject flat durations only — no per-layer map → groupBy=layer falls back.
+        ReportAnalytics withDurations = new ReportAnalytics(
+                analytics.getStatistic(),
+                java.util.Collections.<String, Integer>emptyMap(),
+                java.util.Collections.<guru.qa.allure.notifications.report.SuiteStat>emptyList(),
+                java.util.Arrays.asList(1000L, 2000L, 3000L, 4000L),
+                false,
+                4);
+
+        BufferedImage image = new DurationsPanel().render(
+                PanelContext.of(base, 400, 200, withDurations, legend(), false, "layer", null));
+
+        assertEquals(400, image.getWidth());
+        assertTrue(hasNonBackgroundPixels(image));
+    }
+
+    @Test
+    void durationsPanelGroupByLayerRendersAverages() throws Exception {
+        Base base = baseWithProject();
+        base.setAllureResultsFolder(fixture("fixtures/allure-results").toString());
+        ReportAnalytics analytics = ReportAnalyticsBuilder.build(base, summary());
+
+        BufferedImage image = new DurationsPanel().render(
+                PanelContext.of(base, 400, 220, analytics, legend(), false, "layer", null));
+
+        assertFalse(analytics.getDurationsMsByLayer().isEmpty());
+        assertEquals(400, image.getWidth());
+        assertTrue(hasNonBackgroundPixels(image));
     }
 
     @Test
