@@ -74,14 +74,14 @@ jobs:
         distribution: 'temurin'
 
     - name: Download Allure results
-      uses: actions/download-artifact@v4
+      uses: actions/download-artifact@v8
       with:
         name: allure-results
         path: allure-notifications-api/build/allure-results
       continue-on-error: true
 
     - name: Download fat jar
-      uses: actions/download-artifact@v4
+      uses: actions/download-artifact@v8
       with:
         name: notifications-jar
         path: allure-notifications/build/libs
