@@ -118,6 +118,26 @@ class ChartPanelsTest {
     }
 
     @Test
+    void stackedSegmentHeightsFillPlotExactlyWithoutOverflow() {
+        int plotHeight = 55;
+        int[] values = {50, 3, 3, 2, 2};
+        int[] heights = Bars.stackedSegmentHeights(plotHeight, values);
+        int sum = 0;
+        for (int height : heights) {
+            assertTrue(height >= 1);
+            sum += height;
+        }
+        assertEquals(plotHeight, sum);
+
+        int[] tight = Bars.stackedSegmentHeights(9, new int[] {1, 1, 1, 1, 1});
+        int tightSum = 0;
+        for (int height : tight) {
+            tightSum += height;
+        }
+        assertEquals(9, tightSum);
+    }
+
+    @Test
     void historyPanelsShowPlaceholderWithoutHistory() throws Exception {
         Base base = baseWithProject();
         ReportAnalytics analytics = ReportAnalyticsBuilder.build(summary(), java.util.Collections.emptyList());
