@@ -1,5 +1,15 @@
 # Changelog
 
+## v 5.0.8
+
+### English
+
+- **Horizontal bar panels (suites / severities / durations-by-layer)** — cap row/bar height so a single suite no longer inflates into a near-circular pill that fills the collage tile
+
+### Russian
+
+- **Горизонтальные бары (suites / severities / durations-by-layer)** — потолок высоты строки/бара: одна suite больше не раздувается в «круг» на весь тайл
+
 ## v 5.0.7
 
 ### English
