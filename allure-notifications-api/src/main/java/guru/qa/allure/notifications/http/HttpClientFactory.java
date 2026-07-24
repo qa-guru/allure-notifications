@@ -17,10 +17,12 @@ public class HttpClientFactory {
         HttpClientBuilder builder = HttpClients.custom();
 
         if (proxy != null && StringUtils.isNotEmpty(proxy.getHost()) && proxy.getPort() != 0) {
-            HttpHost proxyHost = new HttpHost(proxy.getHost(), proxy.getPort());
+            HttpHost proxyHost = new HttpHost(proxy.getHost(), proxy.getPort(), resolveProxyScheme(proxy));
             builder.setProxy(proxyHost);
 
-            if (StringUtils.isNotEmpty(proxy.getUsername()) && StringUtils.isNotEmpty(proxy.getPassword())) {
+            if (!proxy.isSocks()
+                    && StringUtils.isNotEmpty(proxy.getUsername())
+                    && StringUtils.isNotEmpty(proxy.getPassword())) {
                 CredentialsProvider credentialsProvider = new BasicCredentialsProvider();
                 credentialsProvider.setCredentials(
                     new AuthScope(proxyHost),
@@ -31,5 +33,9 @@ public class HttpClientFactory {
         }
 
         return builder.build();
+    }
+
+    static String resolveProxyScheme(Proxy proxy) {
+        return proxy != null && proxy.isSocks() ? "socks" : "http";
     }
 }
