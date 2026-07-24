@@ -58,6 +58,15 @@ class ChartPanelsTest {
     }
 
     @Test
+    void horizontalBarRowsCapsSingleRowInTallTile() {
+        // Collage Suites cell is often ~half height; one suite must not inflate into a circle.
+        HorizontalBarRows.Layout layout = HorizontalBarRows.layout(280, true, 1);
+        assertTrue(layout.rowHeight <= 34, "rowHeight=" + layout.rowHeight);
+        assertTrue(layout.barHeight <= 18, "barHeight=" + layout.barHeight);
+        assertTrue(layout.barHeight < layout.rowHeight);
+    }
+
+    @Test
     void durationsPanelRendersHistogram() throws Exception {
         Base base = baseWithProject();
         base.setAllureResultsFolder(fixture("fixtures/allure-results").toString());
