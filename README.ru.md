@@ -193,6 +193,7 @@ flowchart LR
     "templatePath": "/templates/teams.ftl"
   },
   "proxy": {
+    "type": "http",
     "host": "",
     "port": 0,
     "username": "",
@@ -200,7 +201,18 @@ flowchart LR
   }
 }
 ```
-Блок `proxy` используется если нужно указать дополнительную конфигурацию прокси.  
+Блок `proxy` задаёт исходящий HTTP/SOCKS-прокси для **Telegram**, **Slack** и **Cliq** (Apache HttpClient).  
+`type` по умолчанию `http` (обратная совместимость). Для SOCKS без auth — `socks5` (напр. `proxy.qaguru.school:7777`).
+
+```json
+"proxy": {
+  "type": "socks5",
+  "host": "proxy.qaguru.school",
+  "port": 7777
+}
+```
+
+Override через system properties: `-Dnotifications.proxy.type=socks5 -Dnotifications.proxy.host=…`
 Параметр `templatePath` является опциональным и позволяет установить путь к собственному Freemarker-шаблону. Пример:
 ```json
 {

@@ -44,6 +44,7 @@
     "templatePath": "/templates/telegram.ftl"
   },
   "proxy": {
+    "type": "http",
     "host": "localhost",
     "port": 80,
     "username": "bob",

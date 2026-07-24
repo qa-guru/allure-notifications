@@ -1,81 +1,95 @@
 package guru.qa.allure.notifications.clients;
 
-import static kong.unirest.HttpMethod.POST;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.mockStatic;
+import static org.mockito.Mockito.when;
 
 import java.net.URISyntaxException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
-import org.junit.jupiter.api.AfterEach;
+import org.apache.http.HttpEntity;
+import org.apache.http.StatusLine;
+import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.methods.HttpUriRequest;
+import org.apache.http.impl.client.CloseableHttpClient;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
+import org.mockito.MockedStatic;
 
 import guru.qa.allure.notifications.config.Config;
 import guru.qa.allure.notifications.config.base.Base;
 import guru.qa.allure.notifications.config.enums.Language;
 import guru.qa.allure.notifications.config.telegram.Telegram;
-import kong.unirest.MockClient;
+import guru.qa.allure.notifications.http.HttpClientFactory;
 
 /**
  * Integration-style smoke: real ReportLocator/SummaryReader/templates against fixtures,
- * HTTP mocked via Unirest MockClient.
+ * HTTP mocked via Apache HttpClient.
  */
 class NotificationSendIntegrationTest {
 
-    private final MockClient http = MockClient.register();
-
-    @AfterEach
-    void tearDown() {
-        MockClient.clear();
-    }
-
     @Test
     void sendsTelegramTextForAllure2Report(@TempDir Path chartDir) throws Exception {
-        http.expect(POST, "https://api.telegram.org/bottoken/sendMessage");
+        CloseableHttpClient client = mockHttpClient();
+        try (MockedStatic<HttpClientFactory> factory = mockStatic(HttpClientFactory.class)) {
+            factory.when(() -> HttpClientFactory.createHttpClient(any())).thenReturn(client);
 
-        Config config = telegramConfig(
-                fixture("fixtures/allure2-report").toString(),
-                null,
-                false);
+            Config config = telegramConfig(
+                    fixture("fixtures/allure2-report").toString(),
+                    null,
+                    false);
 
-        boolean ok = Notification.send(config, chartDir.toString());
-
-        assertTrue(ok);
-        http.verifyAll();
+            assertTrue(Notification.send(config, chartDir.toString()));
+        }
     }
 
     @Test
     void sendsTelegramPhotoCollageForAllure3WithResults(@TempDir Path chartDir) throws Exception {
-        http.expect(POST, "https://api.telegram.org/bottoken/sendPhoto");
+        CloseableHttpClient client = mockHttpClient();
+        try (MockedStatic<HttpClientFactory> factory = mockStatic(HttpClientFactory.class)) {
+            factory.when(() -> HttpClientFactory.createHttpClient(any())).thenReturn(client);
 
-        Config config = telegramConfig(
-                fixture("fixtures/allure3-report").toString(),
-                fixture("fixtures/allure-results").toString(),
-                true);
-        config.getBase().getChart().setMode("collage");
+            Config config = telegramConfig(
+                    fixture("fixtures/allure3-report").toString(),
+                    fixture("fixtures/allure-results").toString(),
+                    true);
+            config.getBase().getChart().setMode("collage");
 
-        boolean ok = Notification.send(config, chartDir.toString());
-
-        assertTrue(ok);
-        http.verifyAll();
-        assertTrue(chartDir.resolve("chart.png").toFile().isFile());
+            assertTrue(Notification.send(config, chartDir.toString()));
+            assertTrue(chartDir.resolve("chart.png").toFile().isFile());
+        }
     }
 
     @Test
     void publishesSuitesFromResultsWhenWidgetsMissing() throws Exception {
-        http.expect(POST, "https://api.telegram.org/bottoken/sendMessage");
+        CloseableHttpClient client = mockHttpClient();
+        try (MockedStatic<HttpClientFactory> factory = mockStatic(HttpClientFactory.class)) {
+            factory.when(() -> HttpClientFactory.createHttpClient(any())).thenReturn(client);
 
-        Config config = telegramConfig(
-                fixture("fixtures/allure3-report").toString(),
-                fixture("fixtures/allure-results").toString(),
-                false);
-        config.getBase().setEnableSuitesPublishing(true);
+            Config config = telegramConfig(
+                    fixture("fixtures/allure3-report").toString(),
+                    fixture("fixtures/allure-results").toString(),
+                    false);
+            config.getBase().setEnableSuitesPublishing(true);
 
-        // Capture template data via a stub notifier would be heavier; ensure send succeeds
-        // and SuitesJsonBuilder path does not throw for A3 without widgets/suites.json.
-        assertTrue(Notification.send(config));
-        http.verifyAll();
+            assertTrue(Notification.send(config));
+        }
+    }
+
+    private static CloseableHttpClient mockHttpClient() throws Exception {
+        CloseableHttpClient client = mock(CloseableHttpClient.class);
+        CloseableHttpResponse response = mock(CloseableHttpResponse.class);
+        StatusLine statusLine = mock(StatusLine.class);
+        HttpEntity entity = mock(HttpEntity.class);
+
+        when(client.execute(any(HttpUriRequest.class))).thenReturn(response);
+        when(response.getStatusLine()).thenReturn(statusLine);
+        when(statusLine.getStatusCode()).thenReturn(200);
+        when(response.getEntity()).thenReturn(entity);
+        return client;
     }
 
     private static Config telegramConfig(String allureFolder, String resultsFolder, boolean enableChart) {

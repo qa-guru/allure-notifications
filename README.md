@@ -220,6 +220,7 @@ Minimal 5.0 config sketch:
     "templatePath": "/templates/teams.ftl"
   },
   "proxy": {
+    "type": "http",
     "host": "",
     "port": 0,
     "username": "",
@@ -227,7 +228,18 @@ Minimal 5.0 config sketch:
   }
 }
 ```
-The `proxy` block is used to specify additional proxy configuration.  
+The `proxy` block configures outbound HTTP/SOCKS proxy for **Telegram**, **Slack**, and **Cliq** (Apache HttpClient).  
+`type` defaults to `http` when omitted (backward compatible). Use `socks5` for SOCKS proxies without auth (e.g. `proxy.qaguru.school:7777`).
+
+```json
+"proxy": {
+  "type": "socks5",
+  "host": "proxy.qaguru.school",
+  "port": 7777
+}
+```
+
+System properties override JSON fields: `-Dnotifications.proxy.type=socks5 -Dnotifications.proxy.host=…`
 The `templatePath` parameter is optional and allows you to provide a path to a custom Freemarker template. Example:
 ```json
 {

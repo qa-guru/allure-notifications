@@ -1,5 +1,17 @@
 # Changelog
 
+## v 5.0.6
+
+### English
+
+- **Telegram proxy from `config.json`** — `TelegramClient` uses Apache HttpClient via `HttpClientFactory` (same as Slack/Cliq); no `proxychains4` wrapper required
+- **`proxy.type`** — `http` (default) or `socks5`; overrides via `-Dnotifications.proxy.*`
+
+### Russian
+
+- **Telegram через proxy из `config.json`** — `TelegramClient` на Apache HttpClient; SOCKS5 без auth (prod: `proxy.qaguru.school:7777`)
+- **`proxy.type`** — `http` (по умолчанию) или `socks5`; override через `-Dnotifications.proxy.*`
+
 ## v 5.0.5
 
 ### English

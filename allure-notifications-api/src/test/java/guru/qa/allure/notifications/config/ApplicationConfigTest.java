@@ -82,6 +82,11 @@ class ApplicationConfigTest {
     @SetSystemProperty(key = "notifications.telegram.topic", value = "topicOverride")
     @SetSystemProperty(key = "notifications.telegram.replyTo", value = "replyToOverride")
     @SetSystemProperty(key = "notifications.telegram.templatePath", value = "templatePathOverride")
+    @SetSystemProperty(key = "notifications.proxy.type", value = "socks5")
+    @SetSystemProperty(key = "notifications.proxy.host", value = "proxyOverride")
+    @SetSystemProperty(key = "notifications.proxy.port", value = "7777")
+    @SetSystemProperty(key = "notifications.proxy.username", value = "proxyUserOverride")
+    @SetSystemProperty(key = "notifications.proxy.password", value = "proxyPasswordOverride")
     void propertiesAreOverloadedTest(String configFilePath) throws IOException {
         Config config = new ApplicationConfig(configFilePath).readConfig();
 
@@ -106,7 +111,13 @@ class ApplicationConfigTest {
                 () -> assertEquals("chatOverride", config.getTelegram().getChat()),
                 () -> assertEquals("topicOverride", config.getTelegram().getTopic()),
                 () -> assertEquals("replyToOverride", config.getTelegram().getReplyTo()),
-                () -> assertEquals("templatePathOverride", config.getTelegram().getTemplatePath())
+                () -> assertEquals("templatePathOverride", config.getTelegram().getTemplatePath()),
+
+                () -> assertEquals("socks5", config.getProxy().getType()),
+                () -> assertEquals("proxyOverride", config.getProxy().getHost()),
+                () -> assertEquals(7777, config.getProxy().getPort()),
+                () -> assertEquals("proxyUserOverride", config.getProxy().getUsername()),
+                () -> assertEquals("proxyPasswordOverride", config.getProxy().getPassword())
         );
     }
 }
