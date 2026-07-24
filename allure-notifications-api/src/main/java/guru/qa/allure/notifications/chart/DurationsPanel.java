@@ -20,8 +20,6 @@ public class DurationsPanel implements ChartPanel {
     private static final int MARGIN = 16;
     private static final int TITLE_HEIGHT = 24;
     private static final int DEFAULT_BINS = 10;
-    private static final List<String> LAYER_ORDER =
-            Arrays.asList("unit", "component", "integration", "api", "e2e", "manual");
 
     @Override
     public String getId() {
@@ -92,8 +90,11 @@ public class DurationsPanel implements ChartPanel {
         if (byLayer == null || byLayer.isEmpty()) {
             return averages;
         }
+        // Top → bottom rows match Testing pyramid (manual … unit), not bottom-up storage order.
         List<String> keys = new ArrayList<String>();
-        for (String ordered : LAYER_ORDER) {
+        List<String> pyramidOrder = PyramidLayerColors.ORDER_BOTTOM_TO_TOP;
+        for (int i = pyramidOrder.size() - 1; i >= 0; i--) {
+            String ordered = pyramidOrder.get(i);
             if (byLayer.containsKey(ordered)) {
                 keys.add(ordered);
             }
