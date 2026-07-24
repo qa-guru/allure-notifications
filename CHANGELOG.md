@@ -1,5 +1,17 @@
 # Changelog
 
+## v 5.0.7
+
+### English
+
+- **Stacked status-dynamics bars** — segment heights match values exactly without clipping top rounding
+- **`durations` + pyramid order** — layer rows follow testing-pyramid top-to-bottom order
+
+### Russian
+
+- **Stacked status-dynamics** — высоты сегментов без обрезки скругления сверху
+- **`durations` + порядок pyramid** — строки слоёв как в testing pyramid (сверху вниз)
+
 ## v 5.0.6
 
 ### English
