@@ -15,7 +15,6 @@ public class SuitesPanel implements ChartPanel {
     public static final String ID = "suites";
     private static final int MARGIN = 16;
     private static final int TITLE_HEIGHT = 24;
-    private static final int ROW_HEIGHT = 22;
 
     @Override
     public String getId() {
@@ -55,31 +54,29 @@ public class SuitesPanel implements ChartPanel {
                 maxCount = Math.max(maxCount, suite.getCount());
             }
 
-            int chartTop = showTitle ? MARGIN + TITLE_HEIGHT : MARGIN;
             int chartWidth = width - (MARGIN * 2);
             int labelWidth = Math.min(180, chartWidth / 3);
             int barAreaWidth = chartWidth - labelWidth - 40;
-            graphics.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 11));
+            HorizontalBarRows.Layout layout =
+                    HorizontalBarRows.layout(height, showTitle, suites.size());
+            graphics.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, layout.fontSize));
+            java.awt.FontMetrics metrics = graphics.getFontMetrics();
 
             for (int index = 0; index < suites.size(); index++) {
                 SuiteStat suite = suites.get(index);
-                int y = chartTop + index * ROW_HEIGHT;
-                if (y + ROW_HEIGHT > height - MARGIN) {
-                    break;
-                }
-
                 String label = truncate(suite.getName(), 24);
+                int baseline = layout.textBaseline(metrics, index);
+
                 graphics.setColor(theme.getText());
-                graphics.drawString(label, MARGIN, y + 14);
+                graphics.drawString(label, MARGIN, baseline);
 
                 int barWidth = (int) ((suite.getCount() / (double) maxCount) * barAreaWidth);
                 int barX = MARGIN + labelWidth;
-                int barY = y + 4;
                 graphics.setColor(theme.getAccent());
-                Bars.fillPill(graphics, barX, barY, Math.max(barWidth, 2), 12);
+                Bars.fillPill(graphics, barX, layout.barTop(index), Math.max(barWidth, 2), layout.barHeight);
 
                 graphics.setColor(theme.getText());
-                graphics.drawString(String.valueOf(suite.getCount()), barX + barWidth + 6, y + 14);
+                graphics.drawString(String.valueOf(suite.getCount()), barX + barWidth + 6, baseline);
             }
         } finally {
             graphics.dispose();

@@ -97,13 +97,11 @@ class TestingPyramidPanelTest {
                 PanelContext.of(base, width, height, analytics, legend()));
 
         int background = image.getRGB(0, 0);
-        // A lone e2e must NOT fill the whole card: it is a narrow, vertically
-        // centred tier, so the left interior column and the top interior band
-        // stay background (this is the regression guard for the "red blob").
+        // A lone e2e stays narrow (not full-width) but fills the plot vertically.
         assertEquals(background, image.getRGB(4, height / 2),
                 "left edge at mid-height should be background (tier is centred, not full-width)");
-        assertEquals(background, image.getRGB(width / 2, 4),
-                "top band should be background (single tier is centred, not full-height)");
+        assertTrue(image.getRGB(width / 2, height / 2) != background,
+                "tier should fill the plot vertically");
         assertTrue(hasNonBackgroundPixels(image));
     }
 

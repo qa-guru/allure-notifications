@@ -5,6 +5,8 @@ import java.awt.Font;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
+import java.util.ArrayList;
+import java.util.List;
 
 import guru.qa.allure.notifications.exceptions.MessageBuildException;
 import guru.qa.allure.notifications.report.HistoryAnalytics;
@@ -58,22 +60,35 @@ public class SuccessRateDistributionPanel implements ChartPanel {
 
             int[] buckets = history.getSuccessRateDistribution();
             int bins = buckets.length;
-            int chartTop = showTitle ? MARGIN + TITLE_HEIGHT : MARGIN;
-            int chartHeight = height - chartTop - MARGIN;
-            int chartWidth = width - MARGIN * 2;
-            int barWidth = Math.max(1, chartWidth / bins);
+            List<Integer> active = new ArrayList<Integer>();
             int maxCount = 1;
-            for (int count : buckets) {
-                maxCount = Math.max(maxCount, count);
-            }
-
             for (int i = 0; i < bins; i++) {
                 int count = buckets[i];
-                int barHeight = (int) Math.round((count / (double) maxCount) * (chartHeight - 20));
-                int x = MARGIN + i * barWidth;
+                if (count > 0) {
+                    active.add(i);
+                    maxCount = Math.max(maxCount, count);
+                }
+            }
+            if (active.isEmpty()) {
+                return image;
+            }
+
+            int chartTop = PanelPlotArea.chartTop(showTitle);
+            int chartHeight = PanelPlotArea.chartHeight(height, showTitle);
+            int chartWidth = width - MARGIN * 2;
+            int activeCount = active.size();
+            int slot = Math.max(1, chartWidth / activeCount);
+            int barWidth = Math.max(1, Math.min(slot - 2, slot));
+            int arc = Math.min(Bars.DEFAULT_ARC, Math.max(2, barWidth / 2));
+
+            for (int j = 0; j < activeCount; j++) {
+                int bucketIndex = active.get(j);
+                int count = buckets[bucketIndex];
+                int barHeight = Math.max(1, (int) Math.round((count / (double) maxCount) * chartHeight));
+                int x = MARGIN + j * slot + (slot - barWidth) / 2;
                 int y = chartTop + chartHeight - barHeight;
-                graphics.setColor(bucketColor(i, bins));
-                Bars.fillTopRounded(graphics, x + 1, y, Math.max(barWidth - 2, 1), barHeight, Bars.DEFAULT_ARC);
+                graphics.setColor(bucketColor(bucketIndex, bins));
+                Bars.fillTopRounded(graphics, x, y, barWidth, barHeight, arc);
             }
         } finally {
             graphics.dispose();
