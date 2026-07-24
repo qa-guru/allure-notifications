@@ -1,0 +1,74 @@
+{
+  "base": {
+    "project": "reference-app",
+    "environment": "ci / main",
+    "comment": "pie 4×4 hero · statusDynamics · pyramid · durations · successRate @ SQ-1080",
+    "allureFolder": "/Users/stanislav/zero-design-system/projects/allure-notifications-home/allure-notifications/build/pyramid-showcase/allure-report/",
+    "allureResultsFolder": "/Users/stanislav/zero-design-system/projects/allure-notifications-home/allure-notifications/build/pyramid-showcase/allure-results/",
+    "enableChart": true,
+    "darkMode": true,
+    "enableSuitesPublishing": false,
+    "language": "ru",
+    "chart": {
+      "mode": "collage",
+      "layout": "free",
+      "width": 1080,
+      "height": 1080,
+      "headerHeight": 68,
+      "cardGap": 14,
+      "tilePad": 6,
+      "gridCols": 10,
+      "gridRows": 10,
+      "items": [
+        {
+          "type": "pie",
+          "x": 0,
+          "y": 0,
+          "w": 4,
+          "h": 4
+        },
+        {
+          "type": "statusDynamics",
+          "x": 4,
+          "y": 0,
+          "w": 6,
+          "h": 3
+        },
+        {
+          "type": "testingPyramid",
+          "x": 0,
+          "y": 4,
+          "w": 4,
+          "h": 3
+        },
+        {
+          "type": "durations",
+          "x": 4,
+          "y": 3,
+          "w": 6,
+          "h": 4,
+          "groupBy": "layer"
+        },
+        {
+          "type": "successRateDistribution",
+          "x": 0,
+          "y": 7,
+          "w": 10,
+          "h": 3
+        }
+      ],
+      "pyramidFallback": "suites"
+    },
+    "links": {
+      "report": "https://autotests-ai.github.io/reference-app/reports/latest/awesome/index.html",
+      "dashboard": "https://autotests-ai.github.io/reference-app/reports/latest/dashboard/index.html",
+      "testops": "https://allure.qa.guru",
+      "build": "https://github.com/autotests-ai/reference-app/actions"
+    }
+  },
+  "telegram": {
+    "token": "0:preview-no-send",
+    "chat": "0",
+    "templatePath": "/templates/telegram.ftl"
+  }
+}

@@ -1,0 +1,95 @@
+{
+  "base": {
+    "project": "greedy-token",
+    "environment": "mcp / local",
+    "comment": "mid · 8 tiles · pie 4×4 · free @870×1080",
+    "allureFolder": "/Users/stanislav/zero-design-system/projects/allure-notifications-home/allure-notifications/build/pyramid-showcase/allure-report/",
+    "allureResultsFolder": "/Users/stanislav/zero-design-system/projects/allure-notifications-home/allure-notifications/build/pyramid-showcase/allure-results/",
+    "enableChart": true,
+    "darkMode": true,
+    "enableSuitesPublishing": false,
+    "language": "ru",
+    "chart": {
+      "mode": "collage",
+      "layout": "free",
+      "width": 870,
+      "height": 1080,
+      "headerHeight": 68,
+      "cardGap": 14,
+      "tilePad": 6,
+      "gridCols": 10,
+      "gridRows": 10,
+      "items": [
+        {
+          "type": "pie",
+          "x": 0,
+          "y": 0,
+          "w": 4,
+          "h": 4
+        },
+        {
+          "type": "statusDynamics",
+          "x": 4,
+          "y": 0,
+          "w": 6,
+          "h": 3
+        },
+        {
+          "type": "successRateDistribution",
+          "x": 4,
+          "y": 3,
+          "w": 3,
+          "h": 2
+        },
+        {
+          "type": "durations",
+          "x": 7,
+          "y": 3,
+          "w": 3,
+          "h": 2,
+          "groupBy": "layer"
+        },
+        {
+          "type": "testingPyramid",
+          "x": 0,
+          "y": 4,
+          "w": 4,
+          "h": 3
+        },
+        {
+          "type": "testBaseGrowthDynamics",
+          "x": 4,
+          "y": 5,
+          "w": 6,
+          "h": 2
+        },
+        {
+          "type": "durationDynamics",
+          "x": 0,
+          "y": 7,
+          "w": 5,
+          "h": 3
+        },
+        {
+          "type": "coverageDiff",
+          "x": 5,
+          "y": 7,
+          "w": 5,
+          "h": 3
+        }
+      ],
+      "pyramidFallback": "suites"
+    },
+    "links": {
+      "report": "https://svasenkov.github.io/greedy-token/reports/latest/awesome/",
+      "dashboard": "https://svasenkov.github.io/greedy-token/reports/latest/dashboard/",
+      "testops": "https://allure.qa.guru",
+      "build": "https://github.com/svasenkov/greedy-token/actions"
+    }
+  },
+  "telegram": {
+    "token": "0:preview-no-send",
+    "chat": "0",
+    "templatePath": "/templates/telegram.ftl"
+  }
+}
