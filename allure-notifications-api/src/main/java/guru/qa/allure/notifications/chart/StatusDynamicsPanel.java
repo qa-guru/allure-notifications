@@ -59,34 +59,32 @@ public class StatusDynamicsPanel implements ChartPanel {
 
             List<Map<String, Integer>> dynamics = history.getStatusDynamics();
             int runs = dynamics.size();
-            int chartTop = showTitle ? MARGIN + TITLE_HEIGHT : MARGIN;
-            int chartHeight = height - chartTop - MARGIN;
+            int chartTop = PanelPlotArea.chartTop(showTitle);
+            int chartHeight = PanelPlotArea.chartHeight(height, showTitle);
             int chartWidth = width - MARGIN * 2;
             int slot = Math.max(1, chartWidth / runs);
             int barWidth = Math.max(1, Math.min(slot - 4, slot));
 
-            int maxTotal = 1;
-            for (Map<String, Integer> counts : dynamics) {
-                int total = 0;
-                for (int value : counts.values()) {
-                    total += value;
-                }
-                maxTotal = Math.max(maxTotal, total);
-            }
-
             for (int i = 0; i < runs; i++) {
                 Map<String, Integer> counts = dynamics.get(i);
-                int x = MARGIN + i * slot;
+                int runTotal = 0;
+                for (String status : HistoryAnalytics.STATUS_KEYS) {
+                    runTotal += counts.getOrDefault(status, 0);
+                }
+                if (runTotal <= 0) {
+                    continue;
+                }
+                int x = MARGIN + i * slot + (slot - barWidth) / 2;
                 int yCursor = chartTop + chartHeight;
                 for (String status : HistoryAnalytics.STATUS_KEYS) {
                     int value = counts.getOrDefault(status, 0);
                     if (value <= 0) {
                         continue;
                     }
-                    int segmentHeight = (int) Math.round((value / (double) maxTotal) * chartHeight);
+                    int segmentHeight = Math.max(1, (int) Math.round((value / (double) runTotal) * chartHeight));
                     yCursor -= segmentHeight;
                     graphics.setColor(statusColor(status));
-                    graphics.fillRect(x, yCursor, barWidth, segmentHeight);
+                    Bars.fillTopRounded(graphics, x, yCursor, barWidth, segmentHeight, Bars.DEFAULT_ARC);
                 }
             }
         } finally {

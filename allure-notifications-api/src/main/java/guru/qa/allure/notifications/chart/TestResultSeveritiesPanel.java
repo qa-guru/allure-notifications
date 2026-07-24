@@ -26,7 +26,6 @@ public class TestResultSeveritiesPanel implements ChartPanel {
     public static final String ID = "testresultseverities";
     private static final int MARGIN = 16;
     private static final int TITLE_HEIGHT = 24;
-    private static final int ROW_HEIGHT = 22;
     private static final List<String> CANON_ORDER =
             Arrays.asList("blocker", "critical", "normal", "minor", "trivial");
     private static final Color BLOCKER = new Color(0xc0392b);
@@ -73,32 +72,30 @@ public class TestResultSeveritiesPanel implements ChartPanel {
                 maxCount = Math.max(maxCount, count);
             }
 
-            int chartTop = showTitle ? MARGIN + TITLE_HEIGHT : MARGIN;
             int chartWidth = width - (MARGIN * 2);
             int labelWidth = Math.min(100, chartWidth / 3);
             int barAreaWidth = chartWidth - labelWidth - 40;
-            graphics.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 11));
+            HorizontalBarRows.Layout layout =
+                    HorizontalBarRows.layout(height, showTitle, ordered.size());
+            graphics.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, layout.fontSize));
+            java.awt.FontMetrics metrics = graphics.getFontMetrics();
 
             int index = 0;
             for (Map.Entry<String, Integer> entry : ordered.entrySet()) {
-                int y = chartTop + index * ROW_HEIGHT;
-                if (y + ROW_HEIGHT > height - MARGIN) {
-                    break;
-                }
                 String key = entry.getKey();
                 int count = entry.getValue();
+                int baseline = layout.textBaseline(metrics, index);
 
                 graphics.setColor(theme.getText());
-                graphics.drawString(key, MARGIN, y + 14);
+                graphics.drawString(key, MARGIN, baseline);
 
                 int barWidth = (int) ((count / (double) maxCount) * barAreaWidth);
                 int barX = MARGIN + labelWidth;
-                int barY = y + 4;
                 graphics.setColor(severityColor(key, theme));
-                Bars.fillPill(graphics, barX, barY, Math.max(barWidth, 2), 12);
+                Bars.fillPill(graphics, barX, layout.barTop(index), Math.max(barWidth, 2), layout.barHeight);
 
                 graphics.setColor(theme.getText());
-                graphics.drawString(String.valueOf(count), barX + barWidth + 6, y + 14);
+                graphics.drawString(String.valueOf(count), barX + barWidth + 6, baseline);
                 index++;
             }
         } finally {

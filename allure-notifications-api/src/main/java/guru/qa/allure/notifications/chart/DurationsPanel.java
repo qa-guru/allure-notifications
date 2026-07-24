@@ -19,7 +19,6 @@ public class DurationsPanel implements ChartPanel {
     public static final String ID = "durations";
     private static final int MARGIN = 16;
     private static final int TITLE_HEIGHT = 24;
-    private static final int ROW_HEIGHT = 22;
     private static final int DEFAULT_BINS = 10;
     private static final List<String> LAYER_ORDER =
             Arrays.asList("unit", "component", "integration", "api", "e2e", "manual");
@@ -123,7 +122,6 @@ public class DurationsPanel implements ChartPanel {
     private static void drawLayerAverages(Graphics2D graphics, ChartTheme theme,
                                           int width, int height, boolean showTitle,
                                           Map<String, Double> avgSeconds) {
-        int chartTop = showTitle ? MARGIN + TITLE_HEIGHT : MARGIN;
         int chartWidth = width - (MARGIN * 2);
         int labelWidth = Math.min(90, chartWidth / 3);
         int barAreaWidth = Math.max(1, chartWidth - labelWidth - 48);
@@ -131,25 +129,25 @@ public class DurationsPanel implements ChartPanel {
         for (Double value : avgSeconds.values()) {
             maxAvg = Math.max(maxAvg, value);
         }
-        graphics.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 11));
+        HorizontalBarRows.Layout layout =
+                HorizontalBarRows.layout(height, showTitle, avgSeconds.size());
+        graphics.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, layout.fontSize));
+        java.awt.FontMetrics metrics = graphics.getFontMetrics();
         int index = 0;
         for (Map.Entry<String, Double> entry : avgSeconds.entrySet()) {
-            int y = chartTop + index * ROW_HEIGHT;
-            if (y + ROW_HEIGHT > height - MARGIN) {
-                break;
-            }
             String key = entry.getKey();
             double avg = entry.getValue();
+            int baseline = layout.textBaseline(metrics, index);
             graphics.setColor(theme.getText());
-            graphics.drawString(key, MARGIN, y + 14);
+            graphics.drawString(key, MARGIN, baseline);
             int barWidth = (int) ((avg / maxAvg) * barAreaWidth);
             int barX = MARGIN + labelWidth;
             java.awt.Color layerColor = PyramidLayerColors.colorFor(key, theme.isDark());
             graphics.setColor(layerColor != null ? layerColor : theme.getAccent());
-            Bars.fillPill(graphics, barX, y + 4, Math.max(barWidth, 2), 12);
+            Bars.fillPill(graphics, barX, layout.barTop(index), Math.max(barWidth, 2), layout.barHeight);
             graphics.setColor(theme.getText());
             graphics.drawString(String.format(Locale.ROOT, "%.1f", avg),
-                    barX + barWidth + 6, y + 14);
+                    barX + barWidth + 6, baseline);
             index++;
         }
     }
@@ -163,20 +161,22 @@ public class DurationsPanel implements ChartPanel {
         int bins = Math.min(DEFAULT_BINS, Math.max(3, values.length / 2));
         int[] histogram = histogram(values, bins);
 
-        int chartTop = showTitle ? MARGIN + TITLE_HEIGHT : MARGIN;
-        int chartHeight = height - chartTop - MARGIN;
+        int chartTop = PanelPlotArea.chartTop(showTitle);
+        int chartHeight = PanelPlotArea.chartHeight(height, showTitle);
         int chartWidth = width - (MARGIN * 2);
         int barWidth = Math.max(1, chartWidth / bins);
         int maxCount = Arrays.stream(histogram).max().orElse(1);
+        int arc = Math.min(Bars.DEFAULT_ARC, Math.max(2, barWidth / 2));
 
         for (int index = 0; index < bins; index++) {
             int count = histogram[index];
-            int barHeight = (int) ((count / (double) maxCount) * (chartHeight - 20));
+            int barHeight = count <= 0 ? 0
+                    : Math.max(1, (int) Math.round((count / (double) maxCount) * chartHeight));
             int x = MARGIN + index * barWidth;
             int y = chartTop + chartHeight - barHeight;
             int bw = Math.max(barWidth - 2, 1);
             graphics.setColor(theme.getAccent());
-            Bars.fillTopRounded(graphics, x + 1, y, bw, barHeight, Bars.DEFAULT_ARC);
+            Bars.fillTopRounded(graphics, x + 1, y, bw, barHeight, arc);
         }
     }
 
