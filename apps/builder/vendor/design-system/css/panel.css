@@ -1,0 +1,422 @@
+/* Panel — chrome shell: bar (dots + title) + body | code. Modes: --terminal, --content */
+
+@import url("sticky.css");
+
+.panel {
+  --panel-bg: var(--color-surface-soft);
+  --panel-border: var(--color-border);
+  --panel-bar-bg: color-mix(in srgb, var(--color-surface) 40%, transparent);
+  --panel-title-color: var(--color-text-muted);
+  --panel-code-color: var(--color-text);
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  min-width: 0;
+  min-height: 0;
+  border: 1px solid var(--panel-border);
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+  background: var(--panel-bg);
+}
+
+.panel--terminal {
+  --panel-bg: #1a1917;
+  --panel-border: rgba(255, 255, 255, 0.08);
+  --panel-bar-bg: rgba(255, 255, 255, 0.03);
+  --panel-title-color: rgba(255, 255, 255, 0.55);
+  --panel-code-color: #e6edf3;
+  --panel-action-color: rgba(255, 255, 255, 0.55);
+  --panel-action-hover-color: rgba(255, 255, 255, 0.92);
+  --panel-action-hover-bg: rgba(255, 255, 255, 0.08);
+  --panel-action-focus: rgba(255, 255, 255, 0.65);
+  --panel-tab-border: rgba(255, 255, 255, 0.12);
+  --panel-tab-color: rgba(255, 255, 255, 0.45);
+  --panel-tab-hover-border: rgba(255, 255, 255, 0.28);
+  --panel-tab-hover-color: rgba(255, 255, 255, 0.72);
+  --panel-tab-active-color: rgba(255, 255, 255, 0.92);
+}
+
+/* Light output chrome — independent of html.theme-light */
+.panel--terminal.panel--terminal-light {
+  --panel-bg: #ffffff;
+  --panel-border: rgba(28, 25, 23, 0.12);
+  --panel-bar-bg: rgba(28, 25, 23, 0.03);
+  --panel-title-color: rgba(28, 25, 23, 0.55);
+  --panel-code-color: #1c1917;
+  --panel-action-color: rgba(28, 25, 23, 0.55);
+  --panel-action-hover-color: rgba(28, 25, 23, 0.92);
+  --panel-action-hover-bg: rgba(28, 25, 23, 0.06);
+  --panel-action-focus: rgba(28, 25, 23, 0.65);
+  --panel-tab-border: rgba(28, 25, 23, 0.12);
+  --panel-tab-color: rgba(28, 25, 23, 0.45);
+  --panel-tab-hover-border: rgba(28, 25, 23, 0.28);
+  --panel-tab-hover-color: rgba(28, 25, 23, 0.72);
+  --panel-tab-active-color: rgba(28, 25, 23, 0.92);
+}
+
+.panel--content {
+  --panel-bg: var(--color-surface-soft);
+  --panel-border: var(--color-border);
+}
+
+.panel__bar {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-1) var(--space-2) var(--space-1) var(--space-3);
+  border-bottom: 1px solid var(--panel-border);
+  background: var(--panel-bar-bg);
+}
+
+.panel__dots {
+  display: flex;
+  gap: var(--panel-dot-gap);
+  flex-shrink: 0;
+}
+
+.panel__dot {
+  width: var(--panel-dot-size);
+  height: var(--panel-dot-size);
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.15);
+}
+
+.panel__dot:nth-child(1) { background: var(--indicator-close); }
+.panel__dot:nth-child(2) { background: var(--indicator-minimize); }
+.panel__dot:nth-child(3) { background: var(--indicator-maximize); }
+
+.panel--content .panel__dot:nth-child(1) {
+  background: color-mix(in srgb, var(--indicator-close) 55%, transparent);
+}
+
+.panel--content .panel__dot:nth-child(2) {
+  background: color-mix(in srgb, var(--indicator-minimize) 55%, transparent);
+}
+
+.panel--content .panel__dot:nth-child(3) {
+  background: color-mix(in srgb, var(--indicator-maximize) 55%, transparent);
+}
+
+.panel__trail {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  flex: 1 1 auto;
+  min-width: 0;
+  overflow: hidden;
+}
+
+.panel__title {
+  font-size: var(--font-size-xs);
+  font-weight: 600;
+  color: var(--panel-title-color);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.panel__bar-end {
+  display: flex;
+  flex-shrink: 0;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+/* Bar actions canon (all builders):
+   - `.panel__bar-end` — editable `vector#` fingerprint (localStorage registry restore)
+   - `.panel__actions` — icon-only Reset → Download → Copy (glyph + aria-label/title)
+   Ban: visible text labels, bordered `.btn` / `.btn--secondary` in the terminal bar.
+   `barEnd` is sibling of `.panel__actions`, not a wrapper around them. */
+.panel__actions {
+  display: flex;
+  flex-shrink: 0;
+  align-items: center;
+  gap: var(--panel-action-gap);
+}
+
+/* Trail sibling (canonical) — one ml:auto in panel.css. When both meta and
+   actions are bar children, only the first absorbs free space. */
+.panel__bar > .panel__bar-end,
+.panel__bar > .panel__actions,
+.panel__trail > .panel__bar-end,
+.panel__trail > .panel__actions {
+  margin-left: auto;
+}
+
+.panel__bar > .panel__bar-end + .panel__actions {
+  margin-left: 0;
+}
+
+.panel--terminal .panel__action.icon-btn {
+  width: var(--panel-action-size);
+  height: var(--panel-action-size);
+  color: var(--panel-action-color);
+}
+
+.panel--terminal .panel__action.icon-btn:hover {
+  color: var(--panel-action-hover-color);
+  background: var(--panel-action-hover-bg);
+}
+
+.panel--terminal .panel__action.icon-btn:focus-visible {
+  outline-color: var(--panel-action-focus);
+}
+
+.panel__body {
+  flex: 1 1 auto;
+  min-height: 0;
+  padding: var(--space-4);
+  overflow: auto;
+}
+
+/*
+  Terminal: __code owns the inset. React Panel wraps children in __body —
+  zero body pad so there is no phantom blank line before `{` / after `}`.
+  Prefer direct `.panel > .panel__code` (templates/panel.html); body wrap is ok
+  only with this rule.
+*/
+.panel--terminal > .panel__body {
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+}
+
+.panel__code {
+  flex: 1 1 auto;
+  min-height: 0;
+  margin: 0;
+  padding: var(--space-3);
+  padding-bottom: calc(var(--space-3) + 0.25em);
+  overflow: auto;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: var(--font-size-sm);
+  line-height: 1.55;
+  color: var(--panel-code-color);
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+.panel__foot {
+  flex: 0 0 auto;
+  padding: var(--space-2) var(--space-3);
+  border-top: 1px solid var(--panel-border);
+}
+
+/* Foot as right rail — language tabs top→bottom beside body (Capabilities).
+   ≥769px only; narrow viewports keep the bottom foot so the snippet stays wide. */
+.panel.panel--foot-rail {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  grid-template-rows: auto minmax(0, 1fr);
+  grid-template-areas:
+    "bar bar"
+    "body foot";
+}
+
+.panel--foot-rail > .panel__bar {
+  grid-area: bar;
+}
+
+.panel--foot-rail > .panel__body {
+  grid-area: body;
+}
+
+.panel--foot-rail > .panel__foot {
+  grid-area: foot;
+  align-self: stretch;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  padding: var(--space-3) var(--space-2);
+  border-top: none;
+  border-left: 1px solid var(--panel-border);
+  overflow: auto;
+}
+
+.panel--terminal.panel--foot-rail .panel__foot > .tabs {
+  flex-direction: column;
+  flex-wrap: nowrap;
+  align-items: stretch;
+}
+
+.panel--terminal.panel--foot-rail .panel__foot > .tabs .tab {
+  justify-content: center;
+  width: 100%;
+}
+
+@media (max-width: 768px) {
+  .panel.panel--foot-rail {
+    display: flex;
+    flex-direction: column;
+    grid-template-columns: unset;
+    grid-template-rows: unset;
+    grid-template-areas: unset;
+  }
+
+  .panel--foot-rail > .panel__bar,
+  .panel--foot-rail > .panel__body,
+  .panel--foot-rail > .panel__foot {
+    grid-area: unset;
+  }
+
+  .panel--foot-rail > .panel__foot {
+    align-self: auto;
+    border-left: none;
+    border-top: 1px solid var(--panel-border);
+    padding: var(--space-2) var(--space-3);
+  }
+
+  .panel--terminal.panel--foot-rail .panel__foot > .tabs {
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: center;
+  }
+
+  .panel--terminal.panel--foot-rail .panel__foot > .tabs .tab {
+    width: auto;
+  }
+}
+
+/* Terminal panel — format / language tabs in bar trail or foot */
+.panel--terminal .panel__trail > .tabs,
+.panel--terminal .panel__foot > .tabs {
+  display: flex;
+  flex-shrink: 0;
+  flex-wrap: nowrap;
+  align-items: center;
+  gap: var(--space-1);
+  min-width: 0;
+}
+
+.panel--terminal .panel__foot > .tabs {
+  flex-wrap: wrap;
+}
+
+.panel--terminal .panel__trail > .tabs .tab,
+.panel--terminal .panel__foot > .tabs .tab {
+  display: inline-flex;
+  align-items: center;
+  box-sizing: border-box;
+  height: 20px;
+  padding: 0 var(--space-2);
+  line-height: 1;
+  flex: 0 0 auto;
+  min-width: 0;
+  border-radius: 999px;
+  border-color: var(--panel-tab-border);
+  background: transparent;
+  color: var(--panel-tab-color);
+  font-size: var(--font-size-xs);
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.panel--terminal .panel__trail > .tabs .tab:hover:not(:disabled),
+.panel--terminal .panel__foot > .tabs .tab:hover:not(:disabled) {
+  border-color: var(--panel-tab-hover-border);
+  color: var(--panel-tab-hover-color);
+}
+
+.panel--terminal .panel__trail > .tabs .tab--active,
+.panel--terminal .panel__foot > .tabs .tab--active {
+  border-color: color-mix(in srgb, var(--color-primary) 70%, transparent);
+  background: transparent;
+  color: var(--panel-tab-active-color);
+}
+
+.panel--terminal .panel__trail > .tabs .tab:focus-visible,
+.panel--terminal .panel__foot > .tabs .tab:focus-visible {
+  outline-color: var(--panel-action-focus);
+}
+
+/* Terminal bar with format tabs — CSS grid keeps dots/actions in corners.
+   Level 1 `.panel__bar--wrap`: tabs → band 2 (align with dots); chrome stays.
+   Level 2 `.panel__bar--wrap-meta`: hash → band 2, tabs → band 3.
+   Content-driven via js/panel-bar-wrap.js. Area name `meta` (not `end`). */
+.panel__bar:has(> .panel__trail > .tabs) {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto auto;
+  grid-template-areas: "dots trail meta actions";
+  /* Center tabs/hash/actions in the bar band (actions are 28px, tabs 20px). */
+  align-items: center;
+}
+
+.panel__bar:has(> .panel__trail > .tabs):not(:has(> .panel__bar-end)) {
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  grid-template-areas: "dots trail actions";
+}
+
+.panel__bar:has(> .panel__trail > .tabs) > .panel__dots {
+  grid-area: dots;
+  /* Match first tab row (20px) — dots are ~8px. */
+  height: 20px;
+  align-items: center;
+}
+
+.panel__bar:has(> .panel__trail > .tabs) > .panel__trail {
+  grid-area: trail;
+  min-width: 0;
+  overflow: hidden; /* never paint tabs over hash / actions */
+}
+
+.panel__bar:has(> .panel__trail > .tabs) > .panel__bar-end {
+  grid-area: meta;
+  margin-left: 0;
+  position: relative;
+  z-index: 1;
+  height: 20px;
+}
+
+.panel__bar:has(> .panel__trail > .tabs) > .panel__actions {
+  grid-area: actions;
+  margin-left: 0;
+  position: relative;
+  z-index: 1;
+}
+
+/* Level 1: tabs overflow → band 2; dots + hash + actions stay on band 1.
+   Trail spans full width → tags align with dots. */
+.panel__bar:has(> .panel__trail > .tabs).panel__bar--wrap,
+.panel__bar:has(> .panel__trail > .tabs).panel__bar--wrap-meta {
+  /* Extra bottom air under the last tab row (single-band keeps --space-1). */
+  padding-bottom: var(--space-2);
+}
+
+.panel__bar:has(> .panel__trail > .tabs).panel__bar--wrap {
+  grid-template-areas:
+    "dots . meta actions"
+    "trail trail trail trail";
+}
+
+.panel__bar:has(> .panel__trail > .tabs):not(:has(> .panel__bar-end)).panel__bar--wrap {
+  grid-template-areas:
+    "dots . actions"
+    "trail trail trail";
+}
+
+/* Level 2: hash bumps into dots → hash on band 2, tabs on band 3.
+   Dots + actions stay band 1 corners. */
+.panel__bar:has(> .panel__trail > .tabs).panel__bar--wrap-meta {
+  grid-template-areas:
+    "dots . . actions"
+    "meta meta meta meta"
+    "trail trail trail trail";
+}
+
+.panel__bar:has(> .panel__trail > .tabs).panel__bar--wrap-meta > .panel__bar-end {
+  justify-self: end;
+  align-self: start;
+}
+
+.panel__bar:has(> .panel__trail > .tabs).panel__bar--wrap > .panel__trail,
+.panel__bar:has(> .panel__trail > .tabs).panel__bar--wrap-meta > .panel__trail {
+  overflow: visible;
+}
+
+.panel__bar:has(> .panel__trail > .tabs).panel__bar--wrap > .panel__trail > .tabs,
+.panel__bar:has(> .panel__trail > .tabs).panel__bar--wrap-meta > .panel__trail > .tabs {
+  flex-wrap: wrap;
+  width: 100%;
+  max-width: 100%;
+}

@@ -4,8 +4,14 @@ Application packages for line **6.0.\***.
 
 | App | Role | Phase |
 |-----|------|-------|
-| `builder/` | Web `config.json` configurator (merge from `allure-notifications-builder`) | 0 checklist → merge |
+| `builder/` | Web `config.json` configurator (merged from hub `allure-notifications-builder`) | **Stage E done** |
 
-Until the merge checklist is executed, the live builder remains the hub clone `projects/allure-notifications-home/allure-notifications-builder/` (stand `:3011`).
+Stand `:3011`:
+
+```bash
+python scripts/stands/ensure.py allure-notifications-builder
+```
+
+cwd → `projects/allure-notifications-home/allure-notifications/apps/builder`.
 
 See [../docs/phase-0-checklist.md](../docs/phase-0-checklist.md).

@@ -1,0 +1,20 @@
+{
+  "name": "@allure-notifications/builder",
+  "private": true,
+  "version": "6.0.0",
+  "description": "Full config.json configurator for allure-notifications (apps/builder).",
+  "scripts": {
+    "test": "pnpm run test:unit && pnpm run test:e2e",
+    "test:unit": "pnpm --filter @allure-notifications/config run build && node --test tests/config-parity.test.mjs",
+    "test:e2e": "PLAYWRIGHT_HEADLESS=1 playwright test",
+    "test:headed": "PW_HEADED=1 playwright test --headed",
+    "test:ui": "playwright test --ui",
+    "test:dogfood-jar": "python tests/dogfood_jar.py"
+  },
+  "dependencies": {
+    "@allure-notifications/config": "workspace:*"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.61.1"
+  }
+}

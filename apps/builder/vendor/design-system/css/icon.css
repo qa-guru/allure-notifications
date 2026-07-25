@@ -1,0 +1,15 @@
+.icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: var(--icon-size-md);
+  height: var(--icon-size-md);
+  color: currentColor;
+}
+
+.icon svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+}

@@ -1,0 +1,14 @@
+.text {
+  margin: 0;
+  font-size: var(--font-size-base);
+  line-height: 1.5;
+  color: var(--color-text);
+}
+
+.text--muted {
+  color: var(--color-text-muted);
+}
+
+.text--sm {
+  font-size: var(--font-size-sm);
+}

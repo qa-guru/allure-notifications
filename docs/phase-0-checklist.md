@@ -8,22 +8,20 @@ Do **not** execute big moves until this checklist is explicitly OK'd. Phase 0 = 
 |---|--------|------|-----|------|
 | 1 | Move Gradle multi-module tree under legacy | repo-root modules (`allure-notifications/`, `allure-notifications-api/`, `build.gradle`, `settings.gradle`, `gradle/`, `gradlew*`) | `legacy/java/` (keep build runnable from that cwd) | [ ] |
 | 2 | README legacy banner | root README | State **5.0.\* Java legacy** / **6.0.\* TypeScript** active; point jar users at `legacy/java/` | [ ] |
-| 3 | Merge builder into monorepo | hub clone `allure-notifications-builder/` (or upstream Pages repo) | `apps/builder/` | [ ] |
+| 3 | Merge builder into monorepo | hub clone `allure-notifications-builder/` (or upstream Pages repo) | `apps/builder/` | [x] Stage E |
 | 4 | Archive second repo | `qa-guru/allure-notifications-builder` | Archive on GitHub after Pages points at `apps/builder/` | [ ] |
 | 5 | Pages CNAME / custom domain | builder Pages (`allure.notifications.qa.guru`) | Serve from `apps/builder/` (same CNAME / GH Pages source) | [ ] |
-| 6 | Stand registry cwd | `projects/allure-notifications-home/allure-notifications-builder` | `projects/allure-notifications-home/allure-notifications/apps/builder` | [ ] |
+| 6 | Stand registry cwd | `projects/allure-notifications-home/allure-notifications-builder` | `projects/allure-notifications-home/allure-notifications/apps/builder` | [x] Stage E |
 | 7 | Hub README bootstrap | clone two repos | clone one `allure-notifications`; builder path = `apps/builder/` | [ ] |
 
 ## Stand `:3011`
 
-Current (`scripts/stands/registry.json`):
+Current (`scripts/stands/registry.json`) — **Stage E**:
 
 - id: `allure-notifications-builder`
 - port: `3011`
-- cwd: `projects/allure-notifications-home/allure-notifications-builder`
+- cwd: `projects/allure-notifications-home/allure-notifications/apps/builder`
 - cmd: `python -m http.server 3011`
-
-After merge:
 
 ```json
 "cwd": "projects/allure-notifications-home/allure-notifications/apps/builder"
@@ -37,6 +35,8 @@ curl -sf -o /dev/null -w "%{http_code}\n" http://127.0.0.1:3011/
 ```
 
 Do **not** kill/restart the stand while this chat is active unless the user asks to «погаси».
+
+Hub clone `allure-notifications-builder/` may remain as a mirror until Pages cutover (rows 4–5); stand cwd is the monorepo path above.
 
 ## pnpm skeleton (Phase 0 — done when files exist)
 

@@ -1,0 +1,201 @@
+/* Widget tile — Allure 3 dashboard card shell (bar + chart body).
+ *
+ * Canon (all ChartTypes):
+ *   1×1 → hard-square __body (подложка); equal --wt-pad on all sides; bar outside ratio.
+ *   Square layouts (cols===rows) keep the same hard-square body — never stretch to portrait.
+ *   One chrome: bar 28 · pad 6 · marks 1.12 (dashboard + Telegram collage).
+ * Format: __body aspect-ratio from --layout-WxH (default 1×1).
+ * Tier (footprint chrome): --tier-hero|regular|compact|micro
+ *   → mocks switch labels / axes / center values; see widget-tile-mocks.js.
+ * Mosaic span: --span-WxH (with .widget-mosaic) → grid footprint; keep layout in sync.
+ *
+ * Dots: compose .indicator + status-family modifiers (colours present in chart).
+ */
+
+.widget-tile {
+  --wt-bar-height: 28px;
+  --wt-pad: 6px;
+  --wt-title-size: 0.75rem;
+  --wt-dot-gap: 5px;
+  --wt-mark-scale: 1.12;
+  --wt-font-scale: 1.08;
+  --wt-tier: regular;
+  --wt-square: 1; /* default layout 1×1 — hard-square body */
+  --indicator-size: 10px;
+  --indicator-mix: 100%;
+
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  min-height: 0;
+  margin: 0; /* reset UA figure margin (1em 40px) */
+  overflow: hidden;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  background: var(--color-surface);
+}
+
+/* ---- Chrome ---- */
+
+.widget-tile__bar {
+  display: flex;
+  flex-shrink: 0;
+  align-items: center;
+  gap: 6px;
+  box-sizing: border-box;
+  height: var(--wt-bar-height);
+  padding: 0 var(--space-2);
+  border-bottom: 1px solid var(--color-border);
+  background: color-mix(in srgb, var(--color-text) 3%, transparent);
+  overflow: hidden;
+}
+
+.widget-tile__bar .indicator-row {
+  flex-shrink: 0;
+  gap: var(--wt-dot-gap);
+}
+
+.widget-tile__title {
+  /* flex:1 + text-align:right — прижата вправо; зазор до точек схлопывается раньше ellipsis */
+  margin: 0;
+  min-width: 0;
+  flex: 1 1 auto;
+  font-size: var(--wt-title-size);
+  font-weight: 600;
+  line-height: 1.2;
+  text-align: right;
+  color: var(--color-text-muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.widget-tile__body {
+  /* flex-grow off: growing past aspect-ratio → portrait letterbox (unequal visual pad) */
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  width: 100%;
+  min-width: 0;
+  min-height: 0;
+  padding: var(--wt-pad); /* equal inset — canon for every ChartType */
+  aspect-ratio: var(--wt-layout-cols, 1) / var(--wt-layout-rows, 1);
+  background: var(--color-surface);
+}
+
+.widget-tile__body > svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+  margin: auto;
+}
+
+/* Square подложка: chart host stays 1×1 inside equal pad (all ChartTypes) */
+.widget-tile--layout-1x1 .widget-tile__body > svg,
+.widget-tile--layout-2x2 .widget-tile__body > svg,
+.widget-tile--layout-3x3 .widget-tile__body > svg,
+.widget-tile--layout-4x4 .widget-tile__body > svg,
+.widget-tile--span-1x1 .widget-tile__body > svg,
+.widget-tile--span-2x2 .widget-tile__body > svg,
+.widget-tile--span-3x3 .widget-tile__body > svg,
+.widget-tile--span-4x4 .widget-tile__body > svg,
+.widget-tile:not([class*="widget-tile--layout-"]):not([class*="widget-tile--span-"]) .widget-tile__body > svg {
+  width: 100%;
+  height: auto;
+  max-width: 100%;
+  max-height: 100%;
+  aspect-ratio: 1 / 1;
+}
+
+/* ---- Telegram collage ---- */
+
+/* Edge-to-edge chart — no body pad (bar keeps its own inset) */
+.widget-tile--bleed {
+  --wt-pad: 0;
+}
+
+/* ---- Content tier (footprint chrome; mocks read --wt-tier / class) ----
+ * hero    — full canvas / large span: % + subtitle, layer labels, axis ticks
+ * regular — mid span (e.g. 2×2): key value + chart; shorter secondary
+ * compact — strip spans (2×1, 3×1…): marks up, labels minimal / axis off
+ * micro   — 1×1 on N≥3: marks + optional single number; short bar title
+ */
+
+.widget-tile--tier-hero {
+  --wt-tier: hero;
+  --wt-font-scale: 1.12;
+  --wt-mark-scale: 1.05;
+}
+
+.widget-tile--tier-regular {
+  --wt-tier: regular;
+}
+
+.widget-tile--tier-compact {
+  --wt-tier: compact;
+  --wt-pad: 4px;
+  --wt-title-size: var(--font-size-xs);
+  --wt-mark-scale: 1.18;
+  --wt-font-scale: 1.15;
+}
+
+.widget-tile--tier-micro {
+  --wt-tier: micro;
+  --wt-bar-height: 22px;
+  --wt-pad: 2px;
+  --wt-title-size: 0.625rem;
+  --wt-dot-gap: 3px;
+  --wt-mark-scale: 1.28;
+  --wt-font-scale: 1.35;
+  --indicator-size: 7px;
+  border-radius: var(--radius-sm);
+}
+
+.widget-tile--tier-micro .widget-tile__bar {
+  padding: 0 6px;
+  gap: 4px;
+}
+
+/* ---- Layout (body aspect = cols / rows; default 1×1 hard square) ---- */
+
+.widget-tile--layout-1x1 { --wt-layout-cols: 1; --wt-layout-rows: 1; --wt-square: 1; }
+.widget-tile--layout-1x2 { --wt-layout-cols: 1; --wt-layout-rows: 2; --wt-square: 0; }
+.widget-tile--layout-1x3 { --wt-layout-cols: 1; --wt-layout-rows: 3; --wt-square: 0; }
+.widget-tile--layout-1x4 { --wt-layout-cols: 1; --wt-layout-rows: 4; --wt-square: 0; }
+.widget-tile--layout-2x1 { --wt-layout-cols: 2; --wt-layout-rows: 1; --wt-square: 0; }
+.widget-tile--layout-2x2 { --wt-layout-cols: 2; --wt-layout-rows: 2; --wt-square: 1; }
+.widget-tile--layout-2x3 { --wt-layout-cols: 2; --wt-layout-rows: 3; --wt-square: 0; }
+.widget-tile--layout-2x4 { --wt-layout-cols: 2; --wt-layout-rows: 4; --wt-square: 0; }
+.widget-tile--layout-3x1 { --wt-layout-cols: 3; --wt-layout-rows: 1; --wt-square: 0; }
+.widget-tile--layout-3x2 { --wt-layout-cols: 3; --wt-layout-rows: 2; --wt-square: 0; }
+.widget-tile--layout-3x3 { --wt-layout-cols: 3; --wt-layout-rows: 3; --wt-square: 1; }
+.widget-tile--layout-3x4 { --wt-layout-cols: 3; --wt-layout-rows: 4; --wt-square: 0; }
+.widget-tile--layout-4x1 { --wt-layout-cols: 4; --wt-layout-rows: 1; --wt-square: 0; }
+.widget-tile--layout-4x2 { --wt-layout-cols: 4; --wt-layout-rows: 2; --wt-square: 0; }
+.widget-tile--layout-4x3 { --wt-layout-cols: 4; --wt-layout-rows: 3; --wt-square: 0; }
+.widget-tile--layout-4x4 { --wt-layout-cols: 4; --wt-layout-rows: 4; --wt-square: 1; }
+
+/* Square spans (W=H): hard-square body — mosaic must not portrait-stretch */
+.widget-tile--span-1x1,
+.widget-tile--span-2x2,
+.widget-tile--span-3x3,
+.widget-tile--span-4x4 {
+  --wt-square: 1;
+}
+
+.widget-tile--span-1x2,
+.widget-tile--span-1x3,
+.widget-tile--span-1x4,
+.widget-tile--span-2x1,
+.widget-tile--span-2x3,
+.widget-tile--span-2x4,
+.widget-tile--span-3x1,
+.widget-tile--span-3x2,
+.widget-tile--span-3x4,
+.widget-tile--span-4x1,
+.widget-tile--span-4x2,
+.widget-tile--span-4x3 {
+  --wt-square: 0;
+}

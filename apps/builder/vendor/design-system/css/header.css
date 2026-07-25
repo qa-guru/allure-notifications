@@ -1,0 +1,416 @@
+/* Header — фаза 2 (skill header-layout) */
+@import url("plaque-divider.css");
+
+.header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: var(--z-header);
+  background: var(--color-header-surface, var(--color-surface));
+  border-bottom: 1px solid var(--color-border);
+}
+
+.header__inner {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+  min-height: var(--header-height);
+  margin: 0;
+  padding: 0 var(--page-padding-x);
+}
+
+/* Step 2: brand */
+.header__brand {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  gap: 0;
+}
+
+.header__brand-link {
+  display: inline-flex;
+  align-items: center;
+  flex-shrink: 0;
+  line-height: 0;
+  text-decoration: none;
+}
+
+/* Author `display` beats UA `[hidden]` — keep leading lockup out of layout when off. */
+.header__brand-link[hidden] {
+  display: none;
+}
+
+.header__brand-link:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+  border-radius: var(--radius-sm);
+}
+
+/* Default: QA.GURU SVG; “by” + mini logo only with Selenoid leading lockup. */
+.header__brand-qa {
+  display: inline-flex;
+  align-items: center;
+  line-height: 0;
+}
+
+.header__brand-byline {
+  display: none;
+}
+
+/* Selenoid leading: mark left; word + “by QA·GURU” stacked under the wordmark. */
+.header__brand:has(.header__brand-link--leading:not([hidden])) {
+  --header-brand-logo-height: 18px;
+  display: grid;
+  grid-template-columns: auto auto;
+  grid-template-rows: auto auto;
+  column-gap: 8px;
+  row-gap: 1px;
+  align-items: center;
+  /* Pack word + byline; do not stretch rows when the brand box is taller
+     (e.g. min-height on wrap). */
+  align-content: center;
+}
+
+/* Flatten wrappers so mark / word / byline are grid cells of .header__brand. */
+.header__brand:has(.header__brand-link--leading:not([hidden]))
+  .header__brand-link--leading,
+.header__brand:has(.header__brand-link--leading:not([hidden]))
+  .header__brand-lockup,
+.header__brand:has(.header__brand-link--leading:not([hidden]))
+  .header__brand-text {
+  display: contents;
+}
+
+.header__brand:has(.header__brand-link--leading:not([hidden]))
+  .header__brand-link:not(.header__brand-link--leading) {
+  display: inline-flex;
+  align-items: center;
+  grid-column: 2;
+  grid-row: 2;
+  justify-self: start;
+  margin-left: 0;
+  line-height: 0;
+  transform: translateY(4px);
+}
+
+.header__brand-mark {
+  display: none;
+}
+
+.header__brand:has(.header__brand-link--leading:not([hidden])) .header__brand-mark {
+  display: block;
+  width: auto;
+  height: var(--header-brand-logo-height);
+  color: var(--color-info);
+  flex-shrink: 0;
+  grid-column: 1;
+  grid-row: 1 / -1;
+  align-self: center;
+}
+
+html:not(.theme-light)
+  .header__brand:has(.header__brand-link--leading:not([hidden]))
+  .header__brand-mark {
+  filter: drop-shadow(0 0 5px color-mix(in srgb, var(--color-info) 60%, transparent));
+}
+
+.header__brand:has(.header__brand-link--leading:not([hidden])) .header__brand-word {
+  display: block;
+  grid-column: 2;
+  grid-row: 1;
+  font-family: var(--font-sans);
+  font-size: 15px;
+  font-weight: 400;
+  letter-spacing: 0.005em;
+  line-height: 1;
+  color: var(--color-brand-logo);
+  white-space: nowrap;
+  /* Optical: sit the word + byline below the mark midline. */
+  transform: translateY(4px);
+}
+
+.header__brand-ver {
+  margin-left: 0.18em;
+  font-weight: 700;
+  color: var(--color-info);
+}
+
+.header__brand:has(.header__brand-link--leading:not([hidden])) .header__brand-qa {
+  gap: 0.28em;
+  line-height: 1;
+}
+
+.header__brand:has(.header__brand-link--leading:not([hidden])) .header__brand-byline {
+  display: inline;
+  font-family: var(--font-sans);
+  font-size: 8px;
+  font-weight: 500;
+  letter-spacing: 0.06em;
+  line-height: 1;
+  color: var(--color-text-muted, var(--color-text-secondary));
+  text-transform: none;
+  white-space: nowrap;
+}
+
+/* Mini logo beside “by” — scaled with the 8px byline. */
+.header__brand:has(.header__brand-link--leading:not([hidden])) .header__brand-logo {
+  height: 6px;
+  max-height: 6px;
+}
+
+.header__brand-logo {
+  display: block;
+  width: auto;
+  height: var(--header-brand-logo-height);
+  max-height: var(--header-brand-logo-height);
+  /* viewBox сдвинут по Y так, что бокс центрируется по оптическому центру
+     wordmark (буква A, y≈8.79), а не по геометрическому центру с хвостиком Q.
+     overflow: visible — чтобы нижняя планка эмблемы/хвост не обрезались. */
+  overflow: visible;
+}
+
+/* Step 3: nav — separators are .plaque-divider (not border-left on links) */
+.header__nav {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  flex: 1 1 auto;
+  min-width: 0;
+  overflow: hidden;
+  /* inner gap is space-4; optical brand|rule = space-3 */
+  margin-left: calc(var(--space-3) - var(--space-4));
+}
+
+.header__nav .link--nav {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: 10rem;
+  /* room for underline inside the ellipsis box (10px + offset) */
+  padding-block-end: 3px;
+}
+
+/* Step 4: search */
+.header__search {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.header__search .input {
+  width: 100%;
+  min-width: 0;
+  min-height: calc(var(--control-height-md) - 2 * var(--space-1));
+  padding-block: var(--space-1);
+}
+
+/* Step 5: slot */
+.header__slot {
+  flex-shrink: 0;
+}
+
+/* Step 6: tools */
+.header__tools {
+  display: flex;
+  align-items: center;
+  gap: var(--space-1);
+  flex-shrink: 0;
+  margin-left: auto;
+}
+
+.header__burger {
+  display: none;
+}
+
+/* Step 7: mobile menu */
+.header__menu {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  padding: var(--space-3) var(--page-padding-x) var(--space-4);
+  background: var(--color-header-surface, var(--color-surface));
+  border-bottom: 1px solid var(--color-border);
+}
+
+.header__menu[hidden] {
+  display: none;
+}
+
+.header__menu-nav {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.header__menu-nav .link--nav {
+  display: block;
+  padding: var(--space-2) 0;
+}
+
+.header__menu-search .input {
+  width: 100%;
+  min-width: 0;
+}
+
+.header__menu-tools {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+/* Step 8: responsive — canonical breakpoints in tokens.css.
+   A "metrics header" (.header:has(.selenoid-header-group)) carries the selenoid
+   status/quota tiles in its slot. Those are the priority, so nav + search fold
+   into the burger earlier than on the default header to stop the row squeezing. */
+
+/* Menu is positioned as an overlay whenever it is open (burger-driven). It is
+   only ever un-hidden while the burger is visible, so this is safe at any width. */
+.header__menu:not([hidden]) {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  z-index: var(--z-header);
+  max-height: min(70vh, 24rem);
+  overflow-y: auto;
+}
+
+/* Default header: drop search first, then fold to burger at 768
+   (canon: mobile ≤768 / desktop ≥769 — see tokens.css + layout-standard). */
+@media (max-width: 1023px) {
+  .header__search {
+    display: none;
+  }
+}
+
+@media (max-width: 768px) {
+  /* Default header only — metrics header folds nav via `.header--metrics-nav-fold`. */
+  .header:not(:has(.selenoid-header-group)) .header__nav {
+    display: none;
+  }
+
+  .header:not(:has(.selenoid-header-group)) .header__burger {
+    display: inline-flex;
+  }
+
+  .header__tools .lang-toggle,
+  .header__tools [data-testid="header-theme-toggle"],
+  .header__tools [data-testid="header-github"],
+  .header__tools [data-testid="header-github-pages"] {
+    display: none;
+  }
+}
+
+/* Default header keeps the menu desktop-hidden from 769 up.
+   Beat `.header__menu:not([hidden])` without !important. */
+@media (min-width: 769px) {
+  .header:not(:has(.selenoid-header-group)) .header__menu,
+  .header:not(:has(.selenoid-header-group)) .header__menu:not([hidden]) {
+    display: none;
+  }
+}
+
+/* Metrics header: hide search well before the tiles start to squeeze. */
+@media (max-width: 1360px) {
+  .header:has(.selenoid-header-group) .header__search {
+    display: none;
+  }
+}
+
+/* Metrics header: fold nav into the burger when brand + nav + tiles + tools
+   collide (content-driven `.header--metrics-nav-fold` via
+   js/header-metrics-wrap.js — not a fixed px breakpoint). */
+.header--metrics-nav-fold .header__nav {
+  display: none;
+}
+
+.header--metrics-nav-fold .header__burger {
+  display: inline-flex;
+}
+
+/* Keep metrics with tools on the right once nav folds.
+   Base `.header__tools { margin-left: auto }` would leave the slot
+   next to the brand; move the auto margin onto the slot instead. */
+.header--metrics-nav-fold .header__slot {
+  margin-left: auto;
+}
+
+.header--metrics-nav-fold .header__tools {
+  margin-left: 0;
+}
+
+/* Metrics header: shed lang/theme/GitHub when it gets tight — bar keeps logo + metrics + burger. */
+@media (max-width: 900px) {
+  .header:has(.selenoid-header-group) .lang-toggle,
+  .header:has(.selenoid-header-group) [data-testid="header-theme-toggle"],
+  .header:has(.selenoid-header-group) [data-testid="header-github"],
+  .header:has(.selenoid-header-group) [data-testid="header-github-pages"] {
+    display: none;
+  }
+}
+
+/* Metrics header: drop metrics to their own row when brand + tiles + burger
+   collide (content-driven `.header--metrics-wrap` via js/header-metrics-wrap.js —
+   not a fixed px breakpoint). Height snaps to exact multiples of
+   --header-height (1→2 bands). No fractional growth from row-gap / slot
+   padding. Keep the metrics strip on one line. */
+html:has(.header--metrics-wrap) {
+  --header-occupied-height: calc(2 * var(--header-height));
+}
+
+.header--metrics-wrap .header__inner {
+  flex-wrap: wrap;
+  align-content: flex-start;
+  column-gap: var(--space-4);
+  row-gap: 0;
+  height: calc(2 * var(--header-height));
+  min-height: calc(2 * var(--header-height));
+}
+
+/* Each band = one --header-height unit (brand Y matches the single-row bar). */
+.header--metrics-wrap .header__brand,
+.header--metrics-wrap .header__tools,
+.header--metrics-wrap .header__slot {
+  min-height: var(--header-height);
+}
+
+.header--metrics-wrap .header__slot {
+  order: 10;
+  flex: 1 1 100%;
+  min-width: 0;
+  margin-left: 0;
+  display: flex;
+  align-items: center;
+}
+
+/* Slot took margin-left:auto above; after wrap, push burger back to the right.
+   Beat `.header--metrics-nav-fold .header__tools { margin-left: 0 }`. */
+.header--metrics-nav-fold.header--metrics-wrap .header__tools {
+  margin-left: auto;
+}
+
+.header--metrics-wrap .selenoid-header-group {
+  display: flex;
+  width: 100%;
+  min-width: 0;
+  flex-wrap: nowrap;
+  justify-content: flex-start;
+}
+
+/* Compact tile padding only on narrow phones — keep full metrics width at the
+   wrap threshold so content-driven enter/exit hysteresis stays stable. */
+@media (max-width: 400px) {
+  .header--metrics-wrap .status-tile--header,
+  .header--metrics-wrap .selenoid-metrics__item {
+    min-width: 0;
+    padding-left: var(--space-1);
+    padding-right: var(--space-1);
+  }
+}
+
+/* Metrics header keeps the overlay menu only while nav is folded into the burger.
+   Beat `.header__menu:not([hidden])` without !important. */
+.header:has(.selenoid-header-group):not(.header--metrics-nav-fold) .header__menu,
+.header:has(.selenoid-header-group):not(.header--metrics-nav-fold) .header__menu:not([hidden]) {
+  display: none;
+}

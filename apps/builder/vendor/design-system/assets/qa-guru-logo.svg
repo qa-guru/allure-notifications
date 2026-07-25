@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="none" viewBox="0 0 32 32">
+  <!-- QA.GURU mark: Q bowl fills the square edge-to-edge; short Q spur -->
+  <g stroke="#111111" stroke-width="4" stroke-linecap="round">
+    <circle cx="16" cy="16" r="14"/>
+    <path d="M26.4 26.4 L30 30"/>
+  </g>
+  <g stroke="#0EA5E9" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M11.5 11.5 L15.5 15.5 L11.5 19.5"/>
+    <path d="M17.7 19.45 H21"/>
+  </g>
+</svg>

@@ -56,7 +56,7 @@ allure-notifications/                 # version line 6.0.*
     phase-0-checklist.md
 ```
 
-Today (pre-move): Java modules at repo root (`allure-notifications/`, `allure-notifications-api/`); builder lives in a **second** repo clone under the hub (`allure-notifications-builder/`). Phase 0 documents the moves; physical merge is gated by [docs/phase-0-checklist.md](docs/phase-0-checklist.md).
+Today: Java modules still at repo root (`allure-notifications/`, `allure-notifications-api/`) — layout move deferred. Builder merged into `apps/builder/` (Stage E); hub clone may linger until Pages cutover.
 
 ## Phases
 
@@ -66,7 +66,7 @@ Today (pre-move): Java modules at repo root (`allure-notifications/`, `allure-no
 | **1** | `packages/config` — zod schema, PANEL_CATALOG, DEFAULT_ITEMS, SQ-1080 presets | **done** |
 | **2** | `packages/pyramid` — palette + geometry SSOT (not dashboard-overrides) | **done** |
 | **3** | `packages/core` + `cli` — native PNG, Telegram, dogfood, cookbooks; public **6.0.0** | **core + cli done** (Stages C–D); Telegram dogfood = Stage F / OK |
-| **4** | Builder full TS; import `@config` / `@pyramid`; typescript@7 / tsgo in CI | pending |
+| **4** | Builder full TS; import `@config` / `@pyramid`; typescript@7 / tsgo in CI | pending (Stage E: merge + parity import; browser still local copy) |
 | **5** | Optional thin `@allurereport/plugin-api` wrapper over `core` | optional |
 
 ## Anti-hack rules
@@ -137,7 +137,18 @@ See [docs/ci-cookbook.md](docs/ci-cookbook.md): `allure generate` → `allure-no
 - Verify: `pnpm --filter @allure-notifications/cli test` / root `pnpm test`
 - **Not in Stage D:** live Telegram (ADR 008), `apps/builder`, publish, layout moves
 
+## Stage E notes (builder merge)
+
+`@allure-notifications/builder` (`apps/builder/`):
+
+- Merged from hub clone `allure-notifications-builder/` (Playwright + index/js/css/vendor)
+- Stand registry cwd → `…/allure-notifications/apps/builder` (`ensure.py allure-notifications-builder`)
+- Playwright e2e: CB-870 / SQ-1080 / WD-1410, export, panel bar (`tests/smoke.spec.js`)
+- Started `@allure-notifications/config` import via `tests/config-parity.test.mjs` (browser `js/app.js` still local — Phase 4)
+- Verify: `pnpm --filter @allure-notifications/builder test` / root `pnpm test`
+- **Not in Stage E:** live Telegram, publish, Java→`legacy/java`, VERSION bump, Stage F CI
+
 ## Next
 
-**Stage E** — `apps/builder` merge + Playwright e2e (stand via `ensure.py`).
-Ask before Stage F Telegram dogfood (explicit OK / ADR 008).
+**Stage F** — CI on 6.0 branch; Telegram dogfood only with explicit OK / ADR 008.
+Ask before Stage F Telegram dogfood.

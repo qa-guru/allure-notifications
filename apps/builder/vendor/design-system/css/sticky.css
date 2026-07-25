@@ -1,0 +1,18 @@
+/* Shared sticky offset — panel--sticky, section--sticky (desktop ≥769px) */
+
+@media (min-width: 769px) {
+  .panel--sticky,
+  .section--sticky {
+    position: sticky;
+    top: var(--space-6);
+    max-height: calc(100vh - 2 * var(--space-6));
+    overflow: auto;
+  }
+
+  /* Fixed #app-header (autotests-builder, playground, …) */
+  :has(#app-header) .panel--sticky,
+  :has(#app-header) .section--sticky {
+    top: calc(var(--header-occupied-height) + var(--space-4));
+    max-height: calc(100vh - var(--header-occupied-height) - 2 * var(--space-4));
+  }
+}

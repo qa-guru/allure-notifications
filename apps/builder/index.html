@@ -1,0 +1,519 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <link rel="icon" type="image/svg+xml" href="vendor/design-system/assets/qa-guru-logo.svg" />
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>allure-notifications-builder</title>
+  <!-- vendor/design-system — copy-once pin; do not edit (see MANIFEST.json) -->
+  <link rel="stylesheet" href="vendor/design-system/css/tokens.css" />
+  <link rel="stylesheet" href="vendor/design-system/css/link.css" />
+  <link rel="stylesheet" href="vendor/design-system/css/input.css" />
+  <link rel="stylesheet" href="vendor/design-system/css/icon.css" />
+  <link rel="stylesheet" href="vendor/design-system/css/icon-btn.css" />
+  <link rel="stylesheet" href="vendor/design-system/css/lang-toggle.css" />
+  <link rel="stylesheet" href="vendor/design-system/css/header.css" />
+  <link rel="stylesheet" href="vendor/design-system/css/page.css" />
+  <link rel="stylesheet" href="vendor/design-system/css/text.css" />
+  <link rel="stylesheet" href="vendor/design-system/css/button.css" />
+  <link rel="stylesheet" href="vendor/design-system/css/plaque-field.css" />
+  <link rel="stylesheet" href="vendor/design-system/css/grid.css" />
+  <link rel="stylesheet" href="vendor/design-system/css/stack.css" />
+  <link rel="stylesheet" href="vendor/design-system/css/panel.css" />
+  <link rel="stylesheet" href="vendor/design-system/css/code-highlight.css" />
+  <link rel="stylesheet" href="vendor/design-system/css/configurator.css" />
+  <link rel="stylesheet" href="vendor/design-system/css/plaque-divider.css" />
+  <link rel="stylesheet" href="vendor/design-system/css/plaque-field-seg.css" />
+  <link rel="stylesheet" href="vendor/design-system/css/plaque-field-seg-layout.css" />
+  <link rel="stylesheet" href="vendor/design-system/css/indicator.css" />
+  <link rel="stylesheet" href="vendor/design-system/css/widget-tile.css" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gridstack@11.3.0/dist/gridstack.min.css" />
+  <link rel="stylesheet" href="css/app.css" />
+</head>
+<body>
+  <div id="app-header"></div>
+  <script>
+    window.headerConfig = {
+      brand: { href: 'https://qa.guru/' },
+      nav: [
+        { href: 'https://qa.guru/', label: 'Главная', active: true, testid: 'header-nav-home' },
+        { href: '#', label: 'Курсы', testid: 'header-nav-courses' },
+        { href: 'https://qa.guru/about', label: 'О школе', testid: 'header-nav-about' },
+      ],
+      lang: { default: 'ru' },
+      theme: { default: 'dark' },
+      tools: {
+        github: {
+          href: 'https://github.com/qa-guru/allure-notifications-builder',
+          label: 'allure-notifications-builder',
+        },
+        githubPages: {
+          href: 'https://github.com/qa-guru/allure-notifications',
+          label: 'allure-notifications',
+          iconSrc: 'vendor/design-system/assets/allure3-logo.svg',
+        },
+      },
+    };
+  </script>
+
+  <main
+    class="anb-page page-shell page-shell--below-header-tight page-shell--pad-bottom-lg"
+    data-testid="anb-page"
+  >
+    <!-- Local 6-col mental model: 1–2 options | 3–4 preview | 5–6 terminal -->
+    <div class="anb-layout" data-testid="anb-layout">
+      <section class="anb-zone anb-zone--options" aria-label="Options" data-testid="anb-zone-options">
+        <div class="panel panel--content" data-testid="anb-layout-options">
+          <div class="panel__bar">
+            <div class="panel__dots" aria-hidden="true">
+              <span class="panel__dot"></span>
+              <span class="panel__dot"></span>
+              <span class="panel__dot"></span>
+            </div>
+            <div class="panel__trail">
+              <span class="panel__title">Layout options</span>
+            </div>
+          </div>
+          <div class="panel__body anb-layout-options">
+            <div
+              class="anb-messenger-tabs"
+              id="anb-messenger-tabs"
+              data-testid="anb-messenger-tabs"
+              role="tablist"
+              aria-label="Messenger"
+            >
+              <button type="button" class="anb-messenger-tabs__btn is-active" role="tab" aria-selected="true" data-anb-messenger="telegram" data-testid="anb-tab-telegram">Telegram</button>
+              <button type="button" class="anb-messenger-tabs__btn anb-messenger-tabs__btn--stub" role="tab" aria-selected="false" aria-disabled="true" data-anb-messenger="slack" data-testid="anb-tab-slack" title="Disabled stub">Slack · soon</button>
+              <button type="button" class="anb-messenger-tabs__btn anb-messenger-tabs__btn--stub" role="tab" aria-selected="false" aria-disabled="true" data-anb-messenger="mail" data-testid="anb-tab-mail" title="Disabled stub">Mail · soon</button>
+              <button type="button" class="anb-messenger-tabs__btn anb-messenger-tabs__btn--stub" role="tab" aria-selected="false" aria-disabled="true" data-anb-messenger="mattermost" data-testid="anb-tab-mattermost" title="Disabled stub">Mattermost · soon</button>
+              <button type="button" class="anb-messenger-tabs__btn anb-messenger-tabs__btn--stub" role="tab" aria-selected="false" aria-disabled="true" data-anb-messenger="discord" data-testid="anb-tab-discord" title="Disabled stub">Discord · soon</button>
+            </div>
+            <div class="anb-editor__toolbar" data-testid="anb-editor-toolbar">
+              <div class="anb-palette" id="anb-palette" data-testid="anb-palette" role="group" aria-label="Panel palette"></div>
+              <div class="anb-editor__actions">
+                <button type="button" class="btn btn--secondary anb-tool-btn" id="anb-btn-copy" data-testid="anb-btn-copy" disabled title="Copy selected">Copy</button>
+                <button type="button" class="btn btn--danger anb-tool-btn" id="anb-btn-delete" data-testid="anb-btn-delete" disabled title="Delete selected">Delete</button>
+                <button type="button" class="btn btn--secondary anb-tool-btn" id="anb-btn-reset" data-testid="anb-btn-reset" title="SQ-1080 default">Reset</button>
+                <button type="button" class="btn btn--secondary anb-tool-btn" id="anb-btn-clear" data-testid="anb-btn-clear">Clear</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="panel panel--content">
+          <div class="panel__bar">
+            <div class="panel__dots" aria-hidden="true">
+              <span class="panel__dot"></span>
+              <span class="panel__dot"></span>
+              <span class="panel__dot"></span>
+            </div>
+            <div class="panel__trail">
+              <span class="panel__title">Options</span>
+            </div>
+          </div>
+          <div class="panel__body stack stack--sm" id="anb-options" data-testid="anb-options">
+
+            <div class="anb-group" data-testid="anb-group-base">
+              <h3 class="anb-group__title">Base</h3>
+              <div class="stack stack--sm">
+                <label class="plaque-field plaque-field--divided plaque-field--stretch">
+                  <span class="plaque-field__label">project</span>
+                  <span class="plaque-divider" aria-hidden="true"></span>
+                  <input type="text" class="plaque-field__control" data-anb-path="base.project" placeholder="my-project" />
+                </label>
+                <label class="plaque-field plaque-field--divided plaque-field--stretch">
+                  <span class="plaque-field__label">environment</span>
+                  <span class="plaque-divider" aria-hidden="true"></span>
+                  <input type="text" class="plaque-field__control" data-anb-path="base.environment" placeholder="ci" />
+                </label>
+                <label class="plaque-field plaque-field--divided plaque-field--stretch">
+                  <span class="plaque-field__label">comment</span>
+                  <span class="plaque-divider" aria-hidden="true"></span>
+                  <input type="text" class="plaque-field__control" data-anb-path="base.comment" placeholder="Automated test run" />
+                </label>
+                <label class="plaque-field plaque-field--divided plaque-field--stretch">
+                  <span class="plaque-field__label">language</span>
+                  <span class="plaque-divider" aria-hidden="true"></span>
+                  <select class="plaque-field__control" data-anb-path="base.language">
+                    <option value="en">en</option>
+                    <option value="ru">ru</option>
+                    <option value="fr">fr</option>
+                    <option value="ua">ua</option>
+                    <option value="by">by</option>
+                    <option value="cn">cn</option>
+                    <option value="cnt">cnt</option>
+                  </select>
+                </label>
+                <label class="plaque-field plaque-field--divided plaque-field--stretch">
+                  <span class="plaque-field__label">allureFolder</span>
+                  <span class="plaque-divider" aria-hidden="true"></span>
+                  <input type="text" class="plaque-field__control" data-anb-path="base.allureFolder" />
+                </label>
+                <label class="plaque-field plaque-field--divided plaque-field--stretch">
+                  <span class="plaque-field__label">allureResultsFolder</span>
+                  <span class="plaque-divider" aria-hidden="true"></span>
+                  <input type="text" class="plaque-field__control" data-anb-path="base.allureResultsFolder" />
+                </label>
+                <div class="plaque-field plaque-field--divided" data-anb-bool="base.enableChart" data-testid="anb-bool-enableChart">
+                  <span class="plaque-field__label">enableChart</span>
+                  <span class="plaque-divider" aria-hidden="true"></span>
+                  <div class="plaque-field-seg-track plaque-field-seg-track--many plaque-field__control">
+                    <div class="plaque-field-seg" role="radiogroup" aria-label="enableChart">
+                      <button type="button" class="plaque-field-seg__btn" data-value="true" aria-pressed="false">true</button>
+                      <button type="button" class="plaque-field-seg__btn" data-value="false" aria-pressed="false">false</button>
+                    </div>
+                  </div>
+                </div>
+                <div class="plaque-field plaque-field--divided" data-anb-bool="base.darkMode" data-testid="anb-bool-darkMode">
+                  <span class="plaque-field__label">darkMode</span>
+                  <span class="plaque-divider" aria-hidden="true"></span>
+                  <div class="plaque-field-seg-track plaque-field-seg-track--many plaque-field__control">
+                    <div class="plaque-field-seg" role="radiogroup" aria-label="darkMode">
+                      <button type="button" class="plaque-field-seg__btn" data-value="true" aria-pressed="false">true</button>
+                      <button type="button" class="plaque-field-seg__btn" data-value="false" aria-pressed="false">false</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="anb-group" data-testid="anb-group-chart">
+              <h3 class="anb-group__title">Chart</h3>
+              <div class="stack stack--sm">
+                <label class="plaque-field plaque-field--divided plaque-field--stretch">
+                  <span class="plaque-field__label">canvas</span>
+                  <span class="plaque-divider" aria-hidden="true"></span>
+                  <select class="plaque-field__control" data-anb-canvas data-testid="anb-canvas-preset">
+                    <option value="870x1080">870×1080</option>
+                    <option value="1080x1080">1080×1080</option>
+                    <option value="1410x1080">1410×1080</option>
+                  </select>
+                </label>
+                <label class="plaque-field plaque-field--divided plaque-field--stretch">
+                  <span class="plaque-field__label">mode</span>
+                  <span class="plaque-divider" aria-hidden="true"></span>
+                  <select class="plaque-field__control" data-anb-path="base.chart.mode">
+                    <option value="collage">collage</option>
+                    <option value="pie">pie</option>
+                  </select>
+                </label>
+                <label class="plaque-field plaque-field--divided plaque-field--stretch">
+                  <span class="plaque-field__label">layout</span>
+                  <span class="plaque-divider" aria-hidden="true"></span>
+                  <select class="plaque-field__control" data-anb-path="base.chart.layout">
+                    <option value="free">free</option>
+                    <option value="grid">grid</option>
+                    <option value="stacked">stacked</option>
+                    <option value="row">row</option>
+                  </select>
+                </label>
+                <label class="plaque-field plaque-field--divided plaque-field--stretch">
+                  <span class="plaque-field__label">pyramidFallback</span>
+                  <span class="plaque-divider" aria-hidden="true"></span>
+                  <select class="plaque-field__control" data-anb-path="base.chart.pyramidFallback">
+                    <option value="suites">suites</option>
+                  </select>
+                </label>
+                <label class="plaque-field plaque-field--divided plaque-field--stretch">
+                  <span class="plaque-field__label">headerHeight</span>
+                  <span class="plaque-divider" aria-hidden="true"></span>
+                  <input
+                    type="number"
+                    class="plaque-field__control"
+                    data-anb-path="base.chart.headerHeight"
+                    data-anb-number
+                    data-testid="anb-chart-header-height"
+                    min="16"
+                    max="120"
+                    step="1"
+                  />
+                </label>
+                <label class="plaque-field plaque-field--divided plaque-field--stretch">
+                  <span class="plaque-field__label">cardGap</span>
+                  <span class="plaque-divider" aria-hidden="true"></span>
+                  <input
+                    type="number"
+                    class="plaque-field__control"
+                    data-anb-path="base.chart.cardGap"
+                    data-anb-number
+                    data-testid="anb-chart-card-gap"
+                    min="0"
+                    max="48"
+                    step="1"
+                  />
+                </label>
+                <label class="plaque-field plaque-field--divided plaque-field--stretch">
+                  <span class="plaque-field__label">tilePad</span>
+                  <span class="plaque-divider" aria-hidden="true"></span>
+                  <input
+                    type="number"
+                    class="plaque-field__control"
+                    data-anb-path="base.chart.tilePad"
+                    data-anb-number
+                    data-testid="anb-chart-tile-pad"
+                    min="0"
+                    max="24"
+                    step="1"
+                  />
+                </label>
+              </div>
+            </div>
+
+            <div class="anb-group" data-testid="anb-group-links">
+              <h3 class="anb-group__title">Links</h3>
+              <div class="stack stack--sm">
+                <label class="plaque-field plaque-field--divided plaque-field--stretch">
+                  <span class="plaque-field__label">report</span>
+                  <span class="plaque-divider" aria-hidden="true"></span>
+                  <input type="text" class="plaque-field__control" data-anb-path="base.links.report" placeholder="${ALLURE_REPORT_URL}" />
+                </label>
+                <label class="plaque-field plaque-field--divided plaque-field--stretch">
+                  <span class="plaque-field__label">dashboard</span>
+                  <span class="plaque-divider" aria-hidden="true"></span>
+                  <input type="text" class="plaque-field__control" data-anb-path="base.links.dashboard" placeholder="${ALLURE_DASHBOARD_URL}" />
+                </label>
+                <label class="plaque-field plaque-field--divided plaque-field--stretch">
+                  <span class="plaque-field__label">testops</span>
+                  <span class="plaque-divider" aria-hidden="true"></span>
+                  <input type="text" class="plaque-field__control" data-anb-path="base.links.testops" placeholder="${ALLURE_JOB_RUN_URL}" />
+                </label>
+                <label class="plaque-field plaque-field--divided plaque-field--stretch">
+                  <span class="plaque-field__label">build</span>
+                  <span class="plaque-divider" aria-hidden="true"></span>
+                  <input type="text" class="plaque-field__control" data-anb-path="base.links.build" placeholder="${BUILD_URL}" />
+                </label>
+              </div>
+            </div>
+
+            <div class="anb-group" data-testid="anb-group-messengers">
+              <h3 class="anb-group__title">Messengers</h3>
+              <div class="stack stack--sm">
+                <p class="anb-group__hint text text--sm">Telegram · live</p>
+                <label class="plaque-field plaque-field--divided plaque-field--stretch">
+                  <span class="plaque-field__label">token</span>
+                  <span class="plaque-divider" aria-hidden="true"></span>
+                  <input type="text" class="plaque-field__control" data-anb-path="telegram.token" placeholder="${TELEGRAM_BOT_TOKEN}" autocomplete="off" />
+                </label>
+                <label class="plaque-field plaque-field--divided plaque-field--stretch">
+                  <span class="plaque-field__label">chat</span>
+                  <span class="plaque-divider" aria-hidden="true"></span>
+                  <input type="text" class="plaque-field__control" data-anb-path="telegram.chat" placeholder="${TELEGRAM_CHAT_ID}" />
+                </label>
+                <label class="plaque-field plaque-field--divided plaque-field--stretch">
+                  <span class="plaque-field__label">topic</span>
+                  <span class="plaque-divider" aria-hidden="true"></span>
+                  <input type="text" class="plaque-field__control" data-anb-path="telegram.topic" placeholder="optional" />
+                </label>
+                <label class="plaque-field plaque-field--divided plaque-field--stretch">
+                  <span class="plaque-field__label">replyTo</span>
+                  <span class="plaque-divider" aria-hidden="true"></span>
+                  <input type="text" class="plaque-field__control" data-anb-path="telegram.replyTo" placeholder="optional" />
+                </label>
+                <label class="plaque-field plaque-field--divided plaque-field--stretch">
+                  <span class="plaque-field__label">templatePath</span>
+                  <span class="plaque-divider" aria-hidden="true"></span>
+                  <input type="text" class="plaque-field__control" data-anb-path="telegram.templatePath" />
+                </label>
+
+                <p class="anb-group__hint text text--sm anb-group__hint--stubs">Other · disabled stubs</p>
+                <div
+                  class="plaque-field plaque-field--divided anb-messenger-stub"
+                  aria-disabled="true"
+                  data-testid="anb-stub-slack"
+                >
+                  <span class="plaque-field__label">slack</span>
+                  <span class="plaque-divider" aria-hidden="true"></span>
+                  <span class="plaque-field__value">disabled · soon</span>
+                </div>
+                <div
+                  class="plaque-field plaque-field--divided anb-messenger-stub"
+                  aria-disabled="true"
+                  data-testid="anb-stub-mail"
+                >
+                  <span class="plaque-field__label">mail</span>
+                  <span class="plaque-divider" aria-hidden="true"></span>
+                  <span class="plaque-field__value">disabled · soon</span>
+                </div>
+                <div
+                  class="plaque-field plaque-field--divided anb-messenger-stub"
+                  aria-disabled="true"
+                  data-testid="anb-stub-mattermost"
+                >
+                  <span class="plaque-field__label">mattermost</span>
+                  <span class="plaque-divider" aria-hidden="true"></span>
+                  <span class="plaque-field__value">disabled · soon</span>
+                </div>
+                <div
+                  class="plaque-field plaque-field--divided anb-messenger-stub"
+                  aria-disabled="true"
+                  data-testid="anb-stub-discord"
+                >
+                  <span class="plaque-field__label">discord</span>
+                  <span class="plaque-divider" aria-hidden="true"></span>
+                  <span class="plaque-field__value">disabled · soon</span>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </section>
+
+      <section class="anb-zone anb-zone--preview" aria-label="Messenger preview" data-testid="anb-zone-preview">
+        <div class="panel panel--content panel--sticky">
+          <div class="panel__bar anb-preview-bar">
+            <div class="anb-tg__identity">
+              <img
+                class="anb-tg__avatar"
+                src="vendor/design-system/assets/allure3-logo.svg"
+                width="28"
+                height="28"
+                alt=""
+                aria-hidden="true"
+              >
+              <div>
+                <div class="anb-tg__bot-name" id="anb-tg-bot-name">Monitoring Bot</div>
+                <div class="anb-tg__bot-sub">bot · channel</div>
+              </div>
+            </div>
+            <div
+              class="anb-preview-bar__exports"
+              role="group"
+              aria-label="Collage export preview"
+              data-testid="anb-export-links"
+            >
+              <button
+                type="button"
+                class="link link--nav anb-export-trigger"
+                data-anb-export="tg"
+                data-testid="anb-export-tg"
+                aria-haspopup="dialog"
+              >TG preview</button>
+              <span class="anb-preview-bar__sep" aria-hidden="true">·</span>
+              <button
+                type="button"
+                class="link link--nav anb-export-trigger"
+                data-anb-export="full"
+                data-testid="anb-export-full"
+                aria-haspopup="dialog"
+              >Full size</button>
+            </div>
+          </div>
+          <div class="panel__body anb-preview">
+            <div class="anb-messenger-pane" id="anb-messenger-telegram" data-anb-messenger-pane="telegram" data-testid="anb-messenger-telegram">
+              <div class="anb-editor" data-testid="anb-zone-editor">
+                <div class="anb-canvas-shell" id="anb-canvas-shell" data-testid="anb-canvas-shell">
+                  <div class="anb-canvas" id="anb-canvas" data-testid="anb-canvas">
+                    <div class="grid-stack" id="anb-grid" data-testid="anb-grid"></div>
+                    <div class="anb-empty" id="anb-empty" data-testid="anb-empty" hidden>
+                      <p class="anb-empty__title">Canvas empty</p>
+                      <p class="anb-empty__hint">Click or drag a panel from the palette</p>
+                    </div>
+                  </div>
+                </div>
+                <div
+                  class="text text--sm anb-editor__caption"
+                  id="anb-tg-text"
+                  data-testid="anb-tg-text"
+                  aria-label="Telegram caption preview"
+                ></div>
+              </div>
+            </div>
+
+            <div class="anb-messenger-pane anb-messenger-pane--stub" id="anb-messenger-slack" data-anb-messenger-pane="slack" hidden data-testid="anb-messenger-slack" aria-disabled="true">
+              <p class="anb-messenger-stub__title">Slack · disabled</p>
+              <p class="anb-messenger-stub__hint text text--sm">Stub only — not wired. Layout source stays Telegram / free canvas.</p>
+            </div>
+            <div class="anb-messenger-pane anb-messenger-pane--stub" id="anb-messenger-mail" data-anb-messenger-pane="mail" hidden data-testid="anb-messenger-mail" aria-disabled="true">
+              <p class="anb-messenger-stub__title">Mail · disabled</p>
+              <p class="anb-messenger-stub__hint text text--sm">Stub only — not wired.</p>
+            </div>
+            <div class="anb-messenger-pane anb-messenger-pane--stub" id="anb-messenger-mattermost" data-anb-messenger-pane="mattermost" hidden data-testid="anb-messenger-mattermost" aria-disabled="true">
+              <p class="anb-messenger-stub__title">Mattermost · disabled</p>
+              <p class="anb-messenger-stub__hint text text--sm">Stub only — not wired.</p>
+            </div>
+            <div class="anb-messenger-pane anb-messenger-pane--stub" id="anb-messenger-discord" data-anb-messenger-pane="discord" hidden data-testid="anb-messenger-discord" aria-disabled="true">
+              <p class="anb-messenger-stub__title">Discord · disabled</p>
+              <p class="anb-messenger-stub__hint text text--sm">Stub only — not wired.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="anb-zone anb-zone--terminal" aria-label="Config terminal" data-testid="anb-zone-terminal">
+        <div class="panel panel--terminal panel--sticky ch-theme--vscode">
+          <div class="panel__bar">
+            <div class="panel__dots" aria-hidden="true">
+              <span class="panel__dot"></span>
+              <span class="panel__dot"></span>
+              <span class="panel__dot"></span>
+            </div>
+            <div class="panel__trail">
+              <span class="panel__title">Terminal · config.json</span>
+            </div>
+            <div class="panel__bar-end">
+              <input
+                type="text"
+                class="anb-vector-input"
+                id="anb-term-vector"
+                data-testid="anb-term-vector"
+                spellcheck="false"
+                autocomplete="off"
+                aria-label="Vector id"
+                title="Отпечаток конфига · вставь известный vector# + Enter — подтянуть"
+              />
+            </div>
+            <div class="panel__actions anb-term-actions">
+              <button type="button" class="icon-btn panel__action" id="anb-term-reset" data-testid="anb-term-reset" aria-label="Reset to SQ-1080 default" title="Reset to SQ-1080 default">
+                <span class="icon" aria-hidden="true">
+                  <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M2.5 8a5.5 5.5 0 1 0 5.5-5.5 6 6 0 0 0-4.1 1.83L2.5 3.5"/>
+                    <path d="M2.5 2.5v3h3"/>
+                  </svg>
+                </span>
+              </button>
+              <button type="button" class="icon-btn panel__action" id="anb-term-download" data-testid="anb-term-download" aria-label="Download config.json" title="Download config.json">
+                <span class="icon" aria-hidden="true">
+                  <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M8 2.5v7"/>
+                    <path d="m5.25 7 2.75 2.75L10.75 7"/>
+                    <path d="M3 11v1.5A1.5 1.5 0 0 0 4.5 14h7a1.5 1.5 0 0 0 1.5-1.5V11"/>
+                  </svg>
+                </span>
+              </button>
+              <button type="button" class="icon-btn panel__action" id="anb-term-copy" data-testid="anb-term-copy" aria-label="Copy config.json" title="Copy config.json">
+                <span class="icon" aria-hidden="true">
+                  <svg viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <rect x="5" y="5" width="8" height="9" rx="1.5" stroke="currentColor" stroke-width="1.5"/>
+                    <path d="M5 11H4a1.5 1.5 0 0 1-1.5-1.5V4A1.5 1.5 0 0 1 4 2.5h5.5A1.5 1.5 0 0 1 11 4v1" stroke="currentColor" stroke-width="1.5"/>
+                  </svg>
+                </span>
+              </button>
+            </div>
+          </div>
+          <pre class="panel__code ch-code" id="anb-terminal" data-testid="anb-terminal" aria-label="config.json"></pre>
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <div
+    class="anb-export-popover"
+    id="anb-export-popover"
+    data-testid="anb-export-popover"
+    role="dialog"
+    aria-modal="false"
+    hidden
+  >
+    <p class="anb-export-popover__meta" id="anb-export-popover-meta"></p>
+    <div class="anb-export-popover__viewport" id="anb-export-popover-viewport">
+      <div class="anb-export-popover__stage" id="anb-export-popover-stage"></div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/gridstack@11.3.0/dist/gridstack-all.js"></script>
+  <script src="vendor/design-system/js/widget-tile-mocks.js"></script>
+  <script type="module" src="vendor/design-system/js/header.js"></script>
+  <script type="module" src="js/app.js"></script>
+</body>
+</html>

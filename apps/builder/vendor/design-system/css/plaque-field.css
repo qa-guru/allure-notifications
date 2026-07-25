@@ -1,0 +1,1113 @@
+@import url("tokens.css");
+@import url("plaque-divider.css");
+@import url("plaque-field-seg.css?v=segwrap5");
+@import url("plaque-field-seg-layout.css?v=segwrap5");
+
+/* Plaque field — compact label+control shell (autotests-builder, forms) */
+
+.plaque-field {
+  display: flex;
+  align-items: center;
+  row-gap: 0;
+  column-gap: var(--space-2);
+  height: var(--plaque-control-height);
+  min-height: var(--plaque-control-height);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  background: var(--color-surface);
+  min-width: 0;
+}
+
+/* CANON: label (__label|__text) + short divider optically center in the FIRST
+   wrap band only (any param). NEVER align-items:center against full multi-band
+   height — that drops the label between wrap rows. Rule: plaque-many-first-row. */
+.plaque-field--divided:has(> .plaque-field-seg-track--many),
+.plaque-field--divided.plaque-field--stretch:has(> .plaque-field-seg-track--many) {
+  display: flex;
+  flex-wrap: nowrap;
+  align-items: flex-start;
+  align-content: flex-start;
+  column-gap: 0;
+  row-gap: 0;
+  height: auto;
+  min-height: var(--plaque-control-height);
+  grid-template-columns: unset;
+  padding-top: 0;
+  padding-bottom: 0;
+  overflow: visible;
+  background-color: var(--color-surface);
+  /* 1px rule between wrap bands (= --plaque-seg-row-gap).
+     Origin MUST be padding-box (same box as flex bands). border-box + clip
+     padding shifts the rule ~1px up → closer to chips above than below. */
+  background-image: repeating-linear-gradient(
+    to bottom,
+    transparent 0,
+    transparent var(--plaque-seg-band-height),
+    var(--color-border) var(--plaque-seg-band-height),
+    var(--color-border) calc(var(--plaque-seg-band-height) + var(--plaque-seg-row-gap))
+  );
+  background-origin: padding-box;
+  background-clip: padding-box;
+  background-size: calc(100% - 2 * var(--plaque-divider-inset)) 100%;
+  background-position: center top;
+  background-repeat: no-repeat;
+}
+
+.plaque-field--divided:has(> .plaque-field-seg-track--many) > .plaque-field__label,
+.plaque-field--divided:has(> .plaque-field-seg-track--many) > .plaque-field__text {
+  float: none;
+  flex: 0 0 auto;
+  align-self: flex-start;
+  box-sizing: border-box;
+  /* Same label column as sibling magnet rows — divider lines up with browser/… */
+  width: var(--plaque-mixed-label-col, max-content);
+  max-width: 100%;
+  height: var(--plaque-seg-band-height);
+  display: inline-flex;
+  align-items: center;
+  padding-right: var(--space-2);
+  text-align: left;
+}
+
+/* First-row optical center inside band — short rule, not a tall magnet column. */
+.plaque-field--divided:has(> .plaque-field-seg-track--many) > .plaque-divider {
+  float: none;
+  flex: 0 0 auto;
+  align-self: flex-start;
+  height: var(--plaque-divider-height, calc(var(--font-size-sm) * 1.35));
+  min-height: var(--plaque-divider-height, calc(var(--font-size-sm) * 1.35));
+  margin-block-start: calc(
+    (var(--plaque-seg-band-height) - var(--plaque-divider-height, calc(var(--font-size-sm) * 1.35))) / 2
+  );
+  margin-right: var(--plaque-seg-gap);
+}
+
+.plaque-field:not(:has(> .plaque-field-seg-track)) {
+  padding: 0 var(--plaque-shell-pad-x);
+}
+
+/* .plaque-field--divided slot order: __label|__text · .plaque-divider · __control|__value|seg-track */
+
+.plaque-field__label {
+  flex-shrink: 0;
+  font-size: var(--font-size-sm);
+  font-weight: 500;
+  color: var(--color-text-muted);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Human caption — not a config param id (autotests-builder uses __label) */
+
+.plaque-field__text {
+  flex-shrink: 0;
+  font-size: var(--font-size-sm);
+  font-weight: 400;
+  line-height: 1.35;
+  color: var(--color-text);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.plaque-field--divided .plaque-field__label,
+.plaque-field--divided .plaque-field__text {
+  align-self: center;
+  line-height: 1.35;
+  padding-right: var(--space-2);
+  border-right: 0;
+}
+
+.plaque-field--divided .plaque-divider {
+  grid-column: 2;
+}
+
+/* Control slot — right edge (before select chevron); label-only left is on __label / __text */
+
+.plaque-field__value {
+  flex: 1 1 auto;
+  min-width: 0;
+  font-size: var(--font-size-sm);
+  line-height: 1.35;
+  color: var(--color-text);
+  text-align: right;
+}
+
+.plaque-field__control {
+  flex: 1 1 auto;
+  min-width: 0;
+  width: 100%;
+  border: 0;
+  background: transparent;
+  padding: var(--space-1) 0;
+  min-height: calc(var(--plaque-control-height) - 2px);
+  color: var(--color-text);
+  font-family: inherit;
+  font-size: var(--font-size-sm);
+  line-height: 1.35;
+  text-align: right;
+}
+
+.plaque-field__control:focus {
+  outline: none;
+}
+
+.plaque-field:focus-within {
+  border-color: var(--color-primary);
+}
+
+select.plaque-field__control {
+  appearance: none;
+  -webkit-appearance: none;
+  padding: 0 var(--plaque-select-trail) 0 0;
+  text-align: right;
+  cursor: pointer;
+}
+
+/*
+ * Text input value — reserve the same right trail as the select chevron so a
+ * plain <input> value lines up with select values sharing a column (e.g.
+ * browserVersion under browserSize). Without it the input hugs the plaque edge
+ * (only the --space-1 shell pad) while selects sit --plaque-select-trail in.
+ */
+input.plaque-field__control {
+  padding-right: var(--plaque-select-trail);
+}
+
+/*
+ * Select chevron — rendered on the plaque shell, NOT the <select> background.
+ * As an absolutely positioned ::after it is anchored to the shell's border-box
+ * right edge (offset by --plaque-chevron-edge), so its distance from the visible
+ * plaque border is identical in every container — grid cell (shell pad
+ * --plaque-shell-pad-x), panel-stack and solo alike. The old background-position
+ * calc guessed the shell padding (--space-2) and therefore drifted whenever a
+ * field lived in a grid cell. Out of flow → never a grid/flex item, never shifts
+ * layout. --plaque-select-trail still reserves room so the value never overlaps.
+ */
+.plaque-field:has(> select.plaque-field__control) {
+  position: relative;
+}
+
+.plaque-field:has(> select.plaque-field__control)::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  right: var(--plaque-chevron-edge);
+  width: var(--plaque-chevron-size);
+  height: 6px;
+  transform: translateY(-50%);
+  background-image: var(--plaque-chevron-glyph);
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: var(--plaque-chevron-size) 6px;
+  pointer-events: none;
+}
+
+.plaque-field > .plaque-field__control.input,
+.plaque-field > select.plaque-field__control.input {
+  min-width: 0;
+  min-height: calc(var(--plaque-control-height) - 2px);
+  padding: var(--space-1) 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+  /* Same tier as select/seg values — overrides `.input` base size. */
+  font-size: var(--font-size-sm);
+  line-height: 1.35;
+}
+
+.plaque-field > .plaque-field__control.input:focus-visible,
+.plaque-field > select.plaque-field__control.input:focus-visible {
+  outline: none;
+}
+
+.plaque-field > :is(input, select).plaque-field__control:-webkit-autofill,
+.plaque-field > :is(input, select).plaque-field__control:-webkit-autofill:hover,
+.plaque-field > :is(input, select).plaque-field__control:-webkit-autofill:focus {
+  -webkit-text-fill-color: var(--color-text);
+  caret-color: var(--color-text);
+  -webkit-box-shadow: 0 0 0 1000px var(--color-surface) inset;
+  box-shadow: 0 0 0 1000px var(--color-surface) inset;
+  transition: background-color 5000s ease-in-out 0s;
+}
+
+.plaque-field-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.plaque-field-list--dense {
+  gap: var(--space-1);
+}
+
+.plaque-field-check {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  height: var(--plaque-control-height);
+  min-height: var(--plaque-control-height);
+  padding: 0 var(--space-2);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  background: var(--color-surface);
+  cursor: pointer;
+  font-size: var(--font-size-sm);
+  line-height: 1.35;
+  color: var(--color-text);
+}
+
+.plaque-field-check:has(.plaque-field-check__input:checked) {
+  border-color: color-mix(in srgb, var(--color-primary) 55%, var(--color-border));
+  background: color-mix(in srgb, var(--color-primary) 8%, var(--color-surface));
+}
+
+.plaque-field-check__input {
+  width: var(--icon-size-md);
+  height: var(--icon-size-md);
+  margin: 0;
+  accent-color: var(--color-primary);
+  flex-shrink: 0;
+}
+
+.plaque-field-option {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  height: var(--plaque-control-height);
+  min-height: var(--plaque-control-height);
+  padding: 0 var(--space-2);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  background: var(--color-surface);
+  color: var(--color-text);
+  font-family: inherit;
+  font-size: var(--font-size-sm);
+  line-height: 1.35;
+  text-align: right;
+  cursor: pointer;
+  transition:
+    border-color var(--duration-fast) var(--ease-out),
+    background var(--duration-fast) var(--ease-out);
+}
+
+.plaque-field-option:hover {
+  border-color: color-mix(in srgb, var(--color-border) 50%, var(--color-primary));
+}
+
+.plaque-field-option--on {
+  border-color: color-mix(in srgb, var(--color-primary) 55%, var(--color-border));
+  background: color-mix(in srgb, var(--color-primary) 8%, var(--color-surface));
+  font-weight: 600;
+}
+
+/* Full-width divided — 3-col grid: label · divider · control */
+
+.plaque-field--divided.plaque-field--stretch {
+  display: grid;
+  grid-template-columns: var(--plaque-mixed-label-col, max-content) 1px minmax(0, 1fr);
+  align-items: center;
+  row-gap: 0;
+  column-gap: 0;
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  overflow: hidden;
+}
+
+/* Grid cell — label · divider · control */
+
+.plaque-field-grid .plaque-field--divided {
+  display: grid;
+  grid-template-columns: var(--plaque-mixed-label-col, max-content) 1px minmax(min-content, 1fr);
+  align-items: center;
+  row-gap: 0;
+  column-gap: 0;
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  overflow: hidden;
+}
+
+.plaque-field-grid .plaque-field--divided:has(> :is(input, select).plaque-field__control) {
+  grid-template-columns: var(--plaque-mixed-label-col, max-content) 1px minmax(0, 1fr);
+}
+
+.plaque-field--divided.plaque-field--stretch > .plaque-field__label,
+.plaque-field--divided.plaque-field--stretch > .plaque-field__text,
+.plaque-field-grid .plaque-field--divided .plaque-field__label,
+.plaque-field-grid .plaque-field--divided .plaque-field__text {
+  grid-column: 1;
+  flex: none;
+  width: auto;
+  max-width: 100%;
+  min-width: 0;
+}
+
+.plaque-field--divided.plaque-field--stretch > :is(.plaque-field__control, .plaque-field__value),
+.plaque-field-grid .plaque-field--divided > :is(.plaque-field__control, .plaque-field__value) {
+  grid-column: 3;
+  justify-self: end;
+  margin-left: 0;
+  width: auto;
+  max-width: 100%;
+  min-width: 0;
+}
+
+.plaque-field--divided.plaque-field--stretch > :is(select.plaque-field__control, input.plaque-field__control, .input.plaque-field__control),
+.plaque-field-grid .plaque-field--divided > :is(select.plaque-field__control, input.plaque-field__control) {
+  justify-self: stretch;
+  width: 100%;
+}
+
+/* Mixed grid — label col from cell container (cqi); rem cap via tokens */
+
+.plaque-field-grid--mixed .plaque-field--divided .plaque-field__label,
+.plaque-field-grid--mixed .plaque-field--divided .plaque-field__text {
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+}
+
+.plaque-field-grid--mixed .plaque-field-grid__cell .plaque-field--divided,
+.plaque-field-grid--mixed .plaque-field-grid__cell .plaque-field--divided:has(.plaque-field-seg-track),
+.plaque-field-grid--mixed .plaque-field-grid__cell .plaque-field--divided:has(> :is(input, select).plaque-field__control) {
+  grid-template-columns: min(var(--plaque-label-width), var(--plaque-mixed-label-cqi)) 1px minmax(0, 1fr);
+  column-gap: 0;
+}
+
+/* Tagstrip / --many: flex wrap under label — not a 3-col grid. */
+.plaque-field-grid--mixed .plaque-field-grid__cell .plaque-field--divided:has(> .plaque-field-seg-track--many) {
+  display: flex;
+  grid-template-columns: unset;
+}
+
+.plaque-field-grid--mixed .plaque-field-grid__cell--lg .plaque-field--divided,
+.plaque-field-grid--mixed .plaque-field-grid__cell--lg .plaque-field--divided:has(.plaque-field-seg-track),
+.plaque-field-grid--mixed .plaque-field-grid__cell--lg .plaque-field--divided:has(> :is(input, select).plaque-field__control) {
+  grid-template-columns: min(var(--plaque-label-width-wide), var(--plaque-mixed-label-cqi)) 1px minmax(0, 1fr);
+}
+
+/* Checkstrip — compact multi-select (autotests-builder junitTags, …) */
+
+.plaque-field-checkstrip {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2px var(--space-1);
+  min-width: 0;
+}
+
+.plaque-field-checkstrip__item {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  min-height: 20px;
+  padding: 0 var(--space-1);
+  border: 1px solid var(--color-border);
+  border-radius: calc(var(--radius-sm) - 2px);
+  background: var(--color-surface);
+  font-size: var(--font-size-xs);
+  font-weight: 600;
+  line-height: 1.2;
+  color: var(--color-text-muted);
+  cursor: pointer;
+  transition:
+    border-color var(--duration-fast) var(--ease-out),
+    background var(--duration-fast) var(--ease-out),
+    color var(--duration-fast) var(--ease-out);
+}
+
+.plaque-field-checkstrip__item:has(.plaque-field-checkstrip__input:checked) {
+  border-color: color-mix(in srgb, var(--color-primary) 55%, var(--color-border));
+  background: color-mix(in srgb, var(--color-primary) 8%, var(--color-surface));
+  color: var(--color-text);
+}
+
+.plaque-field-checkstrip__item:focus-within {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
+
+.plaque-field-checkstrip__input {
+  width: 14px;
+  height: 14px;
+  margin: 0;
+  accent-color: var(--color-primary);
+  flex-shrink: 0;
+}
+
+/* Checkstrip MD — custom 18×18 box, row 24px (JUnit tags exploration) */
+.plaque-field-checkstrip--md {
+  gap: var(--space-1) var(--space-2);
+}
+
+.plaque-field-checkstrip--md .plaque-field-checkstrip__item {
+  gap: var(--space-1);
+  min-height: 24px;
+  padding: 0 var(--space-2);
+  font-size: var(--font-size-sm);
+}
+
+.plaque-field-checkstrip--md .plaque-field-checkstrip__input {
+  appearance: none;
+  -webkit-appearance: none;
+  width: var(--icon-size-md);
+  height: var(--icon-size-md);
+  border: 1.5px solid var(--color-text-muted);
+  border-radius: calc(var(--radius-sm) - 2px);
+  background: transparent;
+  cursor: pointer;
+  transition:
+    border-color var(--duration-fast) var(--ease-out),
+    background var(--duration-fast) var(--ease-out);
+}
+
+.plaque-field-checkstrip--md .plaque-field-checkstrip__input:checked {
+  border-color: var(--color-primary);
+  background-color: var(--color-primary);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='10' viewBox='0 0 12 10' fill='none'%3E%3Cpath d='M1 5l3.5 3.5L11 1' stroke='%23fff' stroke-width='1.75' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: 10px 8px;
+}
+
+.plaque-field-checkstrip--md .plaque-field-checkstrip__input:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
+
+/* Checkstrip pill — no visible box, label pill toggles (JUnit tags) */
+.plaque-field-checkstrip--pill .plaque-field-checkstrip__input {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.plaque-field-checkstrip--pill .plaque-field-checkstrip__item {
+  position: relative;
+  gap: var(--space-1);
+  min-height: 24px;
+  padding: 0 var(--space-2);
+  font-size: var(--font-size-sm);
+}
+
+.plaque-field-checkstrip--pill .plaque-field-checkstrip__item:has(.plaque-field-checkstrip__input:checked)::before {
+  content: "";
+  width: 14px;
+  height: 14px;
+  flex-shrink: 0;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='10' viewBox='0 0 12 10' fill='none'%3E%3Cpath d='M1 5l3.5 3.5L11 1' stroke='%2394a3b8' stroke-width='1.75' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: 10px 8px;
+}
+
+html.theme-light .plaque-field-checkstrip--pill .plaque-field-checkstrip__item:has(.plaque-field-checkstrip__input:checked)::before {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='10' viewBox='0 0 12 10' fill='none'%3E%3Cpath d='M1 5l3.5 3.5L11 1' stroke='%231c1917' stroke-width='1.75' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+}
+
+/* Tagstrip — chip-like multi-select (autotests-builder junitTags) */
+.plaque-field-tagstrip {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-1) var(--space-2);
+  min-width: 0;
+}
+
+.plaque-field-tagstrip__item {
+  display: inline-flex;
+  align-items: center;
+  min-height: var(--plaque-control-height);
+  padding: 0 var(--space-3);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  background: var(--color-surface);
+  font-size: var(--font-size-sm);
+  font-weight: 600;
+  line-height: 1.3;
+  color: var(--color-text-muted);
+  cursor: pointer;
+  transition:
+    border-color var(--duration-fast) var(--ease-out),
+    background var(--duration-fast) var(--ease-out),
+    color var(--duration-fast) var(--ease-out);
+}
+
+.plaque-field-tagstrip__item:has(.plaque-field-tagstrip__input:checked) {
+  border-color: var(--color-primary);
+  background: color-mix(in srgb, var(--color-primary) 14%, var(--color-surface));
+  color: var(--color-text);
+}
+
+.plaque-field-tagstrip__item:focus-within {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
+
+.plaque-field-tagstrip__input {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* Inline check rows — plaque-field-check in a horizontal wrap */
+.plaque-field-checks-inline {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-1) var(--space-2);
+  min-width: 0;
+}
+
+.plaque-field-checks-inline .plaque-field-check {
+  width: auto;
+  flex: 0 1 auto;
+}
+
+/* Dense grid — 3–4 plaque-field (seg / divided) per row inside panel / section */
+
+.plaque-field-grid {
+  container-type: inline-size;
+  display: grid;
+  gap: var(--space-2);
+  grid-template-columns: minmax(0, 1fr);
+  min-width: 0;
+}
+
+.plaque-field-grid__cell {
+  min-width: 0;
+  overflow: hidden;
+  container-type: inline-size;
+}
+
+.plaque-field-grid__cell:has(.plaque-field-seg-track--many) {
+  overflow: visible;
+}
+
+.plaque-field-grid__cell--hidden {
+  display: none;
+}
+
+.plaque-field-grid .plaque-field,
+.plaque-field-grid .plaque-field--divided:has(.plaque-field-seg-track) {
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  overflow: hidden;
+  row-gap: 0;
+  column-gap: var(--space-1);
+}
+
+/* --many: flex row under label (overrides overflow:hidden + 3-col grid above). */
+.plaque-field-grid .plaque-field--divided:has(> .plaque-field-seg-track--many) {
+  display: flex;
+  height: auto;
+  min-height: var(--plaque-control-height);
+  overflow: visible;
+  align-items: flex-start;
+  grid-template-columns: unset;
+}
+
+.plaque-field-grid .plaque-field--divided:has(> .plaque-field-seg-track--many) > .plaque-divider {
+  /* metrics from --many shell in this file */
+  align-self: flex-start;
+}
+
+.plaque-field-grid .plaque-field:not(:has(> .plaque-field-seg-track)) {
+  padding: 0 var(--space-2);
+}
+
+.plaque-field-grid--mixed .plaque-field,
+.plaque-field-grid--mixed .plaque-field--divided,
+.plaque-field-grid--mixed .plaque-field--divided:has(.plaque-field-seg-track) {
+  column-gap: 0;
+}
+
+.plaque-field-grid .plaque-field__label {
+  min-width: 0;
+  font-size: var(--font-size-xs);
+}
+
+.plaque-field-grid .plaque-field--divided .plaque-field__label,
+.plaque-field-grid .plaque-field--divided .plaque-field__text {
+  font-size: var(--font-size-sm);
+  line-height: 1.35;
+  padding-right: var(--space-2);
+}
+
+@container (min-width: 22rem) {
+  .plaque-field-grid:not(.plaque-field-grid--mixed) {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  /* Triple batch (remote hub flags) — 3 equal cols fill row width, same as remoteUrl */
+  .plaque-field-grid:not(.plaque-field-grid--mixed):has(> .plaque-field-grid__cell:nth-child(3):last-child) {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+@container (min-width: 34rem) {
+  .plaque-field-grid:not(.plaque-field-grid--mixed) {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+/* Narrow mixed — collapse 2-col lg to 1 col before clipping short flags */
+@container (max-width: 24rem) {
+  .plaque-field-grid--mixed .plaque-field-grid__cell--lg {
+    grid-column: span 12;
+  }
+}
+
+/* Mixed layout — 4 sm + 3 md + 2 lg per row (12-col); shell height = --plaque-control-height everywhere */
+
+.plaque-field-grid--mixed {
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+}
+
+.plaque-field-grid__cell--sm {
+  grid-column: span 3;
+}
+
+.plaque-field-grid__cell--md {
+  grid-column: span 4;
+}
+
+.plaque-field-grid__cell--lg {
+  grid-column: span 6;
+}
+
+.plaque-field-grid__cell--full {
+  grid-column: span 12;
+}
+
+/* ── Config row canon ────────────────────────────────────────────────
+ * Every configuration row holds exactly one or two fields — nothing else.
+ *   --solo : one full-width field.
+ *   --duo  : two equal (50/50) fields that collapse to one column when the
+ *            panel gets narrow (auto-fit reflow, per-container, no media JS).
+ * These win over the 12-col --mixed base via the compound selector. */
+.plaque-field-grid--solo,
+.plaque-field-grid--mixed.plaque-field-grid--solo {
+  grid-template-columns: minmax(0, 1fr);
+}
+
+.plaque-field-grid--duo,
+.plaque-field-grid--mixed.plaque-field-grid--duo {
+  /* Two columns survive only while the container is at its full width; as soon
+     as it shrinks below room for two comfortable fields, the row drops to one
+     per line (no cramped/clipped 2-up). Dial the breakpoint via --plaque-duo-col-min. */
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, var(--plaque-duo-col-min, 16rem)), 1fr));
+}
+
+.plaque-field-grid--solo > .plaque-field-grid__cell,
+.plaque-field-grid--duo > .plaque-field-grid__cell {
+  grid-column: auto;
+}
+
+/*
+ * Short boolean pairs (remote enable*) — content-hug 2-col, no 50/50 squeeze / ellipsis.
+ * Cells size to label + true|false; leftover space stays empty on the right.
+ */
+.plaque-field-grid--pair {
+  /* Flex-wrap of content-hug fields: they sit side by side and wrap to the next
+     line when the panel is too narrow — never overflow / clip. */
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  justify-content: flex-start;
+  width: 100%;
+  max-width: 100%;
+  /* container-type: inline-size (inherited from .plaque-field-grid) applies
+     contain: inline-size, which makes a box size independent of its content —
+     that collapses the content-hug cells to ~0 and clips the fields. Pairs hug
+     their content, so they must NOT be size containers. */
+  container-type: normal;
+}
+
+.plaque-field-grid--pair > .plaque-field-grid__cell,
+.plaque-field-grid--pair > .plaque-field-grid__cell--sm,
+.plaque-field-grid--pair > .plaque-field-grid__cell--md,
+.plaque-field-grid--pair > .plaque-field-grid__cell--lg,
+.plaque-field-grid--pair > .plaque-field-grid__cell--full {
+  container-type: normal;
+  grid-column: auto;
+  flex: 0 0 auto;
+  width: max-content;
+  max-width: 100%;
+  overflow: visible;
+}
+
+.plaque-field-grid--pair .plaque-field,
+.plaque-field-grid--pair .plaque-field--divided,
+.plaque-field-grid--pair .plaque-field--divided:has(.plaque-field-seg-track) {
+  width: max-content;
+  max-width: 100%;
+  overflow: visible;
+}
+
+.plaque-field-grid--pair .plaque-field--divided,
+.plaque-field-grid--pair .plaque-field--divided:has(.plaque-field-seg-track),
+.plaque-field-grid--pair .plaque-field--divided:has(> :is(input, select).plaque-field__control) {
+  grid-template-columns: max-content 1px max-content;
+  column-gap: 0;
+}
+
+.plaque-field-grid--pair .plaque-field--divided .plaque-field__label,
+.plaque-field-grid--pair .plaque-field--divided .plaque-field__text {
+  width: auto;
+  max-width: none;
+  min-width: 0;
+  overflow: visible;
+  text-overflow: clip;
+}
+
+/* 2+2+1 row — seg + seg + compact select (build tool chain) */
+
+.plaque-field-grid--mixed.plaque-field-grid--ratio-221 {
+  grid-template-columns: minmax(0, 2fr) minmax(0, 2fr) minmax(0, 1fr);
+}
+
+.plaque-field-grid--ratio-221 > .plaque-field-grid__cell {
+  grid-column: auto;
+  min-width: 0;
+}
+
+/* 3+2 row — execution seg + parallel threads select */
+
+.plaque-field-grid--mixed.plaque-field-grid--ratio-32 {
+  grid-template-columns: minmax(0, 3fr) minmax(0, 2fr);
+}
+
+.plaque-field-grid--ratio-32 > .plaque-field-grid__cell {
+  grid-column: auto;
+  min-width: 0;
+}
+
+/* Per-cell wider label col — see override after grid-stack sync block below */
+
+/* 1+1 row — equal seg + select (legacy) */
+
+.plaque-field-grid--mixed.plaque-field-grid--ratio-11 {
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+}
+
+.plaque-field-grid--ratio-11 > .plaque-field-grid__cell {
+  grid-column: auto;
+  min-width: 0;
+}
+
+/* 4+1 row — wide divided select + compact version select (test framework · version) */
+
+.plaque-field-grid--mixed.plaque-field-grid--ratio-41 {
+  grid-template-columns: minmax(0, 4fr) minmax(0, 1fr);
+}
+
+.plaque-field-grid--ratio-41 > .plaque-field-grid__cell {
+  grid-column: auto;
+  min-width: 0;
+}
+
+/* Panel stack — shared fixed label col per panel (divider sync across rows).
+   Equal 2-col magnet → `.plaque-field-grid-stack--magnet` (rules after stack sync). */
+
+.plaque-field-grid-stack,
+.plaque-field-grid-stack--ratio-221,
+.plaque-field-grid-stack--parallel,
+.plaque-field-panel-stack {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  min-width: 0;
+}
+
+/* Full-width rows in panel-stack (remoteUrl) — wide fixed label col */
+.plaque-field-panel-stack > :not(.plaque-field-grid) .plaque-field--divided,
+.plaque-field-panel-stack > :not(.plaque-field-grid) .plaque-field--divided.plaque-field--stretch {
+  --plaque-mixed-label-col: var(--plaque-label-width-wide);
+  grid-template-columns: var(--plaque-label-width-wide) 1px minmax(0, 1fr);
+  column-gap: 0;
+}
+
+/* Panel-stack magnet — label col = max(labels) via JS; after wide fixed so it wins.
+   minmax(<js px>, max-content): the JS value aligns dividers, but the track can
+   still grow to the full label if JS ever undershoots (stale cache / font metric
+   drift / early layout) — so a label is NEVER clipped, only mildly misaligned in
+   that anomaly. No JS at all → falls back to max-content (hug, still no clip). */
+.plaque-field-panel-stack--magnet > :not(.plaque-field-grid) .plaque-field--divided,
+.plaque-field-panel-stack--magnet > :not(.plaque-field-grid) .plaque-field--divided.plaque-field--stretch {
+  --plaque-mixed-label-col: max-content;
+  grid-template-columns: minmax(var(--plaque-mixed-label-col), max-content) 1px minmax(0, 1fr);
+  column-gap: 0;
+}
+
+.plaque-field-panel-stack--magnet .plaque-field--divided > .plaque-field__label,
+.plaque-field-panel-stack--magnet .plaque-field--divided > .plaque-field__text {
+  width: auto;
+  max-width: 100%;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* --many: same flex wrap escape as grid-stack--magnet — one rule for every panel.
+   Without this, magnet re-applies 3-col grid and .plaque-divider { align-self:center }
+   centers against the full wrap height (Test layer / junitTags). */
+.plaque-field-panel-stack--magnet > :not(.plaque-field-grid) .plaque-field--divided:has(> .plaque-field-seg-track--many),
+.plaque-field-panel-stack--magnet > :not(.plaque-field-grid) .plaque-field--divided.plaque-field--stretch:has(> .plaque-field-seg-track--many) {
+  display: flex;
+  grid-template-columns: unset;
+  column-gap: unset;
+}
+
+.plaque-field-panel-stack--magnet .plaque-field--divided:has(> .plaque-field-seg-track--many) > .plaque-field__label,
+.plaque-field-panel-stack--magnet .plaque-field--divided:has(> .plaque-field-seg-track--many) > .plaque-field__text {
+  width: var(--plaque-mixed-label-col, max-content);
+  max-width: 100%;
+}
+
+.plaque-field-grid-stack .plaque-field--divided .plaque-field__label,
+.plaque-field-grid-stack .plaque-field--divided .plaque-field__text,
+.plaque-field-panel-stack .plaque-field--divided .plaque-field__label,
+.plaque-field-panel-stack .plaque-field--divided .plaque-field__text {
+  width: auto;
+  max-width: 100%;
+  min-width: 0;
+}
+
+.plaque-field-grid-stack .plaque-field--divided.plaque-field--stretch > :is(select.plaque-field__control, input.plaque-field__control) {
+  justify-self: stretch;
+  width: 100%;
+  min-width: 0;
+  max-width: 100%;
+}
+
+/* Grid-stack — fixed label col on every divided field (default sync).
+   Canon mixed default (outside stack) = min(--plaque-label-width, 44cqi) per __cell.
+   Stack sync = shared --plaque-label-width; --hug / --magnet override.
+   Seg stays content-hug (justify-self: end). */
+
+.plaque-field-grid-stack .plaque-field-grid--mixed .plaque-field-grid__cell .plaque-field--divided,
+.plaque-field-grid-stack .plaque-field-grid--mixed .plaque-field-grid__cell .plaque-field--divided:has(.plaque-field-seg-track),
+.plaque-field-grid-stack .plaque-field-grid--mixed .plaque-field-grid__cell .plaque-field--divided:has(> :is(input, select).plaque-field__control) {
+  display: grid;
+  width: 100%;
+  max-width: 100%;
+  /* JS (plaque-field-magnet.js) sets --plaque-mixed-label-col to the exact
+     measured label width so dividers align and long ids never clip. The minmax
+     lets the track grow to the full label if JS ever undershoots (stale cache /
+     font drift), and falls back to the fixed rem col when the script is absent. */
+  grid-template-columns: minmax(var(--plaque-mixed-label-col, var(--plaque-label-width)), max-content) 1px minmax(0, 1fr);
+  column-gap: 0;
+}
+
+/* Grid-stack — lg/full keep wider label col (long param ids; ≠ sm default 5.5rem) */
+.plaque-field-grid-stack .plaque-field-grid--mixed .plaque-field-grid__cell--lg .plaque-field--divided,
+.plaque-field-grid-stack .plaque-field-grid--mixed .plaque-field-grid__cell--lg .plaque-field--divided:has(.plaque-field-seg-track),
+.plaque-field-grid-stack .plaque-field-grid--mixed .plaque-field-grid__cell--lg .plaque-field--divided:has(> :is(input, select).plaque-field__control) {
+  grid-template-columns: minmax(var(--plaque-mixed-label-col, var(--plaque-label-width-wide)), max-content) 1px minmax(0, 1fr);
+}
+
+.plaque-field-grid-stack .plaque-field-grid--mixed .plaque-field-grid__cell--full .plaque-field--divided,
+.plaque-field-grid-stack .plaque-field-grid--mixed .plaque-field-grid__cell--full .plaque-field--divided:has(.plaque-field-seg-track),
+.plaque-field-grid-stack .plaque-field-grid--mixed .plaque-field-grid__cell--full .plaque-field--divided:has(> :is(input, select).plaque-field__control) {
+  grid-template-columns: var(--plaque-mixed-label-col, max-content) 1px minmax(0, 1fr);
+}
+
+.plaque-field-grid-stack .plaque-field-grid--mixed .plaque-field-grid__cell--full .plaque-field--divided .plaque-field__label,
+.plaque-field-grid-stack .plaque-field-grid--mixed .plaque-field-grid__cell--full .plaque-field--divided .plaque-field__text {
+  width: auto;
+  max-width: none;
+  overflow: visible;
+  text-overflow: clip;
+}
+
+/*
+ * Hug stack — label col = max-content (divider flush to each label; zigzag OK).
+ * After fixed rem sync so it wins cascade. ≠ magnet (shared max per column).
+ */
+.plaque-field-grid-stack--hug .plaque-field-grid--mixed .plaque-field-grid__cell .plaque-field--divided,
+.plaque-field-grid-stack--hug .plaque-field-grid--mixed .plaque-field-grid__cell .plaque-field--divided:has(.plaque-field-seg-track),
+.plaque-field-grid-stack--hug .plaque-field-grid--mixed .plaque-field-grid__cell .plaque-field--divided:has(> :is(input, select).plaque-field__control),
+.plaque-field-grid-stack--hug .plaque-field-grid--mixed .plaque-field-grid__cell--lg .plaque-field--divided,
+.plaque-field-grid-stack--hug .plaque-field-grid--mixed .plaque-field-grid__cell--lg .plaque-field--divided:has(.plaque-field-seg-track),
+.plaque-field-grid-stack--hug .plaque-field-grid--mixed .plaque-field-grid__cell--lg .plaque-field--divided:has(> :is(input, select).plaque-field__control) {
+  grid-template-columns: max-content 1px minmax(0, 1fr);
+  column-gap: 0;
+}
+
+.plaque-field-grid-stack--hug .plaque-field--divided > .plaque-field__label,
+.plaque-field-grid-stack--hug .plaque-field--divided > .plaque-field__text {
+  width: auto;
+  max-width: none;
+  min-width: 0;
+  overflow: visible;
+  text-overflow: clip;
+}
+
+/*
+ * Magnet 2-col stack — after fixed rem sync so it wins cascade.
+ * --plaque-mixed-label-col = max(label) per *visual* column (plaque-field-magnet.js;
+ * cell left edge — duo auto-fit collapse shares one axis with solo rows).
+ */
+.plaque-field-grid-stack--magnet .plaque-field-grid--mixed .plaque-field-grid__cell .plaque-field--divided,
+.plaque-field-grid-stack--magnet .plaque-field-grid--mixed .plaque-field-grid__cell .plaque-field--divided:has(.plaque-field-seg-track),
+.plaque-field-grid-stack--magnet .plaque-field-grid--mixed .plaque-field-grid__cell .plaque-field--divided:has(> :is(input, select).plaque-field__control),
+.plaque-field-grid-stack--magnet .plaque-field-grid--mixed .plaque-field-grid__cell--lg .plaque-field--divided,
+.plaque-field-grid-stack--magnet .plaque-field-grid--mixed .plaque-field-grid__cell--lg .plaque-field--divided:has(.plaque-field-seg-track),
+.plaque-field-grid-stack--magnet .plaque-field-grid--mixed .plaque-field-grid__cell--lg .plaque-field--divided:has(> :is(input, select).plaque-field__control) {
+  /* Exact px from JS keeps dividers flush; minmax lets the label grow instead of
+     clipping if JS undershoots (stale cache / font drift / early layout). */
+  grid-template-columns: minmax(var(--plaque-mixed-label-col, max-content), max-content) 1px minmax(min-content, 1fr);
+  column-gap: 0;
+}
+
+/* --many: flex wrap under label — beat magnet 3-col template. */
+.plaque-field-grid-stack--magnet .plaque-field-grid--mixed .plaque-field-grid__cell .plaque-field--divided:has(> .plaque-field-seg-track--many) {
+  display: flex;
+  grid-template-columns: unset;
+  column-gap: unset;
+}
+
+/* Keep divider on the shared magnet label column (not hugged to "available"). */
+.plaque-field-grid-stack--magnet .plaque-field--divided:has(> .plaque-field-seg-track--many) > .plaque-field__label,
+.plaque-field-grid-stack--magnet .plaque-field--divided:has(> .plaque-field-seg-track--many) > .plaque-field__text {
+  width: var(--plaque-mixed-label-col, max-content);
+  max-width: 100%;
+}
+
+.plaque-field-grid-stack--magnet .plaque-field-grid--mixed .plaque-field-grid__cell .plaque-field--divided:has(> :is(input, select).plaque-field__control),
+.plaque-field-grid-stack--magnet .plaque-field-grid--mixed .plaque-field-grid__cell--lg .plaque-field--divided:has(> :is(input, select).plaque-field__control) {
+  grid-template-columns: minmax(var(--plaque-mixed-label-col, max-content), max-content) 1px minmax(0, 1fr);
+}
+
+.plaque-field-grid-stack--magnet .plaque-field--divided > .plaque-field__label,
+.plaque-field-grid-stack--magnet .plaque-field--divided > .plaque-field__text {
+  width: auto;
+  max-width: 100%;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Pair rows inside magnet stack — never ellipsis short flags */
+.plaque-field-grid-stack--magnet .plaque-field-grid--pair .plaque-field--divided,
+.plaque-field-grid-stack--magnet .plaque-field-grid--pair .plaque-field--divided:has(.plaque-field-seg-track),
+.plaque-field-grid-stack--magnet .plaque-field-grid--pair .plaque-field--divided:has(> :is(input, select).plaque-field__control) {
+  grid-template-columns: max-content 1px max-content;
+  column-gap: 0;
+}
+
+.plaque-field-grid-stack--magnet .plaque-field-grid--pair .plaque-field--divided > .plaque-field__label,
+.plaque-field-grid-stack--magnet .plaque-field-grid--pair .plaque-field--divided > .plaque-field__text {
+  max-width: none;
+  overflow: visible;
+  text-overflow: clip;
+}
+
+/*
+ * Keep label | divider | control on one horizontal grid row.
+ * plaque-field-magnet.js adds `.plaque-field--nowrap` (together with
+ * --plaque-mixed-label-col set to the exact px budget) when the label + control
+ * cannot share the aligned column — the label ellipsises; we never stack the
+ * label above the control. Fixed 32px height applies to single-line controls;
+ * `--many` tagstrips may still grow vertically as chips wrap (see override).
+ * !important: this is a JS state modifier that must win over every
+ * grid-stack / magnet grid-template rule regardless of nesting depth.
+ */
+.plaque-field--divided.plaque-field--nowrap {
+  display: grid !important;
+  grid-template-columns: var(--plaque-mixed-label-col, max-content) 1px minmax(0, 1fr) !important;
+  align-items: center;
+  height: var(--plaque-control-height) !important;
+  min-height: var(--plaque-control-height) !important;
+}
+
+/* Tagstrip (--many): track keeps wrap; shell grows under magnet --nowrap. */
+.plaque-field--divided.plaque-field--nowrap:has(> .plaque-field-seg-track--many) {
+  display: flex !important;
+  flex-wrap: nowrap !important;
+  grid-template-columns: unset !important;
+  height: auto !important;
+  min-height: var(--plaque-control-height) !important;
+  overflow: visible !important;
+  align-items: flex-start;
+}
+
+.plaque-field--nowrap > .plaque-field-seg-track--many {
+  display: flex !important;
+  flex: 1 1 auto !important;
+  justify-self: unset !important;
+  align-self: flex-start !important;
+  width: auto !important;
+  max-width: none !important;
+  min-width: 0 !important;
+  height: auto !important;
+}
+
+.plaque-field--nowrap > .plaque-field__label,
+.plaque-field--nowrap > .plaque-field__text {
+  grid-column: 1 !important;
+  grid-row: 1 !important;
+  min-width: 0 !important;
+  max-width: 100% !important;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.plaque-field--nowrap > .plaque-divider {
+  grid-column: 2 !important;
+  grid-row: 1 !important;
+}
+
+.plaque-field--nowrap > .plaque-field__control,
+.plaque-field--nowrap > .plaque-field__value,
+.plaque-field--nowrap > .plaque-field-seg-track {
+  grid-column: 3 !important;
+  grid-row: 1 !important;
+  min-width: 0 !important;
+  max-width: 100% !important;
+}
+
+@media (max-width: 768px) {
+  .plaque-field-grid:not(.plaque-field-grid--mixed),
+  .plaque-field-grid--4:not(.plaque-field-grid--mixed) {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .plaque-field-grid--mixed .plaque-field-grid__cell--sm,
+  .plaque-field-grid--mixed .plaque-field-grid__cell--md,
+  .plaque-field-grid--mixed .plaque-field-grid__cell--lg {
+    grid-column: span 12;
+  }
+
+  .plaque-field-grid--mixed.plaque-field-grid--ratio-221,
+  .plaque-field-grid--mixed.plaque-field-grid--ratio-41,
+  .plaque-field-grid--mixed.plaque-field-grid--ratio-32,
+  .plaque-field-grid--mixed.plaque-field-grid--ratio-11 {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .plaque-field-panel-stack > :not(.plaque-field-grid) .plaque-field--divided {
+    grid-template-columns: var(--plaque-label-width-wide) 1px minmax(0, 1fr);
+  }
+}

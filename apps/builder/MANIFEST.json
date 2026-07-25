@@ -1,0 +1,149 @@
+{
+  "name": "allure-notifications-builder",
+  "phase": 6,
+  "vendor": {
+    "source": "projects/design-system-home/design-system/",
+    "copied": "2026-07-24",
+    "policy": "copy-once pin; do not edit files under vendor/",
+    "files": [
+      {
+        "path": "assets/qa-guru-logo.svg",
+        "sha256_16": "a802c9737e0f23fd"
+      },
+      {
+        "path": "assets/allure3-logo.svg",
+        "sha256_16": "92d7a76a8e46fa13"
+      },
+      {
+        "path": "css/button.css",
+        "sha256_16": "43e8fd536d5469ab"
+      },
+      {
+        "path": "css/code-highlight.css",
+        "sha256_16": "ff1ff618bf0a459c"
+      },
+      {
+        "path": "css/configurator.css",
+        "sha256_16": "927c17b0591c4f40"
+      },
+      {
+        "path": "css/grid.css",
+        "sha256_16": "81f48f88d38551bd"
+      },
+      {
+        "path": "css/header.css",
+        "sha256_16": "0caed161d6b04a08"
+      },
+      {
+        "path": "css/icon-btn.css",
+        "sha256_16": "30a8439d004bfc65"
+      },
+      {
+        "path": "css/icon.css",
+        "sha256_16": "ec6b939c183f74af"
+      },
+      {
+        "path": "css/indicator.css",
+        "sha256_16": "53869de1a50bcd56"
+      },
+      {
+        "path": "css/input.css",
+        "sha256_16": "cc43a22620271ba8"
+      },
+      {
+        "path": "css/lang-toggle.css",
+        "sha256_16": "073653d7deb2102a"
+      },
+      {
+        "path": "css/link.css",
+        "sha256_16": "ac3e17e548a7d976"
+      },
+      {
+        "path": "css/page.css",
+        "sha256_16": "61f3ae39e8246bed"
+      },
+      {
+        "path": "css/panel.css",
+        "sha256_16": "498c88820ec95801"
+      },
+      {
+        "path": "css/plaque-divider.css",
+        "sha256_16": "08d34d03fdcbc81e"
+      },
+      {
+        "path": "css/plaque-field-seg-layout.css",
+        "sha256_16": "e96748422527860a"
+      },
+      {
+        "path": "css/plaque-field-seg.css",
+        "sha256_16": "6a0ee96d6eedb695"
+      },
+      {
+        "path": "css/plaque-field.css",
+        "sha256_16": "5d25770b60e913ee"
+      },
+      {
+        "path": "css/stack.css",
+        "sha256_16": "502373ef5ff2b0f1"
+      },
+      {
+        "path": "css/sticky.css",
+        "sha256_16": "4d8d8de4259d90ec"
+      },
+      {
+        "path": "css/text.css",
+        "sha256_16": "0858e680a566bf39"
+      },
+      {
+        "path": "css/tokens.css",
+        "sha256_16": "11a3d6c031983367"
+      },
+      {
+        "path": "css/widget-tile.css",
+        "sha256_16": "f415f001f6cbc8f8"
+      },
+      {
+        "path": "js/code-highlight.js",
+        "sha256_16": "9e2376f4735cab70"
+      },
+      {
+        "path": "js/dom-utils.js",
+        "sha256_16": "675d6d5018b81e7f"
+      },
+      {
+        "path": "js/header-metrics-wrap.js",
+        "sha256_16": "915cec09c83b20f2"
+      },
+      {
+        "path": "js/header.js",
+        "sha256_16": "a24b75cefaadbb2c"
+      },
+      {
+        "path": "js/theme-icons.js",
+        "sha256_16": "3b93849e6f466cb7"
+      },
+      {
+        "path": "js/widget-tile-mocks.js",
+        "sha256_16": "f78a53ee5d639e08"
+      },
+      {
+        "path": "templates/header.html",
+        "sha256_16": "d20495432fb08970"
+      },
+      {
+        "path": "templates/widget-tile.html",
+        "sha256_16": "e1f73e2559c53204"
+      }
+    ]
+  },
+  "canvas_presets": [
+    "870x1080",
+    "1080x1080",
+    "1410x1080"
+  ],
+  "stand": {
+    "port": 3011,
+    "id": "allure-notifications-builder",
+    "command": "python scripts/stands/ensure.py allure-notifications-builder --open"
+  }
+}
