@@ -29,9 +29,11 @@ jobs:
         uses: gradle/actions/setup-gradle@v5
 
       - name: Build with Gradle
+        working-directory: legacy/java
         run: ./gradlew assemble
 
       - name: Get release version
+        working-directory: legacy/java
         run: echo "version=$(./gradlew properties -q | grep 'version:' | awk '{print $2}')" >> $GITHUB_ENV
 
       - name: Print product version
@@ -41,7 +43,7 @@ jobs:
         uses: actions/upload-artifact@v7
         with:
           name: 'allure-notifications-${{env.version}}.jar'
-          path: allure-notifications/build/libs/*.jar
+          path: legacy/java/allure-notifications/build/libs/*.jar
 
       - name: Create Changelog
         id: changelog
@@ -68,7 +70,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: allure-notifications/build/libs/allure-notifications-${{env.version}}.jar
+          asset_path: legacy/java/allure-notifications/build/libs/allure-notifications-${{env.version}}.jar
           asset_name: 'allure-notifications-${{env.version}}.jar'
           asset_content_type: application/java-archive
 

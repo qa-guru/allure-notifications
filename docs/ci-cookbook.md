@@ -1,6 +1,6 @@
 # CI cookbook (6.0 TypeScript)
 
-Public surface after Phase 3 / Stages C–D: CLI `send --config` renders a native collage PNG (`@napi-rs/canvas`) and dry-runs or mocks messengers. Java `java -jar` remains the **5.0** path (repo-root modules today; later `legacy/java/`).
+Public surface after Phase 3 / Stages C–D: CLI `send --config` renders a native collage PNG (`@napi-rs/canvas`) and dry-runs or mocks messengers. Java `java -jar` remains the **5.0** path under [`legacy/java/`](../legacy/java/).
 
 ## Contract
 

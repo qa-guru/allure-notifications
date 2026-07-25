@@ -16,6 +16,9 @@ jobs:
       matrix:
         java: [17, 21, 25]
       fail-fast: false
+    defaults:
+      run:
+        working-directory: legacy/java
 
     steps:
     - name: Checkout
@@ -39,11 +42,11 @@ jobs:
       run: ./gradlew :allure-notifications-api:test :allure-notifications-api:check
 
     - name: Upload Allure results (Java 21)
-      if: always() && matrix.java == 21 && hashFiles('allure-notifications-api/build/allure-results/**') != ''
+      if: always() && matrix.java == 21 && hashFiles('legacy/java/allure-notifications-api/build/allure-results/**') != ''
       uses: actions/upload-artifact@v4
       with:
         name: allure-results
-        path: allure-notifications-api/build/allure-results/
+        path: legacy/java/allure-notifications-api/build/allure-results/
         if-no-files-found: ignore
 
     - name: Upload Allure report inputs (Java 21)
@@ -51,7 +54,7 @@ jobs:
       uses: actions/upload-artifact@v4
       with:
         name: notifications-jar
-        path: allure-notifications/build/libs/allure-notifications-*.jar
+        path: legacy/java/allure-notifications/build/libs/allure-notifications-*.jar
         if-no-files-found: ignore
 
     - name: Fail job if tests/check failed
@@ -77,14 +80,14 @@ jobs:
       uses: actions/download-artifact@v4
       with:
         name: allure-results
-        path: allure-notifications-api/build/allure-results
+        path: legacy/java/allure-notifications-api/build/allure-results
       continue-on-error: true
 
     - name: Download fat jar
       uses: actions/download-artifact@v4
       with:
         name: notifications-jar
-        path: allure-notifications/build/libs
+        path: legacy/java/allure-notifications/build/libs
       continue-on-error: true
 
     - name: Install Allure CLI
@@ -97,13 +100,13 @@ jobs:
     - name: Generate Allure report
       id: report
       run: |
-        RESULTS=allure-notifications-api/build/allure-results
+        RESULTS=legacy/java/allure-notifications-api/build/allure-results
         if [ ! -d "$RESULTS" ] || [ -z "$(ls -A "$RESULTS" 2>/dev/null)" ]; then
           echo "No allure-results — skip report"
           echo "skip=true" >> "$GITHUB_OUTPUT"
           exit 0
         fi
-        allure generate "$RESULTS" -o allure-notifications-api/build/allure-report --clean
+        allure generate "$RESULTS" -o legacy/java/allure-notifications-api/build/allure-report --clean
         echo "skip=false" >> "$GITHUB_OUTPUT"
 
     - name: Send Telegram notification
@@ -121,7 +124,7 @@ jobs:
           echo "TELEGRAM_TOKEN / TELEGRAM_CHAT_ID missing — skip"
           exit 0
         fi
-        JAR=$(ls allure-notifications/build/libs/allure-notifications-*.jar 2>/dev/null | head -1 || true)
+        JAR=$(ls legacy/java/allure-notifications/build/libs/allure-notifications-*.jar 2>/dev/null | head -1 || true)
         if [ -z "$JAR" ]; then
           curl -fsSL -o allure-notifications-5.0.8.jar \
             https://github.com/qa-guru/allure-notifications/releases/download/v5.0.8/allure-notifications-5.0.8.jar

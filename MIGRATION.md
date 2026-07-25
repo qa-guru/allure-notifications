@@ -56,13 +56,13 @@ allure-notifications/                 # version line 6.0.*
     phase-0-checklist.md
 ```
 
-Today: Java modules still at repo root (`allure-notifications/`, `allure-notifications-api/`) — layout move deferred. Builder merged into `apps/builder/` (Stage E); hub clone may linger until Pages cutover.
+Java **5.0.8** Gradle multi-module lives under [`legacy/java/`](legacy/java/) (`cd legacy/java && ./gradlew assemble`). Builder is in `apps/builder/` (Stage E); hub clone may linger until Pages cutover.
 
 ## Phases
 
 | Phase | Scope | Status |
 |-------|--------|--------|
-| **0** | Monorepo shell, MIGRATION, checklist, CI sketch; no big-bang move | **done** (layout moves deferred — see phase-0-checklist) |
+| **0** | Monorepo shell, MIGRATION, checklist, CI sketch; layout moves per checklist | **done** (Java→`legacy/java` + README banner; Pages/archive still open) |
 | **1** | `packages/config` — zod schema, PANEL_CATALOG, DEFAULT_ITEMS, SQ-1080 presets | **done** |
 | **2** | `packages/pyramid` — palette + geometry SSOT (not dashboard-overrides) | **done** |
 | **3** | `packages/core` + `cli` — native PNG, Telegram, dogfood, cookbooks; public **6.0.0** | **core + cli done** (Stages C–D); Telegram dogfood = Stage F / OK |
@@ -93,7 +93,7 @@ Today: Java modules still at repo root (`allure-notifications/`, `allure-notific
 See [docs/ci-cookbook.md](docs/ci-cookbook.md): `allure generate` → `allure-notifications send --config … --dry-run`. No `java -jar` on the 6.0 path.
 
 - **6.0 TS:** [`.github/workflows/ci-6.0.yml`](.github/workflows/ci-6.0.yml) — `pnpm install` + `pnpm test` on `feature/6.0*` (Playwright Chromium for `apps/builder` e2e).
-- **5.0.8 Java:** [`.github/workflows/build.yml`](.github/workflows/build.yml) — **master** only; unchanged by Stage F.
+- **5.0.8 Java:** [`.github/workflows/build.yml`](.github/workflows/build.yml) — **master** only; cwd / paths → `legacy/java/`.
 
 ## Phase 1 notes
 
@@ -168,6 +168,13 @@ See [docs/ci-cookbook.md](docs/ci-cookbook.md): `allure generate` → `allure-no
 - `@allure-notifications/pyramid` — not wired (no geometry constants used in builder UI yet)
 - Verify: `pnpm --filter @allure-notifications/builder test` / root `pnpm test`
 
+## Layout move notes (Java → `legacy/java`)
+
+- Moved: `allure-notifications/`, `allure-notifications-api/`, root Gradle files, `gradle/`, `gradlew*`, plus `config/checkstyle` (Gradle rootDir).
+- Dogfood JSON/PNG under repo-root `config/` stay put; `config/ci-telegram.json` Allure paths → `legacy/java/…`.
+- Build: `cd legacy/java && ./gradlew assemble` (fat jar under `legacy/java/allure-notifications/build/libs/`).
+- **Not in this move:** Telegram live dogfood, publish, Pages/archive, VERSION bump, Matrix.
+
 ## Next
 
-Post-G gaps: Telegram dogfood OK; Java→`legacy/java`; Pages/archive; VERSION cutover. Do not bump pin without HQ.
+Post-G gaps: Telegram dogfood OK; Pages/archive; VERSION cutover. Do not bump pin without HQ.

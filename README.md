@@ -1,5 +1,8 @@
 [![en](https://img.shields.io/badge/lang-en-blue.svg)](#) [![ru](https://img.shields.io/badge/lang-ru-white.svg)](README.ru.md) [![fr](https://img.shields.io/badge/lang-fr-white.svg)](README.fr.md)
 
+> **Version lines:** **5.0.\*** = Java jar (legacy freeze at **5.0.8**) · **6.0.\*** = TypeScript monorepo (CLI + builder; this branch).  
+> There is **no 5.1**. Jar users / Gradle build: [`legacy/java/`](legacy/java/) (`cd legacy/java && ./gradlew assemble`).  
+> TS workspace: root `pnpm test` · see [`MIGRATION.md`](MIGRATION.md).
 
 ## Visual canon (5.0.3)
 
