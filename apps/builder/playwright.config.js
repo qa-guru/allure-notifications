@@ -1,7 +1,9 @@
 // @ts-check
 const { defineConfig } = require('@playwright/test');
 
-const port = Number(process.env.ANB_PORT || 3011);
+// Default 13011: avoid reusing stale :3011 hub clone (cwd mismatch vs apps/builder).
+// Prod stand remains ensure.py → :3011 when cwd is apps/builder.
+const port = Number(process.env.ANB_PORT || 13011);
 const baseURL = process.env.ANB_BASE_URL || `http://127.0.0.1:${port}`;
 
 /** Headless unless user explicitly opts into headed (PW_HEADED=1 / PWDEBUG). */
@@ -13,6 +15,7 @@ const headless = !headed;
 
 module.exports = defineConfig({
   testDir: './tests',
+  testMatch: /.*\.spec\.js/,
   timeout: 30_000,
   fullyParallel: false,
   forbidOnly: !!process.env.CI,
@@ -32,6 +35,7 @@ module.exports = defineConfig({
     : {
         command: `python -m http.server ${port}`,
         url: baseURL,
+        // Default port 13011 avoids stale hub clone on :3011; reuse ensure.py stand when present.
         reuseExistingServer: true,
         timeout: 15_000,
       },

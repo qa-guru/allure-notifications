@@ -29,6 +29,14 @@
   <link rel="stylesheet" href="vendor/design-system/css/widget-tile.css" />
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gridstack@11.3.0/dist/gridstack.min.css" />
   <link rel="stylesheet" href="css/app.css" />
+  <!-- Phase 4: bare specifier → vendor copy of @allure-notifications/config/browser (no zod). -->
+  <script type="importmap">
+  {
+    "imports": {
+      "@allure-notifications/config": "./vendor/allure-notifications-config/browser.js"
+    }
+  }
+  </script>
 </head>
 <body>
   <div id="app-header"></div>

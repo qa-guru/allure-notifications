@@ -66,7 +66,7 @@ Today: Java modules still at repo root (`allure-notifications/`, `allure-notific
 | **1** | `packages/config` — zod schema, PANEL_CATALOG, DEFAULT_ITEMS, SQ-1080 presets | **done** |
 | **2** | `packages/pyramid` — palette + geometry SSOT (not dashboard-overrides) | **done** |
 | **3** | `packages/core` + `cli` — native PNG, Telegram, dogfood, cookbooks; public **6.0.0** | **core + cli done** (Stages C–D); Telegram dogfood = Stage F / OK |
-| **4** | Builder full TS; import `@config` / `@pyramid`; typescript@7 / tsgo in CI | pending (Stage E: merge + parity import; browser still local copy) |
+| **4** | Builder import `@config` (browser SSOT); optional `@pyramid`; full TS / tsgo later | **config done** (import map → vendor sync); `@pyramid` deferred (no UI dep yet); full TS later |
 | **5** | Optional thin `@allurereport/plugin-api` wrapper over `core` | optional |
 
 ## Anti-hack rules
@@ -159,6 +159,15 @@ See [docs/ci-cookbook.md](docs/ci-cookbook.md): `allure generate` → `allure-no
 - Cookbook: `docs/ci-cookbook.md` documents real `send --config --dry-run` (+ workspace `pnpm exec` pre-publish).
 - **Telegram dogfood (ADR 008):** skipped in Stage F unless HQ gives explicit OK.
 
+## Phase 4 notes (builder → shared packages)
+
+- `@allure-notifications/config/browser` — catalog + presets + `createDefaultConfig` (no zod)
+- `apps/builder/scripts/sync-config.mjs` → `vendor/allure-notifications-config/` (real files; stand cannot follow pnpm symlink outside cwd)
+- `index.html` import map: `@allure-notifications/config` → vendor `browser.js`
+- `js/app.js` imports SSOT; local leftovers = packing / TG preview / vector UI only
+- `@allure-notifications/pyramid` — not wired (no geometry constants used in builder UI yet)
+- Verify: `pnpm --filter @allure-notifications/builder test` / root `pnpm test`
+
 ## Next
 
-**Stage G** — hub `PLAN-6.0.md`; pin consumers 5.0.8 until cutover. Do not start without HQ handoff.
+Post-G gaps: Telegram dogfood OK; Java→`legacy/java`; Pages/archive; VERSION cutover. Do not bump pin without HQ.

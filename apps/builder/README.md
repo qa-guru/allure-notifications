@@ -12,7 +12,7 @@ Only: **870×1080** · **1080×1080** · **1410×1080**. No 1024×1280.
 
 ## Config SSOT
 
-Browser `js/app.js` still carries local `PANEL_CATALOG` / `DEFAULT_ITEMS` / `CANVAS_PRESETS` (static HTTP, no bundler). Package `@allure-notifications/config` is the SSOT — parity guarded by `tests/config-parity.test.mjs`. Full TS rewrite / browser import = Phase 4.
+`@allure-notifications/config` (browser subpath, no zod) is the runtime SSOT. Stand/`http.server` cannot follow pnpm symlinks outside `apps/builder`, so `pnpm run sync-config` copies `browser.js` / `catalog.js` / `presets.js` into `vendor/allure-notifications-config/`. `index.html` import map maps `@allure-notifications/config` → that vendor copy. UI-only packing (`DEFAULT_TILE_W`, `PACK_*`, `WT_BAR_BASELINE`) stays in `js/app.js`. Parity: `tests/config-parity.test.mjs`.
 
 ## Stand
 

@@ -1,7 +1,7 @@
 // @ts-check
 const { test, expect } = require('@playwright/test');
 
-/** SQ-1080 canon 7-tile — must match js/app.js DEFAULT_ITEMS + CANON.md */
+/** SQ-1080 canon 7-tile — must match @allure-notifications/config DEFAULT_ITEMS + CANON.md */
 const SQ1080_ITEMS = [
   { type: 'testingPyramid', x: 0, y: 0, w: 3, h: 3 },
   { type: 'pie', x: 3, y: 0, w: 3, h: 3 },

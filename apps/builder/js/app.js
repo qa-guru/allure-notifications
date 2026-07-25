@@ -1,4 +1,18 @@
 import { PHRASES } from './phrases.js';
+import {
+  CANVAS_PRESETS,
+  DEFAULT_CANVAS,
+  DEFAULT_CARD_GAP,
+  DEFAULT_HEADER_HEIGHT,
+  DEFAULT_TILE_PAD,
+  GRID_COLS,
+  GRID_ROWS,
+  PANEL_CATALOG,
+  PANEL_META,
+  createDefaultConfig,
+  resolvePanelMeta,
+} from '@allure-notifications/config';
+import { mountHighlightedOutput } from '../vendor/design-system/js/code-highlight.js';
 
 /**
  * apps/builder — phase 5 polish (vector# / reset / download / copy).
@@ -14,262 +28,26 @@ import { PHRASES } from './phrases.js';
  * Terminal body canon: `.panel__code.ch-code` + CodeHighlight (always colored;
  * no blank pad rows before `{` / after `}`).
  *
- * Stage E: local CANVAS_PRESETS / PANEL_CATALOG / DEFAULT_ITEMS stay here for the
- * static browser bundle. SSOT lives in `@allure-notifications/config` (parity via
- * `tests/config-parity.test.mjs`). Full browser import / TS rewrite = Phase 4.
+ * Phase 4: catalog / presets / createDefaultConfig from `@allure-notifications/config`
+ * (import map → vendor sync; see scripts/sync-config.mjs). UI-only packing stays local.
  */
-
-import { mountHighlightedOutput } from '../vendor/design-system/js/code-highlight.js';
 
 /** @typedef {{ w: number, h: number }} AnbCanvasSize */
 /** @typedef {{ type: string, x: number, y: number, w: number, h: number, groupBy?: string, by?: string }} AnbChartItem */
 /** @typedef {{ id: string, type: string, title: string, hint: string, defaultW: number, defaultH: number, groupBy?: string, by?: string }} AnbPanelMeta */
 
-/** @type {Readonly<Record<string, AnbCanvasSize>>} */
-const CANVAS_PRESETS = Object.freeze({
-  '870x1080': { w: 870, h: 1080 },
-  '1080x1080': { w: 1080, h: 1080 },
-  '1410x1080': { w: 1410, h: 1080 },
-});
-
-const DEFAULT_CANVAS = '1080x1080';
-const GRID_COLS = 10;
-const GRID_ROWS = 10;
 /** Default tile footprint + flush 5-up packing on 10-col grid (2×2, no gutters). */
 const DEFAULT_TILE_W = 2;
 const DEFAULT_TILE_H = 2;
 const PACK_COLS = 5;
 const PACK_X = Object.freeze([0, 2, 4, 6, 8]);
 
-/** Jar / SQ-1080 chrome defaults (CollageRenderer + widget-tile canon). */
-const DEFAULT_HEADER_HEIGHT = 22;
-const DEFAULT_CARD_GAP = 14;
-/** Preview-only — maps to `--wt-pad`; jar has no field yet. */
-const DEFAULT_TILE_PAD = 6;
 /** DS `.widget-tile` baseline bar — used to scale title/dots with headerHeight. */
 const WT_BAR_BASELINE = 28;
 
-/**
- * 17 slots ↔ awesome-charts.mjs. id unique for palette; type = ChartType
- * (pie ↔ currentStatus). Variants via groupBy / by.
- * @type {ReadonlyArray<AnbPanelMeta>}
- */
-const PANEL_CATALOG = Object.freeze([
-  { id: 'pie', type: 'pie', title: 'Current status', hint: '2×2', defaultW: 2, defaultH: 2 },
-  {
-    id: 'testingPyramid',
-    type: 'testingPyramid',
-    title: 'Testing pyramid',
-    hint: '2×2',
-    defaultW: 2,
-    defaultH: 2,
-  },
-  {
-    id: 'testResultSeverities',
-    type: 'testResultSeverities',
-    title: 'Results by severity',
-    hint: '2×2',
-    defaultW: 2,
-    defaultH: 2,
-  },
-  {
-    id: 'statusDynamics',
-    type: 'statusDynamics',
-    title: 'Status dynamics',
-    hint: '2×2',
-    defaultW: 2,
-    defaultH: 2,
-  },
-  {
-    id: 'statusTransitions',
-    type: 'statusTransitions',
-    title: 'Status transitions',
-    hint: '2×2',
-    defaultW: 2,
-    defaultH: 2,
-  },
-  {
-    id: 'testBaseGrowthDynamics',
-    type: 'testBaseGrowthDynamics',
-    title: 'Test base growth',
-    hint: '2×2',
-    defaultW: 2,
-    defaultH: 2,
-  },
-  {
-    id: 'coverageDiff',
-    type: 'coverageDiff',
-    title: 'Coverage diff',
-    hint: '2×2',
-    defaultW: 2,
-    defaultH: 2,
-  },
-  {
-    id: 'successRateDistribution',
-    type: 'successRateDistribution',
-    title: 'Success rate',
-    hint: '2×2',
-    defaultW: 2,
-    defaultH: 2,
-  },
-  {
-    id: 'problemsDistribution',
-    type: 'problemsDistribution',
-    by: 'environment',
-    title: 'Problems by environment',
-    hint: '2×2',
-    defaultW: 2,
-    defaultH: 2,
-  },
-  {
-    id: 'stabilityByComponent',
-    type: 'stabilityDistribution',
-    groupBy: 'label-name:component',
-    title: 'Stability by component',
-    hint: '2×2',
-    defaultW: 2,
-    defaultH: 2,
-  },
-  {
-    id: 'stabilityByFeature',
-    type: 'stabilityDistribution',
-    groupBy: 'feature',
-    title: 'Stability by feature',
-    hint: '2×2',
-    defaultW: 2,
-    defaultH: 2,
-  },
-  {
-    id: 'stabilityByEpic',
-    type: 'stabilityDistribution',
-    groupBy: 'epic',
-    title: 'Stability by epic',
-    hint: '2×2',
-    defaultW: 2,
-    defaultH: 2,
-  },
-  {
-    id: 'stabilityByStory',
-    type: 'stabilityDistribution',
-    groupBy: 'story',
-    title: 'Stability by story',
-    hint: '2×2',
-    defaultW: 2,
-    defaultH: 2,
-  },
-  {
-    id: 'durations',
-    type: 'durations',
-    title: 'Durations',
-    hint: '2×2',
-    defaultW: 2,
-    defaultH: 2,
-  },
-  {
-    id: 'durationsByLayer',
-    type: 'durations',
-    groupBy: 'layer',
-    title: 'Durations by layer',
-    hint: '2×2',
-    defaultW: 2,
-    defaultH: 2,
-  },
-  {
-    id: 'durationDynamics',
-    type: 'durationDynamics',
-    title: 'Duration dynamics',
-    hint: '2×2',
-    defaultW: 2,
-    defaultH: 2,
-  },
-  {
-    id: 'statusAgePyramid',
-    type: 'statusAgePyramid',
-    title: 'Status age pyramid',
-    hint: '2×2',
-    defaultW: 2,
-    defaultH: 2,
-  },
-]);
-
-/** @type {Readonly<Record<string, AnbPanelMeta>>} */
-const PANEL_META = Object.freeze(
-  Object.fromEntries(PANEL_CATALOG.map((p) => [p.id, p])),
-);
-
-/**
- * @param {Partial<AnbChartItem> & { type?: string, id?: string }} raw
- * @returns {AnbPanelMeta | undefined}
- */
-function resolvePanelMeta(raw) {
-  if (raw.id && PANEL_META[raw.id]) return PANEL_META[raw.id];
-  const type = raw.type || '';
-  const groupBy = raw.groupBy || undefined;
-  const by = raw.by || undefined;
-  const exact = PANEL_CATALOG.find(
-    (p) =>
-      p.type === type &&
-      (p.groupBy || undefined) === groupBy &&
-      (p.by || undefined) === by,
-  );
-  if (exact) return exact;
-  if (type === 'currentStatus') return PANEL_META.pie;
-  return PANEL_CATALOG.find((p) => p.type === type && !p.groupBy && !p.by);
-}
-
-/** SQ-1080 canon — 7 tiles, 3 rows (3+3+4 cols). See CANON.md */
-/** @type {ReadonlyArray<AnbChartItem>} */
-const DEFAULT_ITEMS = Object.freeze([
-  { type: 'testingPyramid', x: 0, y: 0, w: 3, h: 3 },
-  { type: 'pie', x: 3, y: 0, w: 3, h: 3 },
-  { type: 'durations', x: 6, y: 0, w: 4, h: 3 },
-  { type: 'coverageDiff', x: 0, y: 3, w: 3, h: 3 },
-  { type: 'successRateDistribution', x: 3, y: 3, w: 3, h: 3 },
-  { type: 'problemsDistribution', x: 6, y: 3, w: 4, h: 3, by: 'environment' },
-  { type: 'stabilityDistribution', x: 6, y: 6, w: 4, h: 4, groupBy: 'feature' },
-]);
-
 /** @returns {Record<string, unknown>} */
 function createDefaultState() {
-  const canvas = CANVAS_PRESETS[DEFAULT_CANVAS];
-  return {
-    base: {
-      project: '',
-      environment: '',
-      comment: '',
-      language: 'en',
-      allureFolder: 'allure-report/',
-      allureResultsFolder: 'allure-results/',
-      enableChart: true,
-      darkMode: true,
-      chart: {
-        mode: 'collage',
-        layout: 'free',
-        width: canvas.w,
-        height: canvas.h,
-        headerHeight: DEFAULT_HEADER_HEIGHT,
-        cardGap: DEFAULT_CARD_GAP,
-        tilePad: DEFAULT_TILE_PAD,
-        gridCols: GRID_COLS,
-        gridRows: GRID_ROWS,
-        items: DEFAULT_ITEMS.map((p) => ({ ...p })),
-        pyramidFallback: 'suites',
-      },
-      links: {
-        report: '',
-        dashboard: '',
-        testops: '',
-        build: '',
-      },
-    },
-    telegram: {
-      token: '',
-      chat: '',
-      topic: '',
-      replyTo: '',
-      templatePath: '/templates/telegram.ftl',
-    },
-  };
+  return createDefaultConfig();
 }
 
 /** @type {Record<string, unknown>} */
