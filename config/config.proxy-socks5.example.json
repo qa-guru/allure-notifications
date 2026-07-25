@@ -1,0 +1,22 @@
+{
+  "base": {
+    "project": "reference_prod",
+    "environment": "reference_prod",
+    "comment": "Allure 2 · freestyle",
+    "reportLink": "https://jenkins.example/job/1/",
+    "language": "ru",
+    "allureFolder": "allure-report",
+    "enableChart": true
+  },
+  "telegram": {
+    "token": "0:preview-no-send",
+    "chat": "-1000000000000",
+    "topic": "1",
+    "replyTo": ""
+  },
+  "proxy": {
+    "type": "socks5",
+    "host": "proxy.qaguru.school",
+    "port": 7777
+  }
+}

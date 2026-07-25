@@ -8,7 +8,30 @@ Locked collage rules + PNG: [`docs/canon/CANON.md`](docs/canon/CANON.md) · [`do
 - Pyramid: quieter corners/gaps, compact single-layer (not full-bleed)
 - `unit` = pie success (`ChartTheme.STATUS_PASSED` / `#94ca66`) — do not reintroduce a separate green
 - Rounded durations / success-rate tops; suites pills
-- Consumers: `base.darkMode: true` + jar `5.0.3`
+- Consumers: `base.darkMode: true` + jar pin **5.0.8** (freeze tip; GitHub release [`v5.0.8`](https://github.com/qa-guru/allure-notifications/releases/tag/v5.0.8))
+
+### 5.0.6–5.0.8
+
+- **5.0.8** — cap horizontal bar height for sparse suites/severities/durations-by-layer
+- **5.0.7** — exact stacked status-dynamics bar heights; `durations` pyramid layer order
+- **5.0.6** — Telegram proxy from `config.json` (`proxy.type`: `http` | `socks5`)
+
+### 5.0.5
+
+- SQ-1080 dense 12-tile free layout: all catalog tiles kept (empty-state, no silent drop)
+- `ChartPanelItem.by` / `groupBy`; `chart.tilePad` parsed (preview parity)
+- Stub panels: `statusTransitions`, `problemsDistribution`, `coverageDiff`, `statusAgePyramid`, `stabilityDistribution`, `durationDynamics` (+ `testBaseGrowthDynamics`)
+- `durations` + `groupBy: layer` → layer averages, else histogram fallback
+- Dogfood: [`config/config.preview-sq1080.json`](config/config.preview-sq1080.json) → [`config/chart-sq1080-dogfood.png`](config/chart-sq1080-dogfood.png)
+
+### 5.0.4
+
+- `chart.cardGap` (default 14) + existing `chart.headerHeight` (default 68) drive collage spacing/chrome
+- New panel: `testResultSeverities` (from `severity` labels); `pie` ↔ `currentStatus` alias for free `items`
+- Dogfood: [`config/config.preview-cb870-cardgap.json`](config/config.preview-cb870-cardgap.json) → [`config/chart-cb870-cardgap-dogfood.png`](config/chart-cb870-cardgap-dogfood.png)
+- **Jar Panel coverage vs awesome-charts catalog (17 slots / 13 unique types)**
+  - **Implemented:** `currentStatus`/`pie`, `testingPyramid` (+ `suites` fallback), `durations` (+ `groupBy: layer`), `statusDynamics`, `successRateDistribution`, `testResultSeverities`
+  - **Empty-state (no analytics yet):** `statusTransitions`, `testBaseGrowthDynamics`, `coverageDiff`, `problemsDistribution`, `stabilityDistribution`, `durationDynamics`, `statusAgePyramid`
 
 # Allure notifications
 **Allure notifications** is a library that sends automatic notifications about automated test results to your preferred messenger (Telegram, Slack, ~~Skype~~, Email, Mattermost, Discord, Loop, Rocket.Chat, Zoho Cliq, Microsoft Teams).
@@ -80,10 +103,11 @@ In **5.0 collage** mode the chart is a single 1000×600 PNG: status pie (top-lef
 
 | Feature | Description |
 |---------|-------------|
-| **Collage chart** | `chart.mode: "collage"` — pie + pyramid + durations in one PNG |
+| **Collage chart** | `chart.mode: "collage"` + `layout: "free"` — Telegram canvas **870×1080**; layout per consumer (`cb870-mid-dynamics` default · dense-split / compact-hero / pyramid-mid / dense-live) |
 | **Links block** | `links.report`, `dashboard`, `testops`, `build` in templates (i18n) |
 | **Allure 3** | Auto-detect `summary.json` at report root (`stats` → legacy model) |
 | **Results analytics** | `allureResultsFolder` for layer labels, suites, per-test durations |
+| **Card chrome (5.0.4)** | `chart.headerHeight` (68) + `chart.cardGap` (14); panel `testResultSeverities` |
 | **Backward compat** | Default `chart.mode: "pie"` and deprecated `reportLink` still work |
 
 **Docs:** [Migration 4.x → 5.0](docs/migration-5.0.md) · [CI cookbook](docs/ci-cookbook-5.0.md) · [Example config](config/config-5.0-collage.example.json)
@@ -202,6 +226,7 @@ Minimal 5.0 config sketch:
     "templatePath": "/templates/teams.ftl"
   },
   "proxy": {
+    "type": "http",
     "host": "",
     "port": 0,
     "username": "",
@@ -209,7 +234,18 @@ Minimal 5.0 config sketch:
   }
 }
 ```
-The `proxy` block is used to specify additional proxy configuration.  
+The `proxy` block configures outbound HTTP/SOCKS proxy for **Telegram**, **Slack**, and **Cliq** (Apache HttpClient).  
+`type` defaults to `http` when omitted (backward compatible). Use `socks5` for SOCKS proxies without auth (e.g. `proxy.qaguru.school:7777`).
+
+```json
+"proxy": {
+  "type": "socks5",
+  "host": "proxy.qaguru.school",
+  "port": 7777
+}
+```
+
+System properties override JSON fields: `-Dnotifications.proxy.type=socks5 -Dnotifications.proxy.host=…`
 The `templatePath` parameter is optional and allows you to provide a path to a custom Freemarker template. Example:
 ```json
 {
@@ -272,6 +308,8 @@ Fields:
 + `chart.mode` — `pie` (default, 4.x compatible) or `collage` (1000×600 PNG, 5.0+).
 + `chart.pyramidFallback` — `suites` when no `layer` labels in results (default `suites`).
 + `chart.width` / `chart.height` — collage PNG size in pixels (default 1000×600).
++ `chart.headerHeight` — card title-bar height in px (default 68).
++ `chart.cardGap` — gap around/between cards in px (default 14, **5.0.4**).
 + `darkMode` — whether to render the chart in dark mode (`true` / `false`).
 + `enableSuitesPublishing` — whether to publish per-suite statistics (`true` / `false`, default `false`). Requires `suites.json` inside `<allureFolder>/widgets`.
 + `logo` — path to a logo file; if set, the logo is displayed in the top-left corner of the pie chart.
@@ -282,7 +320,7 @@ Fields:
 
 7. Run the following command in your terminal:
 ```shell
-java "-DconfigFile=notifications/config.json" -jar notifications/allure-notifications-5.0.3.jar
+java "-DconfigFile=notifications/config.json" -jar notifications/allure-notifications-5.0.8.jar
 ```
 Notes:
 + `summary.json` must already be generated before running this command.
@@ -326,14 +364,14 @@ Notes:
 In the **Script** field, enter:
 ```bash
 cd ..
-FILE=allure-notifications-5.0.3.jar
+FILE=allure-notifications-5.0.8.jar
 if [ ! -f "$FILE" ]; then
-   wget https://github.com/qa-guru/allure-notifications/releases/download/v5.0.3/allure-notifications-5.0.3.jar
+   wget https://github.com/qa-guru/allure-notifications/releases/download/v5.0.8/allure-notifications-5.0.8.jar
 fi
 ```
 Click **Add another task** and in the second **Script** field enter:
 ```bash
-java "-DconfigFile=notifications/config.json" -jar ../allure-notifications-5.0.3.jar
+java "-DconfigFile=notifications/config.json" -jar ../allure-notifications-5.0.8.jar
 ```
 
 4. Save the configuration and run your tests. A notification will be sent to the configured messenger upon completion.

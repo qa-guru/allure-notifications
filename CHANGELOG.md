@@ -1,5 +1,76 @@
 # Changelog
 
+## v 5.0.8
+
+### English
+
+- **Horizontal bar panels (suites / severities / durations-by-layer)** — cap row/bar height so a single suite no longer inflates into a near-circular pill that fills the collage tile
+
+### Russian
+
+- **Горизонтальные бары (suites / severities / durations-by-layer)** — потолок высоты строки/бара: одна suite больше не раздувается в «круг» на весь тайл
+
+## v 5.0.7
+
+### English
+
+- **Stacked status-dynamics bars** — segment heights match values exactly without clipping top rounding
+- **`durations` + pyramid order** — layer rows follow testing-pyramid top-to-bottom order
+
+### Russian
+
+- **Stacked status-dynamics** — высоты сегментов без обрезки скругления сверху
+- **`durations` + порядок pyramid** — строки слоёв как в testing pyramid (сверху вниз)
+
+## v 5.0.6
+
+### English
+
+- **Telegram proxy from `config.json`** — `TelegramClient` uses Apache HttpClient via `HttpClientFactory` (same as Slack/Cliq); no `proxychains4` wrapper required
+- **`proxy.type`** — `http` (default) or `socks5`; overrides via `-Dnotifications.proxy.*`
+
+### Russian
+
+- **Telegram через proxy из `config.json`** — `TelegramClient` на Apache HttpClient; SOCKS5 без auth (prod: `proxy.qaguru.school:7777`)
+- **`proxy.type`** — `http` (по умолчанию) или `socks5`; override через `-Dnotifications.proxy.*`
+
+## v 5.0.5
+
+### English
+
+- **SQ-1080 dense 12-tile** — free layout keeps all catalog tiles (empty-state instead of silent drop)
+- **`ChartPanelItem.by` / `groupBy`** — parsed for catalog variants; unknown JSON (incl. `tilePad`) ignored
+- **`chart.tilePad`** — retained for builder/preview parity (renderer unchanged)
+- **Stub panels (empty-state):** `statusTransitions`, `problemsDistribution`, `coverageDiff`, `statusAgePyramid`, `stabilityDistribution`, `durationDynamics`, `testBaseGrowthDynamics`
+- **`durations` + `groupBy: layer`** — per-layer average bars; falls back to histogram when no layer samples
+- Dogfood: `config/config.preview-sq1080.json` → `config/chart-sq1080-dogfood.png` (1080×1080)
+- CB-870 free `items` + legacy `grid|stacked|row` unchanged
+
+### Russian
+
+- **SQ-1080 dense 12-tile** — free layout не silent-drop: stub-панели → empty-state
+- **`by` / `groupBy`** на `ChartPanelItem`; `tilePad` парсится и игнорируется рендерером
+- **`durations` + `groupBy: layer`** — средние по слоям, иначе fallback на гистограмму
+- Dogfood: `config/config.preview-sq1080.json`
+
+## v 5.0.4
+
+### English
+
+- **`chart.cardGap`** — configurable inter-card gap (default **14**, former hard-coded `CARD_GAP`); `CollageRenderer` resolves via `resolveCardGap` alongside existing `headerHeight`
+- **`testResultSeverities` panel** — horizontal severity bars from `allure-results` severity labels (awesome-charts catalog #3); aliases `severities` / `severity`
+- **Alias** `pie` ↔ `currentStatus` unchanged for free-grid `items`
+- **Skipped (no analytics/history series yet):** `statusTransitions`, `testBaseGrowthDynamics`, `coverageDiff`, `problemsDistribution`, `stabilityDistribution`, `durationDynamics`, `statusAgePyramid` — deferred until data model exists
+- Dogfood: `config/config.preview-cb870-cardgap.json` (+ wide gap spot-check)
+- CB-870 free `items` shape unchanged
+
+### Russian
+
+- **`chart.cardGap`** — настраиваемый зазор между карточками (по умолчанию **14**, бывший `CARD_GAP`); `CollageRenderer` читает через `resolveCardGap` вместе с `headerHeight`
+- **Панель `testResultSeverities`** — горизонтальные бары severity из labels `allure-results`
+- Алиас `pie` ↔ `currentStatus` сохранён; форма CB-870 `items` без изменений
+- Остальные типы каталога 17 без данных — stub/skip до появления analytics/history
+
 ## v 5.0.0
 
 ### English

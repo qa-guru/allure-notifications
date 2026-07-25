@@ -153,18 +153,26 @@ public final class ReportAnalyticsBuilder {
         boolean hasKnownLayerLabels = false;
         Map<String, Integer> layerCounts = new LinkedHashMap<String, Integer>();
         Map<String, Integer> suiteCounts = new LinkedHashMap<String, Integer>();
+        Map<String, Integer> severityCounts = new LinkedHashMap<String, Integer>();
         List<Long> durations = new ArrayList<Long>();
+        Map<String, List<Long>> durationsByLayer = new LinkedHashMap<String, List<Long>>();
 
         if (results != null) {
             for (AllureTestResult result : results) {
+                String layerKey = null;
                 String layer = result.getLayer();
                 if (StringUtils.isNotBlank(layer)) {
                     hasLayerLabels = true;
-                    String key = layer.trim().toLowerCase(Locale.ROOT);
-                    if (PyramidLayerColors.isKnownLayer(key)) {
+                    layerKey = layer.trim().toLowerCase(Locale.ROOT);
+                    if (PyramidLayerColors.isKnownLayer(layerKey)) {
                         hasKnownLayerLabels = true;
                     }
-                    layerCounts.merge(key, 1, Integer::sum);
+                    layerCounts.merge(layerKey, 1, Integer::sum);
+                }
+
+                String severity = result.getSeverity();
+                if (StringUtils.isNotBlank(severity)) {
+                    severityCounts.merge(severity.trim().toLowerCase(Locale.ROOT), 1, Integer::sum);
                 }
 
                 String suiteName = result.getSuiteName();
@@ -175,6 +183,14 @@ public final class ReportAnalyticsBuilder {
                 Long duration = result.getDurationMs();
                 if (duration != null && duration >= 0) {
                     durations.add(duration);
+                    if (layerKey != null) {
+                        List<Long> layerDurations = durationsByLayer.get(layerKey);
+                        if (layerDurations == null) {
+                            layerDurations = new ArrayList<Long>();
+                            durationsByLayer.put(layerKey, layerDurations);
+                        }
+                        layerDurations.add(duration);
+                    }
                 }
             }
         }
@@ -196,6 +212,8 @@ public final class ReportAnalyticsBuilder {
                 layerCounts,
                 topSuiteStats,
                 durations,
+                durationsByLayer,
+                severityCounts,
                 hasLayerLabels,
                 hasKnownLayerLabels,
                 resultCount);

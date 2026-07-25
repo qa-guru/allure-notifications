@@ -50,6 +50,11 @@ public final class HistoryAnalytics {
         return runCount == 0;
     }
 
+    /** Fixed bucket snapshot for chart layout tests (no synthetic runs). */
+    public static HistoryAnalytics withBuckets(int[] successRateDistribution) {
+        return new HistoryAnalytics(new ArrayList<Map<String, Integer>>(), successRateDistribution, 1);
+    }
+
     public static HistoryAnalytics from(List<HistoryRun> runs) {
         List<Map<String, Integer>> dynamics = new ArrayList<Map<String, Integer>>();
         // per-testcase tally: [passedRuns, totalRuns]

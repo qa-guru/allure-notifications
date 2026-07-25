@@ -13,7 +13,7 @@ See [config/config-5.0-collage.example.json](../config/config-5.0-collage.exampl
   "base": {
     "project": "${JOB_BASE_NAME}",
     "environment": "${STAND}",
-    "comment": "Automated test run",
+    "comment": "cb870-mid-dynamics · pie 4×4 · large statusDynamics · pyramid|durations · success + severities",
     "language": "en",
     "allureFolder": "build/allure-report/",
     "allureResultsFolder": "build/allure-results/",
@@ -22,9 +22,60 @@ See [config/config-5.0-collage.example.json](../config/config-5.0-collage.exampl
     "enableSuitesPublishing": false,
     "chart": {
       "mode": "collage",
-      "pyramidFallback": "suites",
-      "width": 1000,
-      "height": 600
+      "layout": "free",
+      "width": 870,
+      "height": 1080,
+      "headerHeight": 56,
+      "cardGap": 14,
+      "tilePad": 6,
+      "gridCols": 10,
+      "gridRows": 10,
+      "items": [
+        {
+          "type": "pie",
+          "x": 0,
+          "y": 0,
+          "w": 4,
+          "h": 4
+        },
+        {
+          "type": "statusDynamics",
+          "x": 4,
+          "y": 0,
+          "w": 6,
+          "h": 4
+        },
+        {
+          "type": "testingPyramid",
+          "x": 0,
+          "y": 4,
+          "w": 4,
+          "h": 3
+        },
+        {
+          "type": "durations",
+          "x": 4,
+          "y": 4,
+          "w": 6,
+          "h": 3,
+          "groupBy": "layer"
+        },
+        {
+          "type": "successRateDistribution",
+          "x": 0,
+          "y": 7,
+          "w": 7,
+          "h": 3
+        },
+        {
+          "type": "testResultSeverities",
+          "x": 7,
+          "y": 7,
+          "w": 3,
+          "h": 3
+        }
+      ],
+      "pyramidFallback": "suites"
     },
     "links": {
       "report": "${ALLURE_REPORT_URL}",
@@ -82,7 +133,7 @@ For Allure 3, set `enableSuitesPublishing: true` only together with `allureResul
       "-Dnotifications.base.chart.mode=collage" \
       "-Dnotifications.telegram.token=${TELEGRAM_BOT_TOKEN}" \
       "-Dnotifications.telegram.chat=${TELEGRAM_CHAT_ID}" \
-      -jar notifications/allure-notifications-5.0.3.jar
+      -jar notifications/allure-notifications-5.0.8.jar
 ```
 
 **Prerequisites**
@@ -99,9 +150,9 @@ For Allure 3, set `enableSuitesPublishing: true` only together with `allureResul
 
 ```bash
 cd "${WORKSPACE}/.."
-FILE=allure-notifications-5.0.3.jar
+FILE=allure-notifications-5.0.8.jar
 if [ ! -f "$FILE" ]; then
-  wget -q "https://github.com/qa-guru/allure-notifications/releases/download/v5.0.3/${FILE}"
+  wget -q "https://github.com/qa-guru/allure-notifications/releases/download/v5.0.8/${FILE}"
 fi
 ```
 
@@ -119,7 +170,7 @@ java \
   "-Dnotifications.base.chart.mode=collage" \
   "-Dnotifications.telegram.token=${TELEGRAM_BOT_TOKEN}" \
   "-Dnotifications.telegram.chat=${TELEGRAM_CHAT_ID}" \
-  -jar "${WORKSPACE}/../allure-notifications-5.0.3.jar"
+  -jar "${WORKSPACE}/../allure-notifications-5.0.8.jar"
 ```
 
 Set `ALLURE_REPORT_URL`, `TELEGRAM_*`, etc. as Jenkins credentials or injected env vars.
@@ -131,7 +182,7 @@ Omit `chart.mode` or set `pie` explicitly — no `allureResultsFolder` required:
 ```shell
 java "-DconfigFile=notifications/config.json" \
   "-Dnotifications.base.links.report=${ALLURE_REPORT_URL}" \
-  -jar notifications/allure-notifications-5.0.3.jar
+  -jar notifications/allure-notifications-5.0.8.jar
 ```
 
 ## Allure 3 note

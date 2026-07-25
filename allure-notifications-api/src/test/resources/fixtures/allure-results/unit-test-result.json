@@ -7,6 +7,7 @@
   "stop": 1500,
   "labels": [
     {"name": "layer", "value": "unit"},
-    {"name": "suite", "value": "UnitSuite"}
+    {"name": "suite", "value": "UnitSuite"},
+    {"name": "severity", "value": "normal"}
   ]
 }

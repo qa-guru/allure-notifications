@@ -1,6 +1,7 @@
 package guru.qa.allure.notifications.chart;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -57,6 +58,15 @@ class ChartPanelsTest {
     }
 
     @Test
+    void horizontalBarRowsCapsSingleRowInTallTile() {
+        // Collage Suites cell is often ~half height; one suite must not inflate into a circle.
+        HorizontalBarRows.Layout layout = HorizontalBarRows.layout(280, true, 1);
+        assertTrue(layout.rowHeight <= 34, "rowHeight=" + layout.rowHeight);
+        assertTrue(layout.barHeight <= 18, "barHeight=" + layout.barHeight);
+        assertTrue(layout.barHeight < layout.rowHeight);
+    }
+
+    @Test
     void durationsPanelRendersHistogram() throws Exception {
         Base base = baseWithProject();
         base.setAllureResultsFolder(fixture("fixtures/allure-results").toString());
@@ -101,6 +111,42 @@ class ChartPanelsTest {
     }
 
     @Test
+    void testResultSeveritiesPanelRendersFromResults() throws Exception {
+        Base base = baseWithProject();
+        base.setAllureFolder(fixture("fixtures/allure3-report").toString());
+        base.setAllureResultsFolder(fixture("fixtures/allure-results").toString());
+        ReportAnalytics analytics = ReportAnalyticsBuilder.build(base, summary());
+
+        BufferedImage image = new TestResultSeveritiesPanel().render(
+                PanelContext.of(base, 400, 220, analytics, legend()));
+
+        assertEquals("testresultseverities", new TestResultSeveritiesPanel().getId());
+        assertEquals(3, analytics.getSeverities().size());
+        assertEquals(400, image.getWidth());
+        assertTrue(hasNonBackgroundPixels(image));
+    }
+
+    @Test
+    void stackedSegmentHeightsFillPlotExactlyWithoutOverflow() {
+        int plotHeight = 55;
+        int[] values = {50, 3, 3, 2, 2};
+        int[] heights = Bars.stackedSegmentHeights(plotHeight, values);
+        int sum = 0;
+        for (int height : heights) {
+            assertTrue(height >= 1);
+            sum += height;
+        }
+        assertEquals(plotHeight, sum);
+
+        int[] tight = Bars.stackedSegmentHeights(9, new int[] {1, 1, 1, 1, 1});
+        int tightSum = 0;
+        for (int height : tight) {
+            tightSum += height;
+        }
+        assertEquals(9, tightSum);
+    }
+
+    @Test
     void historyPanelsShowPlaceholderWithoutHistory() throws Exception {
         Base base = baseWithProject();
         ReportAnalytics analytics = ReportAnalyticsBuilder.build(summary(), java.util.Collections.emptyList());
@@ -112,6 +158,53 @@ class ChartPanelsTest {
 
         assertNotNull(dynamics);
         assertNotNull(distribution);
+    }
+
+    @Test
+    void emptyStatePanelRendersPlaceholder() throws Exception {
+        Base base = baseWithProject();
+        ReportAnalytics analytics = ReportAnalyticsBuilder.build(summary(), java.util.Collections.emptyList());
+
+        BufferedImage image = EmptyStatePanel.renderEmpty(
+                PanelContext.of(base, 320, 180, analytics, legend(), false), "No data");
+
+        assertEquals(320, image.getWidth());
+        assertEquals(180, image.getHeight());
+        assertTrue(hasNonBackgroundPixels(image));
+    }
+
+    @Test
+    void durationsPanelGroupByLayerFallsBackToHistogramWithoutLayerSamples() throws Exception {
+        Base base = baseWithProject();
+        ReportAnalytics analytics = ReportAnalyticsBuilder.build(summary(), java.util.Collections.emptyList());
+        // Inject flat durations only — no per-layer map → groupBy=layer falls back.
+        ReportAnalytics withDurations = new ReportAnalytics(
+                analytics.getStatistic(),
+                java.util.Collections.<String, Integer>emptyMap(),
+                java.util.Collections.<guru.qa.allure.notifications.report.SuiteStat>emptyList(),
+                java.util.Arrays.asList(1000L, 2000L, 3000L, 4000L),
+                false,
+                4);
+
+        BufferedImage image = new DurationsPanel().render(
+                PanelContext.of(base, 400, 200, withDurations, legend(), false, "layer", null));
+
+        assertEquals(400, image.getWidth());
+        assertTrue(hasNonBackgroundPixels(image));
+    }
+
+    @Test
+    void durationsPanelGroupByLayerRendersAverages() throws Exception {
+        Base base = baseWithProject();
+        base.setAllureResultsFolder(fixture("fixtures/allure-results").toString());
+        ReportAnalytics analytics = ReportAnalyticsBuilder.build(base, summary());
+
+        BufferedImage image = new DurationsPanel().render(
+                PanelContext.of(base, 400, 220, analytics, legend(), false, "layer", null));
+
+        assertFalse(analytics.getDurationsMsByLayer().isEmpty());
+        assertEquals(400, image.getWidth());
+        assertTrue(hasNonBackgroundPixels(image));
     }
 
     @Test
@@ -139,8 +232,9 @@ class ChartPanelsTest {
 
     private static boolean hasNonBackgroundPixels(BufferedImage image) {
         int background = image.getRGB(0, 0);
-        for (int y = 0; y < image.getHeight(); y += 10) {
-            for (int x = 0; x < image.getWidth(); x += 10) {
+        // Full scan: thin anti-aliased glyphs can miss a 10px grid on Linux headless fonts.
+        for (int y = 0; y < image.getHeight(); y++) {
+            for (int x = 0; x < image.getWidth(); x++) {
                 if (image.getRGB(x, y) != background) {
                     return true;
                 }

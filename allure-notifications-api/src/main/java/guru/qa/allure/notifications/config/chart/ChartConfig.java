@@ -62,4 +62,16 @@ public class ChartConfig {
      * caption stays legible at Telegram's downscaled size.
      */
     private Integer headerHeight;
+
+    /**
+     * Gap (px) around and between collage cards. When null the renderer uses the canon
+     * of 14px (parity with design-system widget-tile CB-870 spacing).
+     */
+    private Integer cardGap;
+
+    /**
+     * Inner body pad (px) for builder/preview parity ({@code --wt-pad}). Parsed and
+     * retained in config; the Java2D collage renderer does not apply it yet.
+     */
+    private Integer tilePad;
 }

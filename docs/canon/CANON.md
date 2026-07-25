@@ -13,7 +13,8 @@ Alias: [`collage-cb870-free-dogfood.png`](./collage-cb870-free-dogfood.png)
 | Layout | `chart.layout: "free"` + `items` (pie 5×5, pyramid 5×5, durations 10×5) |
 | Canvas (TG post) | 1024×1280 |
 | Theme | `base.darkMode: true` |
-| Card header | 68px traffic-light + title |
+| Card header | 68px traffic-light + title (`chart.headerHeight`, default 68) |
+| Card gap | 14px around/between cards (`chart.cardGap` since 5.0.4, default 14 — lock unchanged) |
 | Pyramid corners | `CORNER_RATIO = 0.18` (quiet, not capsule) |
 | Pyramid gaps | `TIER_GAP_RATIO = 0.11` |
 | Single-layer pyramid | compact centred tier (not full-bleed) |

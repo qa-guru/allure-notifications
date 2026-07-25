@@ -63,17 +63,18 @@ flowchart LR
 
 <img width="660" alt="Telegram notification example" src="docs/telegram_notification.png">
 
-В режиме **collage 5.0** диаграмма — один PNG 1000×600: pie статусов (слева сверху), testing pyramid или suites bar (справа сверху), гистограмма длительностей (снизу). См. [гайд по миграции](docs/migration-5.0.md).
+В режиме **collage** Telegram — узкий canvas **870×1080**; default `cb870-mid-dynamics`, у проектов разные раскладки под динамику (wide dynamics / pie hero / pyramid-mid / dense-live). См. [гайд по миграции](docs/migration-5.0.md) и [пример](config/config-5.0-collage.example.json).
 
 
 ## Что нового в 5.0
 
 | Возможность | Описание |
 |-------------|----------|
-| **Collage chart** | `chart.mode: "collage"` — pie + pyramid + durations в одном PNG |
+| **Collage chart** | `chart.mode: "collage"` + `layout: "free"` — Telegram canvas **870×1080**; раскладка по consumer (`cb870-mid-dynamics` default · dense-split / compact-hero / pyramid-mid / dense-live) |
 | **Блок links** | `links.report`, `dashboard`, `testops`, `build` в шаблонах (i18n) |
 | **Allure 3** | Автоопределение `summary.json` в корне отчёта (`stats` → legacy-модель) |
 | **Аналитика results** | `allureResultsFolder` для layer labels, suites, длительностей |
+| **Chrome карточек (5.0.4)** | `chart.headerHeight` (68) + `chart.cardGap` (14); панель `testResultSeverities` |
 | **Обратная совместимость** | По умолчанию `chart.mode: "pie"` и deprecated `reportLink` работают |
 
 **Документация:** [Миграция 4.x → 5.0](docs/migration-5.0.md) · [CI cookbook](docs/ci-cookbook-5.0.md) · [Пример config](config/config-5.0-collage.example.json)
@@ -192,6 +193,7 @@ flowchart LR
     "templatePath": "/templates/teams.ftl"
   },
   "proxy": {
+    "type": "http",
     "host": "",
     "port": 0,
     "username": "",
@@ -199,7 +201,18 @@ flowchart LR
   }
 }
 ```
-Блок `proxy` используется если нужно указать дополнительную конфигурацию прокси.  
+Блок `proxy` задаёт исходящий HTTP/SOCKS-прокси для **Telegram**, **Slack** и **Cliq** (Apache HttpClient).  
+`type` по умолчанию `http` (обратная совместимость). Для SOCKS без auth — `socks5` (напр. `proxy.qaguru.school:7777`).
+
+```json
+"proxy": {
+  "type": "socks5",
+  "host": "proxy.qaguru.school",
+  "port": 7777
+}
+```
+
+Override через system properties: `-Dnotifications.proxy.type=socks5 -Dnotifications.proxy.host=…`
 Параметр `templatePath` является опциональным и позволяет установить путь к собственному Freemarker-шаблону. Пример:
 ```json
 {
@@ -262,6 +275,8 @@ flowchart LR
 + `chart.mode` — `pie` (по умолчанию, как в 4.x) или `collage` (PNG 1000×600, 5.0+).
 + `chart.pyramidFallback` — `suites`, если в results нет `layer` labels (по умолчанию `suites`).
 + `chart.width` / `chart.height` — размер collage PNG в пикселях (по умолчанию 1000×600).
++ `chart.headerHeight` — высота шапки карточки в px (по умолчанию 68).
++ `chart.cardGap` — зазор вокруг/между карточками в px (по умолчанию 14, **5.0.4**).
 + `darkMode` — отображать ли диаграмму в тёмном режиме (`true` / `false`).
 + `enableSuitesPublishing` — публиковать ли статистику по каждому набору тестов (`true` / `false`, по умолчанию `false`). Требует наличия `suites.json` в `<allureFolder>/widgets`.
 + `logo` — путь к файлу логотипа; если задан, отображается в левом верхнем углу pie chart.
@@ -272,7 +287,7 @@ flowchart LR
 
 7. Выполнить в терминале:
 ```shell
-java "-DconfigFile=notifications/config.json" -jar notifications/allure-notifications-5.0.3.jar
+java "-DconfigFile=notifications/config.json" -jar notifications/allure-notifications-5.0.8.jar
 ```
 Примечания:
 + На момент запуска файл `summary.json` уже должен быть сформирован.
@@ -316,14 +331,14 @@ java "-DconfigFile=notifications/config.json" \
 В поле **Script** указать:
 ```bash
 cd ..
-FILE=allure-notifications-5.0.3.jar
+FILE=allure-notifications-5.0.8.jar
 if [ ! -f "$FILE" ]; then
-   wget https://github.com/qa-guru/allure-notifications/releases/download/v5.0.3/allure-notifications-5.0.3.jar
+   wget https://github.com/qa-guru/allure-notifications/releases/download/v5.0.8/allure-notifications-5.0.8.jar
 fi
 ```
 Нажать **Add another task** и во втором поле **Script** указать:
 ```bash
-java "-DconfigFile=notifications/config.json" -jar ../allure-notifications-5.0.3.jar
+java "-DconfigFile=notifications/config.json" -jar ../allure-notifications-5.0.8.jar
 ```
 
 4. Сохранить настройки и запустить тесты. По завершении в мессенджер будет направлено уведомление.

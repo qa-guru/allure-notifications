@@ -19,7 +19,7 @@ public class ClientFactory {
     public static List<Notifier> from(Config config) {
         List<Notifier> notifiers =  new ArrayList<>();
         if (config.getTelegram() != null) {
-            notifiers.add(new TelegramClient(config.getTelegram()));
+            notifiers.add(new TelegramClient(config.getTelegram(), config.getProxy()));
         }
         if (config.getSlack() != null) {
             notifiers.add(new SlackClient(config.getSlack(), config.getProxy()));

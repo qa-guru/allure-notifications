@@ -51,7 +51,8 @@ public final class CollageRenderer {
     private static final String LAYOUT_ROW = "row";
     private static final String LAYOUT_FREE = "free";
     // Container ("card") geometry: gap around/between panels + corner radius.
-    private static final int CARD_GAP = 14;
+    // CANON_CARD_GAP is the default when chart.cardGap is unset (widget-tile CB-870 parity).
+    private static final int CANON_CARD_GAP = 14;
     private static final int CARD_ARC = 18;
     private static final float CARD_BORDER_WIDTH = 1.5f;
     // Header bar (like design-system .panel__bar): traffic-light dots + title.
@@ -73,12 +74,26 @@ public final class CollageRenderer {
     private static final Color DOT_MINIMIZE = new Color(0xfebc2e);
     private static final Color DOT_MAXIMIZE = new Color(0x28c840);
 
-    // Panel identifiers accepted in chart.panels (config order is preserved).
+    // Panel identifiers accepted in chart.panels / chart.items (config order is preserved).
+    // Aliases: pie ↔ currentStatus (awesome-charts catalog).
+    // Implemented: pie/currentStatus, testingPyramid, durations, statusDynamics,
+    // successRateDistribution, testResultSeverities (+ suites via pyramidFallback).
+    // Catalog stubs (empty-state — keep free-grid tiles, do not silent-drop):
+    // statusTransitions, testBaseGrowthDynamics, coverageDiff, problemsDistribution,
+    // stabilityDistribution, durationDynamics, statusAgePyramid.
     private static final String PANEL_PIE = "pie";
     private static final String PANEL_PYRAMID = "testingpyramid";
     private static final String PANEL_DURATIONS = "durations";
     private static final String PANEL_STATUS_DYNAMICS = "statusdynamics";
     private static final String PANEL_SUCCESS_RATE = "successratedistribution";
+    private static final String PANEL_SEVERITIES = "testresultseverities";
+    private static final String PANEL_STATUS_TRANSITIONS = "statustransitions";
+    private static final String PANEL_TEST_BASE_GROWTH = "testbasegrowthdynamics";
+    private static final String PANEL_COVERAGE_DIFF = "coveragediff";
+    private static final String PANEL_PROBLEMS = "problemsdistribution";
+    private static final String PANEL_STABILITY = "stabilitydistribution";
+    private static final String PANEL_DURATION_DYNAMICS = "durationdynamics";
+    private static final String PANEL_STATUS_AGE = "statusagepyramid";
     // Default grid: dashboard-style 2x2 (pie + pyramid on top, history charts below).
     private static final List<List<String>> DEFAULT_ROWS = Arrays.asList(
             Arrays.asList(PANEL_PIE, PANEL_PYRAMID),
@@ -140,7 +155,41 @@ public final class CollageRenderer {
         if (PANEL_SUCCESS_RATE.equals(key) || "распределение успешности".equals(key)) {
             return PANEL_SUCCESS_RATE;
         }
+        if (PANEL_SEVERITIES.equals(key) || "severities".equals(key) || "severity".equals(key)) {
+            return PANEL_SEVERITIES;
+        }
+        if (PANEL_STATUS_TRANSITIONS.equals(key)) {
+            return PANEL_STATUS_TRANSITIONS;
+        }
+        if (PANEL_TEST_BASE_GROWTH.equals(key)) {
+            return PANEL_TEST_BASE_GROWTH;
+        }
+        if (PANEL_COVERAGE_DIFF.equals(key)) {
+            return PANEL_COVERAGE_DIFF;
+        }
+        if (PANEL_PROBLEMS.equals(key)) {
+            return PANEL_PROBLEMS;
+        }
+        if (PANEL_STABILITY.equals(key)) {
+            return PANEL_STABILITY;
+        }
+        if (PANEL_DURATION_DYNAMICS.equals(key)) {
+            return PANEL_DURATION_DYNAMICS;
+        }
+        if (PANEL_STATUS_AGE.equals(key)) {
+            return PANEL_STATUS_AGE;
+        }
         return null;
+    }
+
+    private static boolean isEmptyStatePanel(String key) {
+        return PANEL_STATUS_TRANSITIONS.equals(key)
+                || PANEL_TEST_BASE_GROWTH.equals(key)
+                || PANEL_COVERAGE_DIFF.equals(key)
+                || PANEL_PROBLEMS.equals(key)
+                || PANEL_STABILITY.equals(key)
+                || PANEL_DURATION_DYNAMICS.equals(key)
+                || PANEL_STATUS_AGE.equals(key);
     }
 
     /** Flattens rows into a single ordered list (for stacked / row layouts). */
@@ -155,8 +204,16 @@ public final class CollageRenderer {
     private static BufferedImage renderPanel(String key, Base base, int width, int height,
                                              ReportAnalytics analytics, Legend legend)
             throws MessageBuildException {
+        return renderPanel(key, base, width, height, analytics, legend, null, null);
+    }
+
+    private static BufferedImage renderPanel(String key, Base base, int width, int height,
+                                             ReportAnalytics analytics, Legend legend,
+                                             String groupBy, String by)
+            throws MessageBuildException {
         // The card's header bar captions each panel, so panels skip their own title.
-        PanelContext context = PanelContext.of(base, width, height, analytics, legend, false);
+        PanelContext context = PanelContext.of(base, width, height, analytics, legend, false,
+                groupBy, by);
         if (PANEL_PIE.equals(key)) {
             return new PiePanel().render(context);
         }
@@ -169,7 +226,17 @@ public final class CollageRenderer {
         if (PANEL_SUCCESS_RATE.equals(key)) {
             return new SuccessRateDistributionPanel().render(context);
         }
-        return new DurationsPanel().render(context);
+        if (PANEL_SEVERITIES.equals(key)) {
+            return new TestResultSeveritiesPanel().render(context);
+        }
+        if (PANEL_DURATIONS.equals(key)) {
+            return new DurationsPanel().render(context);
+        }
+        if (isEmptyStatePanel(key) || key == null) {
+            return EmptyStatePanel.renderEmpty(context, "No data");
+        }
+        // Unknown keys must not reach here for legacy layouts (normalize drops them).
+        return EmptyStatePanel.renderEmpty(context, "No data");
     }
 
     private static String panelTitle(String key, Base base, ReportAnalytics analytics) {
@@ -185,7 +252,34 @@ public final class CollageRenderer {
         if (PANEL_SUCCESS_RATE.equals(key)) {
             return "Распределение успешности";
         }
-        return "Durations (s)";
+        if (PANEL_SEVERITIES.equals(key)) {
+            return "Results by severity";
+        }
+        if (PANEL_STATUS_TRANSITIONS.equals(key)) {
+            return "Переходы статусов";
+        }
+        if (PANEL_TEST_BASE_GROWTH.equals(key)) {
+            return "Рост тестовой базы";
+        }
+        if (PANEL_COVERAGE_DIFF.equals(key)) {
+            return "Дельта покрытия";
+        }
+        if (PANEL_PROBLEMS.equals(key)) {
+            return "Распределение проблем";
+        }
+        if (PANEL_STABILITY.equals(key)) {
+            return "Распределение стабильности";
+        }
+        if (PANEL_DURATION_DYNAMICS.equals(key)) {
+            return "Динамика длительности";
+        }
+        if (PANEL_STATUS_AGE.equals(key)) {
+            return "Возраст статусов";
+        }
+        if (PANEL_DURATIONS.equals(key)) {
+            return "Durations (s)";
+        }
+        return key == null ? "Panel" : key;
     }
 
     /**
@@ -200,6 +294,16 @@ public final class CollageRenderer {
         return CANON_HEADER_HEIGHT;
     }
 
+    /**
+     * Resolves inter-card gap from {@code chart.cardGap}, falling back to {@link #CANON_CARD_GAP}.
+     */
+    private static int resolveCardGap(ChartConfig chartConfig) {
+        if (chartConfig != null && chartConfig.getCardGap() != null && chartConfig.getCardGap() >= 0) {
+            return chartConfig.getCardGap();
+        }
+        return CANON_CARD_GAP;
+    }
+
     public static byte[] render(Base base, ReportAnalytics analytics, Legend legend) throws MessageBuildException {
         ChartConfig chartConfig = base != null ? base.getChart() : null;
         int collageWidth = chartConfig != null && chartConfig.getWidth() != null
@@ -212,25 +316,26 @@ public final class CollageRenderer {
                 ? chartConfig.getLayout()
                 : "grid";
         int headerHeight = resolveHeaderHeight(chartConfig);
+        int cardGap = resolveCardGap(chartConfig);
 
         if (LAYOUT_STACKED.equalsIgnoreCase(layout)) {
-            return renderStacked(base, analytics, legend, collageWidth, collageHeight, headerHeight);
+            return renderStacked(base, analytics, legend, collageWidth, collageHeight, headerHeight, cardGap);
         }
         if (LAYOUT_ROW.equalsIgnoreCase(layout)) {
-            return renderRow(base, analytics, legend, collageWidth, collageHeight, headerHeight);
+            return renderRow(base, analytics, legend, collageWidth, collageHeight, headerHeight, cardGap);
         }
         if (LAYOUT_FREE.equalsIgnoreCase(layout)) {
-            return renderFree(base, analytics, legend, collageWidth, collageHeight, headerHeight);
+            return renderFree(base, analytics, legend, collageWidth, collageHeight, headerHeight, cardGap);
         }
-        return renderGrid(base, analytics, legend, collageWidth, collageHeight, headerHeight);
+        return renderGrid(base, analytics, legend, collageWidth, collageHeight, headerHeight, cardGap);
     }
 
     /**
      * Free-grid: place each {@link ChartPanelItem} on a cell grid (default 10×10).
-     * Pixel bounds = cell slots with the same CARD_GAP / half-gap inset as {@link #renderGrid}.
+     * Pixel bounds = cell slots with the same cardGap / half-gap inset as {@link #renderGrid}.
      */
     private static byte[] renderFree(Base base, ReportAnalytics analytics, Legend legend,
-                                     int collageWidth, int collageHeight, int headerHeight)
+                                     int collageWidth, int collageHeight, int headerHeight, int cardGap)
             throws MessageBuildException {
         ChartConfig chartConfig = base != null ? base.getChart() : null;
         int cols = chartConfig != null && chartConfig.getGridCols() != null && chartConfig.getGridCols() > 0
@@ -240,22 +345,32 @@ public final class CollageRenderer {
                 ? chartConfig.getGridRows()
                 : DEFAULT_GRID_ROWS;
         List<ChartPanelItem> items = selectedFreeItems(chartConfig);
-        int half = CARD_GAP / 2;
+        int half = cardGap / 2;
         int cellW = collageWidth / cols;
         int cellH = collageHeight / rows;
 
         ChartTheme theme = ChartTheme.from(base);
         BufferedImage collage = new BufferedImage(collageWidth, collageHeight, BufferedImage.TYPE_INT_RGB);
         Graphics2D graphics = collage.createGraphics();
+        int drawn = 0;
         try {
             graphics.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
             graphics.setColor(outerBackground(theme));
             graphics.fillRect(0, 0, collageWidth, collageHeight);
 
             for (ChartPanelItem item : items) {
-                String key = normalize(item.getType());
-                if (key == null) {
-                    continue;
+                String rawType = item.getType();
+                String key = normalize(rawType);
+                // Free layout never silent-drops a placed item: unknown → empty-state card.
+                String title;
+                if (PANEL_DURATIONS.equals(key) && DurationsPanel.isLayerGroupBy(item.getGroupBy())) {
+                    title = "Durations by layer (s)";
+                } else if (key != null) {
+                    title = panelTitle(key, base, analytics);
+                } else if (rawType == null || rawType.trim().isEmpty()) {
+                    title = "Panel";
+                } else {
+                    title = rawType.trim();
                 }
                 int x = clamp(item.getX(), 0, cols - 1);
                 int y = clamp(item.getY(), 0, rows - 1);
@@ -272,23 +387,25 @@ public final class CollageRenderer {
                 int rawTop = y * cellH;
                 int rawRight = (x + w) * cellW;
                 int rawBottom = (y + h) * cellH;
-                int cellLeft = x == 0 ? CARD_GAP : rawLeft + half;
-                int cellTop = y == 0 ? CARD_GAP : rawTop + half;
-                int cellRight = x + w == cols ? collageWidth - CARD_GAP : rawRight - half;
-                int cellBottom = y + h == rows ? collageHeight - CARD_GAP : rawBottom - half;
+                int cellLeft = x == 0 ? cardGap : rawLeft + half;
+                int cellTop = y == 0 ? cardGap : rawTop + half;
+                int cellRight = x + w == cols ? collageWidth - cardGap : rawRight - half;
+                int cellBottom = y + h == rows ? collageHeight - cardGap : rawBottom - half;
                 int cellWidth = Math.max(1, cellRight - cellLeft);
                 int cellHeight = Math.max(1, cellBottom - cellTop);
                 int bodyHeight = Math.max(1, cellHeight - headerHeight);
-                BufferedImage panel = renderPanel(key, base, cellWidth, bodyHeight, analytics, legend);
+                BufferedImage panel = renderPanel(key, base, cellWidth, bodyHeight, analytics, legend,
+                        item.getGroupBy(), item.getBy());
                 Rect rect = new Rect(cellLeft, cellTop, cellWidth, cellHeight);
-                drawCard(graphics, panel, rect, theme, panelTitle(key, base, analytics), headerHeight);
+                drawCard(graphics, panel, rect, theme, title, headerHeight);
+                drawn++;
             }
         } finally {
             graphics.dispose();
         }
 
         log.info("Collage chart is created ({}x{}, free, items={}, grid={}x{}).",
-                collageWidth, collageHeight, items.size(), cols, rows);
+                collageWidth, collageHeight, drawn, cols, rows);
         return ChartImageEncoder.toPngBytes(collage);
     }
 
@@ -300,14 +417,16 @@ public final class CollageRenderer {
     }
 
     /**
-     * Valid free-grid items; falls back to CB-870-grid default when {@code items} is empty.
+     * Free-grid items from config. Keeps every item with a non-blank {@code type}
+     * (unknown types render as empty-state cards — no silent drop). Falls back to
+     * CB-870-grid default when {@code items} is empty.
      */
     private static List<ChartPanelItem> selectedFreeItems(ChartConfig chartConfig) {
         List<ChartPanelItem> configured = chartConfig != null ? chartConfig.getItems() : null;
         List<ChartPanelItem> items = new ArrayList<>();
         if (configured != null) {
             for (ChartPanelItem raw : configured) {
-                if (raw == null || normalize(raw.getType()) == null) {
+                if (raw == null || raw.getType() == null || raw.getType().trim().isEmpty()) {
                     continue;
                 }
                 items.add(raw);
@@ -339,13 +458,13 @@ public final class CollageRenderer {
     }
 
     private static byte[] renderRow(Base base, ReportAnalytics analytics, Legend legend,
-                                    int collageWidth, int collageHeight, int headerHeight)
+                                    int collageWidth, int collageHeight, int headerHeight, int cardGap)
             throws MessageBuildException {
         List<String> panels = flatten(selectedRows(base != null ? base.getChart() : null));
         int count = panels.size();
         // Cards side by side: a gap on both edges and between each neighbour (count + 1 gaps).
-        int colWidth = (collageWidth - (count + 1) * CARD_GAP) / count;
-        int cardHeight = collageHeight - 2 * CARD_GAP;
+        int colWidth = (collageWidth - (count + 1) * cardGap) / count;
+        int cardHeight = collageHeight - 2 * cardGap;
 
         ChartTheme theme = ChartTheme.from(base);
         BufferedImage collage = new BufferedImage(collageWidth, collageHeight, BufferedImage.TYPE_INT_RGB);
@@ -358,7 +477,7 @@ public final class CollageRenderer {
                 String key = panels.get(i);
                 int bodyHeight = cardHeight - headerHeight;
                 BufferedImage panel = renderPanel(key, base, colWidth, bodyHeight, analytics, legend);
-                Rect rect = new Rect((i + 1) * CARD_GAP + i * colWidth, CARD_GAP, colWidth, cardHeight);
+                Rect rect = new Rect((i + 1) * cardGap + i * colWidth, cardGap, colWidth, cardHeight);
                 drawCard(graphics, panel, rect, theme, panelTitle(key, base, analytics), headerHeight);
             }
         } finally {
@@ -370,11 +489,11 @@ public final class CollageRenderer {
     }
 
     private static byte[] renderGrid(Base base, ReportAnalytics analytics, Legend legend,
-                                     int collageWidth, int collageHeight, int headerHeight)
+                                     int collageWidth, int collageHeight, int headerHeight, int cardGap)
             throws MessageBuildException {
         List<List<String>> rows = selectedRows(base != null ? base.getChart() : null);
         int rowCount = rows.size();
-        int half = CARD_GAP / 2;
+        int half = cardGap / 2;
 
         ChartTheme theme = ChartTheme.from(base);
         BufferedImage collage = new BufferedImage(collageWidth, collageHeight, BufferedImage.TYPE_INT_RGB);
@@ -389,14 +508,14 @@ public final class CollageRenderer {
                 List<String> row = rows.get(r);
                 int cols = row.size();
                 // Uniform gap around the collage; half-gap on each side between neighbours.
-                int cellTop = r == 0 ? CARD_GAP : r * rowSlot + half;
-                int cellBottom = r == rowCount - 1 ? collageHeight - CARD_GAP : (r + 1) * rowSlot - half;
+                int cellTop = r == 0 ? cardGap : r * rowSlot + half;
+                int cellBottom = r == rowCount - 1 ? collageHeight - cardGap : (r + 1) * rowSlot - half;
                 int cellHeight = Math.max(1, cellBottom - cellTop);
                 int colSlot = collageWidth / cols;
                 for (int c = 0; c < cols; c++) {
                     String key = row.get(c);
-                    int cellLeft = c == 0 ? CARD_GAP : c * colSlot + half;
-                    int cellRight = c == cols - 1 ? collageWidth - CARD_GAP : (c + 1) * colSlot - half;
+                    int cellLeft = c == 0 ? cardGap : c * colSlot + half;
+                    int cellRight = c == cols - 1 ? collageWidth - cardGap : (c + 1) * colSlot - half;
                     int cellWidth = Math.max(1, cellRight - cellLeft);
                     // Every panel renders below the header bar so a taller bar never clips it.
                     int bodyHeight = cellHeight - headerHeight;
@@ -414,13 +533,13 @@ public final class CollageRenderer {
     }
 
     private static byte[] renderStacked(Base base, ReportAnalytics analytics, Legend legend,
-                                        int collageWidth, int collageHeight, int headerHeight)
+                                        int collageWidth, int collageHeight, int headerHeight, int cardGap)
             throws MessageBuildException {
         List<String> panels = flatten(selectedRows(base != null ? base.getChart() : null));
         // Each panel keeps the full configured height at full width so nothing is squished.
         int panelHeight = collageHeight;
-        int cardWidth = collageWidth - 2 * CARD_GAP;
-        int cardHeight = panelHeight - CARD_GAP;
+        int cardWidth = collageWidth - 2 * cardGap;
+        int cardHeight = panelHeight - cardGap;
 
         int totalHeight = panelHeight * panels.size();
         ChartTheme theme = ChartTheme.from(base);
@@ -434,7 +553,7 @@ public final class CollageRenderer {
                 String key = panels.get(i);
                 int bodyHeight = cardHeight - headerHeight;
                 BufferedImage panel = renderPanel(key, base, cardWidth, bodyHeight, analytics, legend);
-                Rect rect = new Rect(CARD_GAP, panelHeight * i + CARD_GAP, cardWidth, cardHeight);
+                Rect rect = new Rect(cardGap, panelHeight * i + cardGap, cardWidth, cardHeight);
                 drawCard(graphics, panel, rect, theme, panelTitle(key, base, analytics), headerHeight);
             }
         } finally {

@@ -5,6 +5,7 @@ import java.awt.Font;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -59,34 +60,43 @@ public class StatusDynamicsPanel implements ChartPanel {
 
             List<Map<String, Integer>> dynamics = history.getStatusDynamics();
             int runs = dynamics.size();
-            int chartTop = showTitle ? MARGIN + TITLE_HEIGHT : MARGIN;
-            int chartHeight = height - chartTop - MARGIN;
+            int chartTop = PanelPlotArea.chartTop(showTitle);
+            int chartHeight = PanelPlotArea.chartHeight(height, showTitle);
             int chartWidth = width - MARGIN * 2;
             int slot = Math.max(1, chartWidth / runs);
             int barWidth = Math.max(1, Math.min(slot - 4, slot));
 
-            int maxTotal = 1;
-            for (Map<String, Integer> counts : dynamics) {
-                int total = 0;
-                for (int value : counts.values()) {
-                    total += value;
-                }
-                maxTotal = Math.max(maxTotal, total);
-            }
-
             for (int i = 0; i < runs; i++) {
                 Map<String, Integer> counts = dynamics.get(i);
-                int x = MARGIN + i * slot;
+                int runTotal = 0;
+                for (String status : HistoryAnalytics.STATUS_KEYS) {
+                    runTotal += counts.getOrDefault(status, 0);
+                }
+                if (runTotal <= 0) {
+                    continue;
+                }
+                int x = MARGIN + i * slot + (slot - barWidth) / 2;
                 int yCursor = chartTop + chartHeight;
+                List<String> visible = new ArrayList<String>();
+                int[] values = new int[HistoryAnalytics.STATUS_KEYS.size()];
+                int visibleCount = 0;
                 for (String status : HistoryAnalytics.STATUS_KEYS) {
                     int value = counts.getOrDefault(status, 0);
-                    if (value <= 0) {
-                        continue;
+                    if (value > 0) {
+                        visible.add(status);
+                        values[visibleCount++] = value;
                     }
-                    int segmentHeight = (int) Math.round((value / (double) maxTotal) * chartHeight);
+                }
+                int[] segmentHeights = Bars.stackedSegmentHeights(chartHeight, copyOf(values, visibleCount));
+                for (int si = 0; si < visible.size(); si++) {
+                    String status = visible.get(si);
+                    int segmentHeight = segmentHeights[si];
                     yCursor -= segmentHeight;
+                    boolean roundBottom = si == 0;
+                    boolean roundTop = si == visible.size() - 1;
                     graphics.setColor(statusColor(status));
-                    graphics.fillRect(x, yCursor, barWidth, segmentHeight);
+                    Bars.fillStackedVertical(graphics, x, yCursor, barWidth, segmentHeight,
+                            Bars.DEFAULT_ARC, roundTop, roundBottom);
                 }
             }
         } finally {
@@ -111,5 +121,11 @@ public class StatusDynamicsPanel implements ChartPanel {
             default:
                 return ChartTheme.STATUS_UNKNOWN;
         }
+    }
+
+    private static int[] copyOf(int[] values, int length) {
+        int[] copy = new int[length];
+        System.arraycopy(values, 0, copy, 0, length);
+        return copy;
     }
 }
