@@ -65,7 +65,7 @@ Today (pre-move): Java modules at repo root (`allure-notifications/`, `allure-no
 | **0** | Monorepo shell, MIGRATION, checklist, CI sketch; no big-bang move | **done** (layout moves deferred — see phase-0-checklist) |
 | **1** | `packages/config` — zod schema, PANEL_CATALOG, DEFAULT_ITEMS, SQ-1080 presets | **done** |
 | **2** | `packages/pyramid` — palette + geometry SSOT (not dashboard-overrides) | **done** |
-| **3** | `packages/core` + `cli` — native PNG, Telegram, dogfood, cookbooks; public **6.0.0** | pending |
+| **3** | `packages/core` + `cli` — native PNG, Telegram, dogfood, cookbooks; public **6.0.0** | **core done** (Stage C); cli = Stage D |
 | **4** | Builder full TS; import `@config` / `@pyramid`; typescript@7 / tsgo in CI | pending |
 | **5** | Optional thin `@allurereport/plugin-api` wrapper over `core` | optional |
 
@@ -112,7 +112,20 @@ See [docs/ci-cookbook.md](docs/ci-cookbook.md): `allure generate` → `allure-no
 - Verify: `pnpm --filter @allure-notifications/pyramid test` and
   (from monorepo root) `python scripts/pyramid_palette_sync.py --check`
 
+## Phase 3 notes (core — Stage C)
+
+`@allure-notifications/core` (`packages/core/`):
+
+- Native collage PNG via **`@napi-rs/canvas`** (locked in package README) — not Playwright
+- Depends on `@allure-notifications/config` + `@allure-notifications/pyramid`
+- Allure 3 `summary.json` (`stats`) + `*-result.json` → `ReportAnalytics` → free-layout collage
+- Panels Stage C: **pie** / **testingPyramid** / **durations** (+ empty-state stubs)
+- Tests: fixture → PNG; unit green `#94ca66`; pixel/ahash vs
+  monorepo `docs/allure-notifications/canon/collage-cb870-free-dogfood-5.0.3.png`
+- Verify: `pnpm --filter @allure-notifications/core test` / root `pnpm test`
+- **Not in Stage C:** `packages/cli`, messengers / Telegram dogfood, `apps/builder`
+
 ## Next
 
-**Phase 3** — `packages/core` + `cli` (native collage PNG, messengers, dogfood).
-Ask before starting Phase 3.
+**Stage D** — `packages/cli` (`send --config` dry-run/mock + tests).
+Ask before starting Stage D / remaining Phase 3 (Telegram dogfood).

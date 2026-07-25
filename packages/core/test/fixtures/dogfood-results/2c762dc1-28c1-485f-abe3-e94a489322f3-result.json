@@ -1,0 +1,22 @@
+{
+  "uuid": "2c762dc1-28c1-485f-abe3-e94a489322f3",
+  "name": "apiTest1",
+  "fullName": "guru.qa.reference.api.ApiTest.case1",
+  "status": "failed",
+  "start": 1723000028490,
+  "stop": 1723000029690,
+  "labels": [
+    {
+      "name": "layer",
+      "value": "api"
+    },
+    {
+      "name": "suite",
+      "value": "ApiSuite"
+    },
+    {
+      "name": "severity",
+      "value": "normal"
+    }
+  ]
+}

@@ -1,0 +1,22 @@
+{
+  "uuid": "37a370f8-da4a-431b-90fd-7619b2389af8",
+  "name": "apiTest2",
+  "fullName": "guru.qa.reference.api.ApiTest.case2",
+  "status": "passed",
+  "start": 1723000029740,
+  "stop": 1723000031000,
+  "labels": [
+    {
+      "name": "layer",
+      "value": "api"
+    },
+    {
+      "name": "suite",
+      "value": "ApiSuite"
+    },
+    {
+      "name": "severity",
+      "value": "normal"
+    }
+  ]
+}

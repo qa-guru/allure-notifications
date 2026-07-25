@@ -1,0 +1,22 @@
+{
+  "uuid": "e2a5e1fc-7d52-4051-8a6f-1322cbe55914",
+  "name": "integrationTest1",
+  "fullName": "guru.qa.reference.integration.IntegrationTest.case1",
+  "status": "broken",
+  "start": 1723000018640,
+  "stop": 1723000020440,
+  "labels": [
+    {
+      "name": "layer",
+      "value": "integration"
+    },
+    {
+      "name": "suite",
+      "value": "IntegrationSuite"
+    },
+    {
+      "name": "severity",
+      "value": "normal"
+    }
+  ]
+}

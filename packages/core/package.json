@@ -1,8 +1,8 @@
 {
-  "name": "@allure-notifications/pyramid",
+  "name": "@allure-notifications/core",
   "version": "6.0.0",
   "private": true,
-  "description": "Testing-pyramid palette + rounded-tier geometry SSOT (Phase 2).",
+  "description": "Allure 3 summary/results → native collage PNG (Phase 3 / Stage C).",
   "type": "module",
   "exports": {
     ".": {
@@ -17,6 +17,11 @@
     "build": "tsc -p tsconfig.json",
     "test": "pnpm run build && node --test dist/test/*.test.js",
     "typecheck": "tsc -p tsconfig.json --noEmit"
+  },
+  "dependencies": {
+    "@allure-notifications/config": "workspace:*",
+    "@allure-notifications/pyramid": "workspace:*",
+    "@napi-rs/canvas": "^0.1.70"
   },
   "devDependencies": {
     "@types/node": "^22.13.10",
