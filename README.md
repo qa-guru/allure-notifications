@@ -97,7 +97,7 @@ In **5.0 collage** mode the chart is a single 1000×600 PNG: status pie (top-lef
 
 | Feature | Description |
 |---------|-------------|
-| **Collage chart** | `chart.mode: "collage"` — pie + pyramid + durations in one PNG |
+| **Collage chart** | `chart.mode: "collage"` + `layout: "free"` — Telegram default `sq1080-mid-dynamics` (pie · dynamics · pyramid\|durations · success · severities) |
 | **Links block** | `links.report`, `dashboard`, `testops`, `build` in templates (i18n) |
 | **Allure 3** | Auto-detect `summary.json` at report root (`stats` → legacy model) |
 | **Results analytics** | `allureResultsFolder` for layer labels, suites, per-test durations |

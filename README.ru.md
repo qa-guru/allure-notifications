@@ -63,14 +63,14 @@ flowchart LR
 
 <img width="660" alt="Telegram notification example" src="docs/telegram_notification.png">
 
-В режиме **collage 5.0** диаграмма — один PNG 1000×600: pie статусов (слева сверху), testing pyramid или suites bar (справа сверху), гистограмма длительностей (снизу). См. [гайд по миграции](docs/migration-5.0.md).
+В режиме **collage** Telegram-default — `sq1080-mid-dynamics` (1080×1080 free): pie · dynamics · pyramid|durations · success · severities. См. [гайд по миграции](docs/migration-5.0.md) и [пример](config/config-5.0-collage.example.json).
 
 
 ## Что нового в 5.0
 
 | Возможность | Описание |
 |-------------|----------|
-| **Collage chart** | `chart.mode: "collage"` — pie + pyramid + durations в одном PNG |
+| **Collage chart** | `chart.mode: "collage"` + `layout: "free"` — Telegram default `sq1080-mid-dynamics` (pie · dynamics · pyramid\|durations · success · severities) |
 | **Блок links** | `links.report`, `dashboard`, `testops`, `build` в шаблонах (i18n) |
 | **Allure 3** | Автоопределение `summary.json` в корне отчёта (`stats` → legacy-модель) |
 | **Аналитика results** | `allureResultsFolder` для layer labels, suites, длительностей |
