@@ -9,9 +9,27 @@ describe("@allure-notifications/cli parseArgs", () => {
     assert.equal(args.command, "send");
     assert.equal(args.configPath, "config.json");
     assert.equal(args.errors.length, 0);
-    // Stage D safe default when neither flag is set
+    // Safe default when neither flag is set
     assert.equal(args.dryRun, true);
     assert.equal(args.mock, false);
+    assert.equal(args.live, false);
+  });
+
+  it("parses --live and keeps dry-run/mock winning over live", () => {
+    const live = parseArgs(["send", "--config", "a.json", "--live"]);
+    assert.equal(live.live, true);
+    assert.equal(live.dryRun, false);
+    assert.equal(live.mock, false);
+
+    const dryWins = parseArgs([
+      "send",
+      "--config",
+      "a.json",
+      "--live",
+      "--dry-run",
+    ]);
+    assert.equal(dryWins.dryRun, true);
+    assert.equal(dryWins.live, false);
   });
 
   it("parses --config= and --out=", () => {

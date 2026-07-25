@@ -67,7 +67,7 @@ Java **5.0.8** Gradle multi-module lives under [`legacy/java/`](legacy/java/) (`
 | **0** | Monorepo shell, MIGRATION, checklist, CI sketch; layout moves per checklist | **done** (Java→`legacy/java` + README banner; Pages workflow ready; domain/archive still open) |
 | **1** | `packages/config` — zod schema, PANEL_CATALOG, DEFAULT_ITEMS, SQ-1080 presets | **done** |
 | **2** | `packages/pyramid` — palette + geometry SSOT (not dashboard-overrides) | **done** |
-| **3** | `packages/core` + `cli` — native PNG, Telegram, dogfood, cookbooks; public **6.0.0** | **core + cli done** (Stages C–D); Telegram dogfood = Stage F / OK |
+| **3** | `packages/core` + `cli` — native PNG, Telegram, dogfood, cookbooks; public **6.0.0** | **done** (core + cli dry-run/mock + live Telegram `--live` / ADR 008 dogfood) |
 | **4** | Builder import `@config` (browser SSOT); optional `@pyramid`; full TS / tsgo later | **config done** (import map → vendor sync); `@pyramid` deferred (no UI dep yet); full TS later |
 | **5** | Optional thin `@allurereport/plugin-api` wrapper over `core` | optional |
 
@@ -137,11 +137,12 @@ See [docs/ci-cookbook.md](docs/ci-cookbook.md): `allure generate` → `allure-no
 
 - Bin: `allure-notifications` → `send --config <path>`
 - Collage via `@allure-notifications/core` + `@allure-notifications/config`
-- Messengers: **`--dry-run` / `--mock` only** (no live Telegram / network)
+- Messengers: **`--dry-run` / `--mock`** (default safe, no network); **`--live`** → Telegram `sendPhoto` (ADR 008)
+- Credentials: env `TELEGRAM_BOT_TOKEN` / `TELEGRAM_CHAT_ID` / `TELEGRAM_TOPIC_ID` (override config; refuse retired chat)
 - Optional `--out <png>` writes buffer to disk
-- Tests: argv parse + dry-run/mock on fixture; PNG magic bytes; no network
+- Tests: argv parse + dry-run/mock + mocked live fetch; real network only if `ALLURE_NOTIFICATIONS_LIVE_TEST=1`
+- Dogfood runbook: [`docs/telegram-dogfood.md`](docs/telegram-dogfood.md) · fixture `packages/cli/test/fixtures/config.dogfood-cb870.json`
 - Verify: `pnpm --filter @allure-notifications/cli test` / root `pnpm test`
-- **Not in Stage D:** live Telegram (ADR 008), `apps/builder`, publish, layout moves
 
 ## Stage E notes (builder merge)
 
@@ -160,7 +161,7 @@ See [docs/ci-cookbook.md](docs/ci-cookbook.md): `allure generate` → `allure-no
 - Triggers: push `feature/6.0*`; PRs into `feature/6.0*` or `master` with path filter on `packages/**` / `apps/**` / pnpm lockfiles / this workflow.
 - Java `build.yml` (master) left intact — no shared job / no VERSION bump / no live Telegram in 6.0 CI.
 - Cookbook: `docs/ci-cookbook.md` documents real `send --config --dry-run` (+ workspace `pnpm exec` pre-publish).
-- **Telegram dogfood (ADR 008):** skipped in Stage F unless HQ gives explicit OK.
+- **Telegram dogfood (ADR 008):** CLI `--live` + [`docs/telegram-dogfood.md`](docs/telegram-dogfood.md); **not** wired into `ci-6.0.yml`.
 
 ## Phase 4 notes (builder → shared packages)
 
@@ -187,4 +188,4 @@ See [docs/ci-cookbook.md](docs/ci-cookbook.md): `allure generate` → `allure-no
 
 ## Next
 
-Post-G gaps: Telegram dogfood OK; Pages **domain** cutover + archive (workflow ready); VERSION cutover. Do not bump pin without HQ.
+Post-G gaps: Pages **domain** cutover + archive (workflow ready); VERSION cutover. Telegram dogfood **done**. Do not bump pin without HQ.

@@ -10,6 +10,7 @@ export type ParsedArgs = {
   configPath?: string;
   dryRun: boolean;
   mock: boolean;
+  live: boolean;
   out?: string;
   errors: string[];
 };
@@ -17,15 +18,19 @@ export type ParsedArgs = {
 const HELP_TEXT = `allure-notifications — Allure report → messenger notifications (6.0)
 
 Usage:
-  allure-notifications send --config <path> [--dry-run|--mock] [--out <png>]
+  allure-notifications send --config <path> [--dry-run|--mock|--live] [--out <png>]
 
 Options:
   --config <path>   Path to config.json (required for send)
-  --dry-run         Render collage; skip messenger network I/O
+  --dry-run         Render collage; skip messenger network I/O (default)
   --mock            Render collage; mock messenger deliveries (no network)
+  --live            Live messenger send (Telegram ADR 008; needs env token)
   --out <path>      Write PNG buffer to file
   -h, --help        Show help
   -V, --version     Show version
+
+Live credentials (env overrides config): TELEGRAM_BOT_TOKEN | TELEGRAM_TOKEN,
+TELEGRAM_CHAT_ID, TELEGRAM_TOPIC_ID. See docs/telegram-dogfood.md.
 `;
 
 export function helpText(): string {
@@ -42,6 +47,7 @@ export function parseArgs(argv: string[]): ParsedArgs {
   let configPath: string | undefined;
   let dryRun = false;
   let mock = false;
+  let live = false;
   let out: string | undefined;
 
   for (let i = 0; i < argv.length; i++) {
@@ -68,6 +74,10 @@ export function parseArgs(argv: string[]): ParsedArgs {
     }
     if (arg === "--mock") {
       mock = true;
+      continue;
+    }
+    if (arg === "--live") {
+      live = true;
       continue;
     }
     if (arg === "--config" || arg === "-c") {
@@ -118,10 +128,15 @@ export function parseArgs(argv: string[]): ParsedArgs {
     errors.push("send requires --config <path>");
   }
 
-  if (command === "send" && !dryRun && !mock) {
-    // Stage D: never hit live messengers without an explicit mode.
+  // Safe default: neither mode → dry-run (never live without --live).
+  if (command === "send" && !dryRun && !mock && !live) {
     dryRun = true;
   }
 
-  return { command, configPath, dryRun, mock, out, errors };
+  // Explicit safety: --dry-run / --mock win over --live.
+  if (dryRun || mock) {
+    live = false;
+  }
+
+  return { command, configPath, dryRun, mock, live, out, errors };
 }

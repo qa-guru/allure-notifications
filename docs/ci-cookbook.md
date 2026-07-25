@@ -21,7 +21,7 @@ npx allure-notifications send --config config.json --dry-run
 | `--mock` | Render PNG; mock deliveries; **no network** |
 | `--out <png>` | Write PNG buffer to disk |
 
-Default without `--mock` is safe **dry-run** (Stage D). Live Telegram = ADR 008 / explicit HQ OK (not in this cookbook’s default CI path).
+Default without `--mock` / `--live` is safe **dry-run**. Live Telegram = explicit `--live` + env credentials ([`telegram-dogfood.md`](telegram-dogfood.md)); **not** in `ci-6.0.yml`.
 
 ## Workspace (pre-publish)
 
@@ -30,7 +30,7 @@ Until npm publish, use the monorepo on `feature/6.0-phase-0-1`:
 ```bash
 pnpm install
 pnpm --filter @allure-notifications/cli run build
-pnpm exec allure-notifications send \
+node packages/cli/dist/src/bin.js send \
   --config packages/cli/test/fixtures/config.dry-run.json \
   --dry-run \
   --out /tmp/collage-dry-run.png

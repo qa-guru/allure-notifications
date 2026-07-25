@@ -1,7 +1,7 @@
 /**
  * @allure-notifications/cli — `allure-notifications send --config`.
  *
- * Phase 3 / Stage D. Messengers: dry-run / mock only (no live Telegram).
+ * Phase 3. Messengers: dry-run / mock by default; live Telegram via `--live` (ADR 008).
  */
 
 export const PACKAGE = "@allure-notifications/cli";
@@ -17,11 +17,23 @@ export {
 
 export {
   configuredMessengers,
+  deliver,
+  deliverLive,
   deliverMock,
   type DeliveryResult,
   type DeliveryStatus,
   type MessengerId,
 } from "./messengers.js";
+
+export {
+  ADR008_CHAT_ID,
+  FORBIDDEN_CHAT_IDS,
+  buildTelegramCaption,
+  resolveTelegramCredentials,
+  sendTelegramPhoto,
+  type SendPhotoResult,
+  type TelegramCredentials,
+} from "./telegram.js";
 
 export {
   loadConfigFile,

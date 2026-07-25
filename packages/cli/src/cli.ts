@@ -15,6 +15,20 @@ export type RunCliResult = {
   stderr: string;
 };
 
+function modeLabel(result: {
+  dryRun: boolean;
+  mock: boolean;
+  live: boolean;
+}): string {
+  if (result.live) {
+    return "live";
+  }
+  if (result.mock) {
+    return "mock";
+  }
+  return "dry-run";
+}
+
 /**
  * Run CLI against argv (without node/script). Does not call process.exit.
  */
@@ -46,6 +60,7 @@ export async function runCli(argv: string[]): Promise<RunCliResult> {
       configPath: args.configPath!,
       dryRun: args.dryRun,
       mock: args.mock,
+      live: args.live,
       out: args.out,
     });
 
@@ -54,7 +69,7 @@ export async function runCli(argv: string[]): Promise<RunCliResult> {
       `config: ${result.configPath}`,
       `collage: ${result.png.byteLength} bytes` +
         (result.pngPath ? ` → ${result.pngPath}` : ""),
-      `mode: ${result.dryRun ? "dry-run" : "mock"}`,
+      `mode: ${modeLabel(result)}`,
     ];
     for (const d of result.deliveries) {
       lines.push(`  [${d.status}] ${d.messenger}: ${d.detail}`);

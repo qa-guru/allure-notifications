@@ -1,5 +1,5 @@
 /**
- * `send --config` — load config, collage via core, dry-run/mock messengers.
+ * `send --config` — load config, collage via core, dry-run/mock/live messengers.
  */
 
 import { readFile, writeFile } from "node:fs/promises";
@@ -11,15 +11,21 @@ import {
   renderCollagePng,
 } from "@allure-notifications/core";
 
-import { deliverMock, type DeliveryResult } from "./messengers.js";
+import { deliver, type DeliveryResult } from "./messengers.js";
 
 export type SendOptions = {
   configPath: string;
   dryRun?: boolean;
   mock?: boolean;
+  /** Live Telegram (ADR 008). Requires explicit --live; never default. */
+  live?: boolean;
   out?: string;
   /** Override cwd for relative path resolution (tests). */
   cwd?: string;
+  /** Env override for credential resolution / tests. */
+  env?: NodeJS.ProcessEnv;
+  /** Injectable fetch for live unit tests. */
+  fetchImpl?: typeof fetch;
 };
 
 export type SendResult = {
@@ -30,6 +36,7 @@ export type SendResult = {
   deliveries: DeliveryResult[];
   dryRun: boolean;
   mock: boolean;
+  live: boolean;
 };
 
 function resolveMaybeRelative(
@@ -80,8 +87,8 @@ export async function loadConfigFile(configPath: string): Promise<Config> {
 }
 
 /**
- * Render collage PNG and dry-run/mock messenger delivery.
- * Never performs live Telegram / HTTP send (Stage D / ADR 008).
+ * Render collage PNG and deliver via dry-run / mock / live Telegram.
+ * Live path only when `live: true` (CLI `--live`); default remains dry-run.
  */
 export async function send(options: SendOptions): Promise<SendResult> {
   const cwd = options.cwd ?? process.cwd();
@@ -89,9 +96,16 @@ export async function send(options: SendOptions): Promise<SendResult> {
     ? options.configPath
     : resolve(cwd, options.configPath);
 
-  // dry-run wins when both; neither → dry-run (safe Stage D default).
-  const effectiveDryRun = options.dryRun === true || options.mock !== true;
-  const effectiveMock = options.mock === true && options.dryRun !== true;
+  // Priority: dry-run > mock > live > dry-run (safe default).
+  const effectiveDryRun =
+    options.dryRun === true ||
+    (options.mock !== true && options.live !== true);
+  const effectiveMock =
+    options.mock === true && options.dryRun !== true && options.live !== true;
+  const effectiveLive =
+    options.live === true &&
+    options.dryRun !== true &&
+    options.mock !== true;
 
   const config = await loadConfigFile(configPath);
   const analytics = await loadReportAnalytics(config);
@@ -103,10 +117,15 @@ export async function send(options: SendOptions): Promise<SendResult> {
     await writeFile(pngPath, png);
   }
 
-  const deliveries = deliverMock(config, {
+  const deliveries = await deliver(config, {
     dryRun: effectiveDryRun,
     mock: effectiveMock,
+    live: effectiveLive,
+    png,
     pngBytes: png.byteLength,
+    analytics,
+    env: options.env,
+    fetchImpl: options.fetchImpl,
   });
 
   return {
@@ -117,5 +136,6 @@ export async function send(options: SendOptions): Promise<SendResult> {
     deliveries,
     dryRun: effectiveDryRun,
     mock: effectiveMock,
+    live: effectiveLive,
   };
 }
