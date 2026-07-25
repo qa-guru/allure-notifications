@@ -53,6 +53,12 @@ public final class EmptyStatePanel implements ChartPanel {
             graphics.setColor(theme.getBackground());
             graphics.fillRect(0, 0, width, height);
             graphics.setColor(theme.getText());
+            // Font-independent marker: headless CI may lack fonts, so drawString alone can be a no-op.
+            int barW = Math.min(48, Math.max(1, width - 2 * MARGIN));
+            int barH = 2;
+            int barX = Math.max(0, (width - barW) / 2);
+            int barY = Math.min(height - barH - 1, Math.max(MARGIN, height / 2 + 8));
+            graphics.fillRect(barX, barY, barW, barH);
             graphics.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 12));
             int textWidth = graphics.getFontMetrics().stringWidth(caption);
             int x = Math.max(MARGIN, (width - textWidth) / 2);
