@@ -1,6 +1,6 @@
-# @allure-notifications/cli
+# allure-notifications (CLI)
 
-Public bin **`allure-notifications`** for line **6.0.\***.
+Public npm bin **`allure-notifications`** for line **6.0.\***.
 
 ```bash
 npx allure-notifications send --config config.json --dry-run
@@ -18,6 +18,9 @@ npx allure-notifications send --config config.json --live   # Telegram ADR 008
 
 Default without `--mock` / `--live` is safe **dry-run**. Live credentials: `TELEGRAM_BOT_TOKEN`, `TELEGRAM_CHAT_ID`, `TELEGRAM_TOPIC_ID` — see [`docs/telegram-dogfood.md`](../../docs/telegram-dogfood.md).
 
+Workspace (pre-publish / local):
+
 ```bash
-pnpm --filter @allure-notifications/cli test
+pnpm --filter allure-notifications test
+pnpm exec allure-notifications send --config … --dry-run
 ```

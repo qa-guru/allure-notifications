@@ -6,7 +6,11 @@ settings:
 
 importers:
 
-  .: {}
+  .:
+    devDependencies:
+      allure-notifications:
+        specifier: workspace:*
+        version: link:packages/cli
 
   apps/builder:
     dependencies:

@@ -23,14 +23,12 @@ npx allure-notifications send --config config.json --dry-run
 
 Default without `--mock` / `--live` is safe **dry-run**. Live Telegram = explicit `--live` + env credentials ([`telegram-dogfood.md`](telegram-dogfood.md)); **not** in `ci-6.0.yml`.
 
-## Workspace (pre-publish)
-
-Until npm publish, use the monorepo on `feature/6.0-phase-0-1`:
+## Workspace (local / before `npx`)
 
 ```bash
 pnpm install
-pnpm --filter @allure-notifications/cli run build
-node packages/cli/dist/src/bin.js send \
+pnpm --filter allure-notifications run build
+pnpm exec allure-notifications send \
   --config packages/cli/test/fixtures/config.dry-run.json \
   --dry-run \
   --out /tmp/collage-dry-run.png

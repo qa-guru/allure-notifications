@@ -1,10 +1,10 @@
 /**
- * @allure-notifications/cli — `allure-notifications send --config`.
+ * allure-notifications — `send --config` (public npm bin for 6.0).
  *
  * Phase 3. Messengers: dry-run / mock by default; live Telegram via `--live` (ADR 008).
  */
 
-export const PACKAGE = "@allure-notifications/cli";
+export const PACKAGE = "allure-notifications";
 export const PHASE = 3;
 export { VERSION } from "./cli.js";
 

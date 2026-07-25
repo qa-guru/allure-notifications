@@ -1,7 +1,6 @@
 {
   "name": "@allure-notifications/core",
   "version": "6.0.0",
-  "private": true,
   "description": "Allure 3 summary/results → native collage PNG (Phase 3 / Stage C).",
   "type": "module",
   "exports": {
@@ -13,10 +12,20 @@
   "files": [
     "dist"
   ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/qa-guru/allure-notifications.git",
+    "directory": "packages/core"
+  },
+  "license": "Apache-2.0",
+  "engines": {
+    "node": ">=20"
+  },
   "scripts": {
     "build": "tsc -p tsconfig.json",
     "test": "pnpm run build && node --test dist/test/*.test.js",
-    "typecheck": "tsc -p tsconfig.json --noEmit"
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "prepublishOnly": "pnpm run build"
   },
   "dependencies": {
     "@allure-notifications/config": "workspace:*",
@@ -26,5 +35,8 @@
   "devDependencies": {
     "@types/node": "^22.13.10",
     "typescript": "^5.8.2"
+  },
+  "publishConfig": {
+    "access": "public"
   }
 }

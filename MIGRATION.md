@@ -13,7 +13,7 @@ There is **no 5.1** line. Product versions jump **5.0.\* (Java)** → **6.0.\* (
 | **5.0.\*** | Java Gradle fat jar (current **5.0.8**) | **Current / legacy freeze** — bugfix / security only; **no TypeScript** |
 | **6.0.\*** | TypeScript monorepo (CLI + builder + packages) | **Next line** — skeleton on `feature/6.0-phase-0-1`; not on `master` yet |
 
-Pin in monorepo docs (`docs/allure-notifications/VERSION`) stays **5.0.8** until CLI dogfood cutover. Root `package.json` version **6.0.0** marks the TS line; do not publish / cut consumers until Phase 3 dogfood.
+Monorepo pin (`docs/allure-notifications/VERSION`) = **6.0.0** (CLI cutover). Product packages ship as npm **`allure-notifications`** + scoped `@allure-notifications/*`. Java **5.0.8** stays in [`legacy/java/`](legacy/java/) for explicit legacy jobs only.
 
 ## Public product (locked)
 

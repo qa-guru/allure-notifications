@@ -5,7 +5,7 @@
 import { helpText, parseArgs } from "./parse.js";
 import { send } from "./send.js";
 
-export const PACKAGE = "@allure-notifications/cli";
+export const PACKAGE = "allure-notifications";
 export const PHASE = 3;
 export const VERSION = "6.0.0";
 
