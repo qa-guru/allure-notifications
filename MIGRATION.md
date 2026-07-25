@@ -64,7 +64,7 @@ Today (pre-move): Java modules at repo root (`allure-notifications/`, `allure-no
 |-------|--------|--------|
 | **0** | Monorepo shell, MIGRATION, checklist, CI sketch; no big-bang move | **done** (layout moves deferred — see phase-0-checklist) |
 | **1** | `packages/config` — zod schema, PANEL_CATALOG, DEFAULT_ITEMS, SQ-1080 presets | **done** |
-| **2** | `packages/pyramid` — palette + geometry SSOT (not dashboard-overrides) | pending |
+| **2** | `packages/pyramid` — palette + geometry SSOT (not dashboard-overrides) | **done** |
 | **3** | `packages/core` + `cli` — native PNG, Telegram, dogfood, cookbooks; public **6.0.0** | pending |
 | **4** | Builder full TS; import `@config` / `@pyramid`; typescript@7 / tsgo in CI | pending |
 | **5** | Optional thin `@allurereport/plugin-api` wrapper over `core` | optional |
@@ -101,7 +101,18 @@ See [docs/ci-cookbook.md](docs/ci-cookbook.md): `allure generate` → `allure-no
 - Extracted from hub builder `allure-notifications-builder/js/app.js` (builder still has a local copy until Phase 4 / `apps/builder/` merge)
 - Verify: `pnpm --filter @allure-notifications/config test`
 
+## Phase 2 notes
+
+`@allure-notifications/pyramid` (`packages/pyramid/`):
+
+- Palette mirrors monorepo SSOT `stacks/java-spring/tests/allure/pyramid-layers.json`
+- `unit` light/dark = pie `STATUS_COLORS.passed` / `#94ca66`
+- Geometry: `CORNER_RATIO=0.18`, `TIER_GAP_RATIO=0.11` (+ `tierGapPx` / `tierCornerRadius`)
+- Not shipped: `dashboard-overrides` / HTML inject
+- Verify: `pnpm --filter @allure-notifications/pyramid test` and
+  (from monorepo root) `python scripts/pyramid_palette_sync.py --check`
+
 ## Next
 
-**Phase 2** — `packages/pyramid` (palette + `CORNER_RATIO` / `TIER_GAP` geometry SSOT; not `dashboard-overrides`).
-Ask before starting Phase 2.
+**Phase 3** — `packages/core` + `cli` (native collage PNG, messengers, dogfood).
+Ask before starting Phase 3.
