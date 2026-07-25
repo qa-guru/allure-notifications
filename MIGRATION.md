@@ -58,6 +58,8 @@ allure-notifications/                 # version line 6.0.*
 
 Java **5.0.8** Gradle multi-module lives under [`legacy/java/`](legacy/java/) (`cd legacy/java && ./gradlew assemble`). Builder is in `apps/builder/` (Stage E); hub clone may linger until Pages cutover.
 
+**Hub bootstrap (post-G docs sync):** monorepo hub README = **one** clone `allure-notifications`; builder path = `apps/builder/` (stand cwd already). Second hub clone `allure-notifications-builder/` = linger until Pages/archive (**GitHub OK**). Checklist row 7 done; rows 4–5 open.
+
 ## Phases
 
 | Phase | Scope | Status |

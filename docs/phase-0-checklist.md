@@ -9,10 +9,10 @@ Do **not** execute big moves until this checklist is explicitly OK'd. Phase 0 = 
 | 1 | Move Gradle multi-module tree under legacy | repo-root modules (`allure-notifications/`, `allure-notifications-api/`, `build.gradle`, `settings.gradle`, `gradle/`, `gradlew*`) | `legacy/java/` (keep build runnable from that cwd) | [x] |
 | 2 | README legacy banner | root README | State **5.0.\* Java legacy** / **6.0.\* TypeScript** active; point jar users at `legacy/java/` | [x] |
 | 3 | Merge builder into monorepo | hub clone `allure-notifications-builder/` (or upstream Pages repo) | `apps/builder/` | [x] Stage E |
-| 4 | Archive second repo | `qa-guru/allure-notifications-builder` | Archive on GitHub after Pages points at `apps/builder/` | [ ] |
-| 5 | Pages CNAME / custom domain | builder Pages (`allure.notifications.qa.guru`) | Serve from `apps/builder/` (same CNAME / GH Pages source) | [ ] |
+| 4 | Archive second repo | `qa-guru/allure-notifications-builder` | Archive on GitHub after Pages points at `apps/builder/` | [ ] нужен GitHub OK |
+| 5 | Pages CNAME / custom domain | builder Pages (`allure.notifications.qa.guru`) | Serve from `apps/builder/` (same CNAME / GH Pages source) | [ ] нужен GitHub OK |
 | 6 | Stand registry cwd | `projects/allure-notifications-home/allure-notifications-builder` | `projects/allure-notifications-home/allure-notifications/apps/builder` | [x] Stage E |
-| 7 | Hub README bootstrap | clone two repos | clone one `allure-notifications`; builder path = `apps/builder/` | [ ] |
+| 7 | Hub README bootstrap | clone two repos | clone one `allure-notifications`; builder path = `apps/builder/` | [x] post-G hub sync |
 
 ## Stand `:3011`
 
