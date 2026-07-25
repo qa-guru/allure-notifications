@@ -88,9 +88,12 @@ Today: Java modules still at repo root (`allure-notifications/`, `allure-notific
 - Deleting `legacy/java` before 6.0 dogfood parity
 - Big-bang rewrite without this file
 
-## CI surface (sketch)
+## CI surface
 
-See [docs/ci-cookbook.md](docs/ci-cookbook.md): `allure generate` → `allure-notifications send`. No `java -jar` on the 6.0 path.
+See [docs/ci-cookbook.md](docs/ci-cookbook.md): `allure generate` → `allure-notifications send --config … --dry-run`. No `java -jar` on the 6.0 path.
+
+- **6.0 TS:** [`.github/workflows/ci-6.0.yml`](.github/workflows/ci-6.0.yml) — `pnpm install` + `pnpm test` on `feature/6.0*` (Playwright Chromium for `apps/builder` e2e).
+- **5.0.8 Java:** [`.github/workflows/build.yml`](.github/workflows/build.yml) — **master** only; unchanged by Stage F.
 
 ## Phase 1 notes
 
@@ -148,7 +151,14 @@ See [docs/ci-cookbook.md](docs/ci-cookbook.md): `allure generate` → `allure-no
 - Verify: `pnpm --filter @allure-notifications/builder test` / root `pnpm test`
 - **Not in Stage E:** live Telegram, publish, Java→`legacy/java`, VERSION bump, Stage F CI
 
+## Stage F notes (CI)
+
+- Workflow: `.github/workflows/ci-6.0.yml` — Node 20 + pnpm 9.15 + Python 3.12; `pnpm install --frozen-lockfile`; Playwright Chromium; `pnpm test` (config/pyramid/core/cli + builder unit/e2e).
+- Triggers: push `feature/6.0*`; PRs into `feature/6.0*` or `master` with path filter on `packages/**` / `apps/**` / pnpm lockfiles / this workflow.
+- Java `build.yml` (master) left intact — no shared job / no VERSION bump / no live Telegram in 6.0 CI.
+- Cookbook: `docs/ci-cookbook.md` documents real `send --config --dry-run` (+ workspace `pnpm exec` pre-publish).
+- **Telegram dogfood (ADR 008):** skipped in Stage F unless HQ gives explicit OK.
+
 ## Next
 
-**Stage F** — CI on 6.0 branch; Telegram dogfood only with explicit OK / ADR 008.
-Ask before Stage F Telegram dogfood.
+**Stage G** — hub `PLAN-6.0.md`; pin consumers 5.0.8 until cutover. Do not start without HQ handoff.
