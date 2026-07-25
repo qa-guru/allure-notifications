@@ -10,7 +10,8 @@
     }
   },
   "files": [
-    "dist"
+    "dist/src",
+    "README.md"
   ],
   "repository": {
     "type": "git",
