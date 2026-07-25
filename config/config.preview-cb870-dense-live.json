@@ -1,8 +1,8 @@
 {
   "base": {
     "project": "reference-app",
-    "environment": "ci / mid",
-    "comment": "Telegram default · cb870-mid-dynamics (narrow)",
+    "environment": "ci / dense",
+    "comment": "cb870-dense-live · all 7 live · pie 3×3 · pyramid|durations · severities 2×3 · dual durations",
     "allureFolder": "/Users/stanislav/zero-design-system/projects/allure-notifications-home/allure-notifications/build/pyramid-showcase/allure-report",
     "allureResultsFolder": "/Users/stanislav/zero-design-system/projects/allure-notifications-home/allure-notifications/build/pyramid-showcase/allure-results",
     "enableChart": true,
@@ -24,44 +24,51 @@
           "type": "pie",
           "x": 0,
           "y": 0,
-          "w": 4,
-          "h": 4
+          "w": 3,
+          "h": 3
         },
         {
           "type": "statusDynamics",
-          "x": 4,
+          "x": 3,
           "y": 0,
-          "w": 6,
-          "h": 4
+          "w": 5,
+          "h": 3
+        },
+        {
+          "type": "testResultSeverities",
+          "x": 8,
+          "y": 0,
+          "w": 2,
+          "h": 3
         },
         {
           "type": "testingPyramid",
           "x": 0,
-          "y": 4,
-          "w": 4,
+          "y": 3,
+          "w": 3,
           "h": 3
         },
         {
           "type": "durations",
-          "x": 4,
-          "y": 4,
-          "w": 6,
+          "x": 3,
+          "y": 3,
+          "w": 4,
           "h": 3,
           "groupBy": "layer"
         },
         {
           "type": "successRateDistribution",
-          "x": 0,
-          "y": 7,
-          "w": 7,
+          "x": 7,
+          "y": 3,
+          "w": 3,
           "h": 3
         },
         {
-          "type": "testResultSeverities",
-          "x": 7,
-          "y": 7,
-          "w": 3,
-          "h": 3
+          "type": "durations",
+          "x": 0,
+          "y": 6,
+          "w": 10,
+          "h": 4
         }
       ],
       "pyramidFallback": "suites"

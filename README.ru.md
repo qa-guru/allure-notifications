@@ -63,14 +63,14 @@ flowchart LR
 
 <img width="660" alt="Telegram notification example" src="docs/telegram_notification.png">
 
-В режиме **collage** Telegram-default — `sq1080-mid-dynamics` (1080×1080 free): pie · dynamics · pyramid|durations · success · severities. См. [гайд по миграции](docs/migration-5.0.md) и [пример](config/config-5.0-collage.example.json).
+В режиме **collage** Telegram — узкий canvas **870×1080**; default `cb870-mid-dynamics`, у проектов разные раскладки под динамику (wide dynamics / pie hero / pyramid-mid / dense-live). См. [гайд по миграции](docs/migration-5.0.md) и [пример](config/config-5.0-collage.example.json).
 
 
 ## Что нового в 5.0
 
 | Возможность | Описание |
 |-------------|----------|
-| **Collage chart** | `chart.mode: "collage"` + `layout: "free"` — Telegram default `sq1080-mid-dynamics` (pie · dynamics · pyramid\|durations · success · severities) |
+| **Collage chart** | `chart.mode: "collage"` + `layout: "free"` — Telegram canvas **870×1080**; раскладка по consumer (`cb870-mid-dynamics` default · dense-split / compact-hero / pyramid-mid / dense-live) |
 | **Блок links** | `links.report`, `dashboard`, `testops`, `build` в шаблонах (i18n) |
 | **Allure 3** | Автоопределение `summary.json` в корне отчёта (`stats` → legacy-модель) |
 | **Аналитика results** | `allureResultsFolder` для layer labels, suites, длительностей |

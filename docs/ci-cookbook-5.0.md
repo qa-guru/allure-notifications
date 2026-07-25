@@ -13,7 +13,7 @@ See [config/config-5.0-collage.example.json](../config/config-5.0-collage.exampl
   "base": {
     "project": "${JOB_BASE_NAME}",
     "environment": "${STAND}",
-    "comment": "sq1080-mid-dynamics",
+    "comment": "cb870-mid-dynamics · pie 4×4 · large statusDynamics · pyramid|durations · success + severities",
     "language": "en",
     "allureFolder": "build/allure-report/",
     "allureResultsFolder": "build/allure-results/",
@@ -23,7 +23,7 @@ See [config/config-5.0-collage.example.json](../config/config-5.0-collage.exampl
     "chart": {
       "mode": "collage",
       "layout": "free",
-      "width": 1080,
+      "width": 870,
       "height": 1080,
       "headerHeight": 56,
       "cardGap": 14,
@@ -31,12 +31,49 @@ See [config/config-5.0-collage.example.json](../config/config-5.0-collage.exampl
       "gridCols": 10,
       "gridRows": 10,
       "items": [
-        { "type": "pie", "x": 0, "y": 0, "w": 4, "h": 4 },
-        { "type": "statusDynamics", "x": 4, "y": 0, "w": 6, "h": 4 },
-        { "type": "testingPyramid", "x": 0, "y": 4, "w": 4, "h": 3 },
-        { "type": "durations", "x": 4, "y": 4, "w": 6, "h": 3, "groupBy": "layer" },
-        { "type": "successRateDistribution", "x": 0, "y": 7, "w": 7, "h": 3 },
-        { "type": "testResultSeverities", "x": 7, "y": 7, "w": 3, "h": 3 }
+        {
+          "type": "pie",
+          "x": 0,
+          "y": 0,
+          "w": 4,
+          "h": 4
+        },
+        {
+          "type": "statusDynamics",
+          "x": 4,
+          "y": 0,
+          "w": 6,
+          "h": 4
+        },
+        {
+          "type": "testingPyramid",
+          "x": 0,
+          "y": 4,
+          "w": 4,
+          "h": 3
+        },
+        {
+          "type": "durations",
+          "x": 4,
+          "y": 4,
+          "w": 6,
+          "h": 3,
+          "groupBy": "layer"
+        },
+        {
+          "type": "successRateDistribution",
+          "x": 0,
+          "y": 7,
+          "w": 7,
+          "h": 3
+        },
+        {
+          "type": "testResultSeverities",
+          "x": 7,
+          "y": 7,
+          "w": 3,
+          "h": 3
+        }
       ],
       "pyramidFallback": "suites"
     },
