@@ -9,8 +9,8 @@ Do **not** execute big moves until this checklist is explicitly OK'd. Phase 0 = 
 | 1 | Move Gradle multi-module tree under legacy | repo-root modules (`allure-notifications/`, `allure-notifications-api/`, `build.gradle`, `settings.gradle`, `gradle/`, `gradlew*`) | `legacy/java/` (keep build runnable from that cwd) | [x] |
 | 2 | README legacy banner | root README | State **5.0.\* Java legacy** / **6.0.\* TypeScript** active; point jar users at `legacy/java/` | [x] |
 | 3 | Merge builder into monorepo | hub clone `allure-notifications-builder/` (or upstream Pages repo) | `apps/builder/` | [x] Stage E |
-| 4 | Archive second repo | `qa-guru/allure-notifications-builder` | Archive on GitHub after Pages points at `apps/builder/` | [ ] нужен GitHub OK |
-| 5 | Pages CNAME / custom domain | builder Pages (`allure.notifications.qa.guru`) | Serve from `apps/builder/` (same CNAME / GH Pages source) | [ ] нужен GitHub OK |
+| 4 | Archive second repo | `qa-guru/allure-notifications-builder` | Archive on GitHub **after** domain cutover (row 5) + separate HQ OK | [ ] after cutover |
+| 5 | Pages CNAME / custom domain | builder Pages (`allure.notifications.qa.guru` / live `allure-notifications.qa.guru`) | Serve from `apps/builder/` via [`pages-builder.yml`](../.github/workflows/pages-builder.yml); runbook [`pages-cutover.md`](pages-cutover.md) | [ ] workflow ready; domain switch manual |
 | 6 | Stand registry cwd | `projects/allure-notifications-home/allure-notifications-builder` | `projects/allure-notifications-home/allure-notifications/apps/builder` | [x] Stage E |
 | 7 | Hub README bootstrap | clone two repos | clone one `allure-notifications`; builder path = `apps/builder/` | [x] post-G hub sync |
 
@@ -36,7 +36,7 @@ curl -sf -o /dev/null -w "%{http_code}\n" http://127.0.0.1:3011/
 
 Do **not** kill/restart the stand while this chat is active unless the user asks to «погаси».
 
-Hub clone `allure-notifications-builder/` may remain as a mirror until Pages cutover (rows 4–5); stand cwd is the monorepo path above.
+Hub clone `allure-notifications-builder/` may remain as a mirror until Pages domain cutover + archive (rows 5 then 4); stand cwd is the monorepo path above. Pages **workflow** is ready; custom domain / archive stay `[ ]` until manual GitHub UI steps in [`pages-cutover.md`](pages-cutover.md).
 
 ## pnpm skeleton (Phase 0 — done when files exist)
 

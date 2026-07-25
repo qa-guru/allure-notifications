@@ -58,13 +58,13 @@ allure-notifications/                 # version line 6.0.*
 
 Java **5.0.8** Gradle multi-module lives under [`legacy/java/`](legacy/java/) (`cd legacy/java && ./gradlew assemble`). Builder is in `apps/builder/` (Stage E); hub clone may linger until Pages cutover.
 
-**Hub bootstrap (post-G docs sync):** monorepo hub README = **one** clone `allure-notifications`; builder path = `apps/builder/` (stand cwd already). Second hub clone `allure-notifications-builder/` = linger until Pages/archive (**GitHub OK**). Checklist row 7 done; rows 4–5 open.
+**Hub bootstrap (post-G docs sync):** monorepo hub README = **one** clone `allure-notifications`; builder path = `apps/builder/` (stand cwd already). Second hub clone `allure-notifications-builder/` = linger until domain cutover + archive. Checklist row 7 done; **Pages workflow ready** ([`pages-builder.yml`](.github/workflows/pages-builder.yml) + [`docs/pages-cutover.md`](docs/pages-cutover.md)); row 5 domain switch and row 4 archive stay open (manual GitHub UI).
 
 ## Phases
 
 | Phase | Scope | Status |
 |-------|--------|--------|
-| **0** | Monorepo shell, MIGRATION, checklist, CI sketch; layout moves per checklist | **done** (Java→`legacy/java` + README banner; Pages/archive still open) |
+| **0** | Monorepo shell, MIGRATION, checklist, CI sketch; layout moves per checklist | **done** (Java→`legacy/java` + README banner; Pages workflow ready; domain/archive still open) |
 | **1** | `packages/config` — zod schema, PANEL_CATALOG, DEFAULT_ITEMS, SQ-1080 presets | **done** |
 | **2** | `packages/pyramid` — palette + geometry SSOT (not dashboard-overrides) | **done** |
 | **3** | `packages/core` + `cli` — native PNG, Telegram, dogfood, cookbooks; public **6.0.0** | **core + cli done** (Stages C–D); Telegram dogfood = Stage F / OK |
@@ -95,6 +95,7 @@ Java **5.0.8** Gradle multi-module lives under [`legacy/java/`](legacy/java/) (`
 See [docs/ci-cookbook.md](docs/ci-cookbook.md): `allure generate` → `allure-notifications send --config … --dry-run`. No `java -jar` on the 6.0 path.
 
 - **6.0 TS:** [`.github/workflows/ci-6.0.yml`](.github/workflows/ci-6.0.yml) — `pnpm install` + `pnpm test` on `feature/6.0*` (Playwright Chromium for `apps/builder` e2e).
+- **Builder Pages:** [`.github/workflows/pages-builder.yml`](.github/workflows/pages-builder.yml) — static `apps/builder/` (`index` / `css` / `js` / `vendor`) on `feature/6.0*`; no Telegram secrets. Cutover runbook: [`docs/pages-cutover.md`](docs/pages-cutover.md).
 - **5.0.8 Java:** [`.github/workflows/build.yml`](.github/workflows/build.yml) — **master** only; cwd / paths → `legacy/java/`.
 
 ## Phase 1 notes
@@ -177,6 +178,13 @@ See [docs/ci-cookbook.md](docs/ci-cookbook.md): `allure generate` → `allure-no
 - Build: `cd legacy/java && ./gradlew assemble` (fat jar under `legacy/java/allure-notifications/build/libs/`).
 - **Not in this move:** Telegram live dogfood, publish, Pages/archive, VERSION bump, Matrix.
 
+## Pages prep notes (post-G)
+
+- Workflow deploys assembled `_site` from `apps/builder/` (+ `sync-config` for vendor `@config`).
+- Artifact includes `CNAME` = current prod hostname `allure-notifications.qa.guru` (checklist also mentions `allure.notifications.qa.guru` — confirm before DNS edits).
+- **Manual (GitHub UI):** enable Pages source = GitHub Actions; smoke on `qa-guru.github.io/allure-notifications/`; then move custom domain off `allure-notifications-builder` onto this repo ([`docs/pages-cutover.md`](docs/pages-cutover.md)).
+- Archive second repo = **after** domain cutover + separate HQ OK (checklist row 4).
+
 ## Next
 
-Post-G gaps: Telegram dogfood OK; Pages/archive; VERSION cutover. Do not bump pin without HQ.
+Post-G gaps: Telegram dogfood OK; Pages **domain** cutover + archive (workflow ready); VERSION cutover. Do not bump pin without HQ.

@@ -2,7 +2,7 @@
 
 Full `config.json` configurator for [allure-notifications](https://github.com/qa-guru/allure-notifications) (base · messengers · links · chart/collage).
 
-Merged into the 6.0 monorepo as `apps/builder/` (Stage E). Upstream Pages repo: [qa-guru/allure-notifications-builder](https://github.com/qa-guru/allure-notifications-builder).
+Merged into the 6.0 monorepo as `apps/builder/` (Stage E). Pages deploy from this tree: [`.github/workflows/pages-builder.yml`](../../.github/workflows/pages-builder.yml) · cutover: [`docs/pages-cutover.md`](../../docs/pages-cutover.md). Legacy Pages repo (until domain move): [qa-guru/allure-notifications-builder](https://github.com/qa-guru/allure-notifications-builder).
 
 **Not** collage-builder — no `cb-*` classes; collage-builder is legacy and not developed further. See [CANON.md](CANON.md).
 
