@@ -51,7 +51,7 @@ Hub clone `allure-notifications-builder/` may remain on disk as optional linger;
 
 - Java jar build still works under `legacy/java/` until 6.0 dogfood parity
 - Builder Playwright tests / dogfood scripts relocate with `apps/builder/`
-- Monorepo pin `docs/allure-notifications/VERSION` stays **5.0.8** until cutover
+- Monorepo pin `docs/allure-notifications/VERSION` = **6.0.0** CLI (cutover done); jar 5.0.8 = legacy only
 - No `dashboard-overrides` / inject copied into `packages/`
 
 ## Sign-off
