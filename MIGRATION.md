@@ -65,7 +65,7 @@ Today (pre-move): Java modules at repo root (`allure-notifications/`, `allure-no
 | **0** | Monorepo shell, MIGRATION, checklist, CI sketch; no big-bang move | **done** (layout moves deferred — see phase-0-checklist) |
 | **1** | `packages/config` — zod schema, PANEL_CATALOG, DEFAULT_ITEMS, SQ-1080 presets | **done** |
 | **2** | `packages/pyramid` — palette + geometry SSOT (not dashboard-overrides) | **done** |
-| **3** | `packages/core` + `cli` — native PNG, Telegram, dogfood, cookbooks; public **6.0.0** | **core done** (Stage C); cli = Stage D |
+| **3** | `packages/core` + `cli` — native PNG, Telegram, dogfood, cookbooks; public **6.0.0** | **core + cli done** (Stages C–D); Telegram dogfood = Stage F / OK |
 | **4** | Builder full TS; import `@config` / `@pyramid`; typescript@7 / tsgo in CI | pending |
 | **5** | Optional thin `@allurereport/plugin-api` wrapper over `core` | optional |
 
@@ -125,7 +125,19 @@ See [docs/ci-cookbook.md](docs/ci-cookbook.md): `allure generate` → `allure-no
 - Verify: `pnpm --filter @allure-notifications/core test` / root `pnpm test`
 - **Not in Stage C:** `packages/cli`, messengers / Telegram dogfood, `apps/builder`
 
+## Phase 3 notes (cli — Stage D)
+
+`@allure-notifications/cli` (`packages/cli/`):
+
+- Bin: `allure-notifications` → `send --config <path>`
+- Collage via `@allure-notifications/core` + `@allure-notifications/config`
+- Messengers: **`--dry-run` / `--mock` only** (no live Telegram / network)
+- Optional `--out <png>` writes buffer to disk
+- Tests: argv parse + dry-run/mock on fixture; PNG magic bytes; no network
+- Verify: `pnpm --filter @allure-notifications/cli test` / root `pnpm test`
+- **Not in Stage D:** live Telegram (ADR 008), `apps/builder`, publish, layout moves
+
 ## Next
 
-**Stage D** — `packages/cli` (`send --config` dry-run/mock + tests).
-Ask before starting Stage D / remaining Phase 3 (Telegram dogfood).
+**Stage E** — `apps/builder` merge + Playwright e2e (stand via `ensure.py`).
+Ask before Stage F Telegram dogfood (explicit OK / ADR 008).

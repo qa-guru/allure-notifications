@@ -1,0 +1,32 @@
+{
+  "name": "@allure-notifications/cli",
+  "version": "6.0.0",
+  "private": true,
+  "description": "CLI: allure-notifications send --config (Phase 3 / Stage D).",
+  "type": "module",
+  "bin": {
+    "allure-notifications": "./dist/src/bin.js"
+  },
+  "exports": {
+    ".": {
+      "types": "./dist/src/index.d.ts",
+      "import": "./dist/src/index.js"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "test": "pnpm run build && node --test dist/test/*.test.js",
+    "typecheck": "tsc -p tsconfig.json --noEmit"
+  },
+  "dependencies": {
+    "@allure-notifications/config": "workspace:*",
+    "@allure-notifications/core": "workspace:*"
+  },
+  "devDependencies": {
+    "@types/node": "^22.13.10",
+    "typescript": "^5.8.2"
+  }
+}
