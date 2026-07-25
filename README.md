@@ -8,9 +8,15 @@ Locked collage rules + PNG: [`docs/canon/CANON.md`](docs/canon/CANON.md) · [`do
 - Pyramid: quieter corners/gaps, compact single-layer (not full-bleed)
 - `unit` = pie success (`ChartTheme.STATUS_PASSED` / `#94ca66`) — do not reintroduce a separate green
 - Rounded durations / success-rate tops; suites pills
-- Consumers: `base.darkMode: true` + jar pin (released **5.0.3**; **5.0.5** SQ-1080 dense 12-tile + empty-state stubs)
+- Consumers: `base.darkMode: true` + jar pin **5.0.8** (freeze tip; GitHub release [`v5.0.8`](https://github.com/qa-guru/allure-notifications/releases/tag/v5.0.8))
 
-### 5.0.5 (unreleased)
+### 5.0.6–5.0.8
+
+- **5.0.8** — cap horizontal bar height for sparse suites/severities/durations-by-layer
+- **5.0.7** — exact stacked status-dynamics bar heights; `durations` pyramid layer order
+- **5.0.6** — Telegram proxy from `config.json` (`proxy.type`: `http` | `socks5`)
+
+### 5.0.5
 
 - SQ-1080 dense 12-tile free layout: all catalog tiles kept (empty-state, no silent drop)
 - `ChartPanelItem.by` / `groupBy`; `chart.tilePad` parsed (preview parity)
@@ -314,7 +320,7 @@ Fields:
 
 7. Run the following command in your terminal:
 ```shell
-java "-DconfigFile=notifications/config.json" -jar notifications/allure-notifications-5.0.3.jar
+java "-DconfigFile=notifications/config.json" -jar notifications/allure-notifications-5.0.8.jar
 ```
 Notes:
 + `summary.json` must already be generated before running this command.
@@ -358,14 +364,14 @@ Notes:
 In the **Script** field, enter:
 ```bash
 cd ..
-FILE=allure-notifications-5.0.3.jar
+FILE=allure-notifications-5.0.8.jar
 if [ ! -f "$FILE" ]; then
-   wget https://github.com/qa-guru/allure-notifications/releases/download/v5.0.3/allure-notifications-5.0.3.jar
+   wget https://github.com/qa-guru/allure-notifications/releases/download/v5.0.8/allure-notifications-5.0.8.jar
 fi
 ```
 Click **Add another task** and in the second **Script** field enter:
 ```bash
-java "-DconfigFile=notifications/config.json" -jar ../allure-notifications-5.0.3.jar
+java "-DconfigFile=notifications/config.json" -jar ../allure-notifications-5.0.8.jar
 ```
 
 4. Save the configuration and run your tests. A notification will be sent to the configured messenger upon completion.

@@ -133,7 +133,7 @@ For Allure 3, set `enableSuitesPublishing: true` only together with `allureResul
       "-Dnotifications.base.chart.mode=collage" \
       "-Dnotifications.telegram.token=${TELEGRAM_BOT_TOKEN}" \
       "-Dnotifications.telegram.chat=${TELEGRAM_CHAT_ID}" \
-      -jar notifications/allure-notifications-5.0.3.jar
+      -jar notifications/allure-notifications-5.0.8.jar
 ```
 
 **Prerequisites**
@@ -150,9 +150,9 @@ For Allure 3, set `enableSuitesPublishing: true` only together with `allureResul
 
 ```bash
 cd "${WORKSPACE}/.."
-FILE=allure-notifications-5.0.3.jar
+FILE=allure-notifications-5.0.8.jar
 if [ ! -f "$FILE" ]; then
-  wget -q "https://github.com/qa-guru/allure-notifications/releases/download/v5.0.3/${FILE}"
+  wget -q "https://github.com/qa-guru/allure-notifications/releases/download/v5.0.8/${FILE}"
 fi
 ```
 
@@ -170,7 +170,7 @@ java \
   "-Dnotifications.base.chart.mode=collage" \
   "-Dnotifications.telegram.token=${TELEGRAM_BOT_TOKEN}" \
   "-Dnotifications.telegram.chat=${TELEGRAM_CHAT_ID}" \
-  -jar "${WORKSPACE}/../allure-notifications-5.0.3.jar"
+  -jar "${WORKSPACE}/../allure-notifications-5.0.8.jar"
 ```
 
 Set `ALLURE_REPORT_URL`, `TELEGRAM_*`, etc. as Jenkins credentials or injected env vars.
@@ -182,7 +182,7 @@ Omit `chart.mode` or set `pie` explicitly — no `allureResultsFolder` required:
 ```shell
 java "-DconfigFile=notifications/config.json" \
   "-Dnotifications.base.links.report=${ALLURE_REPORT_URL}" \
-  -jar notifications/allure-notifications-5.0.3.jar
+  -jar notifications/allure-notifications-5.0.8.jar
 ```
 
 ## Allure 3 note

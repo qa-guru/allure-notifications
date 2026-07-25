@@ -11,9 +11,14 @@ import java.awt.FontMetrics;
 final class HorizontalBarRows {
 
     private static final int MIN_ROW_HEIGHT = 14;
-    /** Soft ceiling — keeps sparse rows compact instead of stretching to plotH. */
+    /**
+     * Soft ceiling — keeps sparse rows compact instead of stretching to plotH.
+     */
     private static final int MAX_ROW_HEIGHT = 34;
     private static final int MAX_BAR_HEIGHT = 18;
+
+    private HorizontalBarRows() {
+    }
 
     static final class Layout {
         final int chartTop;
@@ -55,8 +60,5 @@ final class HorizontalBarRows {
                 Math.min(MAX_BAR_HEIGHT, (int) Math.round(rowHeight * 0.52)));
         int fontSize = Math.max(9, Math.min(13, rowHeight - 5));
         return new Layout(chartTop, rowHeight, gap, barHeight, fontSize);
-    }
-
-    private HorizontalBarRows() {
     }
 }
