@@ -36,3 +36,10 @@ target/
 # Local secrets — never commit real tokens
 config/*.local.json
 config/*.runtime.json
+
+# TypeScript monorepo (6.0.*)
+node_modules/
+.pnpm-store/
+packages/*/dist/
+packages/*/coverage/
+*.tsbuildinfo
