@@ -1,10 +1,22 @@
 {
+  "name": "allure-notifications",
+  "version": "6.0.0",
+  "private": true,
+  "description": "Allure report \u2192 messenger notifications. 6.0.* = TypeScript monorepo (CLI + builder). 5.0.* = Java jar (current master); there is no 5.1 line.",
+  "packageManager": "pnpm@9.15.0",
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "build": "pnpm -r run build",
+    "test": "pnpm -r run test"
+  },
   "changelog": {
     "labels": {
       "other": "New Feature",
       "fix": "Bug Fix",
       "refactor": "Refactoring"
     },
-    "repo": "username/repo"
+    "repo": "qa-guru/allure-notifications"
   }
 }
