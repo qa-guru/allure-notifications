@@ -1,17 +1,17 @@
 # GitHub Pages cutover — `apps/builder/` → custom domain
 
-**Status:** workflow **ready** ([`.github/workflows/pages-builder.yml`](../.github/workflows/pages-builder.yml)).  
-**Not done until manual UI/DNS steps below:** custom domain live on this repo; archive of second builder repo (checklist rows 5 → 4).
+**Status:** domain cutover **done** · archive **done** ([`.github/workflows/pages-builder.yml`](../.github/workflows/pages-builder.yml)).  
+Prod: [`allure-notifications.qa.guru`](https://allure-notifications.qa.guru/) on this repo. Second builder repo archived (checklist rows 5 → 4).
 
 | Item | Value |
 |------|--------|
 | Source (target) | `qa-guru/allure-notifications` → static from `apps/builder/` (`index.html`, `css/`, `js/`, `vendor/`) |
 | Workflow | `.github/workflows/pages-builder.yml` — push `feature/6.0*` (path-filtered) or `workflow_dispatch` |
 | Project URL (after Pages enabled) | `https://qa-guru.github.io/allure-notifications/` |
-| **Current prod** (old repo) | [qa-guru/allure-notifications-builder](https://github.com/qa-guru/allure-notifications-builder) Pages · CNAME **`allure-notifications.qa.guru`** (LE SSL · Enforce HTTPS) · DNS → `qa-guru.github.io` |
-| Checklist / old label | `allure.notifications.qa.guru` — **DNS leftover**; cutover keeps hyphen hostname unless HQ says otherwise |
+| **Prod** | Custom domain **`allure-notifications.qa.guru`** on this repo (LE SSL · Enforce HTTPS) · DNS → `qa-guru.github.io` |
+| Archived second repo | [qa-guru/allure-notifications-builder](https://github.com/qa-guru/allure-notifications-builder) — `isArchived=true` (row 4) |
+| Checklist / old label | `allure.notifications.qa.guru` — **DNS leftover**; cutover kept hyphen hostname |
 | Secrets | **none** (no Telegram) |
-| Do **not** | `gh repo archive` until after domain cutover + HQ OK (row 4) |
 
 Relative asset paths in `index.html` work on both project URL and custom domain (no `<base>` hack).
 
@@ -54,13 +54,13 @@ Until step B, leave custom domain on the **old** builder repo so prod hostname s
 
 ---
 
-## C. Archive second repo (checklist row 4 — **after** B)
+## C. Archive second repo (checklist row 4 — **after** B) — **done**
 
-Only with separate HQ OK after cutover is stable:
+HQ OK after domain cutover; executed:
 
-1. Update any bookmarks / hub README prod link to the custom domain (or project URL).
-2. `gh repo archive qa-guru/allure-notifications-builder` (or GitHub UI **Danger zone → Archive**).
-3. Mark phase-0-checklist row **4** `[x]`.
+1. Bookmarks / hub README prod → [`allure-notifications.qa.guru`](https://allure-notifications.qa.guru/).
+2. `gh repo archive qa-guru/allure-notifications-builder` → `isArchived=true` (repo not deleted).
+3. phase-0-checklist row **4** `[x]`.
 
 ---
 
