@@ -719,10 +719,15 @@ html.theme-light .anb-panel__action:hover {
   z-index: 100;
 }
 
-/* Resize: corner arrows only. NE/NW below title bar so they never cover × / Copy. */
+/* Resize: L-brackets on corners. NE/NW below title bar so they never cover × / Copy. */
 .anb-canvas {
   --anb-bar-h: 22px;
   --anb-resize-size: 14px;
+  --anb-resize-ink: rgba(255, 255, 255, 0.72);
+}
+
+html.theme-light .anb-canvas {
+  --anb-resize-ink: rgba(26, 35, 48, 0.65);
 }
 
 .anb-canvas .grid-stack-item > .ui-resizable-handle {
@@ -734,14 +739,14 @@ html.theme-light .anb-panel__action:hover {
   box-sizing: border-box;
 }
 
-/* Edges stay invisible hit targets; corners show arrows. */
+/* Edges stay invisible hit targets; corners show L-brackets. */
 .anb-canvas .grid-stack-item > .ui-resizable-ne,
 .anb-canvas .grid-stack-item > .ui-resizable-nw,
 .anb-canvas .grid-stack-item > .ui-resizable-se,
 .anb-canvas .grid-stack-item > .ui-resizable-sw {
   width: var(--anb-resize-size);
   height: var(--anb-resize-size);
-  opacity: 0.55;
+  opacity: 0.7;
 }
 
 .anb-canvas .grid-stack-item:hover > .ui-resizable-ne,
@@ -756,7 +761,7 @@ html.theme-light .anb-panel__action:hover {
 .anb-canvas .grid-stack-item.ui-resizable-resizing > .ui-resizable-nw,
 .anb-canvas .grid-stack-item.ui-resizable-resizing > .ui-resizable-se,
 .anb-canvas .grid-stack-item.ui-resizable-resizing > .ui-resizable-sw {
-  opacity: 0.9;
+  opacity: 1;
 }
 
 /* !important — GridStack injects .gs-id-* { top: 0 } after our sheet */
@@ -786,29 +791,29 @@ html.theme-light .anb-panel__action:hover {
 .anb-canvas .grid-stack-item > .ui-resizable-sw::after {
   content: "";
   position: absolute;
-  inset: 1px;
+  inset: 2px;
   pointer-events: none;
-  background-repeat: no-repeat;
-  background-position: center;
-  background-size: 100% 100%;
-  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' fill='none' stroke='%23ffffff' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.6' viewBox='0 0 20 20'><path d='m10 3 2 2H8l2-2v14l-2-2h4l-2 2'/></svg>");
+  box-sizing: border-box;
 }
 
-html.theme-light .anb-canvas .grid-stack-item > .ui-resizable-ne::after,
-html.theme-light .anb-canvas .grid-stack-item > .ui-resizable-nw::after,
-html.theme-light .anb-canvas .grid-stack-item > .ui-resizable-se::after,
-html.theme-light .anb-canvas .grid-stack-item > .ui-resizable-sw::after {
-  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' fill='none' stroke='%231a2330' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.6' viewBox='0 0 20 20'><path d='m10 3 2 2H8l2-2v14l-2-2h4l-2 2'/></svg>");
-}
-
-.anb-canvas .grid-stack-item > .ui-resizable-ne::after,
-.anb-canvas .grid-stack-item > .ui-resizable-sw::after {
-  transform: rotate(45deg);
-}
-
-.anb-canvas .grid-stack-item > .ui-resizable-nw::after,
 .anb-canvas .grid-stack-item > .ui-resizable-se::after {
-  transform: rotate(-45deg);
+  border-right: 1.5px solid var(--anb-resize-ink);
+  border-bottom: 1.5px solid var(--anb-resize-ink);
+}
+
+.anb-canvas .grid-stack-item > .ui-resizable-sw::after {
+  border-left: 1.5px solid var(--anb-resize-ink);
+  border-bottom: 1.5px solid var(--anb-resize-ink);
+}
+
+.anb-canvas .grid-stack-item > .ui-resizable-ne::after {
+  border-right: 1.5px solid var(--anb-resize-ink);
+  border-top: 1.5px solid var(--anb-resize-ink);
+}
+
+.anb-canvas .grid-stack-item > .ui-resizable-nw::after {
+  border-left: 1.5px solid var(--anb-resize-ink);
+  border-top: 1.5px solid var(--anb-resize-ink);
 }
 
 .anb-group + .anb-group {
