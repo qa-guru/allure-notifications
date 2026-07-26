@@ -11,7 +11,7 @@ npm add allure @allure-notifications/plugin
 # workspace: already in pnpm packages/plugin
 ```
 
-> **npm:** `@allure-notifications/plugin` — use **≥6.0.6** (`main` entry required for Allure resolve). Workspace `packages/plugin` for monorepo dogfood.
+> **npm:** `@allure-notifications/plugin` — use **≥6.0.7** (`main` entry required for Allure resolve; skip 6.0.6). Workspace `packages/plugin` for monorepo dogfood.
 
 ## allurerc
 

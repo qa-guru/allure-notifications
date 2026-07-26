@@ -39,7 +39,7 @@ npx allure generate ./allure-results --config ./examples/allurerc.notifications.
 | Live | `--live` + `TELEGRAM_*` | `mode: "live"` + same env |
 | Config | `config.json` | `options.config` → same schema |
 
-npm `@allure-notifications/plugin` — needs **`main`** for Allure `require.resolve` (**≥6.0.6**; workspace dogfood OK). **Separate GitHub Actions example (plugin, not CLI):** [`examples/github-actions/`](../examples/github-actions/) · runnable workflow [`.github/workflows/example-plugin-notify.yml`](../.github/workflows/example-plugin-notify.yml) (`workflow_dispatch`, default dry-run).
+npm `@allure-notifications/plugin` — needs **`main`** for Allure `require.resolve` (**≥6.0.7**; skip 6.0.6; workspace dogfood OK). **Separate GitHub Actions example (plugin, not CLI):** [`examples/github-actions/`](../examples/github-actions/) · runnable workflow [`.github/workflows/example-plugin-notify.yml`](../.github/workflows/example-plugin-notify.yml) (`workflow_dispatch`, default dry-run).
 
 ## Workspace (local / before `npx`)
 
@@ -204,7 +204,7 @@ Same job shape as the CLI consumer example, but notifications run in `allurerc` 
 
 ```yaml
 - name: Install Allure 3 + plugin
-  run: npm install allure@^3.14.3 @allure-notifications/plugin@6.0.6
+  run: npm install allure@^3.14.3 @allure-notifications/plugin@6.0.7
 
 - name: Generate report (files on disk)
   run: npx allure generate ./allure-results -o ./allure-report

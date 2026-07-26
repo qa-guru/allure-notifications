@@ -1,16 +1,26 @@
 # Changelog
 
-## Unreleased (propose **6.0.6**)
+## v 6.0.7
 
 ### English
 
-- **Plugin resolve fix** — `@allure-notifications/plugin` adds `main`/`module`/`types` so Allure 3 `require.resolve` can load the package (6.0.5 `exports`-only broke `allurerc` import)
+- **Plugin resolve fix** — `@allure-notifications/plugin` adds `main`/`module`/`types` so Allure 3 `require.resolve` can load the package (6.0.5 / npm `6.0.6` were `exports`-only and broke `allurerc` import)
 - **GitHub Actions example (plugin path)** — `examples/github-actions/` + `.github/workflows/example-plugin-notify.yml` (two-step generate; not CLI Q4)
 
 ### Russian
 
-- **Фикс resolve плагина** — у `@allure-notifications/plugin` добавлены `main`/`module`/`types` (в 6.0.5 Allure не резолвил пакет из `allurerc`)
+- **Фикс resolve плагина** — у `@allure-notifications/plugin` добавлены `main`/`module`/`types` (6.0.5 / npm `6.0.6` — `exports`-only, Allure не резолвил пакет из `allurerc`)
 - **Пример GitHub Actions (plugin)** — `examples/github-actions/` + `.github/workflows/example-plugin-notify.yml` (два generate; не CLI Q4)
+
+## v 6.0.6
+
+### English
+
+- **Do not use** — npm `6.0.6` published without `main` (same resolve break as 6.0.5). Use **6.0.7**.
+
+### Russian
+
+- **Не использовать** — npm `6.0.6` без `main` (тот же break resolve, что у 6.0.5). Берите **6.0.7**.
 
 ## v 6.0.5
 
