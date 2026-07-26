@@ -1,6 +1,7 @@
 # 6.0 TypeScript monorepo CI (master + feature/6.0* + quality contour lines).
 # Java 5.0.8 jar CI stays in build.yml (master) — do not merge jobs.
 # Q1: Allure results + generate + soft c8 coverage artifacts (no % gate).
+# Q2: Sonar upload + sonar-gate-wait (soft SONAR_REQUIRED=false).
 
 name: CI 6.0 (TypeScript)
 
@@ -22,6 +23,7 @@ on:
       - 'apps/**'
       - 'scripts/**'
       - 'c8.config.json'
+      - 'sonar-project.properties'
       - 'package.json'
       - 'pnpm-lock.yaml'
       - 'pnpm-workspace.yaml'
@@ -113,3 +115,57 @@ jobs:
           path: coverage/
           if-no-files-found: warn
           retention-days: 7
+
+  sonar:
+    name: Sonar (soft)
+    needs: test
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    # Forks: job still runs for visibility, but never receives SONAR_TOKEN (soft-skip in script).
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Download coverage
+        uses: actions/download-artifact@v4
+        with:
+          name: coverage
+          path: coverage/
+
+      - name: Sonar scan + gate (soft)
+        env:
+          # Never pass token on fork PRs (secrets are empty there anyway; explicit for clarity).
+          SONAR_TOKEN: ${{ (github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository) && secrets.SONAR_TOKEN || '' }}
+          SONAR_HOST_URL: ${{ vars.SONAR_HOST_URL || 'https://sonar.qa.guru' }}
+          SONAR_REQUIRED: ${{ vars.SONAR_REQUIRED || 'false' }}
+          SONAR_PROJECT_KEY: allure-notifications
+          IS_FORK: ${{ github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name != github.repository }}
+        run: bash scripts/ci-sonar.sh
+
+      - name: Job summary
+        if: always()
+        env:
+          SONAR_HOST_URL: ${{ vars.SONAR_HOST_URL || 'https://sonar.qa.guru' }}
+        run: |
+          {
+            echo "## Sonar (soft)"
+            echo ""
+            echo "- projectKey: \`allure-notifications\`"
+            echo "- host: \`${SONAR_HOST_URL}\`"
+            echo "- dashboard: ${SONAR_HOST_URL%/}/dashboard?id=allure-notifications"
+            echo "- SONAR_REQUIRED: \`${{ vars.SONAR_REQUIRED || 'false' }}\`"
+            echo "- commit: \`${GITHUB_SHA:0:7}\`"
+          } >> "$GITHUB_STEP_SUMMARY"
