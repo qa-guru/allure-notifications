@@ -236,10 +236,12 @@ test.describe('allure-notifications-builder smoke', () => {
     const enable = page.getByTestId('anb-bool-enableChart');
     const dark = page.getByTestId('anb-bool-darkMode');
     const terminal = page.getByTestId('anb-terminal');
+    const termPanel = page.getByTestId('anb-terminal-panel');
     const canvas = page.getByTestId('anb-canvas');
 
     await expect(canvas).toHaveAttribute('data-anb-dark', 'true');
     await expect(canvas).not.toHaveClass(/anb-canvas--chart-off/);
+    await expect(termPanel).not.toHaveClass(/panel--terminal-light/);
 
     await dark.locator('.plaque-field-seg__btn[data-value="false"]').click();
     await expect(dark.locator('.plaque-field-seg__btn--on')).toHaveAttribute(
@@ -249,6 +251,7 @@ test.describe('allure-notifications-builder smoke', () => {
     await expect(terminal).toContainText('"darkMode": false');
     await expect(canvas).toHaveAttribute('data-anb-dark', 'false');
     await expect(page.locator('html')).toHaveClass(/theme-light/);
+    await expect(termPanel).toHaveClass(/panel--terminal-light/);
 
     // Header theme toggle ↔ base.darkMode (same SSOT).
     await page.locator('[data-testid="header-theme-toggle"]').click();
@@ -259,10 +262,12 @@ test.describe('allure-notifications-builder smoke', () => {
     );
     await expect(terminal).toContainText('"darkMode": true');
     await expect(canvas).toHaveAttribute('data-anb-dark', 'true');
+    await expect(termPanel).not.toHaveClass(/panel--terminal-light/);
 
     await dark.locator('.plaque-field-seg__btn[data-value="false"]').click();
     await expect(page.locator('html')).toHaveClass(/theme-light/);
     await expect(canvas).toHaveAttribute('data-anb-dark', 'false');
+    await expect(termPanel).toHaveClass(/panel--terminal-light/);
 
     await enable.locator('.plaque-field-seg__btn[data-value="false"]').click();
     await expect(enable.locator('.plaque-field-seg__btn--on')).toHaveAttribute(

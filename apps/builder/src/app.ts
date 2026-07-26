@@ -423,11 +423,18 @@ function themeToggleButtons() {
   ];
 }
 
-/** Align page `html.theme-light` + header icon with jar `base.darkMode`. */
+/** Align page `html.theme-light` + header icon + terminal chrome with jar `base.darkMode`. */
 function syncPageThemeFromDarkMode(darkMode: boolean) {
   document.documentElement.classList.toggle('theme-light', !darkMode);
   for (const btn of themeToggleButtons()) {
     syncThemeToggleIcon(btn);
+  }
+  /* Terminal paper follows page theme (DS: panel--terminal-light). */
+  const termPanel =
+    document.querySelector<HTMLElement>('[data-testid="anb-terminal-panel"]') ??
+    document.getElementById('anb-terminal')?.closest<HTMLElement>('.panel--terminal');
+  if (termPanel) {
+    termPanel.classList.toggle('panel--terminal-light', !darkMode);
   }
 }
 
