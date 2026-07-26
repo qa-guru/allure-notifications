@@ -99,7 +99,7 @@ Java **5.0.8** Gradle multi-module lives under [`legacy/java/`](legacy/java/) (`
 
 ## CI surface
 
-See [docs/ci-cookbook.md](docs/ci-cookbook.md): `allure generate` → `allure-notifications send --config … --dry-run`. No `java -jar` on the 6.0 path.
+See [docs/ci-cookbook.md](docs/ci-cookbook.md): **primary** = `allure generate` → `allure-notifications send --config … --dry-run`. **Alternate** = Allure 3 plugin in `allurerc` ([`examples/allurerc.notifications.mjs`](examples/allurerc.notifications.mjs) · [`packages/plugin/README.md`](packages/plugin/README.md)). No `java -jar` on the 6.0 path.
 
 - **6.0 TS:** [`.github/workflows/ci-6.0.yml`](.github/workflows/ci-6.0.yml) — `pnpm install` + `pnpm typecheck` (`typescript@7`) + `pnpm test` on `master` + `feature/6.0*` + `feature/builder-ts` (Playwright Chromium for `apps/builder` e2e).
 - **Builder Pages:** [`.github/workflows/pages-builder.yml`](.github/workflows/pages-builder.yml) — build `apps/builder` TS → `js/`, sync vendor, deploy static (`index` / `css` / `js` / `vendor`) on `master` + `feature/6.0*` + `feature/builder-ts`; no Telegram secrets. Cutover runbook: [`docs/pages-cutover.md`](docs/pages-cutover.md).
@@ -214,4 +214,4 @@ See [docs/ci-cookbook.md](docs/ci-cookbook.md): `allure generate` → `allure-no
 
 ## Next
 
-Phase 5 **done**. Open: AI features (by OK); npm publish plugin with **6.0.5** (HQ OK). Do not bump pin without HQ.
+Phase 5 **done** + docs prep for plugin consumers. **Next = release 6.0.5** (npm publish plugin + pin bump), then AI features (by OK). Do not bump `VERSION` / publish without HQ.

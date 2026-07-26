@@ -1,4 +1,4 @@
-# npm publish — 6.0.0
+# npm publish — 6.0.*
 
 Publishable surface (not private):
 
@@ -8,6 +8,7 @@ Publishable surface (not private):
 | `packages/pyramid` | `@allure-notifications/pyramid` | palette / geometry |
 | `packages/core` | `@allure-notifications/core` | collage PNG (`@napi-rs/canvas`) |
 | `packages/cli` | **`allure-notifications`** | public bin → `npx allure-notifications` |
+| `packages/plugin` | `@allure-notifications/plugin` | Allure 3 thin plugin (Phase 5) — first public cut with **6.0.5** |
 
 Root workspace package is `@allure-notifications/monorepo` (**private** — not published). `apps/builder` stays private (Pages, not npm).
 
@@ -36,7 +37,7 @@ npm (2025+) rejects publish without **2FA on the account** or a **granular acces
        or: `npm config set //registry.npmjs.org/:_authToken npm_XXXXXXXX`
 4. Verify: `npm whoami` → your user; `npm org ls allure-notifications` → you are owner/admin.
 5. `pnpm test` green on the release commit.
-6. Git tag `v6.0.0` (GitHub Release) on this line.
+6. Git tag `v6.0.x` (GitHub Release) on this line.
 
 ### Check before publish
 
@@ -50,25 +51,44 @@ If publish still returns E403: the token is a web-session token (no Bypass 2FA) 
 
 ## Publish
 
-From repo root (branch with 6.0.0 packages):
+From repo root (release branch with bumped `6.0.x` packages):
 
 ```bash
 pnpm install
 pnpm test
 pnpm run publish:packages
-# or, in dependency order:
-# pnpm --filter @allure-notifications/config publish --access public --no-git-checks
-# pnpm --filter @allure-notifications/pyramid publish --access public --no-git-checks
-# pnpm --filter @allure-notifications/core publish --access public --no-git-checks
-# pnpm --filter allure-notifications publish --access public --no-git-checks
 ```
 
-`pnpm` rewrites `workspace:*` → `6.0.0` in the published tarball.
+`publish:packages` already includes **plugin**. pnpm filter order (dependency → consumers):
+
+1. `@allure-notifications/config`
+2. `@allure-notifications/pyramid`
+3. `@allure-notifications/core`
+4. `allure-notifications` (CLI bin)
+5. `@allure-notifications/plugin`
+
+Equivalent manual sequence:
+
+```bash
+pnpm --filter @allure-notifications/config publish --access public --no-git-checks
+pnpm --filter @allure-notifications/pyramid publish --access public --no-git-checks
+pnpm --filter @allure-notifications/core publish --access public --no-git-checks
+pnpm --filter allure-notifications publish --access public --no-git-checks
+pnpm --filter @allure-notifications/plugin publish --access public --no-git-checks
+```
+
+`pnpm` rewrites `workspace:*` → the release version in the published tarball.
+
+**6.0.5 note:** first release that publishes `@allure-notifications/plugin` (CLI + scoped libs already on npm through 6.0.4). Do not publish plugin alone without the matching CLI/core cut.
 
 ## Consumer
 
 ```bash
-npx allure-notifications@6.0.0 send --config config.json --live
+# primary — CLI pin from docs/allure-notifications/VERSION
+npx allure-notifications@6.0.4 send --config config.json --live
+
+# alternate (after 6.0.5) — Allure 3 plugin via allurerc
+# see examples/allurerc.notifications.mjs
 ```
 
 Secrets unchanged (ADR 008): `TELEGRAM_BOT_TOKEN`, `TELEGRAM_CHAT_ID`, `TELEGRAM_TOPIC_ID`.
