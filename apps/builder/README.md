@@ -10,9 +10,14 @@ Merged into the 6.0 monorepo as `apps/builder/` (Stage E). Pages deploy from thi
 
 Only: **870×1080** · **1080×1080** · **1410×1080**. No 1024×1280.
 
-## Config SSOT
+## Config + pyramid SSOT
 
-`@allure-notifications/config` (browser subpath, no zod) is the runtime SSOT. Stand/`http.server` cannot follow pnpm symlinks outside `apps/builder`, so `pnpm run sync-config` copies `browser.js` / `catalog.js` / `presets.js` into `vendor/allure-notifications-config/`. `index.html` import map maps `@allure-notifications/config` → that vendor copy. UI-only packing (`DEFAULT_TILE_W`, `PACK_*`, `WT_BAR_BASELINE`) stays in `js/app.js`. Parity: `tests/config-parity.test.mjs`.
+| Package | Role | Vendor sync |
+|---------|------|-------------|
+| `@allure-notifications/config` | catalog / presets / `createDefaultConfig` (browser, no zod) | `pnpm run sync-config` → `vendor/allure-notifications-config/` |
+| `@allure-notifications/pyramid` | `CORNER_RATIO` / `TIER_GAP_RATIO` + layer palette (`unit` = `#94ca66`) | `pnpm run sync-pyramid` → `vendor/allure-notifications-pyramid/` |
+
+Stand/`http.server` cannot follow pnpm symlinks outside `apps/builder`, so sync copies real files. `index.html` import map maps both bare specifiers → vendor. `js/app.js` injects `--layer-*` + geometry ratios from `@pyramid`. UI-only packing (`DEFAULT_TILE_W`, `PACK_*`, `WT_BAR_BASELINE`) stays local. Parity: `tests/config-parity.test.mjs` · `tests/pyramid-parity.test.mjs`.
 
 ## Stand
 
@@ -45,6 +50,7 @@ pnpm test
 ```
 
 - `tests/config-parity.test.mjs` — import `@allure-notifications/config` (SQ-1080 / presets / catalog)
+- `tests/pyramid-parity.test.mjs` — import `@allure-notifications/pyramid` (geometry / palette / vendor)
 - `tests/smoke.spec.js` — Playwright: header, zones, Reset → free `items`, CB-870 / SQ-1080 / WD-1410, export, panel bar
 - `tests/dogfood_jar.py` — needs jar + `build/pyramid-showcase`; skip unless `ANB_DOGFOOD_REQUIRED=1`
 

@@ -17,7 +17,9 @@ on:
       - 'apps/builder/js/**'
       - 'apps/builder/vendor/**'
       - 'apps/builder/scripts/sync-config.mjs'
+      - 'apps/builder/scripts/sync-pyramid.mjs'
       - 'packages/config/**'
+      - 'packages/pyramid/**'
       - '.github/workflows/pages-builder.yml'
       - 'docs/pages-cutover.md'
   workflow_dispatch:
@@ -58,8 +60,10 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
-      - name: Sync @config into apps/builder/vendor
-        run: pnpm --filter @allure-notifications/builder run sync-config
+      - name: Sync @config + @pyramid into apps/builder/vendor
+        run: |
+          pnpm --filter @allure-notifications/builder run sync-config
+          pnpm --filter @allure-notifications/builder run sync-pyramid
 
       - name: Assemble static site (index / css / js / vendor)
         run: |

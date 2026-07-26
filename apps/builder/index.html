@@ -29,11 +29,12 @@
   <link rel="stylesheet" href="vendor/design-system/css/widget-tile.css" />
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gridstack@11.3.0/dist/gridstack.min.css" />
   <link rel="stylesheet" href="css/app.css" />
-  <!-- Phase 4: bare specifier → vendor copy of @allure-notifications/config/browser (no zod). -->
+  <!-- Phase 4: bare specifier → vendor copies of @config/browser + @pyramid/browser. -->
   <script type="importmap">
   {
     "imports": {
-      "@allure-notifications/config": "./vendor/allure-notifications-config/browser.js"
+      "@allure-notifications/config": "./vendor/allure-notifications-config/browser.js",
+      "@allure-notifications/pyramid": "./vendor/allure-notifications-pyramid/browser.js"
     }
   }
   </script>

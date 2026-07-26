@@ -17,6 +17,9 @@ importers:
       '@allure-notifications/config':
         specifier: workspace:*
         version: link:../../packages/config
+      '@allure-notifications/pyramid':
+        specifier: workspace:*
+        version: link:../../packages/pyramid
     devDependencies:
       '@playwright/test':
         specifier: ^1.61.1

@@ -5,16 +5,18 @@
   "description": "Full config.json configurator for allure-notifications (apps/builder).",
   "scripts": {
     "sync-config": "node scripts/sync-config.mjs",
-    "pretest": "pnpm run sync-config",
+    "sync-pyramid": "node scripts/sync-pyramid.mjs",
+    "pretest": "pnpm run sync-config && pnpm run sync-pyramid",
     "test": "pnpm run test:unit && pnpm run test:e2e",
-    "test:unit": "node --test tests/config-parity.test.mjs",
+    "test:unit": "node --test tests/config-parity.test.mjs tests/pyramid-parity.test.mjs",
     "test:e2e": "PLAYWRIGHT_HEADLESS=1 playwright test",
     "test:headed": "PW_HEADED=1 playwright test --headed",
     "test:ui": "playwright test --ui",
     "test:dogfood-jar": "python tests/dogfood_jar.py"
   },
   "dependencies": {
-    "@allure-notifications/config": "workspace:*"
+    "@allure-notifications/config": "workspace:*",
+    "@allure-notifications/pyramid": "workspace:*"
   },
   "devDependencies": {
     "@playwright/test": "^1.61.1"

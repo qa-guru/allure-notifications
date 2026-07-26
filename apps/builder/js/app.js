@@ -12,6 +12,13 @@ import {
   createDefaultConfig,
   resolvePanelMeta,
 } from '@allure-notifications/config';
+import {
+  CORNER_RATIO,
+  PYRAMID_COLORS_DARK,
+  PYRAMID_COLORS_LIGHT,
+  STATUS_COLORS,
+  TIER_GAP_RATIO,
+} from '@allure-notifications/pyramid';
 import { mountHighlightedOutput } from '../vendor/design-system/js/code-highlight.js';
 
 /**
@@ -28,8 +35,9 @@ import { mountHighlightedOutput } from '../vendor/design-system/js/code-highligh
  * Terminal body canon: `.panel__code.ch-code` + CodeHighlight (always colored;
  * no blank pad rows before `{` / after `}`).
  *
- * Phase 4: catalog / presets / createDefaultConfig from `@allure-notifications/config`
- * (import map → vendor sync; see scripts/sync-config.mjs). UI-only packing stays local.
+ * Phase 4: catalog / presets from `@allure-notifications/config`; pyramid
+ * geometry + layer palette from `@allure-notifications/pyramid` (import map →
+ * vendor sync). UI-only packing stays local.
  */
 
 /** @typedef {{ w: number, h: number }} AnbCanvasSize */
@@ -312,6 +320,36 @@ function applyCanvasMetrics() {
   /* unitless — used by CSS aspect-ratio */
   root.style.setProperty('--anb-canvas-w', String(chart.width));
   root.style.setProperty('--anb-canvas-h', String(chart.height));
+}
+
+/**
+ * Drive `--layer-*` + geometry ratios from `@pyramid` (SSOT over DS token pin).
+ * Dark = `:root`, light = `html.theme-light` — header theme toggle stays untouched.
+ */
+function injectPyramidSsot() {
+  const id = 'anb-pyramid-ssot';
+  let style = document.getElementById(id);
+  if (!(style instanceof HTMLStyleElement)) {
+    style = document.createElement('style');
+    style.id = id;
+    document.head.appendChild(style);
+  }
+  /** @param {Record<string, string>} colors */
+  const layerBlock = (colors) =>
+    Object.entries(colors)
+      .map(([layer, hex]) => `  --layer-${layer}: ${hex};`)
+      .join('\n');
+  style.textContent = [
+    ':root {',
+    layerBlock(PYRAMID_COLORS_DARK),
+    `  --anb-pyramid-corner-ratio: ${CORNER_RATIO};`,
+    `  --anb-pyramid-tier-gap-ratio: ${TIER_GAP_RATIO};`,
+    `  --anb-pyramid-unit: ${STATUS_COLORS.passed};`,
+    '}',
+    'html.theme-light {',
+    layerBlock(PYRAMID_COLORS_LIGHT),
+    '}',
+  ].join('\n');
 }
 
 /**
@@ -1534,6 +1572,7 @@ function initGrid() {
 }
 
 function init() {
+  injectPyramidSsot();
   hydrateControls();
   bindControls();
   wireMessengerTabs();

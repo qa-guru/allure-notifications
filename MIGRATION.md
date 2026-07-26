@@ -68,7 +68,7 @@ Java **5.0.8** Gradle multi-module lives under [`legacy/java/`](legacy/java/) (`
 | **1** | `packages/config` — zod schema, PANEL_CATALOG, DEFAULT_ITEMS, SQ-1080 presets | **done** |
 | **2** | `packages/pyramid` — palette + geometry SSOT (not dashboard-overrides) | **done** |
 | **3** | `packages/core` + `cli` — native PNG, Telegram, dogfood, cookbooks; public **6.0.0** | **done** (core + cli dry-run/mock + live Telegram `--live` / ADR 008 dogfood) |
-| **4** | Builder import `@config` (browser SSOT); optional `@pyramid`; full TS / tsgo later | **config done** (import map → vendor sync); `@pyramid` deferred (no UI dep yet); full TS later |
+| **4** | Builder import `@config` (browser SSOT); optional `@pyramid`; full TS / tsgo later | **done** (`@config` + `@pyramid` import map → vendor sync); full TS later |
 | **5** | Optional thin `@allurereport/plugin-api` wrapper over `core` | optional |
 
 ## Anti-hack rules
@@ -169,7 +169,11 @@ See [docs/ci-cookbook.md](docs/ci-cookbook.md): `allure generate` → `allure-no
 - `apps/builder/scripts/sync-config.mjs` → `vendor/allure-notifications-config/` (real files; stand cannot follow pnpm symlink outside cwd)
 - `index.html` import map: `@allure-notifications/config` → vendor `browser.js`
 - `js/app.js` imports SSOT; local leftovers = packing / TG preview / vector UI only
-- `@allure-notifications/pyramid` — not wired (no geometry constants used in builder UI yet)
+- `@allure-notifications/pyramid/browser` — geometry (`CORNER_RATIO` / `TIER_GAP_RATIO`) + layer palette (`unit` = `#94ca66`)
+- `apps/builder/scripts/sync-pyramid.mjs` → `vendor/allure-notifications-pyramid/`
+- `index.html` import map: `@allure-notifications/pyramid` → vendor `browser.js`
+- `js/app.js` injects `--layer-*` + `--anb-pyramid-*` from `@pyramid`; packing UI stays local
+- Parity: `tests/config-parity.test.mjs` · `tests/pyramid-parity.test.mjs`
 - Verify: `pnpm --filter @allure-notifications/builder test` / root `pnpm test`
 
 ## Layout move notes (Java → `legacy/java`)
@@ -181,7 +185,7 @@ See [docs/ci-cookbook.md](docs/ci-cookbook.md): `allure generate` → `allure-no
 
 ## Pages prep notes (post-G)
 
-- Workflow deploys assembled `_site` from `apps/builder/` (+ `sync-config` for vendor `@config`).
+- Workflow deploys assembled `_site` from `apps/builder/` (+ `sync-config` / `sync-pyramid` for vendor `@config` + `@pyramid`).
 - Artifact includes `CNAME` = current prod hostname `allure-notifications.qa.guru` (checklist also mentions `allure.notifications.qa.guru` — confirm before DNS edits).
 - **Manual (GitHub UI):** enable Pages source = GitHub Actions; smoke on `qa-guru.github.io/allure-notifications/`; then move custom domain off `allure-notifications-builder` onto this repo ([`docs/pages-cutover.md`](docs/pages-cutover.md)).
 - Archive second repo = **after** domain cutover + separate HQ OK (checklist row 4).
