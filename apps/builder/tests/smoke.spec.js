@@ -249,6 +249,28 @@ test.describe('allure-notifications-builder smoke', () => {
     await expect(terminal).toContainText('"darkMode": false');
     await expect(canvas).toHaveAttribute('data-anb-dark', 'false');
 
+    // Page header theme must not flip collage chrome when darkMode stays true.
+    await dark.locator('.plaque-field-seg__btn[data-value="true"]').click();
+    await expect(canvas).toHaveAttribute('data-anb-dark', 'true');
+    const darkBg = await canvas.evaluate((el) => getComputedStyle(el).backgroundColor);
+    await page.locator('[data-testid="header-theme-toggle"]').click();
+    await expect(page.locator('html')).toHaveClass(/theme-light/);
+    await expect(canvas).toHaveAttribute('data-anb-dark', 'true');
+    await expect
+      .poll(async () => canvas.evaluate((el) => getComputedStyle(el).backgroundColor))
+      .toBe(darkBg);
+
+    await dark.locator('.plaque-field-seg__btn[data-value="false"]').click();
+    await expect(canvas).toHaveAttribute('data-anb-dark', 'false');
+    const lightBg = await canvas.evaluate((el) => getComputedStyle(el).backgroundColor);
+    expect(lightBg).not.toBe(darkBg);
+    await page.locator('[data-testid="header-theme-toggle"]').click();
+    await expect(page.locator('html')).not.toHaveClass(/theme-light/);
+    await expect(canvas).toHaveAttribute('data-anb-dark', 'false');
+    await expect
+      .poll(async () => canvas.evaluate((el) => getComputedStyle(el).backgroundColor))
+      .toBe(lightBg);
+
     await enable.locator('.plaque-field-seg__btn[data-value="false"]').click();
     await expect(enable.locator('.plaque-field-seg__btn--on')).toHaveAttribute(
       'data-value',

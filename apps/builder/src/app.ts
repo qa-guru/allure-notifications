@@ -25,7 +25,8 @@ import { mountHighlightedOutput } from '../vendor/design-system/js/code-highligh
 
 /**
  * apps/builder — TypeScript source (emit → `js/` for Pages / stand).
- * Theme: header.js toggles html.theme-light on the whole page.
+ * Page theme: header.js toggles `html.theme-light`.
+ * Collage theme: jar `base.darkMode` → `[data-anb-dark]` (independent of page).
  *
  * Free layout on 10×10. Canvas presets: 870×1080 · 1080×1080 · 1410×1080.
  * Output shape matches jar Config (top-level telegram; layout free + items).
@@ -340,7 +341,8 @@ function applyCanvasMetrics() {
 
 /**
  * Drive `--layer-*` + geometry ratios from `@pyramid` (SSOT over DS token pin).
- * Dark = `:root`, light = `html.theme-light` — header theme toggle stays untouched.
+ * Page chrome: `:root` / `html.theme-light` (header toggle).
+ * Collage + export preview: `[data-anb-dark]` from jar `base.darkMode` (independent).
  */
 function injectPyramidSsot() {
   const id = 'anb-pyramid-ssot';
@@ -354,6 +356,14 @@ function injectPyramidSsot() {
     Object.entries(colors)
       .map(([layer, hex]) => `  --layer-${layer}: ${hex};`)
       .join('\n');
+  const collageDark =
+    '.anb-canvas[data-anb-dark="true"], ' +
+    '.anb-export-popover__viewport[data-anb-dark="true"], ' +
+    '.anb-export-popover__stage[data-anb-dark="true"]';
+  const collageLight =
+    '.anb-canvas[data-anb-dark="false"], ' +
+    '.anb-export-popover__viewport[data-anb-dark="false"], ' +
+    '.anb-export-popover__stage[data-anb-dark="false"]';
   style.textContent = [
     ':root {',
     layerBlock(PYRAMID_COLORS_DARK),
@@ -362,6 +372,12 @@ function injectPyramidSsot() {
     `  --anb-pyramid-unit: ${STATUS_COLORS.passed};`,
     '}',
     'html.theme-light {',
+    layerBlock(PYRAMID_COLORS_LIGHT),
+    '}',
+    `${collageDark} {`,
+    layerBlock(PYRAMID_COLORS_DARK),
+    '}',
+    `${collageLight} {`,
     layerBlock(PYRAMID_COLORS_LIGHT),
     '}',
   ].join('\n');
@@ -915,16 +931,23 @@ function syncBoolSeg(root: HTMLElement, value: boolean) {
 }
 
 /**
- * Mirror jar flags onto the collage preview: `base.darkMode` → canvas theme,
+ * Mirror jar flags onto the collage preview: `base.darkMode` → canvas / export theme,
  * `base.enableChart` → editor/chart chrome gated.
  */
 function applyChartFlags() {
   const enableChart = Boolean(getPath('base.enableChart'));
   const darkMode = Boolean(getPath('base.darkMode'));
+  const anbDark = darkMode ? 'true' : 'false';
 
-  const canvas = document.getElementById('anb-canvas');
-  if (canvas instanceof HTMLElement) {
-    canvas.dataset.anbDark = darkMode ? 'true' : 'false';
+  for (const id of [
+    'anb-canvas',
+    'anb-export-popover-viewport',
+    'anb-export-popover-stage',
+  ]) {
+    const el = document.getElementById(id);
+    if (el instanceof HTMLElement) {
+      el.dataset.anbDark = anbDark;
+    }
   }
 
   const shell = document.getElementById('anb-canvas-shell');
