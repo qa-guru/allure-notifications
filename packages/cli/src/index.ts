@@ -36,6 +36,7 @@ export {
 } from "./telegram.js";
 
 export {
+  formatConfigValidationError,
   loadConfigFile,
   resolveConfigPaths,
   send,

@@ -1,5 +1,5 @@
 import assert from "node:assert/strict";
-import { mkdtemp, readFile, rm } from "node:fs/promises";
+import { mkdtemp, readFile, rm, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
@@ -156,6 +156,37 @@ describe("@allure-notifications/cli runCli integration", () => {
     const result = await runCli(["send"]);
     assert.equal(result.exitCode, 1);
     assert.match(result.stderr, /--config/);
+  });
+
+  it("invalid chart item sizes get path-scoped error (not Zod JSON dump)", async () => {
+    const dir = await mkdtemp(join(tmpdir(), "an-cli-bad-"));
+    const cfg = join(dir, "bad.json");
+    try {
+      await writeFile(
+        cfg,
+        JSON.stringify({
+          base: {
+            project: "bad",
+            allureFolder: dirname(FIXTURE_CONFIG),
+            chart: {
+              layout: "free",
+              width: 870,
+              height: 1080,
+              gridCols: 10,
+              gridRows: 10,
+              items: [{ type: "pie", x: 0, y: 0, w: 0, h: 0 }],
+            },
+          },
+        }),
+      );
+      const result = await runCli(["send", "--config", cfg, "--dry-run"]);
+      assert.equal(result.exitCode, 1);
+      assert.match(result.stderr, /invalid config/);
+      assert.match(result.stderr, /base\.chart\.items\.0\.w/);
+      assert.doesNotMatch(result.stderr, /"code":\s*"too_small"/);
+    } finally {
+      await rm(dir, { recursive: true, force: true });
+    }
   });
 });
 

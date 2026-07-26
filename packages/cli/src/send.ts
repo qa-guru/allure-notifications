@@ -72,6 +72,40 @@ export function resolveConfigPaths(config: Config, configDir: string): Config {
   return { ...config, base };
 }
 
+type ZodLikeIssue = { path: PropertyKey[]; message: string };
+
+function isZodLikeError(
+  err: unknown,
+): err is { issues: ZodLikeIssue[] } {
+  return (
+    !!err &&
+    typeof err === "object" &&
+    "issues" in err &&
+    Array.isArray((err as { issues: unknown }).issues)
+  );
+}
+
+/** Human-readable config validation errors (avoid raw Zod JSON dump). */
+export function formatConfigValidationError(
+  err: unknown,
+  configPath: string,
+): Error {
+  if (isZodLikeError(err)) {
+    const lines = err.issues.map((issue) => {
+      const path =
+        issue.path.length > 0 ? issue.path.join(".") : "(root)";
+      return `  - ${path}: ${issue.message}`;
+    });
+    return new Error(
+      `invalid config ${configPath}:\n${lines.join("\n")}`,
+    );
+  }
+  if (err instanceof Error) {
+    return err;
+  }
+  return new Error(String(err));
+}
+
 export async function loadConfigFile(configPath: string): Promise<Config> {
   const abs = resolve(configPath);
   const raw = await readFile(abs, "utf8");
@@ -82,8 +116,12 @@ export async function loadConfigFile(configPath: string): Promise<Config> {
     const msg = err instanceof Error ? err.message : String(err);
     throw new Error(`invalid JSON in ${abs}: ${msg}`);
   }
-  const config = parseConfig(data);
-  return resolveConfigPaths(config, dirname(abs));
+  try {
+    const config = parseConfig(data);
+    return resolveConfigPaths(config, dirname(abs));
+  } catch (err) {
+    throw formatConfigValidationError(err, abs);
+  }
 }
 
 /**

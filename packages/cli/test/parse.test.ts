@@ -1,7 +1,14 @@
 import assert from "node:assert/strict";
+import { createRequire } from "node:module";
 import { describe, it } from "node:test";
 
+import { VERSION, runCli } from "../src/cli.js";
 import { helpText, parseArgs } from "../src/parse.js";
+
+const require = createRequire(import.meta.url);
+const pkgVersion = (
+  require("../../package.json") as { version: string }
+).version;
 
 describe("@allure-notifications/cli parseArgs", () => {
   it("parses send --config path", () => {
@@ -67,5 +74,17 @@ describe("@allure-notifications/cli parseArgs", () => {
     assert.equal(parseArgs(["--help"]).command, "help");
     assert.equal(parseArgs(["-V"]).command, "version");
     assert.ok(helpText().includes("send --config"));
+  });
+});
+
+describe("@allure-notifications/cli VERSION", () => {
+  it("matches packages/cli/package.json (no stale 6.0.0 pin)", async () => {
+    assert.equal(VERSION, pkgVersion);
+    assert.match(VERSION, /^6\.0\.\d+$/);
+    assert.notEqual(VERSION, "6.0.0", "6.0.1+ must not report 6.0.0");
+
+    const result = await runCli(["-V"]);
+    assert.equal(result.exitCode, 0);
+    assert.equal(result.stdout.trim(), pkgVersion);
   });
 });

@@ -2,12 +2,19 @@
  * Programmatic CLI entry — used by bin and tests.
  */
 
+import { createRequire } from "node:module";
+
 import { helpText, parseArgs } from "./parse.js";
 import { send } from "./send.js";
 
 export const PACKAGE = "allure-notifications";
 export const PHASE = 3;
-export const VERSION = "6.0.0";
+
+/** Keep in sync with packages/cli/package.json (published npm version). */
+const require = createRequire(import.meta.url);
+export const VERSION = (
+  require("../../package.json") as { version: string }
+).version;
 
 export type RunCliResult = {
   exitCode: number;
