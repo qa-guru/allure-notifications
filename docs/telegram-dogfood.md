@@ -59,10 +59,15 @@ node packages/cli/dist/src/bin.js send \
 
 - Unit tests mock `fetch` — **no** live network in default `pnpm test`.
 - Optional real send in tests: `ALLURE_NOTIFICATIONS_LIVE_TEST=1` + token env (off in CI).
-- `.github/workflows/ci-6.0.yml` does **not** set live flags or Telegram secrets.
+- Quality contour **Q4**: job **`telegram`** in [`.github/workflows/ci-6.0.yml`](../.github/workflows/ci-6.0.yml) via [`scripts/ci-telegram.sh`](../scripts/ci-telegram.sh).
+  - PR / feature: `npx allure-notifications@6.0.4 send --config … --dry-run` (+ optional collage artifact).
+  - `master` + `workflow_dispatch`: `--live` when `TELEGRAM_*` present → topic **34**; else soft-skip.
+  - Forks: never `--live`.
+  - Config prefers this run’s `allure-report/` / `allure-results/`; fallback dogfood CB-870.
 
 ## See also
 
 - ADR 008 · monorepo `docs/adr/008-allure-notifications-monitoring.md`
-- CI cookbook dry-run: [`ci-cookbook.md`](ci-cookbook.md)
+- CI cookbook: [`ci-cookbook.md`](ci-cookbook.md) (§ Telegram Q4)
 - Hub plan: `projects/allure-notifications-home/PLAN-6.0.md`
+- Instance contour: monorepo `docs/allure-notifications/QUALITY-CONTOUR.md`

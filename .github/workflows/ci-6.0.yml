@@ -3,6 +3,7 @@
 # Q1: Allure results + generate + soft c8 coverage artifacts (no % gate).
 # Q2: Sonar upload + sonar-gate-wait (soft SONAR_REQUIRED=false).
 # Q3: TestOps upload+close via allurectl (informational; skip without ALLURE_*).
+# Q4: Telegram collage dry-run (PR) / live (master + workflow_dispatch; never forks).
 
 name: CI 6.0 (TypeScript)
 
@@ -23,6 +24,7 @@ on:
       - 'packages/**'
       - 'apps/**'
       - 'scripts/**'
+      - 'config/ci-telegram.json'
       - 'c8.config.json'
       - 'sonar-project.properties'
       - 'package.json'
@@ -293,4 +295,131 @@ jobs:
             fi
             echo "- commit: \`${GITHUB_SHA:0:7}\`"
             echo "- launch name: \`allure-notifications · ${{ github.ref_name }} · ${{ github.sha }}\`"
+          } >> "$GITHUB_STEP_SUMMARY"
+
+  telegram:
+    name: Telegram (dry-run / live)
+    needs: test
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    # PR / feature push: --dry-run (wiring must pass).
+    # master + workflow_dispatch: --live when TELEGRAM_* present; else soft-skip.
+    # Forks: never --live.
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Download allure-report
+        continue-on-error: true
+        uses: actions/download-artifact@v4
+        with:
+          name: allure-report
+          path: allure-report/
+
+      - name: Download allure-results
+        continue-on-error: true
+        uses: actions/download-artifact@v4
+        with:
+          name: allure-results
+          path: allure-results/
+
+      - name: Gate (mode)
+        id: gate
+        env:
+          IS_FORK: ${{ github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name != github.repository }}
+          EVENT_NAME: ${{ github.event_name }}
+          REF_NAME: ${{ github.ref_name }}
+          # Never pass token on fork PRs.
+          TELEGRAM_BOT_TOKEN: ${{ (github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository) && (secrets.TELEGRAM_BOT_TOKEN || secrets.TELEGRAM_TOKEN) || '' }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+        run: |
+          # Default: dry-run (PR + feature branches). Live only master push or workflow_dispatch.
+          MODE=dry-run
+          REASON=dry-run
+          if [[ "$IS_FORK" == "true" ]]; then
+            MODE=dry-run
+            REASON=fork-dry-run
+          elif [[ "$EVENT_NAME" == "workflow_dispatch" || ( "$EVENT_NAME" == "push" && "$REF_NAME" == "master" ) ]]; then
+            if [[ -n "${TELEGRAM_BOT_TOKEN}" && -n "${TELEGRAM_CHAT_ID}" ]]; then
+              MODE=live
+              REASON=live
+            else
+              MODE=skip
+              REASON=missing-secrets
+            fi
+          fi
+          echo "mode=${MODE}" >> "$GITHUB_OUTPUT"
+          echo "reason=${REASON}" >> "$GITHUB_OUTPUT"
+          echo "Gate: mode=${MODE} reason=${REASON}"
+
+      - name: Send Telegram collage
+        id: send
+        if: steps.gate.outputs.mode != 'skip'
+        env:
+          MODE: ${{ steps.gate.outputs.mode }}
+          CLI_PIN: '6.0.4'
+          REF_NAME: ${{ github.ref_name }}
+          SHORT_SHA: ${{ github.sha }}
+          BUILD_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+          TELEGRAM_BOT_TOKEN: ${{ (github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository) && (secrets.TELEGRAM_BOT_TOKEN || secrets.TELEGRAM_TOKEN) || '' }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID || '-1004381150566' }}
+          TELEGRAM_TOPIC_ID: ${{ vars.TELEGRAM_TOPIC_ID || vars.TELEGRAM_ALLURE_NOTIFICATIONS_TOPIC_ID || '34' }}
+        run: bash scripts/ci-telegram.sh
+
+      - name: Upload collage artifact
+        if: ${{ !cancelled() && steps.send.outputs.collage != '' }}
+        continue-on-error: true
+        uses: actions/upload-artifact@v4
+        with:
+          name: collage-telegram
+          path: collage-telegram.png
+          if-no-files-found: ignore
+          retention-days: 7
+
+      - name: Job summary
+        if: always()
+        env:
+          GATE_MODE: ${{ steps.gate.outputs.mode }}
+          GATE_REASON: ${{ steps.gate.outputs.reason }}
+          SEND_MODE: ${{ steps.send.outputs.mode }}
+          SEND_SOURCE: ${{ steps.send.outputs.source }}
+          MESSAGE_ID: ${{ steps.send.outputs.message_id }}
+          SEND_EXIT: ${{ steps.send.outputs.send_exit }}
+        run: |
+          {
+            echo "## Telegram (Q4)"
+            echo ""
+            echo "- topic: slug \`allure-notifications\` → id **34** (ADR 008)"
+            echo "- CLI pin: \`allure-notifications@6.0.4\`"
+            echo "- gate: \`${GATE_MODE}\` (\`${GATE_REASON}\`)"
+            if [[ "${GATE_MODE}" == "skip" ]]; then
+              echo "- status: soft-skip (missing TELEGRAM_* — not a merge blocker)"
+            else
+              echo "- send mode: \`${SEND_MODE:-${GATE_MODE}}\`"
+              echo "- config source: \`${SEND_SOURCE:-n/a}\`"
+              if [[ -n "${MESSAGE_ID}" ]]; then
+                echo "- status: live sendPhoto ok"
+                echo "- message_id: \`${MESSAGE_ID}\`"
+              elif [[ "${GATE_MODE}" == "dry-run" || "${SEND_MODE}" == "dry-run" ]]; then
+                if [[ "${SEND_EXIT}" == "0" ]]; then
+                  echo "- status: dry-run ok (no network)"
+                else
+                  echo "- status: dry-run failed (wiring — fix required)"
+                fi
+              else
+                echo "- status: live attempted (see job log; soft on API blip)"
+              fi
+            fi
+            echo "- commit: \`${GITHUB_SHA:0:7}\`"
           } >> "$GITHUB_STEP_SUMMARY"
