@@ -337,6 +337,36 @@ function applyCanvasMetrics() {
   /* unitless — used by CSS aspect-ratio */
   root.style.setProperty('--anb-canvas-w', String(chart.width));
   root.style.setProperty('--anb-canvas-h', String(chart.height));
+  syncEditorChrome();
+}
+
+/**
+ * Push jar chrome knobs onto the editor canvas (cardGap · headerHeight · tilePad).
+ * Matches CollageRenderer free-grid half-gap + TG title-bar scale.
+ */
+function syncEditorChrome() {
+  const chart = /** @type {{ cardGap?: number, headerHeight?: number, tilePad?: number }} */ (
+    state.base.chart
+  );
+  const cardGap =
+    chart.cardGap != null && Number.isFinite(Number(chart.cardGap))
+      ? Math.max(0, Number(chart.cardGap))
+      : DEFAULT_CARD_GAP;
+  const headerHeight =
+    chart.headerHeight != null && Number.isFinite(Number(chart.headerHeight))
+      ? Math.max(1, Number(chart.headerHeight))
+      : DEFAULT_HEADER_HEIGHT;
+  const tilePad =
+    chart.tilePad != null && Number.isFinite(Number(chart.tilePad))
+      ? Math.max(0, Number(chart.tilePad))
+      : DEFAULT_TILE_PAD;
+  const scale = headerHeight / WT_BAR_BASELINE;
+  const canvas = document.getElementById('anb-canvas');
+  if (!(canvas instanceof HTMLElement)) return;
+  canvas.style.setProperty('--anb-card-gap', `${cardGap}px`);
+  canvas.style.setProperty('--anb-bar-h', `${headerHeight}px`);
+  canvas.style.setProperty('--anb-title-size', `${(0.75 * scale).toFixed(3)}rem`);
+  canvas.style.setProperty('--wt-pad', `${tilePad}px`);
 }
 
 /**
@@ -949,6 +979,7 @@ function applyChartFlags() {
       el.dataset.anbDark = anbDark;
     }
   }
+  syncEditorChrome();
 
   const shell = document.getElementById('anb-canvas-shell');
   if (shell instanceof HTMLElement) {
@@ -1022,6 +1053,13 @@ function bindControls() {
     const path = t.getAttribute('data-anb-path');
     if (!path) return;
     setPath(path, controlValue(t));
+    if (
+      path === 'base.chart.cardGap' ||
+      path === 'base.chart.headerHeight' ||
+      path === 'base.chart.tilePad'
+    ) {
+      syncEditorChrome();
+    }
     renderTerminal();
     renderMessengerPreview();
   });
@@ -1037,6 +1075,13 @@ function bindControls() {
     const path = t.getAttribute('data-anb-path');
     if (!path) return;
     setPath(path, controlValue(t));
+    if (
+      path === 'base.chart.cardGap' ||
+      path === 'base.chart.headerHeight' ||
+      path === 'base.chart.tilePad'
+    ) {
+      syncEditorChrome();
+    }
     renderTerminal();
     renderMessengerPreview();
   });
