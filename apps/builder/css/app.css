@@ -723,11 +723,11 @@ html.theme-light .anb-panel__action:hover {
 .anb-canvas {
   --anb-bar-h: 22px;
   --anb-resize-size: 14px;
-  --anb-resize-ink: rgba(255, 255, 255, 0.72);
+  --anb-resize-ink: rgba(255, 255, 255, 0.48);
 }
 
 html.theme-light .anb-canvas {
-  --anb-resize-ink: rgba(26, 35, 48, 0.65);
+  --anb-resize-ink: rgba(26, 35, 48, 0.82);
 }
 
 .anb-canvas .grid-stack-item > .ui-resizable-handle {
