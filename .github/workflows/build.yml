@@ -136,6 +136,9 @@ jobs:
         from pathlib import Path
         cfg = json.loads(Path("config/ci-telegram.json").read_text())
         cfg["base"]["project"] = f"allure-notifications #{os.environ.get('GITHUB_RUN_NUMBER', '')}"
+        # Java Paths.get(...).toAbsolutePath() is CWD-relative (repo root), not config-dir.
+        cfg["base"]["allureFolder"] = "legacy/java/allure-notifications-api/build/allure-report"
+        cfg["base"]["allureResultsFolder"] = "legacy/java/allure-notifications-api/build/allure-results"
         cfg["base"]["links"] = {
             "report": "",
             "dashboard": "",
