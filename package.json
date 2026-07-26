@@ -12,7 +12,7 @@
     "test": "node scripts/run-tests.mjs",
     "coverage": "node scripts/run-coverage.mjs",
     "allure:generate": "rm -rf allure-report && allure generate allure-results --output allure-report",
-    "publish:packages": "pnpm --filter @allure-notifications/config --filter @allure-notifications/pyramid --filter @allure-notifications/core --filter allure-notifications publish --access public --no-git-checks",
+    "publish:packages": "pnpm --filter @allure-notifications/config --filter @allure-notifications/pyramid --filter @allure-notifications/core --filter allure-notifications --filter @allure-notifications/plugin publish --access public --no-git-checks",
     "typecheck": "pnpm -r run typecheck"
   },
   "devDependencies": {

@@ -12,9 +12,9 @@ There is **no 5.1** line. Historical Java A3 MVP stays at **5.0.8**; product con
 |------|--------|-------|--------|
 | **4.\*** | Allure 2 | Java | Historical A2 |
 | **5.\*** | Allure 3 | Java MVP (Gradle fat jar **5.0.8**) | **Historical build** under [`legacy/java/`](legacy/java/) — **keep forever**; bugfix / security only; **no TypeScript**; **do not delete** |
-| **6.\*** | Allure 3 | TypeScript / typescript-go · CLI · builder · A3 plugin · AI | **Product** on `master` — pin `docs/allure-notifications/VERSION` (**6.0.3** CLI) |
+| **6.\*** | Allure 3 | TypeScript / typescript-go · CLI · builder · A3 plugin · AI | **Product** on `master` — pin `docs/allure-notifications/VERSION` (**6.0.4** CLI) |
 
-Monorepo pin = **6.0.3**. Product packages: npm **`allure-notifications`** + scoped `@allure-notifications/*`.
+Monorepo pin = **6.0.4**. Product packages: npm **`allure-notifications`** + scoped `@allure-notifications/*` (plugin ships with next publish / **6.0.5**).
 
 ## Public product 6.\* (locked)
 
@@ -76,7 +76,7 @@ Java **5.0.8** Gradle multi-module lives under [`legacy/java/`](legacy/java/) (`
 | **2** | `packages/pyramid` — palette + geometry SSOT (not dashboard-overrides) | **done** |
 | **3** | `packages/core` + `cli` — native PNG, Telegram, dogfood, cookbooks; public **6.0.0** | **done** (core + cli dry-run/mock + live Telegram `--live` / ADR 008 dogfood) |
 | **4** | Builder import `@config` (browser SSOT); optional `@pyramid`; full TS / typescript@7 | **done** (`@config` + `@pyramid` import map → vendor sync); **full TS done** (`apps/builder/src` → emit `js/`, toolchain `typescript@7`) |
-| **5** | Thin `@allurereport/plugin-api` wrapper over `core` (`packages/plugin`) | **planned** (in-line for 6.\*, not optional forever) |
+| **5** | Thin `@allurereport/plugin-api` wrapper over `core` (`packages/plugin`) | **done** (`@allure-notifications/plugin` — `done` hook; dry-run default) |
 
 ## Anti-hack rules
 
@@ -200,6 +200,18 @@ See [docs/ci-cookbook.md](docs/ci-cookbook.md): `allure generate` → `allure-no
 - **Manual (GitHub UI):** enable Pages source = GitHub Actions; smoke on `qa-guru.github.io/allure-notifications/`; then move custom domain off `allure-notifications-builder` onto this repo ([`docs/pages-cutover.md`](docs/pages-cutover.md)).
 - Archive second repo = **after** domain cutover + separate HQ OK (checklist row 4).
 
+## Phase 5 notes (Allure 3 plugin)
+
+`@allure-notifications/plugin` (`packages/plugin/`):
+
+- Implements `@allurereport/plugin-api` `Plugin.done` (etalon: `@allurereport/plugin-slack`)
+- Pipeline: `parseConfig` → `loadReportAnalytics` / `renderCollagePng` (`@allure-notifications/core`, `@napi-rs/canvas`) → `deliver` (CLI messengers)
+- Options: `config` (path or inline), `mode: "dry-run" | "mock" | "live"` (**default dry-run**, no network), optional `out` / `reportFile`
+- Example: [`examples/allurerc.notifications.mjs`](examples/allurerc.notifications.mjs)
+- Tests: fixture dry-run → PNG + dry-run messenger (no network)
+- Verify: `pnpm --filter @allure-notifications/plugin test` / root `pnpm test` + `pnpm typecheck`
+- **Not in Phase 5:** npm publish / VERSION bump (propose **6.0.5**), AI features
+
 ## Next
 
-Post-G gaps: Pages **domain** cutover + archive (workflow ready); VERSION cutover. Telegram dogfood **done**. Do not bump pin without HQ.
+Phase 5 **done**. Open: AI features (by OK); npm publish plugin with **6.0.5** (HQ OK). Do not bump pin without HQ.

@@ -1,0 +1,32 @@
+{
+  "base": {
+    "project": "plugin-phase-5-dry-run",
+    "environment": "test",
+    "language": "en",
+    "allureFolder": "../../../core/test/fixtures/dogfood-report",
+    "allureResultsFolder": "../../../core/test/fixtures/dogfood-results",
+    "enableChart": true,
+    "darkMode": true,
+    "chart": {
+      "mode": "collage",
+      "layout": "free",
+      "width": 870,
+      "height": 1080,
+      "headerHeight": 68,
+      "cardGap": 14,
+      "gridCols": 10,
+      "gridRows": 10,
+      "items": [
+        { "type": "pie", "x": 0, "y": 0, "w": 5, "h": 5 },
+        { "type": "testingPyramid", "x": 5, "y": 0, "w": 5, "h": 5 },
+        { "type": "durations", "x": 0, "y": 5, "w": 10, "h": 5 }
+      ],
+      "pyramidFallback": "suites"
+    }
+  },
+  "telegram": {
+    "token": "0:phase-5-no-send",
+    "chat": "0",
+    "templatePath": "/templates/telegram.ftl"
+  }
+}
