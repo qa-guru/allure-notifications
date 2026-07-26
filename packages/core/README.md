@@ -26,8 +26,16 @@ const analytics = await loadReportAnalytics(config);
 const png: Buffer = await renderCollagePng(config, analytics);
 ```
 
-Stage C scope: free-layout collage with **pie** / **testingPyramid** / **durations**
-(+ empty-state stubs for other catalog tiles). Messengers / CLI = Stage D.
+Free-layout collage panels:
+
+| Kind | Types |
+|------|--------|
+| **Real (analytics)** | `pie` (alias `currentStatus`) · `testingPyramid` · `durations` (+ `groupBy: layer`) |
+| **Empty-state stubs** | Remaining `PANEL_CATALOG` slots + any unknown type → themed card (`No data yet`), **not** silent-drop |
+
+Empty-state body mirrors Java `EmptyStatePanel` (theme background, muted caption, marker bar).
+Card header title comes from `resolvePanelMeta` / `PANEL_CATALOG`. Full analytics for
+`statusDynamics` / `successRateDistribution` / `testResultSeverities` / suites = later OK.
 
 ## Verify
 

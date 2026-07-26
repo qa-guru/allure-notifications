@@ -6,7 +6,14 @@ import { fileURLToPath } from "node:url";
 import { describe, it } from "node:test";
 
 import { createCanvas, loadImage } from "@napi-rs/canvas";
-import { parseConfig } from "@allure-notifications/config";
+import {
+  DEFAULT_ITEMS,
+  PANEL_CATALOG,
+  createSq1080Config,
+  parseConfig,
+  resolvePanelMeta,
+  type ChartItem,
+} from "@allure-notifications/config";
 import {
   CORNER_RATIO,
   STATUS_COLORS,
@@ -14,13 +21,18 @@ import {
 } from "@allure-notifications/pyramid";
 
 import {
+  DEFAULT_EMPTY_MESSAGE,
   PNG_BACKEND,
   PYRAMID_GEOMETRY,
   buildAnalytics,
   readAllureResults,
   readSummary,
   renderCollagePng,
+  renderEmptyPanel,
+  resolveCardTitle,
+  themeFromDarkMode,
 } from "../src/index.js";
+import { panelContext } from "../src/collage/context.js";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const fixtures = join(__dirname, "../../test/fixtures");
@@ -275,3 +287,281 @@ describe("@allure-notifications/core collage", () => {
     );
   });
 });
+
+/** Catalog stubs without TS analytics yet (+ groupBy / by variants). */
+const EMPTY_STUB_TYPES = [
+  "statusTransitions",
+  "testBaseGrowthDynamics",
+  "coverageDiff",
+  "problemsDistribution",
+  "stabilityDistribution",
+  "durationDynamics",
+  "statusAgePyramid",
+] as const;
+
+const EMPTY_STUB_ITEMS: ChartItem[] = [
+  { type: "statusTransitions", x: 0, y: 0, w: 2, h: 2 },
+  { type: "testBaseGrowthDynamics", x: 2, y: 0, w: 2, h: 2 },
+  { type: "coverageDiff", x: 4, y: 0, w: 2, h: 2 },
+  {
+    type: "problemsDistribution",
+    x: 6,
+    y: 0,
+    w: 2,
+    h: 2,
+    by: "environment",
+  },
+  {
+    type: "stabilityDistribution",
+    x: 8,
+    y: 0,
+    w: 2,
+    h: 2,
+    groupBy: "feature",
+  },
+  {
+    type: "stabilityDistribution",
+    x: 0,
+    y: 2,
+    w: 2,
+    h: 2,
+    groupBy: "label-name:component",
+  },
+  { type: "durationDynamics", x: 2, y: 2, w: 2, h: 2 },
+  { type: "statusAgePyramid", x: 4, y: 2, w: 2, h: 2 },
+];
+
+describe("@allure-notifications/core empty-state panels", () => {
+  it("renderEmptyPanel: themed body + muted marker (Java parity)", async () => {
+    const theme = themeFromDarkMode(true);
+    const analytics = buildAnalytics(
+      {
+        statistic: {
+          total: 0,
+          passed: 0,
+          failed: 0,
+          broken: 0,
+          skipped: 0,
+          unknown: 0,
+        },
+        durationMs: 0,
+      },
+      [],
+    );
+    const config = parseConfig({
+      base: {
+        project: "empty",
+        allureFolder: "a",
+        allureResultsFolder: "r",
+        enableChart: true,
+      },
+    });
+    const ctx = panelContext(config, theme, 320, 180, analytics, {
+      showTitle: false,
+    });
+    const png = renderEmptyPanel(ctx);
+    assert.ok(png.length > 0);
+    assert.equal(png.subarray(0, 8).toString("hex"), "89504e470d0a1a0a");
+    const size = await pngSize(png);
+    assert.equal(size.w, 320);
+    assert.equal(size.h, 180);
+
+    const bg = await countNearColor(png, theme.background, 2, 2);
+    assert.ok(bg > 1000, `expected card background pixels, got ${bg}`);
+
+    // Marker bar uses muted gray (not emoji) — font-independent contract.
+    const muted = await countNearColor(png, { r: 150, g: 150, b: 150 }, 6, 1);
+    assert.ok(
+      muted >= 40,
+      `expected muted placeholder/marker pixels, got ${muted}`,
+    );
+    assert.equal(DEFAULT_EMPTY_MESSAGE, "No data yet");
+  });
+
+  it("resolveCardTitle: stub catalog ids → PANEL_CATALOG titles", () => {
+    const config = parseConfig({
+      base: {
+        project: "Title Project",
+        allureFolder: "a",
+        allureResultsFolder: "r",
+        enableChart: true,
+      },
+    });
+    const analytics = buildAnalytics(
+      {
+        statistic: {
+          total: 1,
+          passed: 1,
+          failed: 0,
+          broken: 0,
+          skipped: 0,
+          unknown: 0,
+        },
+        durationMs: 0,
+      },
+      [],
+    );
+
+    assert.equal(
+      resolveCardTitle({ type: "pie", x: 0, y: 0, w: 1, h: 1 }, config, analytics),
+      "Title Project",
+    );
+    assert.equal(
+      resolveCardTitle(
+        { type: "currentStatus", x: 0, y: 0, w: 1, h: 1 },
+        config,
+        analytics,
+      ),
+      "Title Project",
+    );
+    assert.equal(
+      resolveCardTitle(
+        { type: "durations", x: 0, y: 0, w: 1, h: 1, groupBy: "layer" },
+        config,
+        analytics,
+      ),
+      "Durations by layer (s)",
+    );
+
+    for (const item of EMPTY_STUB_ITEMS) {
+      const meta = resolvePanelMeta(item);
+      assert.ok(meta, `catalog meta for ${item.type}`);
+      assert.equal(
+        resolveCardTitle(item, config, analytics),
+        meta!.title,
+        `title for ${item.type}`,
+      );
+    }
+
+    // Key catalog ids (incl. analytics-deferred panels that stay empty-state for now).
+    for (const id of [
+      "statusTransitions",
+      "coverageDiff",
+      "stabilityByFeature",
+      "statusDynamics",
+      "successRateDistribution",
+      "testResultSeverities",
+    ]) {
+      const meta = PANEL_CATALOG.find((p) => p.id === id);
+      assert.ok(meta, id);
+      const title = resolveCardTitle(
+        {
+          type: meta!.type,
+          x: 0,
+          y: 0,
+          w: 1,
+          h: 1,
+          groupBy: meta!.groupBy,
+          by: meta!.by,
+        },
+        config,
+        analytics,
+      );
+      assert.equal(title, meta!.title);
+    }
+  });
+
+  it("each stub type + unknown → PNG tile (no throw / no silent skip)", async () => {
+    const summary = await readSummary(
+      join(fixtures, "allure3-report/summary.json"),
+    );
+    const results = await readAllureResults(join(fixtures, "allure-results"));
+    const analytics = buildAnalytics(summary, results);
+
+    const items: ChartItem[] = [
+      ...EMPTY_STUB_ITEMS,
+      { type: "totallyUnknownPanel", x: 6, y: 2, w: 2, h: 2 },
+      { type: "statusDynamics", x: 8, y: 2, w: 2, h: 2 },
+    ];
+    const config = parseConfig({
+      base: {
+        project: "empty-stubs",
+        allureFolder: join(fixtures, "allure3-report"),
+        allureResultsFolder: join(fixtures, "allure-results"),
+        enableChart: true,
+        darkMode: true,
+        chart: {
+          mode: "collage",
+          layout: "free",
+          width: 1000,
+          height: 600,
+          headerHeight: 34,
+          cardGap: 14,
+          gridCols: 10,
+          gridRows: 10,
+          items,
+        },
+      },
+    });
+
+    const png = await renderCollagePng(config, analytics);
+    assert.ok(png.length > 1000);
+    const size = await pngSize(png);
+    assert.equal(size.w, 1000);
+    assert.equal(size.h, 600);
+
+    // Empty bodies leave muted markers; unknown must not drop the tile.
+    const muted = await countNearColor(png, { r: 150, g: 150, b: 150 }, 8, 2);
+    assert.ok(
+      muted > 80,
+      `expected empty-state markers across stub tiles, got ${muted}`,
+    );
+
+    for (const t of EMPTY_STUB_TYPES) {
+      assert.ok(
+        items.some((i) => i.type === t),
+        `fixture includes stub ${t}`,
+      );
+    }
+    assert.equal(
+      resolveCardTitle(
+        { type: "totallyUnknownPanel", x: 0, y: 0, w: 1, h: 1 },
+        config,
+        analytics,
+      ),
+      "totallyUnknownPanel",
+    );
+  });
+
+  it("SQ-1080 dense mix (real + stub) renders 1080×1080", async () => {
+    const summary = await readSummary(
+      join(fixtures, "allure3-report/summary.json"),
+    );
+    const results = await readAllureResults(join(fixtures, "allure-results"));
+    const analytics = buildAnalytics(summary, results);
+
+    const raw = createSq1080Config({
+      project: "SQ-1080 empty polish",
+      allureFolder: join(fixtures, "allure3-report"),
+      allureResultsFolder: join(fixtures, "allure-results"),
+    });
+    const config = parseConfig({
+      ...raw,
+      base: {
+        ...raw.base,
+        darkMode: true,
+        enableChart: true,
+      },
+    });
+    assert.equal(config.base.chart?.items?.length, DEFAULT_ITEMS.length);
+
+    const png = await renderCollagePng(config, analytics);
+    const size = await pngSize(png);
+    assert.equal(size.w, 1080);
+    assert.equal(size.h, 1080);
+    assert.ok(png.length > 2000);
+
+    const unitGreen = await countNearColor(png, { r: 0x94, g: 0xca, b: 0x66 });
+    assert.ok(
+      unitGreen > 30,
+      `real pie/pyramid must still paint #94ca66, got ${unitGreen}`,
+    );
+
+    const muted = await countNearColor(png, { r: 150, g: 150, b: 150 }, 8, 2);
+    assert.ok(
+      muted > 40,
+      `SQ-1080 stub tiles need empty-state markers, got ${muted}`,
+    );
+  });
+});
+

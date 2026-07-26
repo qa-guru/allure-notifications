@@ -125,7 +125,10 @@ See [docs/ci-cookbook.md](docs/ci-cookbook.md): `allure generate` → `allure-no
 - Native collage PNG via **`@napi-rs/canvas`** (locked in package README) — not Playwright
 - Depends on `@allure-notifications/config` + `@allure-notifications/pyramid`
 - Allure 3 `summary.json` (`stats`) + `*-result.json` → `ReportAnalytics` → free-layout collage
-- Panels Stage C: **pie** / **testingPyramid** / **durations** (+ empty-state stubs)
+- Panels: **real** = pie / testingPyramid / durations (+ `groupBy: layer`); **empty-state stubs** =
+  other `PANEL_CATALOG` types + unknown tiles (Java `EmptyStatePanel` parity — themed card,
+  catalog title via `resolvePanelMeta`, muted `No data yet`; no silent-drop). Deferred full
+  analytics: statusDynamics / successRateDistribution / testResultSeverities / suites
 - Tests: fixture → PNG; unit green `#94ca66`; pixel/ahash vs
   monorepo `docs/allure-notifications/canon/collage-cb870-free-dogfood-5.0.3.png`
 - Verify: `pnpm --filter @allure-notifications/core test` / root `pnpm test`

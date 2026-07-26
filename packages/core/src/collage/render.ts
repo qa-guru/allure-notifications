@@ -4,7 +4,11 @@
  */
 
 import { createCanvas, loadImage, type SKRSContext2D } from "@napi-rs/canvas";
-import type { ChartItem, Config } from "@allure-notifications/config";
+import {
+  resolvePanelMeta,
+  type ChartItem,
+  type Config,
+} from "@allure-notifications/config";
 
 import type { ReportAnalytics } from "../report/types.js";
 import {
@@ -20,7 +24,10 @@ import {
 } from "../theme.js";
 import { panelContext } from "./context.js";
 import { renderDurationsPanel } from "./panels/durations.js";
-import { renderEmptyPanel } from "./panels/empty.js";
+import {
+  DEFAULT_EMPTY_MESSAGE,
+  renderEmptyPanel,
+} from "./panels/empty.js";
 import { renderPiePanel } from "./panels/pie.js";
 import {
   layerBreakdownFrom,
@@ -144,11 +151,16 @@ function pyramidTitle(config: Config, analytics: ReportAnalytics): string {
   return "Testing pyramid";
 }
 
-function panelTitle(
-  key: string | null,
+/**
+ * Card header title: real panels keep Stage C captions; stubs/unknown → PANEL_CATALOG.
+ * Exported for unit contract tests (no OCR).
+ */
+export function resolveCardTitle(
+  item: ChartItem,
   config: Config,
   analytics: ReportAnalytics,
 ): string {
+  const key = normalize(item.type);
   if (key === PANEL_PIE) {
     return pieTitle(config);
   }
@@ -156,19 +168,21 @@ function panelTitle(
     return pyramidTitle(config, analytics);
   }
   if (key === PANEL_DURATIONS) {
+    if (item.groupBy && item.groupBy.trim().toLowerCase() === "layer") {
+      return "Durations by layer (s)";
+    }
     return "Durations (s)";
   }
-  if (key === "statusdynamics") return "Динамика статусов";
-  if (key === "successratedistribution") return "Распределение успешности";
-  if (key === "testresultseverities") return "Results by severity";
-  if (key === "statustransitions") return "Переходы статусов";
-  if (key === "testbasegrowthdynamics") return "Рост тестовой базы";
-  if (key === "coveragediff") return "Дельта покрытия";
-  if (key === "problemsdistribution") return "Распределение проблем";
-  if (key === "stabilitydistribution") return "Распределение стабильности";
-  if (key === "durationdynamics") return "Динамика длительности";
-  if (key === "statusagepyramid") return "Возраст статусов";
-  return key ?? "Panel";
+  const meta = resolvePanelMeta({
+    type: item.type,
+    groupBy: item.groupBy,
+    by: item.by,
+  });
+  if (meta?.title) {
+    return meta.title;
+  }
+  const raw = item.type?.trim();
+  return raw && raw.length > 0 ? raw : "Panel";
 }
 
 function renderPanelPng(
@@ -195,7 +209,8 @@ function renderPanelPng(
   if (key === PANEL_DURATIONS) {
     return renderDurationsPanel(ctx);
   }
-  return renderEmptyPanel(ctx, "No data");
+  // Catalog stubs + unknown tiles: empty-state body (card chrome carries title).
+  return renderEmptyPanel(ctx, DEFAULT_EMPTY_MESSAGE);
 }
 
 async function drawCard(
@@ -343,22 +358,9 @@ export async function renderCollagePng(
   graphics.fillRect(0, 0, collageWidth, collageHeight);
 
   for (const item of items) {
-    const rawType = item.type;
-    const key = normalize(rawType);
-    let title: string;
-    if (
-      key === PANEL_DURATIONS &&
-      item.groupBy &&
-      item.groupBy.trim().toLowerCase() === "layer"
-    ) {
-      title = "Durations by layer (s)";
-    } else if (key != null) {
-      title = panelTitle(key, config, analytics);
-    } else if (!rawType || !rawType.trim()) {
-      title = "Panel";
-    } else {
-      title = rawType.trim();
-    }
+    const key = normalize(item.type);
+    // Unknown / stub types still draw a card — never silent-drop a free-grid tile.
+    const title = resolveCardTitle(item, config, analytics);
 
     let x = clamp(item.x, 0, cols - 1);
     let y = clamp(item.y, 0, rows - 1);

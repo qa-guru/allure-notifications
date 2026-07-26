@@ -31,7 +31,11 @@ export {
 } from "./report/results.js";
 export { buildAnalytics, loadReportAnalytics } from "./report/analytics.js";
 
-export { renderCollagePng } from "./collage/render.js";
+export { renderCollagePng, resolveCardTitle } from "./collage/render.js";
+export {
+  DEFAULT_EMPTY_MESSAGE,
+  renderEmptyPanel,
+} from "./collage/panels/empty.js";
 export {
   PYRAMID_GEOMETRY,
   layerBreakdownFrom,
