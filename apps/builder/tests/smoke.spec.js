@@ -30,7 +30,7 @@ test.describe('allure-notifications-builder smoke', () => {
     await expect(page.locator('#app-header')).not.toBeEmpty();
   });
 
-  test('header tool links: builder repo + allure-notifications jar', async ({
+  test('header tool links: builder repo + allure-notifications site', async ({
     page,
   }) => {
     await page.goto('/');
@@ -44,13 +44,13 @@ test.describe('allure-notifications-builder smoke', () => {
       'aria-label',
       'allure-notifications-builder',
     );
-    const jar = page.getByTestId('header-github-pages');
-    await expect(jar).toHaveAttribute(
+    const site = page.getByTestId('header-github-pages');
+    await expect(site).toHaveAttribute(
       'href',
-      'https://github.com/qa-guru/allure-notifications',
+      'https://allure-notifications.qa.guru',
     );
-    await expect(jar).toHaveAttribute('aria-label', 'allure-notifications');
-    await expect(jar.locator('.icon img[src*="allure3-logo"]')).toBeVisible();
+    await expect(site).toHaveAttribute('aria-label', 'allure-notifications');
+    await expect(site.locator('.icon img[src*="allure3-logo"]')).toBeVisible();
   });
 
   test('Reset → SQ-1080 free chart + chrome defaults in terminal', async ({
