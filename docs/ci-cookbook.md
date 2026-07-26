@@ -76,7 +76,7 @@ pnpm allure:generate      # allure generate allure-results --output allure-repor
 
 Notes:
 
-- Node before 26.1: reporter-only mode (pass/fail/skip) — no `allure-js-commons` runtime API preload required. CI uses Node 20.
+- Node before 26.1: reporter-only mode (pass/fail/skip) — no `allure-js-commons` runtime API preload required. CI uses Node 24 (`actions/setup-node@v6`).
 - `ALLURE_RESULTS_DIR` must point at the **repo root** `allure-results/` (root `scripts/run-tests.mjs`); do not write into package cwd.
 - Coverage excludes: `dist` test emit noise, `node_modules`, `vendor`, `test/fixtures`, `apps/builder/js`, `**/*.test.*`. Hard floors in [`c8.config.json`](../c8.config.json) (Q5). Collage/visual pixel gate stays in `pnpm test` — not mixed with % floor.
 - Forks/PR: no live secrets needed for this path (tests + Allure generate + coverage artifact).
@@ -168,15 +168,15 @@ jobs:
     if: ${{ github.event.workflow_run.conclusion == 'success' || github.event.workflow_run.conclusion == 'failure' }}
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
       - uses: pnpm/action-setup@v4
         with:
           version: 9.15.0
 
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v6
         with:
-          node-version: 20
+          node-version: 24
           cache: pnpm
 
       # … restore allure-results / checkout this repo as a path dependency, or use npx after publish …
@@ -190,7 +190,7 @@ jobs:
             --dry-run \
             --out collage.png
 
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         with:
           name: collage
           path: collage.png

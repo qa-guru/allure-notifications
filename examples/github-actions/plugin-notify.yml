@@ -29,11 +29,11 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 15
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v6
         with:
-          node-version: 20
+          node-version: 24
 
       # Pin ≥6.0.7 (main entry for Allure require.resolve; skip 6.0.6). Bump with VERSION checklist.
       - name: Install Allure 3 + notifications plugin
@@ -64,7 +64,7 @@ jobs:
           npx allure generate ./allure-results \
             --config ./examples/github-actions/allurerc.mjs
 
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         if: always()
         with:
           name: collage-plugin
