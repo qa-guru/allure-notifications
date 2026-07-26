@@ -346,21 +346,28 @@ function syncPageThemeFromDarkMode(darkMode) {
         syncThemeToggleIcon(btn);
     }
 }
-/** Header sun/moon also writes `base.darkMode` (same SSOT as Options seg). */
+/**
+ * Header sun/moon also writes `base.darkMode` (same SSOT as Options seg).
+ * Observe `html.theme-light` — do not rely on click/`closest` (Playwright may
+ * hit a detached SVG inside the icon after `setThemeIcon` rewrites the button).
+ * No loop: when jar already matches page theme, we skip writes.
+ */
 function wireHeaderThemeDarkModeSync() {
-    for (const btn of themeToggleButtons()) {
-        btn.addEventListener('click', () => {
-            const darkMode = !document.documentElement.classList.contains('theme-light');
-            if (Boolean(getPath('base.darkMode')) !== darkMode) {
-                setPath('base.darkMode', darkMode);
-                const field = document.querySelector('[data-anb-bool="base.darkMode"]');
-                if (field instanceof HTMLElement)
-                    syncBoolSeg(field, darkMode);
-            }
-            applyChartFlags();
-            renderTerminal();
-        });
-    }
+    const syncFromPageTheme = () => {
+        const darkMode = !document.documentElement.classList.contains('theme-light');
+        if (Boolean(getPath('base.darkMode')) === darkMode)
+            return;
+        setPath('base.darkMode', darkMode);
+        const field = document.querySelector('[data-anb-bool="base.darkMode"]');
+        if (field instanceof HTMLElement)
+            syncBoolSeg(field, darkMode);
+        applyChartFlags();
+        renderTerminal();
+    };
+    new MutationObserver(syncFromPageTheme).observe(document.documentElement, {
+        attributes: true,
+        attributeFilter: ['class'],
+    });
 }
 /**
  * Logical canvas px → displayed height from shell width (GridStack must not pin old height).
