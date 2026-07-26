@@ -28,14 +28,14 @@ export const DEFAULT_TILE_PAD = 6;
 
 /**
  * Default layout — 4-tile on full 10×10 substrate.
- * pie 5×5 · durationDynamics 5×3 (gap under it) · pyramid|durations h=4 · empty row 9.
+ * pie 4×4 · durationDynamics 6×4 · pyramid 3×3 | durations-by-layer 4×3 · empty cols 7–9 + rows 7–9.
  * See builder CANON.md.
  */
 export const DEFAULT_ITEMS: ReadonlyArray<ChartItem> = Object.freeze([
-  { type: "pie", x: 0, y: 0, w: 5, h: 5 },
-  { type: "durationDynamics", x: 5, y: 0, w: 5, h: 3 },
-  { type: "testingPyramid", x: 0, y: 5, w: 4, h: 4 },
-  { type: "durations", x: 4, y: 5, w: 6, h: 4, groupBy: "layer" },
+  { type: "pie", x: 0, y: 0, w: 4, h: 4 },
+  { type: "durationDynamics", x: 4, y: 0, w: 6, h: 4 },
+  { type: "testingPyramid", x: 0, y: 4, w: 3, h: 3 },
+  { type: "durations", x: 3, y: 4, w: 4, h: 3, groupBy: "layer" },
 ]);
 
 export type DefaultConfigOptions = {
