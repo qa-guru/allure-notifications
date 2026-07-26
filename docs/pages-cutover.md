@@ -6,7 +6,7 @@ Prod: [`allure-notifications.qa.guru`](https://allure-notifications.qa.guru/) on
 | Item | Value |
 |------|--------|
 | Source (target) | `qa-guru/allure-notifications` → static from `apps/builder/` (`index.html`, `css/`, `js/`, `vendor/`) |
-| Workflow | `.github/workflows/pages-builder.yml` — push `feature/6.0*` (path-filtered) or `workflow_dispatch` |
+| Workflow | `.github/workflows/pages-builder.yml` — push `master` + `feature/6.0*` (path-filtered) or `workflow_dispatch` |
 | Project URL (after Pages enabled) | `https://qa-guru.github.io/allure-notifications/` |
 | **Prod** | Custom domain **`allure-notifications.qa.guru`** on this repo (LE SSL · Enforce HTTPS) · DNS → `qa-guru.github.io` |
 | Archived second repo | [qa-guru/allure-notifications-builder](https://github.com/qa-guru/allure-notifications-builder) — `isArchived=true` (row 4) |

@@ -1,11 +1,12 @@
-# 6.0 TypeScript monorepo CI (feature/6.0* line).
-# Java 5.0.8 jar CI stays in build.yml (master only) — do not merge jobs.
+# 6.0 TypeScript monorepo CI (master + feature/6.0* line).
+# Java 5.0.8 jar CI stays in build.yml (master) — do not merge jobs.
 
 name: CI 6.0 (TypeScript)
 
 on:
   push:
     branches:
+      - master
       - 'feature/6.0*'
   pull_request:
     branches:

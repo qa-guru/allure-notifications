@@ -20,8 +20,8 @@ import {
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
-/** Walk up from dist/test until monorepo SSOT is found. */
-function findSsotPath(): string {
+/** Walk up from dist/test until monorepo SSOT is found (optional outside zds). */
+function findSsotPath(): string | null {
   let dir = __dirname;
   for (let i = 0; i < 12; i++) {
     const candidate = join(
@@ -33,10 +33,7 @@ function findSsotPath(): string {
     }
     dir = join(dir, "..");
   }
-  throw new Error(
-    "SSOT stacks/java-spring/tests/allure/pyramid-layers.json not found " +
-      "(run tests inside the zero-design-system checkout)",
-  );
+  return null;
 }
 
 type Ssot = {
@@ -46,8 +43,10 @@ type Ssot = {
   layers: Record<string, { light: string; dark: string }>;
 };
 
-function loadSsot(): Ssot {
-  return JSON.parse(readFileSync(findSsotPath(), "utf8")) as Ssot;
+function loadSsot(): Ssot | null {
+  const path = findSsotPath();
+  if (!path) return null;
+  return JSON.parse(readFileSync(path, "utf8")) as Ssot;
 }
 
 describe("@allure-notifications/pyramid geometry", () => {
@@ -65,8 +64,14 @@ describe("@allure-notifications/pyramid geometry", () => {
 });
 
 describe("@allure-notifications/pyramid palette vs SSOT", () => {
-  it("matches stacks/java-spring/tests/allure/pyramid-layers.json", () => {
+  it("matches stacks/java-spring/tests/allure/pyramid-layers.json", (t) => {
     const ssot = loadSsot();
+    if (!ssot) {
+      t.skip(
+        "SSOT only in zero-design-system checkout (standalone CI skips)",
+      );
+      return;
+    }
 
     assert.deepEqual([...LAYER_ORDER], ssot.order);
     assert.deepEqual({ ...STATUS_COLORS }, ssot.status);

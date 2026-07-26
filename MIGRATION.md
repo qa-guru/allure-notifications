@@ -10,10 +10,10 @@ There is **no 5.1** line. Product versions jump **5.0.\* (Java)** → **6.0.\* (
 
 | Line | Stack | Status |
 |------|-------|--------|
-| **5.0.\*** | Java Gradle fat jar (current **5.0.8**) | **Current / legacy freeze** — bugfix / security only; **no TypeScript** |
-| **6.0.\*** | TypeScript monorepo (CLI + builder + packages) | **Next line** — skeleton on `feature/6.0-phase-0-1`; not on `master` yet |
+| **5.0.\*** | Java Gradle fat jar (current **5.0.8**) | **Legacy freeze** under `legacy/java/` — bugfix / security only; **no TypeScript** |
+| **6.0.\*** | TypeScript monorepo (CLI + builder + packages) | **On `master`** — product line **6.0.1** (`npx allure-notifications`) |
 
-Monorepo pin (`docs/allure-notifications/VERSION`) = **6.0.0** (CLI cutover). Product packages ship as npm **`allure-notifications`** + scoped `@allure-notifications/*`. Java **5.0.8** stays in [`legacy/java/`](legacy/java/) for explicit legacy jobs only.
+Monorepo pin (`docs/allure-notifications/VERSION`) = **6.0.1** (CLI cutover). Product packages ship as npm **`allure-notifications`** + scoped `@allure-notifications/*`. Java **5.0.8** stays in [`legacy/java/`](legacy/java/) for explicit legacy jobs only.
 
 ## Public product (locked)
 
@@ -49,7 +49,7 @@ allure-notifications/                 # version line 6.0.*
   legacy/
     java/            # 5.0.* freeze (Gradle multi-module)
   pnpm-workspace.yaml
-  package.json       # "version": "6.0.0"
+  package.json       # "version": "6.0.1"
   MIGRATION.md
   docs/
     ci-cookbook.md
@@ -94,8 +94,8 @@ Java **5.0.8** Gradle multi-module lives under [`legacy/java/`](legacy/java/) (`
 
 See [docs/ci-cookbook.md](docs/ci-cookbook.md): `allure generate` → `allure-notifications send --config … --dry-run`. No `java -jar` on the 6.0 path.
 
-- **6.0 TS:** [`.github/workflows/ci-6.0.yml`](.github/workflows/ci-6.0.yml) — `pnpm install` + `pnpm test` on `feature/6.0*` (Playwright Chromium for `apps/builder` e2e).
-- **Builder Pages:** [`.github/workflows/pages-builder.yml`](.github/workflows/pages-builder.yml) — static `apps/builder/` (`index` / `css` / `js` / `vendor`) on `feature/6.0*`; no Telegram secrets. Cutover runbook: [`docs/pages-cutover.md`](docs/pages-cutover.md).
+- **6.0 TS:** [`.github/workflows/ci-6.0.yml`](.github/workflows/ci-6.0.yml) — `pnpm install` + `pnpm test` on `master` + `feature/6.0*` (Playwright Chromium for `apps/builder` e2e).
+- **Builder Pages:** [`.github/workflows/pages-builder.yml`](.github/workflows/pages-builder.yml) — static `apps/builder/` (`index` / `css` / `js` / `vendor`) on `master` + `feature/6.0*`; no Telegram secrets. Cutover runbook: [`docs/pages-cutover.md`](docs/pages-cutover.md).
 - **5.0.8 Java:** [`.github/workflows/build.yml`](.github/workflows/build.yml) — **master** only; cwd / paths → `legacy/java/`.
 
 ## Phase 1 notes
@@ -158,7 +158,7 @@ See [docs/ci-cookbook.md](docs/ci-cookbook.md): `allure generate` → `allure-no
 ## Stage F notes (CI)
 
 - Workflow: `.github/workflows/ci-6.0.yml` — Node 20 + pnpm 9.15 + Python 3.12; `pnpm install --frozen-lockfile`; Playwright Chromium; `pnpm test` (config/pyramid/core/cli + builder unit/e2e).
-- Triggers: push `feature/6.0*`; PRs into `feature/6.0*` or `master` with path filter on `packages/**` / `apps/**` / pnpm lockfiles / this workflow.
+- Triggers: push `master` + `feature/6.0*`; PRs into `feature/6.0*` or `master` with path filter on `packages/**` / `apps/**` / pnpm lockfiles / this workflow.
 - Java `build.yml` (master) left intact — no shared job / no VERSION bump / no live Telegram in 6.0 CI.
 - Cookbook: `docs/ci-cookbook.md` documents real `send --config --dry-run` (+ workspace `pnpm exec` pre-publish).
 - **Telegram dogfood (ADR 008):** CLI `--live` + [`docs/telegram-dogfood.md`](docs/telegram-dogfood.md); **not** wired into `ci-6.0.yml`.

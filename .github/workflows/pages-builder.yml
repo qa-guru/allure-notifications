@@ -9,6 +9,7 @@ name: Pages (builder)
 on:
   push:
     branches:
+      - master
       - 'feature/6.0*'
     paths:
       - 'apps/builder/index.html'
