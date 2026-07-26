@@ -8,9 +8,11 @@ on:
     branches:
       - master
       - 'feature/6.0*'
+      - 'feature/builder-ts'
   pull_request:
     branches:
       - 'feature/6.0*'
+      - 'feature/builder-ts'
       - master
     paths:
       - 'packages/**'
@@ -56,6 +58,9 @@ jobs:
 
       - name: Install Playwright Chromium
         run: pnpm --filter @allure-notifications/builder exec playwright install chromium --with-deps
+
+      - name: Typecheck (packages + builder, typescript@7)
+        run: pnpm typecheck
 
       - name: Test (packages + builder unit/e2e)
         env:

@@ -11,10 +11,14 @@ on:
     branches:
       - master
       - 'feature/6.0*'
+      - 'feature/builder-ts'
     paths:
       - 'apps/builder/index.html'
       - 'apps/builder/css/**'
       - 'apps/builder/js/**'
+      - 'apps/builder/src/**'
+      - 'apps/builder/tsconfig.json'
+      - 'apps/builder/package.json'
       - 'apps/builder/vendor/**'
       - 'apps/builder/scripts/sync-config.mjs'
       - 'apps/builder/scripts/sync-pyramid.mjs'
@@ -60,8 +64,9 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
-      - name: Sync @config + @pyramid into apps/builder/vendor
+      - name: Build builder TS → js/ + sync @config/@pyramid vendor
         run: |
+          pnpm --filter @allure-notifications/builder run build
           pnpm --filter @allure-notifications/builder run sync-config
           pnpm --filter @allure-notifications/builder run sync-pyramid
 

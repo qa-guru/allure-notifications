@@ -68,7 +68,7 @@ Java **5.0.8** Gradle multi-module lives under [`legacy/java/`](legacy/java/) (`
 | **1** | `packages/config` — zod schema, PANEL_CATALOG, DEFAULT_ITEMS, SQ-1080 presets | **done** |
 | **2** | `packages/pyramid` — palette + geometry SSOT (not dashboard-overrides) | **done** |
 | **3** | `packages/core` + `cli` — native PNG, Telegram, dogfood, cookbooks; public **6.0.0** | **done** (core + cli dry-run/mock + live Telegram `--live` / ADR 008 dogfood) |
-| **4** | Builder import `@config` (browser SSOT); optional `@pyramid`; full TS / tsgo later | **done** (`@config` + `@pyramid` import map → vendor sync); full TS later |
+| **4** | Builder import `@config` (browser SSOT); optional `@pyramid`; full TS / typescript@7 | **done** (`@config` + `@pyramid` import map → vendor sync); **full TS done** (`apps/builder/src` → emit `js/`, toolchain `typescript@7`) |
 | **5** | Optional thin `@allurereport/plugin-api` wrapper over `core` | optional |
 
 ## Anti-hack rules
@@ -77,7 +77,7 @@ Java **5.0.8** Gradle multi-module lives under [`legacy/java/`](legacy/java/) (`
 2. Production PNG without Playwright.
 3. Builder + CLI share one `@config`.
 4. Pyramid numbers live in one `@pyramid`.
-5. README: 5.0 Java legacy / 6.0 TypeScript; standalone utility.
+5. README: 4.\* A2/Java · 5.\* A3/Java MVP historical keep · 6.\* A3 TS+builder+plugin+AI.
 6. Stand `:3011` + Pages stay live across the builder merge.
 
 ## Out of scope
@@ -94,8 +94,8 @@ Java **5.0.8** Gradle multi-module lives under [`legacy/java/`](legacy/java/) (`
 
 See [docs/ci-cookbook.md](docs/ci-cookbook.md): `allure generate` → `allure-notifications send --config … --dry-run`. No `java -jar` on the 6.0 path.
 
-- **6.0 TS:** [`.github/workflows/ci-6.0.yml`](.github/workflows/ci-6.0.yml) — `pnpm install` + `pnpm test` on `master` + `feature/6.0*` (Playwright Chromium for `apps/builder` e2e).
-- **Builder Pages:** [`.github/workflows/pages-builder.yml`](.github/workflows/pages-builder.yml) — static `apps/builder/` (`index` / `css` / `js` / `vendor`) on `master` + `feature/6.0*`; no Telegram secrets. Cutover runbook: [`docs/pages-cutover.md`](docs/pages-cutover.md).
+- **6.0 TS:** [`.github/workflows/ci-6.0.yml`](.github/workflows/ci-6.0.yml) — `pnpm install` + `pnpm typecheck` (`typescript@7`) + `pnpm test` on `master` + `feature/6.0*` + `feature/builder-ts` (Playwright Chromium for `apps/builder` e2e).
+- **Builder Pages:** [`.github/workflows/pages-builder.yml`](.github/workflows/pages-builder.yml) — build `apps/builder` TS → `js/`, sync vendor, deploy static (`index` / `css` / `js` / `vendor`) on `master` + `feature/6.0*` + `feature/builder-ts`; no Telegram secrets. Cutover runbook: [`docs/pages-cutover.md`](docs/pages-cutover.md).
 - **5.0.8 Java:** [`.github/workflows/build.yml`](.github/workflows/build.yml) — **master** only; cwd / paths → `legacy/java/`.
 
 ## Phase 1 notes
