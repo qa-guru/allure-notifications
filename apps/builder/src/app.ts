@@ -57,6 +57,9 @@ function createDefaultState(): BuilderState {
   return createDefaultConfig();
 }
 
+/** Stable alias — always resolves to code SSOT (`createDefaultConfig` / DEFAULT_ITEMS). */
+const DEFAULT_VECTOR_ID = 'vector#default';
+
 const state: BuilderState = createDefaultState();
 
 let grid: GridStack | null = null;
@@ -148,12 +151,16 @@ function cloneSnap(snap: Record<string, unknown>) {
 function loadVectorRegistry(): Map<string, Record<string, unknown>> {
   const map = new Map();
   const defaults = createDefaultState();
-  map.set(fingerprintFromSnap(defaults), cloneSnap(defaults));
+  const defaultFp = fingerprintFromSnap(defaults);
+  map.set(defaultFp, cloneSnap(defaults));
+  map.set(DEFAULT_VECTOR_ID, cloneSnap(defaults));
   try {
     const raw = localStorage.getItem(VECTOR_REGISTRY_KEY);
     if (!raw) return map;
     const parsed = JSON.parse(raw);
     for (const [id, snap] of Object.entries(parsed)) {
+      /* Code SSOT wins over a stale localStorage `vector#default`. */
+      if (id === DEFAULT_VECTOR_ID) continue;
       if (snap && typeof snap === 'object' && 'base' in snap) {
         map.set(id, cloneSnap(/** @type {Record<string, unknown>} */ (snap)));
       }
@@ -180,9 +187,12 @@ const vectorRegistry = loadVectorRegistry();
 function rememberSnap(snap: Record<string, unknown>) {
   const id = fingerprintFromSnap(snap);
   vectorRegistry.set(id, cloneSnap(snap));
+  /* Keep alias pointed at code SSOT (not the live edited snap). */
+  vectorRegistry.set(DEFAULT_VECTOR_ID, cloneSnap(createDefaultState()));
   try {
     const obj: Record<string, Record<string, unknown>> = {};
     vectorRegistry.forEach((s, key) => {
+      if (key === DEFAULT_VECTOR_ID) return;
       obj[key] = s;
     });
     localStorage.setItem(VECTOR_REGISTRY_KEY, JSON.stringify(obj));
@@ -433,7 +443,7 @@ function renderVectorInput() {
   input.setAttribute('aria-invalid', vectorMiss ? 'true' : 'false');
   input.title = vectorMiss
     ? 'Не найден в localStorage — сначала получи этот vector, меняя опции'
-    : 'Отпечаток конфига · вставь известный vector# + Enter — подтянуть';
+    : 'Отпечаток конфига · Enter — подтянуть · vector#default — CB-870 layout';
 }
 
 function renderTerminal() {
@@ -444,6 +454,8 @@ function renderTerminal() {
 }
 
 /**
+ * Apply a caps snap to controls + grid. Grid footprints always come from
+ * `snap.base.chart.items` (vector state) — never from palette catalog defaults.
  * @param {Record<string, unknown>} snap
  */
 function applySnap(snap: Record<string, unknown>) {
@@ -464,6 +476,11 @@ function applySnap(snap: Record<string, unknown>) {
   renderVectorInput();
 }
 
+/** First paint / Reset — default vector = `createDefaultConfig` (DEFAULT_ITEMS on CB-870). */
+function applyDefaultVector() {
+  applySnap(createDefaultState());
+}
+
 /**
  * @param {string} raw
  */
@@ -474,6 +491,10 @@ function commitVector(raw: string) {
   if (!normalized || normalized === vectorId) {
     vectorMiss = false;
     renderVectorInput();
+    return;
+  }
+  if (normalized === DEFAULT_VECTOR_ID) {
+    applyDefaultVector();
     return;
   }
   const snap = vectorRegistry.get(normalized);
@@ -1324,9 +1345,9 @@ function loadItems(items: ChartItem[]) {
   syncItemsToState();
 }
 
-/** Full reset → CB-870 default (canvas 870×1080 + DEFAULT_ITEMS + empty fields). */
+/** Full reset → default vector (CB-870 + DEFAULT_ITEMS). */
 function resetToDefault() {
-  applySnap(createDefaultState());
+  applyDefaultVector();
 }
 
 function clearAll() {
@@ -1581,28 +1602,19 @@ function initGrid() {
 
 function init() {
   injectPyramidSsot();
-  hydrateControls();
   bindControls();
   wireMessengerTabs();
   wireExportPreviews();
   wireVectorInput();
-  applyCanvasMetrics();
   renderPalette();
   wireCanvasDrop();
   wireEditorChrome();
   initGrid();
-  loadItems(
-    /** @type {ChartItem[]} */ (
-      /** @type {{ items: ChartItem[] }} */ (state.base.chart).items
-    ),
-  );
-  setActiveMessenger('telegram');
-  scheduleFitEditorScale();
+  /* Grid layout SSOT = vector state; boot applies the default vector. */
+  applyDefaultVector();
   window.addEventListener('resize', () => {
     scheduleFitEditorScale();
   });
-  renderTerminal();
-  renderMessengerPreview();
 }
 
 init();

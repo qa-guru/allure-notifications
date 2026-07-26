@@ -7,8 +7,9 @@
 | Canvas | **870×1080** · grid **10×10** · cell **87×108** |
 | Presets only | **870×1080** · **1080×1080** · **1410×1080** (no 1024×1280) |
 | Panels | **17 catalog** (pie ↔ currentStatus · ChartType + groupBy/by) · mocks synced |
-| Layout | **4-tile on 10×10** — pie 4×4 · durationDynamics 6×4 · pyramid 3×3 \| durations-by-layer 4×3 · empty cols 7–9 + rows 7–9 |
-| Palette defaults | pie **4×4** · durationDynamics **6×4** · pyramid **3×3** · durations-by-layer **4×3** · остальные catalog defaults |
+| Layout | **default vector** → `createDefaultConfig` / `DEFAULT_ITEMS` on 10×10 — pie 4×4 · durationDynamics 6×4 · pyramid 3×3 \| durations-by-layer 4×3 · empty cols 7–9 + rows 7–9 |
+| Palette add | always **2×2** (catalog `defaultW/H`) — not mixed with grid / vector footprints |
+| Grid SSOT | `base.chart.items` from current vector · boot / Reset / `vector#default` → `applyDefaultVector()` |
 | Float / overlap | float **on** (exact x,y — no upward compact) · overlap off · min **1×1** |
 | Legacy dogfood | classic CB-870 (pie 5×5 · pyramid 5×5 · durations 10×5) remains in dogfood fixtures |
 
@@ -20,7 +21,7 @@
 | `cardGap` | **14** | Gap around/between cards (px). Jar **5.0.4+**. TG preview uses the same half-gap inset as `CollageRenderer.renderFree`. |
 | `tilePad` | **6** | Inner body pad → `--wt-pad`. **Preview-only** — jar has no field yet; exported JSON keeps it for builder/preview parity. |
 
-Reset → these three defaults + CB-870 canvas + `DEFAULT_ITEMS`.
+Reset / `vector#default` → default vector (`applyDefaultVector`) = these three defaults + CB-870 canvas + `DEFAULT_ITEMS`.
 
 ## 17 catalog
 
@@ -78,7 +79,7 @@ Telegram is **top-level** `telegram: { token, chat, topic, replyTo, templatePath
 
 | | |
 |--|--|
-| `vector#` | Editable fingerprint in `.panel__bar-end` · localStorage key `allure-notifications-builder-vector-registry` · Enter restores · Esc cancels · miss → `aria-invalid` |
+| `vector#` | Editable fingerprint in `.panel__bar-end` · localStorage key `allure-notifications-builder-vector-registry` · Enter restores · Esc cancels · miss → `aria-invalid` · alias **`vector#default`** = code SSOT (CB-870 layout) |
 | Actions | Icon-only **Reset → Download → Copy** (`.icon-btn.panel__action`, SVG 16×16 stroke 1.5) |
 | JSON | Top-level `vector: "vector#…"` metadata; hash payload is `{base, telegram}` without `vector` |
 | Body | Direct `.panel__code.ch-code` (no `__body` pad) · **always** `mountHighlightedOutput` / VS Code Dark+ · no blank rows before `{` / after `}` |
