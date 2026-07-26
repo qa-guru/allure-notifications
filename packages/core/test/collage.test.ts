@@ -25,8 +25,8 @@ import {
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const fixtures = join(__dirname, "../../test/fixtures");
 
-/** Walk up until monorepo docs/allure-notifications/canon is found. */
-function findCanonPng(): string {
+/** Walk up until monorepo docs/allure-notifications/canon is found (optional outside zds). */
+function findCanonPng(): string | null {
   let dir = __dirname;
   for (let i = 0; i < 14; i++) {
     const candidate = join(
@@ -38,10 +38,7 @@ function findCanonPng(): string {
     }
     dir = join(dir, "..");
   }
-  throw new Error(
-    "canon collage-cb870-free-dogfood-5.0.3.png not found " +
-      "(run tests inside the zero-design-system checkout)",
-  );
+  return null;
 }
 
 function cb870Config(opts: {
@@ -255,6 +252,8 @@ describe("@allure-notifications/core collage", () => {
     );
 
     const canonPath = findCanonPng();
+    // Pixel/hash vs monorepo canon — skipped in standalone GitHub checkout.
+    if (!canonPath) return;
     const canon = readFileSync(canonPath);
     const canonSize = await pngSize(canon);
     assert.equal(canonSize.w, 1024);
