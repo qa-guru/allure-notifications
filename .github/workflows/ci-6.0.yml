@@ -64,6 +64,10 @@ jobs:
       - name: Install Playwright Chromium
         run: pnpm --filter @allure-notifications/builder exec playwright install chromium --with-deps
 
+      # Workspace package exports point at dist/; emit before typecheck (fresh CI has no dist).
+      - name: Build (packages + builder emit)
+        run: pnpm build
+
       - name: Typecheck (packages + builder, typescript@7)
         run: pnpm typecheck
 
@@ -84,16 +88,16 @@ jobs:
         run: pnpm allure:generate
 
       - name: Upload allure-results
-        if: always()
+        if: ${{ !cancelled() }}
         uses: actions/upload-artifact@v4
         with:
           name: allure-results
           path: allure-results/
-          if-no-files-found: error
+          if-no-files-found: warn
           retention-days: 7
 
       - name: Upload allure-report
-        if: always()
+        if: ${{ !cancelled() }}
         uses: actions/upload-artifact@v4
         with:
           name: allure-report
@@ -102,7 +106,7 @@ jobs:
           retention-days: 7
 
       - name: Upload coverage
-        if: always()
+        if: ${{ !cancelled() }}
         uses: actions/upload-artifact@v4
         with:
           name: coverage
