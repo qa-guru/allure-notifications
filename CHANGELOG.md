@@ -1,5 +1,19 @@
 # Changelog
 
+## v 6.0.3
+
+### English
+
+- **Real analytics panels** — `statusDynamics` / `successRate` / `severities` / `suites` (history + results)
+- **Catalog stubs → real** — all 7 former stub types render data when A3/`history.jsonl` present; honest empty captions otherwise
+- **Builder full TypeScript** — `apps/builder/src` → `tsc` emit `js/`; workspace on `typescript@7`
+
+### Russian
+
+- **Реальные analytics-панели** — `statusDynamics` / `successRate` / `severities` / `suites` (history + results)
+- **Catalog stubs → real** — все 7 бывших stub-типов рисуют данные при наличии A3/`history.jsonl`; иначе честные empty captions
+- **Builder на TypeScript** — `apps/builder/src` → emit `js/`; workspace на `typescript@7`
+
 ## v 6.0.2
 
 ### English
