@@ -109,17 +109,14 @@ body {
 .anb-export-popover {
   position: fixed;
   z-index: 1200;
-  /* Room for WD-1410 (1410×1080) + pad/meta; JS scales stage to fit (keep in sync). */
+  /* Room for WD-1410 (1410×1080); JS scales stage to fit (keep in sync). */
   max-width: min(98vw, 1460px);
   max-height: min(96vh, 1160px);
-  padding: var(--space-2);
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-sm, 8px);
-  background: var(--color-surface, var(--color-bg));
-  box-shadow: 0 12px 40px rgba(26, 35, 48, 0.28);
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-2);
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
   overflow: hidden;
   pointer-events: auto;
 }
@@ -128,33 +125,14 @@ body {
   display: none !important;
 }
 
-.anb-export-popover__meta {
-  margin: 0;
-  font-size: var(--font-size-xs);
-  font-weight: 600;
-  letter-spacing: 0.02em;
-  color: var(--color-text-muted);
-  font-variant-numeric: tabular-nums;
-}
-
-.anb-export-popover__viewport {
-  overflow: hidden;
-  flex: 0 0 auto;
-  min-height: 0;
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-sm, 6px);
+.anb-export-popover__stage {
+  position: relative;
+  transform-origin: top left;
   /* Jar CollageRenderer.outerBackground dark */
   background: #222;
 }
 
-.anb-export-popover__stage {
-  position: relative;
-  transform-origin: top left;
-  background: #222;
-}
-
 /* Export collage theme follows jar `base.darkMode`, not page header theme. */
-.anb-export-popover__viewport[data-anb-dark="false"],
 .anb-export-popover__stage[data-anb-dark="false"] {
   background: #eef2f6;
 }
@@ -231,7 +209,6 @@ body {
  * Independent of page header `html.theme-light` (must not share selectors).
  */
 .anb-canvas[data-anb-dark="true"],
-.anb-export-popover__viewport[data-anb-dark="true"],
 .anb-export-popover__stage[data-anb-dark="true"] {
   --color-surface: #323232;
   --color-surface-soft: #3c3c3c;
@@ -243,7 +220,6 @@ body {
 }
 
 .anb-canvas[data-anb-dark="false"],
-.anb-export-popover__viewport[data-anb-dark="false"],
 .anb-export-popover__stage[data-anb-dark="false"] {
   --color-surface: #ffffff;
   --color-surface-soft: #f7f7f9;

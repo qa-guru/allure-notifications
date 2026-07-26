@@ -309,10 +309,8 @@ function injectPyramidSsot() {
         .map(([layer, hex]) => `  --layer-${layer}: ${hex};`)
         .join('\n');
     const collageDark = '.anb-canvas[data-anb-dark="true"], ' +
-        '.anb-export-popover__viewport[data-anb-dark="true"], ' +
         '.anb-export-popover__stage[data-anb-dark="true"]';
     const collageLight = '.anb-canvas[data-anb-dark="false"], ' +
-        '.anb-export-popover__viewport[data-anb-dark="false"], ' +
         '.anb-export-popover__stage[data-anb-dark="false"]';
     style.textContent = [
         ':root {',
@@ -655,32 +653,23 @@ function renderCollageStage(stage, mode) {
     if (typeof window.WidgetTileMocks !== 'undefined' && window.WidgetTileMocks.fill) {
         window.WidgetTileMocks.fill(stage, { force: true });
     }
-    const viewport = document.getElementById('anb-export-popover-viewport');
-    const meta = document.getElementById('anb-export-popover-meta');
+    const popover = document.getElementById('anb-export-popover');
     let scale = 1;
     if (mode === 'tg') {
         scale = TG_FEED_PREVIEW_WIDTH / chart.width;
     }
     else {
-        // Keep in sync with .anb-export-popover max-width/max-height + pad/meta chrome.
-        const maxBoxW = Math.min(window.innerWidth * 0.98, 1460) - 20;
-        const maxBoxH = Math.min(window.innerHeight * 0.96, 1160) - 48;
+        // Keep in sync with .anb-export-popover max-width/max-height.
+        const maxBoxW = Math.min(window.innerWidth * 0.98, 1460);
+        const maxBoxH = Math.min(window.innerHeight * 0.96, 1160);
         scale = Math.min(1, maxBoxW / chart.width, maxBoxH / chart.height);
     }
     stage.style.transform = scale === 1 ? 'none' : `scale(${scale})`;
     const displayW = Math.round(chart.width * scale);
     const displayH = Math.round(chart.height * scale);
-    if (viewport instanceof HTMLElement) {
-        viewport.style.width = `${displayW}px`;
-        viewport.style.height = `${displayH}px`;
-    }
-    if (meta) {
-        if (mode === 'tg') {
-            meta.textContent = `${displayW}×${displayH} · TG feed preview (~${TG_FEED_PREVIEW_WIDTH}px wide)`;
-        }
-        else {
-            meta.textContent = `${chart.width}×${chart.height} · full canvas export`;
-        }
+    if (popover instanceof HTMLElement) {
+        popover.style.width = `${displayW}px`;
+        popover.style.height = `${displayH}px`;
     }
 }
 /**
@@ -867,11 +856,7 @@ function applyChartFlags() {
     const enableChart = Boolean(getPath('base.enableChart'));
     const darkMode = Boolean(getPath('base.darkMode'));
     const anbDark = darkMode ? 'true' : 'false';
-    for (const id of [
-        'anb-canvas',
-        'anb-export-popover-viewport',
-        'anb-export-popover-stage',
-    ]) {
+    for (const id of ['anb-canvas', 'anb-export-popover-stage']) {
         const el = document.getElementById(id);
         if (el instanceof HTMLElement) {
             el.dataset.anbDark = anbDark;

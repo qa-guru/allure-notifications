@@ -174,14 +174,15 @@ test.describe('allure-notifications-builder smoke', () => {
     await page.getByTestId('anb-export-full').hover();
     const popover = page.getByTestId('anb-export-popover');
     await expect(popover).toBeVisible();
-    await expect(popover.locator('#anb-export-popover-meta')).toContainText('1410×1080');
+    await expect(popover.locator('#anb-export-popover-meta')).toHaveCount(0);
+    await expect(popover.locator('#anb-export-popover-viewport')).toHaveCount(0);
     const fit = await page.evaluate(() => {
-      const viewport = document.getElementById('anb-export-popover-viewport');
+      const pop = document.getElementById('anb-export-popover');
       const stage = document.getElementById('anb-export-popover-stage');
-      if (!(viewport instanceof HTMLElement) || !(stage instanceof HTMLElement)) {
+      if (!(pop instanceof HTMLElement) || !(stage instanceof HTMLElement)) {
         return { ok: false, reason: 'missing nodes' };
       }
-      const vw = viewport.getBoundingClientRect();
+      const box = pop.getBoundingClientRect();
       const scaleMatch = /scale\(([\d.]+)\)/.exec(stage.style.transform || '');
       const scale = scaleMatch ? Number(scaleMatch[1]) : 1;
       const logicalW = parseFloat(stage.style.width) || 0;
@@ -192,13 +193,13 @@ test.describe('allure-notifications-builder smoke', () => {
         ok:
           logicalW === 1410 &&
           logicalH === 1080 &&
-          Math.abs(vw.width - expectedW) <= 2 &&
-          Math.abs(vw.height - expectedH) <= 2,
+          Math.abs(box.width - expectedW) <= 2 &&
+          Math.abs(box.height - expectedH) <= 2,
         logicalW,
         logicalH,
         scale,
-        vwW: vw.width,
-        vwH: vw.height,
+        boxW: box.width,
+        boxH: box.height,
         expectedW,
         expectedH,
       };
