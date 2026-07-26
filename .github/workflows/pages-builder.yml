@@ -64,9 +64,11 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
+      # Workspace package exports point at dist/; emit deps before builder tsc
+      # (fresh CI has no dist — same reason as ci-6.0 "Build (packages + builder emit)").
       - name: Build builder TS → js/ + sync @config/@pyramid vendor
         run: |
-          pnpm --filter @allure-notifications/builder run build
+          pnpm --filter @allure-notifications/builder... run build
           pnpm --filter @allure-notifications/builder run sync-config
           pnpm --filter @allure-notifications/builder run sync-pyramid
 
