@@ -1,7 +1,10 @@
 #!/usr/bin/env bash
-# Soft Sonar upload + quality gate poll for allure-notifications (Q2).
-# Soft-skip when: fork / no SONAR_TOKEN / host down / gate ≠ PASSED (unless SONAR_REQUIRED=true).
-# Env: SONAR_TOKEN, SONAR_HOST_URL (default https://sonar.qa.guru), SONAR_REQUIRED (default false)
+# Sonar upload + quality gate poll for allure-notifications (Q5 harden).
+# Soft-skip forever: forks / no SONAR_TOKEN.
+# When token present + SONAR_REQUIRED=true: gate ≠ PASSED / host down / missing
+# coverage → fail job. Soft (SONAR_REQUIRED=false): warn + exit 0 on those.
+# Env: SONAR_TOKEN, SONAR_HOST_URL (default https://sonar.qa.guru),
+#      SONAR_REQUIRED (default false; Q5 repo var = true)
 set -euo pipefail
 
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
@@ -11,7 +14,15 @@ export SONAR_HOST_URL="${SONAR_HOST_URL:-https://sonar.qa.guru}"
 export SONAR_PROJECT_KEY="${SONAR_PROJECT_KEY:-allure-notifications}"
 export SONAR_REQUIRED="${SONAR_REQUIRED:-false}"
 
+# Always exit 0 — forks / missing token never block (even when SONAR_REQUIRED=true).
 soft_skip() {
+  local msg="$1"
+  echo "WARNING: $msg — soft-skip"
+  exit 0
+}
+
+# Fail when harden is on; otherwise soft-skip.
+required_or_soft() {
   local msg="$1"
   if [[ "$SONAR_REQUIRED" == "true" ]]; then
     echo "ERROR: $msg (SONAR_REQUIRED=true)" >&2
@@ -30,11 +41,11 @@ if [[ -z "${SONAR_TOKEN:-}" ]]; then
 fi
 
 if ! curl -sf --max-time 15 "${SONAR_HOST_URL%/}/api/system/status" >/dev/null; then
-  soft_skip "Sonar host unreachable: ${SONAR_HOST_URL}"
+  required_or_soft "Sonar host unreachable: ${SONAR_HOST_URL}"
 fi
 
 if [[ ! -f coverage/lcov.info ]]; then
-  soft_skip "coverage/lcov.info missing — run pnpm coverage / download artifact first"
+  required_or_soft "coverage/lcov.info missing — run pnpm coverage / download artifact first"
 fi
 
 echo "==> sonar-scanner → ${SONAR_HOST_URL} (${SONAR_PROJECT_KEY})"
@@ -48,7 +59,7 @@ if command -v python >/dev/null 2>&1; then
 elif command -v python3 >/dev/null 2>&1; then
   PY=python3
 else
-  soft_skip "no python for gate poll"
+  required_or_soft "no python for gate poll"
 fi
 
 set +e
@@ -63,4 +74,4 @@ if [[ $gate_ec -eq 0 ]]; then
   exit 0
 fi
 
-soft_skip "quality gate not PASSED (exit=${gate_ec})"
+required_or_soft "quality gate not PASSED (exit=${gate_ec})"

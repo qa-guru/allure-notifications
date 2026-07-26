@@ -1,6 +1,9 @@
 #!/usr/bin/env node
 /**
- * Soft coverage for packages only (Q1). Does not fail on % thresholds.
+ * Package coverage via c8 (Q5 harden).
+ * Thresholds in c8.config.json: lines ≥70%, statements ≥65% on
+ * packages/{config,pyramid,core,cli}/src (excludes dist/fixtures/vendor/tests).
+ * Collage/visual pixel gate stays in `pnpm test` — not mixed with % floor.
  * Writes Allure sidecar to .coverage-allure-tmp so it does not pollute
  * the primary allure-results/ from `pnpm test`.
  */

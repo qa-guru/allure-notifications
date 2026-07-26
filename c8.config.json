@@ -16,5 +16,7 @@
   "extension": [".js", ".ts"],
   "all": false,
   "skip-full": false,
-  "check-coverage": false
+  "check-coverage": true,
+  "lines": 70,
+  "statements": 65
 }

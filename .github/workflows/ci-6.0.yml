@@ -1,9 +1,10 @@
 # 6.0 TypeScript monorepo CI (master + feature/6.0* + quality contour lines).
 # Java 5.0.8 jar CI stays in build.yml (master) — do not merge jobs.
-# Q1: Allure results + generate + soft c8 coverage artifacts (no % gate).
-# Q2: Sonar upload + sonar-gate-wait (soft SONAR_REQUIRED=false).
+# Q1: Allure results + generate + c8 coverage artifacts.
+# Q2: Sonar upload + sonar-gate-wait.
 # Q3: TestOps upload+close via allurectl (informational; skip without ALLURE_*).
 # Q4: Telegram collage dry-run (PR) / live (master + workflow_dispatch; never forks).
+# Q5: Coverage % gate (lines≥70 / statements≥65) + SONAR_REQUIRED=true (forks/no token soft-skip).
 
 name: CI 6.0 (TypeScript)
 
@@ -83,7 +84,7 @@ jobs:
           ALLURE_RESULTS_DIR: ${{ github.workspace }}/allure-results
         run: pnpm test
 
-      - name: Coverage (packages, soft — no % gate)
+      - name: Coverage (packages, hard — lines≥70 / statements≥65)
         env:
           CI: true
           ALLURE_RESULTS_DIR: ${{ github.workspace }}/allure-results
@@ -120,11 +121,12 @@ jobs:
           retention-days: 7
 
   sonar:
-    name: Sonar (soft)
+    name: Sonar (hard)
     needs: test
     runs-on: ubuntu-latest
     timeout-minutes: 25
-    # Forks: job still runs for visibility, but never receives SONAR_TOKEN (soft-skip in script).
+    # Same-repo + SONAR_TOKEN: gate FAILED → fail job when SONAR_REQUIRED=true.
+    # Forks / no token: soft-skip (script exits 0 even if SONAR_REQUIRED=true).
 
     steps:
       - name: Checkout
@@ -148,12 +150,12 @@ jobs:
           name: coverage
           path: coverage/
 
-      - name: Sonar scan + gate (soft)
+      - name: Sonar scan + gate
         env:
           # Never pass token on fork PRs (secrets are empty there anyway; explicit for clarity).
           SONAR_TOKEN: ${{ (github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository) && secrets.SONAR_TOKEN || '' }}
           SONAR_HOST_URL: ${{ vars.SONAR_HOST_URL || 'https://sonar.qa.guru' }}
-          SONAR_REQUIRED: ${{ vars.SONAR_REQUIRED || 'false' }}
+          SONAR_REQUIRED: ${{ vars.SONAR_REQUIRED || 'true' }}
           SONAR_PROJECT_KEY: allure-notifications
           IS_FORK: ${{ github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name != github.repository }}
         run: bash scripts/ci-sonar.sh
@@ -164,12 +166,13 @@ jobs:
           SONAR_HOST_URL: ${{ vars.SONAR_HOST_URL || 'https://sonar.qa.guru' }}
         run: |
           {
-            echo "## Sonar (soft)"
+            echo "## Sonar (hard / Q5)"
             echo ""
             echo "- projectKey: \`allure-notifications\`"
             echo "- host: \`${SONAR_HOST_URL}\`"
             echo "- dashboard: ${SONAR_HOST_URL%/}/dashboard?id=allure-notifications"
-            echo "- SONAR_REQUIRED: \`${{ vars.SONAR_REQUIRED || 'false' }}\`"
+            echo "- SONAR_REQUIRED: \`${{ vars.SONAR_REQUIRED || 'true' }}\`"
+            echo "- forks / no token: soft-skip"
             echo "- commit: \`${GITHUB_SHA:0:7}\`"
           } >> "$GITHUB_STEP_SUMMARY"
 
