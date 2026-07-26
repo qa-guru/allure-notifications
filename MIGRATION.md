@@ -4,20 +4,25 @@ SSOT plan (workspace): `.cursor/plans/an_ts_migration_prompt_5f4be014.plan.md`
 Hub: `projects/allure-notifications-home/`  
 Upstream: [qa-guru/allure-notifications](https://github.com/qa-guru/allure-notifications)
 
-## Versions
+## Versions (locked)
 
-There is **no 5.1** line. Product versions jump **5.0.\* (Java)** → **6.0.\* (TypeScript)**.
+There is **no 5.1** line. Historical Java A3 MVP stays at **5.0.8**; product continues on **6.\***.
 
-| Line | Stack | Status |
-|------|-------|--------|
-| **5.0.\*** | Java Gradle fat jar (current **5.0.8**) | **Legacy freeze** under `legacy/java/` — bugfix / security only; **no TypeScript** |
-| **6.0.\*** | TypeScript monorepo (CLI + builder + packages) | **On `master`** — product line **6.0.1** (`npx allure-notifications`) |
+| Line | Allure | Stack | Status |
+|------|--------|-------|--------|
+| **4.\*** | Allure 2 | Java | Historical A2 |
+| **5.\*** | Allure 3 | Java MVP (Gradle fat jar **5.0.8**) | **Historical build** under [`legacy/java/`](legacy/java/) — **keep forever**; bugfix / security only; **no TypeScript**; **do not delete** |
+| **6.\*** | Allure 3 | TypeScript / typescript-go · CLI · builder · A3 plugin · AI | **Product** on `master` — pin `docs/allure-notifications/VERSION` (**6.0.2** CLI) |
 
-Monorepo pin (`docs/allure-notifications/VERSION`) = **6.0.1** (CLI cutover). Product packages ship as npm **`allure-notifications`** + scoped `@allure-notifications/*`. Java **5.0.8** stays in [`legacy/java/`](legacy/java/) for explicit legacy jobs only.
+Monorepo pin = **6.0.2**. Product packages: npm **`allure-notifications`** + scoped `@allure-notifications/*`.
 
-## Public product (locked)
+## Public product 6.\* (locked)
 
-Standalone **CLI** + **web builder**. Not an Allure 3 plugin, not a Jenkins plugin, not an HTML patcher.
+- Standalone **CLI** + **web builder** (included)
+- **Allure 3 plugin** (thin over `core`)
+- **TypeScript / typescript-go**
+- **AI features** (incremental)
+- Not a Jenkins plugin, not an HTML patcher
 
 ```bash
 npx allure generate
@@ -26,13 +31,15 @@ npx allure-notifications send --config config.json
 
 | | Do |
 |--|----|
-| TS CLI post-step after `allure generate` | **yes** — main 6.0 runtime |
+| TS CLI post-step after `allure generate` | **yes** — main 6.\* runtime |
 | Builder on GitHub Pages | **yes** — `apps/builder/` |
-| Native collage PNG | **yes** — `packages/core` (Canvas/Sharp/Skia TBD); never Playwright for production PNG |
+| Native collage PNG | **yes** — `packages/core` (`@napi-rs/canvas`); never Playwright for production PNG |
 | `packages/pyramid` SSOT (colors + geometry) | **yes** |
-| Thin A3 plugin wrapper | later optional (Phase 5) |
+| Thin A3 plugin wrapper | **yes** — in-line for 6.\* (`packages/plugin`) |
+| AI features | **yes** — in-line for 6.\* (by OK) |
 | `dashboard-overrides` / HTML inject in npm | **no** — private zds stack / upstream Allure only |
 | Merge into `allure-framework/allure3` | **no** |
+| Delete `legacy/java` / erase 5.0 | **no** — historical keep |
 
 ## Target tree
 
@@ -43,13 +50,13 @@ allure-notifications/                 # version line 6.0.*
     pyramid/         # palette + CORNER_RATIO / TIER_GAP / rounded tiers (SSOT)
     core/            # read A3 summary/results → native collage PNG → messengers
     cli/             # bin: allure-notifications send
-    plugin/          # optional later — thin Plugin over core
+    plugin/          # Allure 3 plugin — thin over core (6.*)
   apps/
     builder/         # was qa-guru/allure-notifications-builder; Pages CNAME
   legacy/
-    java/            # 5.0.* freeze (Gradle multi-module)
+    java/            # 5.0.8 historical Java A3 MVP — KEEP
   pnpm-workspace.yaml
-  package.json       # "version": "6.0.1"
+  package.json       # "version": "6.0.*"
   MIGRATION.md
   docs/
     ci-cookbook.md
@@ -69,7 +76,7 @@ Java **5.0.8** Gradle multi-module lives under [`legacy/java/`](legacy/java/) (`
 | **2** | `packages/pyramid` — palette + geometry SSOT (not dashboard-overrides) | **done** |
 | **3** | `packages/core` + `cli` — native PNG, Telegram, dogfood, cookbooks; public **6.0.0** | **done** (core + cli dry-run/mock + live Telegram `--live` / ADR 008 dogfood) |
 | **4** | Builder import `@config` (browser SSOT); optional `@pyramid`; full TS / typescript@7 | **done** (`@config` + `@pyramid` import map → vendor sync); **full TS done** (`apps/builder/src` → emit `js/`, toolchain `typescript@7`) |
-| **5** | Optional thin `@allurereport/plugin-api` wrapper over `core` | optional |
+| **5** | Thin `@allurereport/plugin-api` wrapper over `core` (`packages/plugin`) | **planned** (in-line for 6.\*, not optional forever) |
 
 ## Anti-hack rules
 
@@ -86,8 +93,8 @@ Java **5.0.8** Gradle multi-module lives under [`legacy/java/`](legacy/java/) (`
 - Merge into `allure-framework/allure3`
 - Jenkins Plugin Manager
 - collage-builder (`:3010`)
-- Allure 2 compat (unless explicitly requested later)
-- Deleting `legacy/java` before 6.0 dogfood parity
+- Reviving **4.\*** / Allure 2 as a product line (historical only)
+- **Deleting `legacy/java`** / erasing 5.0 history — forbidden
 - Big-bang rewrite without this file
 
 ## CI surface
