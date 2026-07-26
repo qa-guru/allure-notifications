@@ -952,6 +952,37 @@ html.theme-light .anb-canvas--chart-off::after {
   line-height: 1.45;
 }
 
+/*
+ * Terminal chrome follows page theme (product override — DS tone is otherwise
+ * independent of html.theme-light). CSS SSOT so light theme works even if JS
+ * class toggle is stale/cached.
+ */
+html.theme-light .anb-zone--terminal .panel--terminal {
+  --panel-bg: #ffffff;
+  --panel-border: rgba(28, 25, 23, 0.12);
+  --panel-bar-bg: rgba(28, 25, 23, 0.03);
+  --panel-title-color: rgba(28, 25, 23, 0.55);
+  --panel-code-color: #1c1917;
+  --panel-action-color: rgba(28, 25, 23, 0.55);
+  --panel-action-hover-color: rgba(28, 25, 23, 0.92);
+  --panel-action-hover-bg: rgba(28, 25, 23, 0.06);
+  --panel-action-focus: rgba(28, 25, 23, 0.65);
+  --panel-tab-border: rgba(28, 25, 23, 0.12);
+  --panel-tab-color: rgba(28, 25, 23, 0.45);
+  --panel-tab-hover-border: rgba(28, 25, 23, 0.28);
+  --panel-tab-hover-color: rgba(28, 25, 23, 0.72);
+  --panel-tab-active-color: rgba(28, 25, 23, 0.92);
+}
+
+html.theme-light .anb-zone--terminal .ch-theme--vscode .ch-tok-key { color: #0451a5; }
+html.theme-light .anb-zone--terminal .ch-theme--vscode .ch-tok-str { color: #a31515; }
+html.theme-light .anb-zone--terminal .ch-theme--vscode .ch-tok-num { color: #098658; }
+html.theme-light .anb-zone--terminal .ch-theme--vscode .ch-tok-bool { color: #0000ff; }
+html.theme-light .anb-zone--terminal .ch-theme--vscode .ch-tok-null { color: #0000ff; }
+html.theme-light .anb-zone--terminal .ch-theme--vscode .ch-tok-punct { color: #393a34; opacity: 0.55; }
+html.theme-light .anb-zone--terminal .ch-theme--vscode .ch-tok-comment { color: #008000; }
+html.theme-light .anb-zone--terminal .ch-theme--vscode .ch-tok-cmd { color: #795e26; }
+
 @media (min-width: 769px) {
   .anb-layout {
     grid-template-columns: repeat(3, minmax(0, 1fr));
