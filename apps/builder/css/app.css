@@ -65,29 +65,45 @@ body {
 .anb-preview-bar__exports {
   display: inline-flex;
   align-items: center;
-  gap: 6px;
+  gap: var(--space-1);
   margin-left: auto;
   flex-shrink: 0;
 }
 
-.anb-preview-bar__sep {
-  color: var(--color-text-muted);
-  font-size: var(--font-size-xs);
-  user-select: none;
-}
-
 .anb-export-trigger {
-  padding: 0;
-  border: none;
-  background: none;
-  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  height: 20px;
+  padding: 0 var(--space-2);
+  border: 1px solid color-mix(in srgb, var(--color-primary) 45%, transparent);
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--color-primary) 18%, transparent);
+  color: color-mix(in srgb, var(--color-primary) 85%, #fff);
   font: inherit;
+  font-size: var(--font-size-xs);
+  font-weight: 500;
+  line-height: 1;
+  white-space: nowrap;
+  cursor: pointer;
+  transition:
+    background var(--duration-fast, 120ms) var(--ease-out, ease),
+    border-color var(--duration-fast, 120ms) var(--ease-out, ease),
+    color var(--duration-fast, 120ms) var(--ease-out, ease);
 }
 
 .anb-export-trigger.is-open,
 .anb-export-trigger:hover,
 .anb-export-trigger:focus-visible {
-  color: var(--color-primary, var(--color-accent, #2563eb));
+  background: color-mix(in srgb, var(--color-primary) 28%, transparent);
+  border-color: color-mix(in srgb, var(--color-primary) 65%, transparent);
+  color: color-mix(in srgb, var(--color-primary) 95%, #fff);
+}
+
+.anb-export-trigger:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
 }
 
 .anb-export-popover {
@@ -703,9 +719,236 @@ html.theme-light .anb-panel__action:hover {
   z-index: 100;
 }
 
-.anb-canvas .grid-stack-item:hover .ui-resizable-handle,
-.anb-canvas .grid-stack-item.ui-resizable-resizing .ui-resizable-handle {
+/* —— Resize handles (GridStack) ——
+   Variants: arrow | bracket | dots | tick | se
+   Sizes via data-anb-resize-size: 12 | 14 | 16 | 20
+   Top corners sit below the title bar so they never cover × / Copy. */
+.anb-canvas {
+  --anb-bar-h: 22px;
+  --anb-resize-size: 14px;
+  --anb-resize-ink: rgba(255, 255, 255, 0.5);
+  --anb-resize-ink-strong: rgba(255, 255, 255, 0.88);
+}
+
+html.theme-light .anb-canvas {
+  --anb-resize-ink: rgba(26, 35, 48, 0.38);
+  --anb-resize-ink-strong: rgba(26, 35, 48, 0.78);
+}
+
+.anb-canvas[data-anb-resize-size="12"] { --anb-resize-size: 12px; }
+.anb-canvas[data-anb-resize-size="14"] { --anb-resize-size: 14px; }
+.anb-canvas[data-anb-resize-size="16"] { --anb-resize-size: 16px; }
+.anb-canvas[data-anb-resize-size="20"] { --anb-resize-size: 20px; }
+
+.anb-canvas .grid-stack-item > .ui-resizable-handle {
+  background-image: none !important;
+  background-color: transparent;
+  opacity: 0.35;
+  z-index: 1;
+  box-sizing: border-box;
+  transform: none !important;
+  transition: opacity 0.12s ease;
+}
+
+.anb-canvas .grid-stack-item:hover > .ui-resizable-handle,
+.anb-canvas .grid-stack-item.is-selected > .ui-resizable-handle,
+.anb-canvas .grid-stack-item.ui-resizable-resizing > .ui-resizable-handle {
   opacity: 1;
+}
+
+.anb-canvas .grid-stack-item > .ui-resizable-ne,
+.anb-canvas .grid-stack-item > .ui-resizable-nw,
+.anb-canvas .grid-stack-item > .ui-resizable-se,
+.anb-canvas .grid-stack-item > .ui-resizable-sw {
+  width: var(--anb-resize-size);
+  height: var(--anb-resize-size);
+}
+
+/* Overlap fix: NE/NW below header (actions stay clickable at z-index 5). */
+.anb-canvas .grid-stack-item > .ui-resizable-ne,
+.anb-canvas .grid-stack-item > .ui-resizable-nw {
+  top: var(--anb-bar-h);
+}
+
+.anb-canvas .grid-stack-item > .ui-resizable-n {
+  top: var(--anb-bar-h);
+  height: 8px;
+}
+
+.anb-canvas .grid-stack-item > .ui-resizable-e,
+.anb-canvas .grid-stack-item > .ui-resizable-w {
+  width: 8px;
+  top: calc(var(--anb-bar-h) + 6px);
+}
+
+.anb-canvas .grid-stack-item > .ui-resizable-s {
+  height: 8px;
+}
+
+.anb-canvas .grid-stack-item > .ui-resizable-ne::after,
+.anb-canvas .grid-stack-item > .ui-resizable-nw::after,
+.anb-canvas .grid-stack-item > .ui-resizable-se::after,
+.anb-canvas .grid-stack-item > .ui-resizable-sw::after {
+  content: "";
+  position: absolute;
+  inset: 2px;
+  pointer-events: none;
+  box-sizing: border-box;
+}
+
+/* A · arrow — quieter diagonal (same metaphor as GridStack default) */
+.anb-canvas[data-anb-resize="arrow"] .ui-resizable-ne::after,
+.anb-canvas[data-anb-resize="arrow"] .ui-resizable-nw::after,
+.anb-canvas[data-anb-resize="arrow"] .ui-resizable-se::after,
+.anb-canvas[data-anb-resize="arrow"] .ui-resizable-sw::after {
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' fill='none' stroke='%23ffffff' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.6' viewBox='0 0 20 20'><path d='m10 3 2 2H8l2-2v14l-2-2h4l-2 2'/></svg>");
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: 100% 100%;
+  opacity: 0.7;
+}
+
+html.theme-light .anb-canvas[data-anb-resize="arrow"] .ui-resizable-ne::after,
+html.theme-light .anb-canvas[data-anb-resize="arrow"] .ui-resizable-nw::after,
+html.theme-light .anb-canvas[data-anb-resize="arrow"] .ui-resizable-se::after,
+html.theme-light .anb-canvas[data-anb-resize="arrow"] .ui-resizable-sw::after {
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' fill='none' stroke='%231a2330' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.6' viewBox='0 0 20 20'><path d='m10 3 2 2H8l2-2v14l-2-2h4l-2 2'/></svg>");
+}
+
+.anb-canvas[data-anb-resize="arrow"] .ui-resizable-ne::after { transform: rotate(45deg); }
+.anb-canvas[data-anb-resize="arrow"] .ui-resizable-sw::after { transform: rotate(45deg); }
+.anb-canvas[data-anb-resize="arrow"] .ui-resizable-nw::after { transform: rotate(-45deg); }
+.anb-canvas[data-anb-resize="arrow"] .ui-resizable-se::after { transform: rotate(-45deg); }
+
+/* B · bracket — L-corners (Figma-like, calm) */
+.anb-canvas[data-anb-resize="bracket"] .ui-resizable-se::after {
+  border-right: 1.5px solid var(--anb-resize-ink-strong);
+  border-bottom: 1.5px solid var(--anb-resize-ink-strong);
+}
+.anb-canvas[data-anb-resize="bracket"] .ui-resizable-sw::after {
+  border-left: 1.5px solid var(--anb-resize-ink-strong);
+  border-bottom: 1.5px solid var(--anb-resize-ink-strong);
+}
+.anb-canvas[data-anb-resize="bracket"] .ui-resizable-ne::after {
+  border-right: 1.5px solid var(--anb-resize-ink-strong);
+  border-top: 1.5px solid var(--anb-resize-ink-strong);
+}
+.anb-canvas[data-anb-resize="bracket"] .ui-resizable-nw::after {
+  border-left: 1.5px solid var(--anb-resize-ink-strong);
+  border-top: 1.5px solid var(--anb-resize-ink-strong);
+}
+
+/* C · dots — 3-dot diagonal grip */
+.anb-canvas[data-anb-resize="dots"] .ui-resizable-se::after,
+.anb-canvas[data-anb-resize="dots"] .ui-resizable-nw::after {
+  background-image:
+    radial-gradient(circle closest-side, var(--anb-resize-ink-strong) 100%, transparent 100%),
+    radial-gradient(circle closest-side, var(--anb-resize-ink-strong) 100%, transparent 100%),
+    radial-gradient(circle closest-side, var(--anb-resize-ink-strong) 100%, transparent 100%);
+  background-size: 3px 3px, 3px 3px, 3px 3px;
+  background-position: 12% 12%, 50% 50%, 88% 88%;
+  background-repeat: no-repeat;
+}
+.anb-canvas[data-anb-resize="dots"] .ui-resizable-ne::after,
+.anb-canvas[data-anb-resize="dots"] .ui-resizable-sw::after {
+  background-image:
+    radial-gradient(circle closest-side, var(--anb-resize-ink-strong) 100%, transparent 100%),
+    radial-gradient(circle closest-side, var(--anb-resize-ink-strong) 100%, transparent 100%),
+    radial-gradient(circle closest-side, var(--anb-resize-ink-strong) 100%, transparent 100%);
+  background-size: 3px 3px, 3px 3px, 3px 3px;
+  background-position: 88% 12%, 50% 50%, 12% 88%;
+  background-repeat: no-repeat;
+}
+
+/* D · tick — short corner hairline */
+.anb-canvas[data-anb-resize="tick"] .ui-resizable-se::after {
+  inset: auto 3px 3px auto;
+  width: 55%;
+  height: 55%;
+  border-right: 1.5px solid var(--anb-resize-ink-strong);
+  border-bottom: 1.5px solid var(--anb-resize-ink-strong);
+}
+.anb-canvas[data-anb-resize="tick"] .ui-resizable-sw::after {
+  inset: auto auto 3px 3px;
+  width: 55%;
+  height: 55%;
+  border-left: 1.5px solid var(--anb-resize-ink-strong);
+  border-bottom: 1.5px solid var(--anb-resize-ink-strong);
+}
+.anb-canvas[data-anb-resize="tick"] .ui-resizable-ne::after {
+  inset: 3px 3px auto auto;
+  width: 55%;
+  height: 55%;
+  border-right: 1.5px solid var(--anb-resize-ink-strong);
+  border-top: 1.5px solid var(--anb-resize-ink-strong);
+}
+.anb-canvas[data-anb-resize="tick"] .ui-resizable-nw::after {
+  inset: 3px auto auto 3px;
+  width: 55%;
+  height: 55%;
+  border-left: 1.5px solid var(--anb-resize-ink-strong);
+  border-top: 1.5px solid var(--anb-resize-ink-strong);
+}
+
+/* E · se — only bottom-right glyph (other corners = invisible hit targets) */
+.anb-canvas[data-anb-resize="se"] .ui-resizable-ne::after,
+.anb-canvas[data-anb-resize="se"] .ui-resizable-nw::after,
+.anb-canvas[data-anb-resize="se"] .ui-resizable-sw::after {
+  display: none;
+}
+.anb-canvas[data-anb-resize="se"] .ui-resizable-se::after {
+  border-right: 1.5px solid var(--anb-resize-ink-strong);
+  border-bottom: 1.5px solid var(--anb-resize-ink-strong);
+}
+.anb-canvas[data-anb-resize="se"] .ui-resizable-ne,
+.anb-canvas[data-anb-resize="se"] .ui-resizable-nw,
+.anb-canvas[data-anb-resize="se"] .ui-resizable-sw {
+  opacity: 0 !important;
+}
+
+/* Fallback when variant attr missing → bracket */
+.anb-canvas:not([data-anb-resize]) .ui-resizable-se::after {
+  border-right: 1.5px solid var(--anb-resize-ink-strong);
+  border-bottom: 1.5px solid var(--anb-resize-ink-strong);
+}
+.anb-canvas:not([data-anb-resize]) .ui-resizable-sw::after {
+  border-left: 1.5px solid var(--anb-resize-ink-strong);
+  border-bottom: 1.5px solid var(--anb-resize-ink-strong);
+}
+.anb-canvas:not([data-anb-resize]) .ui-resizable-ne::after {
+  border-right: 1.5px solid var(--anb-resize-ink-strong);
+  border-top: 1.5px solid var(--anb-resize-ink-strong);
+}
+.anb-canvas:not([data-anb-resize]) .ui-resizable-nw::after {
+  border-left: 1.5px solid var(--anb-resize-ink-strong);
+  border-top: 1.5px solid var(--anb-resize-ink-strong);
+}
+
+/* Toolbar knobs for live A/B */
+.anb-resize-knobs {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-left: auto;
+  flex-wrap: wrap;
+}
+
+.anb-resize-knobs label {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 0.6875rem;
+  color: var(--color-text-muted);
+}
+
+.anb-resize-knobs select {
+  font: inherit;
+  font-size: 0.6875rem;
+  padding: 2px 6px;
+  border-radius: 4px;
+  border: 1px solid var(--color-border);
+  background: var(--color-bg);
+  color: var(--color-text);
 }
 
 .anb-group + .anb-group {
