@@ -53,7 +53,8 @@ jobs:
         run: |
           set -euo pipefail
           mkdir -p dist-pack
-          pnpm --filter @allure-notifications/plugin pack --pack-destination "$GITHUB_WORKSPACE/dist-pack"
+          # pnpm pack rejects --filter (Unknown option: recursive); pack from package dir
+          pnpm --filter @allure-notifications/plugin exec pnpm pack --pack-destination "$GITHUB_WORKSPACE/dist-pack"
           ls -la dist-pack/
 
       - name: Consumer-style npm install + dogfood notify

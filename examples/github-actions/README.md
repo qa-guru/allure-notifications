@@ -33,7 +33,9 @@ CLI post-step remains the simpler primary path when you only need notify-after-g
 ```bash
 # Pack workspace plugin (or npm i @allure-notifications/plugin@≥6.0.6 after publish)
 pnpm install && pnpm --filter @allure-notifications/plugin... build
-mkdir -p dist-pack && pnpm --filter @allure-notifications/plugin pack --pack-destination ./dist-pack
+mkdir -p dist-pack
+# pnpm pack rejects --filter (Unknown option: recursive); pack from package dir
+pnpm --filter @allure-notifications/plugin exec pnpm pack --pack-destination ./dist-pack
 
 rm -rf /tmp/an-plugin-smoke && mkdir /tmp/an-plugin-smoke && cd /tmp/an-plugin-smoke
 npm init -y && npm install allure@^3.14.3 "$REPO/dist-pack"/allure-notifications-plugin-*.tgz
