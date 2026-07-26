@@ -7,7 +7,7 @@
 | Canvas | **870×1080** · grid **10×10** · cell **87×108** |
 | Presets only | **870×1080** · **1080×1080** · **1410×1080** (no 1024×1280) |
 | Panels | **17 catalog** (pie ↔ currentStatus · ChartType + groupBy/by) · mocks synced |
-| Layout | **default vector** → `createDefaultConfig` / `DEFAULT_ITEMS` on 10×10 — pie 4×4 · durationDynamics 6×4 · pyramid 3×3 \| durations-by-layer 4×3 · empty cols 7–9 + rows 7–9 |
+| Layout | **default vector** → `createDefaultConfig` / `DEFAULT_ITEMS` on 10×10 — pie 4×5 · durationDynamics 6×5 · pyramid 4×5 \| durations-by-layer 6×5 (packed, Allure gutters) |
 | Palette add | always **2×2** (catalog `defaultW/H`) — not mixed with grid / vector footprints |
 | Grid SSOT | `base.chart.items` from current vector · boot / Reset / `vector#default` → `applyDefaultVector()` |
 | Float / overlap | float **on** (exact x,y — no upward compact) · overlap off · min **1×1** |
@@ -18,7 +18,7 @@
 | Field | Default | Role |
 |-------|---------|------|
 | `headerHeight` | **22** | Card title-bar height (px). Jar **5.0.3+**. TG preview sets `--wt-bar-height` (+ proportional title/dots from DS baseline 28). |
-| `cardGap` | **14** | Gap around/between cards (px). Jar **5.0.4+**. TG preview uses the same half-gap inset as `CollageRenderer.renderFree`. |
+| `cardGap` | **14** | Gap around/between cards (px) — equal edge & between (Allure / `widget-mosaic--post`). Jar **5.0.4+**. Editor: grid half-inset + content half-inset; TG preview = `CollageRenderer.renderFree`. |
 | `tilePad` | **6** | Inner body pad → `--wt-pad`. **Preview-only** — jar has no field yet; exported JSON keeps it for builder/preview parity. |
 
 Reset / `vector#default` → default vector (`applyDefaultVector`) = these three defaults + CB-870 canvas + `DEFAULT_ITEMS`.
@@ -63,10 +63,10 @@ Terminal exports full `config.json`. Chart block for jar free-grid (CB-870 defau
   "gridCols": 10,
   "gridRows": 10,
   "items": [
-    {"type": "pie", "x": 0, "y": 0, "w": 4, "h": 4},
-    {"type": "durationDynamics", "x": 4, "y": 0, "w": 6, "h": 4},
-    {"type": "testingPyramid", "x": 0, "y": 4, "w": 3, "h": 3},
-    {"type": "durations", "x": 3, "y": 4, "w": 4, "h": 3, "groupBy": "layer"}
+    {"type": "pie", "x": 0, "y": 0, "w": 4, "h": 5},
+    {"type": "durationDynamics", "x": 4, "y": 0, "w": 6, "h": 5},
+    {"type": "testingPyramid", "x": 0, "y": 5, "w": 4, "h": 5},
+    {"type": "durations", "x": 4, "y": 5, "w": 6, "h": 5, "groupBy": "layer"}
   ],
   "pyramidFallback": "suites"
 }

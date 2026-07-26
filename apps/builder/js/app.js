@@ -373,7 +373,18 @@ function canvasDisplayHeight(canvas) {
         return 0;
     return (displayW * chart.height) / chart.width;
 }
-/** Sync GridStack cellHeight to the displayed canvas height (no transform scale). */
+/** Resolve `base.chart.cardGap` (px, logical canvas). */
+function resolveCardGap() {
+    const chart = /** @type {{ cardGap?: number }} */ (state.base.chart);
+    return chart.cardGap != null && Number.isFinite(Number(chart.cardGap))
+        ? Math.max(0, Number(chart.cardGap))
+        : DEFAULT_CARD_GAP;
+}
+/**
+ * Sync GridStack cellHeight to the inset grid box (canvas minus cardGap).
+ * CSS: grid `inset: half-gap` + content `inset: half-gap` → edge = between = cardGap.
+ * `cardGap` is applied as CSS px (same as `--anb-card-gap`), not logical-canvas scale.
+ */
 function fitEditorScale() {
     const canvas = document.getElementById('anb-canvas');
     const gridEl = document.getElementById('anb-grid');
@@ -382,10 +393,14 @@ function fitEditorScale() {
     const displayH = canvasDisplayHeight(canvas);
     if (!(displayH > 0))
         return;
-    const cellH = displayH / GRID_ROWS;
+    const gapPx = resolveCardGap();
+    const gridH = Math.max(1, displayH - gapPx);
+    const cellH = gridH / GRID_ROWS;
     grid.cellHeight(cellH);
+    /* Height comes from absolute inset — clear any legacy inline size. */
     if (gridEl instanceof HTMLElement) {
-        gridEl.style.height = `${displayH}px`;
+        gridEl.style.height = '';
+        gridEl.style.width = '';
     }
     if (typeof grid.onParentResize === 'function') {
         grid.onParentResize();
@@ -976,6 +991,8 @@ function bindControls() {
             path === 'base.chart.headerHeight' ||
             path === 'base.chart.tilePad') {
             syncEditorChrome();
+            if (path === 'base.chart.cardGap')
+                fitAndFillEditor();
         }
         renderTerminal();
         renderMessengerPreview();
@@ -997,6 +1014,8 @@ function bindControls() {
             path === 'base.chart.headerHeight' ||
             path === 'base.chart.tilePad') {
             syncEditorChrome();
+            if (path === 'base.chart.cardGap')
+                fitAndFillEditor();
         }
         renderTerminal();
         renderMessengerPreview();
@@ -1520,7 +1539,8 @@ function initGrid() {
     }
     const canvas = document.getElementById('anb-canvas');
     const displayH = canvas instanceof HTMLElement ? canvasDisplayHeight(canvas) : 0;
-    const cellH = displayH > 0 ? displayH / GRID_ROWS : 40;
+    const gapPx = resolveCardGap();
+    const cellH = displayH > 0 ? Math.max(1, displayH - gapPx) / GRID_ROWS : 40;
     grid = GridStackCtor.init({
         column: GRID_COLS,
         row: GRID_ROWS,
