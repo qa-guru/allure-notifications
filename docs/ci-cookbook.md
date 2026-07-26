@@ -38,7 +38,7 @@ Fixture config already points at `packages/core/test/fixtures/dogfood-report` + 
 
 ## GitHub Actions — product CI (this repo)
 
-TS tests live in [`.github/workflows/ci-6.0.yml`](../.github/workflows/ci-6.0.yml) (`pnpm i` + `pnpm typecheck` + `pnpm test` + soft `pnpm coverage` + `pnpm allure:generate` on `master` + `feature/6.0*` + `feature/quality-*`). Artifacts: `allure-results/` · `allure-report/` · `coverage/` (retain ≥7d). Job **Sonar (soft)** needs coverage → `scripts/ci-sonar.sh` + vendored `scripts/sonar-gate-wait.py` (`projectKey=allure-notifications`; `SONAR_REQUIRED=false`). Builder Pages: [`pages-builder.yml`](../.github/workflows/pages-builder.yml) (static `apps/builder/` on `master` + `feature/6.0*`; see [`pages-cutover.md`](pages-cutover.md)). Java jar CI stays in [`build.yml`](../.github/workflows/build.yml) (**master** only; cwd `legacy/java`).
+TS tests live in [`.github/workflows/ci-6.0.yml`](../.github/workflows/ci-6.0.yml) (`pnpm i` + `pnpm typecheck` + `pnpm test` + soft `pnpm coverage` + `pnpm allure:generate` on `master` + `feature/6.0*` + `feature/quality-*`). Artifacts: `allure-results/` · `allure-report/` · `coverage/` (retain ≥7d). Job **Sonar (soft)** needs coverage → `scripts/ci-sonar.sh` + vendored `scripts/sonar-gate-wait.py` (`projectKey=allure-notifications`; `SONAR_REQUIRED=false`). Job **TestOps (informational)** needs `allure-results` → `setup-allurectl@v1` + `allurectl upload` + close (soft-skip without `ALLURE_*`; forks never upload). Builder Pages: [`pages-builder.yml`](../.github/workflows/pages-builder.yml) (static `apps/builder/` on `master` + `feature/6.0*`; see [`pages-cutover.md`](pages-cutover.md)). Java jar CI stays in [`build.yml`](../.github/workflows/build.yml) (**master** only; cwd `legacy/java`).
 
 ## Own tests → Allure results (Q1)
 
@@ -82,6 +82,18 @@ python scripts/sonar-gate-wait.py --project-key allure-notifications --dry-run
 # optional: after pnpm coverage, full soft path (skips without SONAR_TOKEN)
 SONAR_REQUIRED=false bash scripts/ci-sonar.sh
 ```
+
+## TestOps (Q3, informational)
+
+Upload this repo’s own `allure-results/` to Allure TestOps after the test job. Ethalon shape: `allure-framework/setup-allurectl@v1` → `allurectl upload allure-results` → close launch. **Not** a merge blocker (`continue-on-error` + soft-skip).
+
+| Var / secret | Kind | Default / note |
+|--------------|------|----------------|
+| `ALLURE_TOKEN` | secret | never on fork PRs; never commit |
+| `ALLURE_ENDPOINT` | var | `https://allure.qa.guru` |
+| `ALLURE_PROJECT_ID` | var | TestOps project id (GH var only — not in git) |
+
+Launch name: `allure-notifications · <ref_name> · <sha>`. Job summary prints the launch URL when upload succeeds. Missing secrets / empty results / forks → soft-skip (job still green).
 
 ## GitHub Actions — consumer notify (dry-run)
 
