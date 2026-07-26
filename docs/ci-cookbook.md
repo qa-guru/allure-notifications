@@ -38,7 +38,7 @@ Fixture config already points at `packages/core/test/fixtures/dogfood-report` + 
 
 ## GitHub Actions — product CI (this repo)
 
-TS tests live in [`.github/workflows/ci-6.0.yml`](../.github/workflows/ci-6.0.yml) (`pnpm i` + `pnpm typecheck` + `pnpm test` + soft `pnpm coverage` + `pnpm allure:generate` on `master` + `feature/6.0*` + `feature/quality-*`). Artifacts: `allure-results/` · `allure-report/` · `coverage/` (retain ≥7d). Builder Pages: [`pages-builder.yml`](../.github/workflows/pages-builder.yml) (static `apps/builder/` on `master` + `feature/6.0*`; see [`pages-cutover.md`](pages-cutover.md)). Java jar CI stays in [`build.yml`](../.github/workflows/build.yml) (**master** only; cwd `legacy/java`).
+TS tests live in [`.github/workflows/ci-6.0.yml`](../.github/workflows/ci-6.0.yml) (`pnpm i` + `pnpm typecheck` + `pnpm test` + soft `pnpm coverage` + `pnpm allure:generate` on `master` + `feature/6.0*` + `feature/quality-*`). Artifacts: `allure-results/` · `allure-report/` · `coverage/` (retain ≥7d). Job **Sonar (soft)** needs coverage → `scripts/ci-sonar.sh` + vendored `scripts/sonar-gate-wait.py` (`projectKey=allure-notifications`; `SONAR_REQUIRED=false`). Builder Pages: [`pages-builder.yml`](../.github/workflows/pages-builder.yml) (static `apps/builder/` on `master` + `feature/6.0*`; see [`pages-cutover.md`](pages-cutover.md)). Java jar CI stays in [`build.yml`](../.github/workflows/build.yml) (**master** only; cwd `legacy/java`).
 
 ## Own tests → Allure results (Q1)
 
@@ -62,6 +62,26 @@ Notes:
 - `ALLURE_RESULTS_DIR` must point at the **repo root** `allure-results/` (root `scripts/run-tests.mjs`); do not write into package cwd.
 - Coverage excludes: `dist` test emit noise, `node_modules`, `vendor`, `test/fixtures`, `apps/builder/js`, `**/*.test.*`. Soft collect only until Q5.
 - Forks/PR: no live secrets needed for this path (tests + Allure generate + coverage artifact).
+
+## Sonar (Q2, soft)
+
+One Sonar project for the TS monorepo: **`allure-notifications`** → [dashboard](https://sonar.qa.guru/dashboard?id=allure-notifications).  
+Config: [`sonar-project.properties`](../sonar-project.properties). Coverage in: `coverage/lcov.info` (from `pnpm coverage`).  
+Gate poll: vendored thin copy [`scripts/sonar-gate-wait.py`](../scripts/sonar-gate-wait.py) (nested CI has no monorepo `scripts/`; keep in sync with zds `scripts/sonar-gate-wait.py`). Wrapper: [`scripts/ci-sonar.sh`](../scripts/ci-sonar.sh).
+
+| Var / secret | Kind | Default / note |
+|--------------|------|----------------|
+| `SONAR_TOKEN` | secret | never on fork PRs |
+| `SONAR_HOST_URL` | var | `https://sonar.qa.guru` |
+| `SONAR_REQUIRED` | var | `false` until Q5 — soft-skip on missing token / host down / gate ≠ PASSED |
+
+Local dry-run (no token, no upload):
+
+```bash
+python scripts/sonar-gate-wait.py --project-key allure-notifications --dry-run
+# optional: after pnpm coverage, full soft path (skips without SONAR_TOKEN)
+SONAR_REQUIRED=false bash scripts/ci-sonar.sh
+```
 
 ## GitHub Actions — consumer notify (dry-run)
 
