@@ -18,8 +18,8 @@ import * as vendorBrowser from "../vendor/allure-notifications-config/browser.js
 const SQ1080_ITEMS = [
   { type: "pie", x: 0, y: 0, w: 5, h: 5 },
   { type: "durationDynamics", x: 5, y: 0, w: 5, h: 5 },
-  { type: "testingPyramid", x: 0, y: 5, w: 4, h: 5 },
-  { type: "durations", x: 4, y: 5, w: 6, h: 5, groupBy: "layer" },
+  { type: "testingPyramid", x: 0, y: 5, w: 4, h: 3 },
+  { type: "durations", x: 4, y: 5, w: 6, h: 3, groupBy: "layer" },
 ];
 
 test("@allure-notifications/config DEFAULT_ITEMS matches SQ-1080 canon", () => {
@@ -44,10 +44,10 @@ test("@allure-notifications/config chrome defaults + PANEL_CATALOG size", () => 
   assert.equal(PANEL_CATALOG.length, 17);
 });
 
-test("createDefaultConfig is jar-shaped free SQ-1080", () => {
+test("createDefaultConfig is jar-shaped free CB-870", () => {
   const cfg = createDefaultConfig();
   assert.equal(cfg.base.chart.layout, "free");
-  assert.equal(cfg.base.chart.width, 1080);
+  assert.equal(cfg.base.chart.width, 870);
   assert.equal(cfg.base.chart.height, 1080);
   assert.deepEqual(cfg.base.chart.items, SQ1080_ITEMS);
   assert.ok(cfg.telegram);

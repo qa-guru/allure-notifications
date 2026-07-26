@@ -7,7 +7,7 @@ Shared **config.json** schema + builder catalog / canvas presets for line **6.0.
 | `ConfigSchema` / `parseConfig` | zod validation (free layout + chrome knobs) |
 | `PANEL_CATALOG` / `resolvePanelMeta` | 17 palette slots |
 | `./browser` | Same catalog/presets without zod (builder import map / vendor sync) |
-| `DEFAULT_ITEMS` / `CANVAS_PRESETS` / `createDefaultConfig` | SQ-1080 canon + 870/1080/1410 presets |
+| `DEFAULT_ITEMS` / `CANVAS_PRESETS` / `createDefaultConfig` | CB-870 default + 4-tile items + 870/1080/1410 presets |
 
 Chrome defaults (builder SQ-1080): `headerHeight` **22**, `cardGap` **14**, `tilePad` **6**.
 

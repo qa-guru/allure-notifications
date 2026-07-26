@@ -1,16 +1,16 @@
 # Canon — allure-notifications-builder
 
-## Default — SQ-1080
+## Default — CB-870
 
 | | |
 |--|--|
-| Canvas | **1080×1080** · grid **10×10** · cell **108×108** |
+| Canvas | **870×1080** · grid **10×10** · cell **87×108** |
 | Presets only | **870×1080** · **1080×1080** · **1410×1080** (no 1024×1280) |
 | Panels | **17 catalog** (pie ↔ currentStatus · ChartType + groupBy/by) · mocks synced |
-| Layout | **4-tile compact-hero** — pie·durationDynamics top · pyramid + durations-by-layer bottom (see `DEFAULT_ITEMS`) |
-| Palette defaults | pie / durationDynamics **5×5** · pyramid **4×5** · durations-by-layer **6×5** · остальные catalog defaults (pie/pyramid **3×3**, durations **4×3**, …) |
+| Layout | **4-tile on 10×10** — pie·durationDynamics top · pyramid + durations-by-layer mid · empty rows 8–9 (substrate stays 10×10) |
+| Palette defaults | pie / durationDynamics **5×5** · pyramid **4×3** · durations-by-layer **6×3** · остальные catalog defaults (pie/pyramid **3×3**, durations **4×3**, …) |
 | Float / overlap | float **on** (exact x,y — no upward compact) · overlap off · min **1×1** |
-| Legacy | CB-870 (pie 5×5 · pyramid 5×5 · durations 10×5 @ 870×1080) remains a preset + dogfood |
+| Legacy dogfood | classic CB-870 (pie 5×5 · pyramid 5×5 · durations 10×5) remains in dogfood fixtures |
 
 ## Chrome knobs (Options → `base.chart.*`)
 
@@ -20,7 +20,7 @@
 | `cardGap` | **14** | Gap around/between cards (px). Jar **5.0.4+**. TG preview uses the same half-gap inset as `CollageRenderer.renderFree`. |
 | `tilePad` | **6** | Inner body pad → `--wt-pad`. **Preview-only** — jar has no field yet; exported JSON keeps it for builder/preview parity. |
 
-Reset → these three defaults + SQ-1080 `items`.
+Reset → these three defaults + CB-870 canvas + `DEFAULT_ITEMS`.
 
 ## 17 catalog
 
@@ -42,19 +42,19 @@ Palette slots ↔ `awesome-charts.mjs` / DS `WidgetTileMocks` (id unique; `type`
 | stabilityByEpic | stabilityDistribution | `groupBy: epic` |
 | stabilityByStory | stabilityDistribution | `groupBy: story` |
 | durations | durations | |
-| durationsByLayer | durations | `groupBy: layer` · default SQ-1080 |
+| durationsByLayer | durations | `groupBy: layer` · default compact-hero |
 | durationDynamics | durationDynamics | |
 | statusAgePyramid | statusAgePyramid | |
 
 ## Free export shape (jar)
 
-Terminal exports full `config.json`. Chart block for jar free-grid (SQ-1080 default):
+Terminal exports full `config.json`. Chart block for jar free-grid (CB-870 default):
 
 ```json
 {
   "mode": "collage",
   "layout": "free",
-  "width": 1080,
+  "width": 870,
   "height": 1080,
   "headerHeight": 22,
   "cardGap": 14,
@@ -64,8 +64,8 @@ Terminal exports full `config.json`. Chart block for jar free-grid (SQ-1080 defa
   "items": [
     {"type": "pie", "x": 0, "y": 0, "w": 5, "h": 5},
     {"type": "durationDynamics", "x": 5, "y": 0, "w": 5, "h": 5},
-    {"type": "testingPyramid", "x": 0, "y": 5, "w": 4, "h": 5},
-    {"type": "durations", "x": 4, "y": 5, "w": 6, "h": 5, "groupBy": "layer"}
+    {"type": "testingPyramid", "x": 0, "y": 5, "w": 4, "h": 3},
+    {"type": "durations", "x": 4, "y": 5, "w": 6, "h": 3, "groupBy": "layer"}
   ],
   "pyramidFallback": "suites"
 }

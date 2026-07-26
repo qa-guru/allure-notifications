@@ -1323,7 +1323,7 @@ function loadItems(items: ChartItem[]) {
   syncItemsToState();
 }
 
-/** Full reset → SQ-1080 default (canvas 1080×1080 + dense items + empty fields). */
+/** Full reset → CB-870 default (canvas 870×1080 + DEFAULT_ITEMS + empty fields). */
 function resetToDefault() {
   applySnap(createDefaultState());
 }

@@ -54,7 +54,7 @@ HTTP required (`header.js` fetches `vendor/design-system/templates/header.html`)
 | `js/` | Emitted ESM (`app.js`, `phrases.js`) — what Pages/stand serve |
 | `vendor/design-system/` | Pinned DS assets (read-only) |
 | `MANIFEST.json` | Pin inventory + policy |
-| `CANON.md` | SQ-1080 default + free export shape |
+| `CANON.md` | CB-870 default + free export shape |
 
 ## Tests
 

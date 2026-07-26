@@ -1,5 +1,5 @@
 /**
- * Canvas presets + SQ-1080 DEFAULT_ITEMS + chrome knobs.
+ * Canvas presets + DEFAULT_ITEMS (4-tile compact-hero) + chrome knobs.
  * Extracted from allure-notifications-builder `js/app.js` / CANON.md.
  */
 /** Presets only — 870×1080 · 1080×1080 · 1410×1080 (no 1024×1280). */
@@ -8,27 +8,28 @@ export const CANVAS_PRESETS = Object.freeze({
     "1080x1080": { w: 1080, h: 1080 },
     "1410x1080": { w: 1410, h: 1080 },
 });
-export const DEFAULT_CANVAS = "1080x1080";
+/** Default canvas — CB-870 (Telegram post). */
+export const DEFAULT_CANVAS = "870x1080";
 export const GRID_COLS = 10;
 export const GRID_ROWS = 10;
-/** Jar / SQ-1080 chrome defaults (CollageRenderer + widget-tile canon in builder). */
+/** Jar / collage chrome defaults (CollageRenderer + widget-tile canon in builder). */
 export const DEFAULT_HEADER_HEIGHT = 22;
 export const DEFAULT_CARD_GAP = 14;
 /** Preview-only — maps to `--wt-pad`; jar parses but does not apply yet. */
 export const DEFAULT_TILE_PAD = 6;
 /**
- * SQ-1080 canon — 4-tile compact-hero.
+ * Default layout — 4-tile on full 10×10 substrate (empty rows 8–9 stay visible).
  * pie · durationDynamics · testingPyramid + durations groupBy:layer.
  * See builder CANON.md.
  */
 export const DEFAULT_ITEMS = Object.freeze([
     { type: "pie", x: 0, y: 0, w: 5, h: 5 },
     { type: "durationDynamics", x: 5, y: 0, w: 5, h: 5 },
-    { type: "testingPyramid", x: 0, y: 5, w: 4, h: 5 },
-    { type: "durations", x: 4, y: 5, w: 6, h: 5, groupBy: "layer" },
+    { type: "testingPyramid", x: 0, y: 5, w: 4, h: 3 },
+    { type: "durations", x: 4, y: 5, w: 6, h: 3, groupBy: "layer" },
 ]);
 /**
- * Builder-shaped default `config.json` (SQ-1080 free + chrome knobs).
+ * Builder-shaped default `config.json` (CB-870 free + chrome knobs).
  * Matches `createDefaultState()` export from the builder (minus UI-only `vector`).
  */
 export function createDefaultConfig(opts = {}) {
@@ -76,5 +77,7 @@ export function createDefaultConfig(opts = {}) {
         },
     };
 }
-/** Alias — SQ-1080 is the default canvas. */
-export const createSq1080Config = createDefaultConfig;
+/** SQ-1080 helper — same DEFAULT_ITEMS on 1080×1080. */
+export function createSq1080Config(opts = {}) {
+    return createDefaultConfig({ ...opts, canvas: "1080x1080" });
+}

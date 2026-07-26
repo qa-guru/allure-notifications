@@ -5,8 +5,8 @@ const { test, expect } = require('@playwright/test');
 const SQ1080_ITEMS = [
   { type: 'pie', x: 0, y: 0, w: 5, h: 5 },
   { type: 'durationDynamics', x: 5, y: 0, w: 5, h: 5 },
-  { type: 'testingPyramid', x: 0, y: 5, w: 4, h: 5 },
-  { type: 'durations', x: 4, y: 5, w: 6, h: 5, groupBy: 'layer' },
+  { type: 'testingPyramid', x: 0, y: 5, w: 4, h: 3 },
+  { type: 'durations', x: 4, y: 5, w: 6, h: 3, groupBy: 'layer' },
 ];
 
 test.describe('allure-notifications-builder smoke', () => {
@@ -43,7 +43,7 @@ test.describe('allure-notifications-builder smoke', () => {
     await expect(site.locator('.icon img[src*="allure3-logo"]')).toBeVisible();
   });
 
-  test('Reset → SQ-1080 free chart + chrome defaults in terminal', async ({
+  test('Reset → CB-870 free chart + chrome defaults in terminal', async ({
     page,
   }) => {
     await page.goto('/');
@@ -59,7 +59,7 @@ test.describe('allure-notifications-builder smoke', () => {
       .toMatchObject({
         mode: 'collage',
         layout: 'free',
-        width: 1080,
+        width: 870,
         height: 1080,
         headerHeight: 22,
         cardGap: 14,
@@ -220,7 +220,7 @@ test.describe('allure-notifications-builder smoke', () => {
     expect(cfg.telegram).toBeTruthy();
     expect(cfg.base.chart.layout).toBe('free');
     expect(cfg.base.chart.items).toEqual(SQ1080_ITEMS);
-    expect(cfg.base.chart.width).toBe(1080);
+    expect(cfg.base.chart.width).toBe(870);
     expect(cfg.base.chart.height).toBe(1080);
     expect(cfg.base.chart.headerHeight).toBe(22);
     expect(cfg.base.chart.cardGap).toBe(14);

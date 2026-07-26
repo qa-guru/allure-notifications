@@ -6,6 +6,7 @@ import { describe, it } from "node:test";
 
 import {
   CANVAS_PRESETS,
+  DEFAULT_CANVAS,
   DEFAULT_CARD_GAP,
   DEFAULT_HEADER_HEIGHT,
   DEFAULT_ITEMS,
@@ -51,44 +52,49 @@ describe("@allure-notifications/config catalog", () => {
 });
 
 describe("@allure-notifications/config presets", () => {
-  it("has three canvas presets and SQ-1080 DEFAULT_ITEMS (4-tile compact-hero)", () => {
+  it("has three canvas presets and DEFAULT_ITEMS (4-tile compact-hero)", () => {
     assert.deepEqual(Object.keys(CANVAS_PRESETS).sort(), [
       "1080x1080",
       "1410x1080",
       "870x1080",
     ]);
+    assert.equal(DEFAULT_CANVAS, "870x1080");
     assert.equal(DEFAULT_ITEMS.length, 4);
     assert.equal(DEFAULT_HEADER_HEIGHT, 22);
     assert.equal(DEFAULT_CARD_GAP, 14);
     assert.equal(DEFAULT_TILE_PAD, 6);
   });
 
-  it("createDefaultConfig / createSq1080Config export validates", () => {
-    const cfg = createSq1080Config({
+  it("createDefaultConfig is CB-870; createSq1080Config is 1080×1080", () => {
+    const def = createDefaultConfig({
       project: "phase1-test",
       telegram: { token: "0:t", chat: "1" },
     });
-    const parsed = parseConfig(cfg);
+    const parsed = parseConfig(def);
     assert.equal(parsed.base.chart?.layout, "free");
-    assert.equal(parsed.base.chart?.width, 1080);
+    assert.equal(parsed.base.chart?.width, 870);
     assert.equal(parsed.base.chart?.height, 1080);
     assert.equal(parsed.base.chart?.headerHeight, 22);
     assert.equal(parsed.base.chart?.cardGap, 14);
     assert.equal(parsed.base.chart?.tilePad, 6);
     assert.equal(parsed.base.chart?.items?.length, 4);
     assert.equal(parsed.telegram?.token, "0:t");
+
+    const sq = parseConfig(createSq1080Config());
+    assert.equal(sq.base.chart?.width, 1080);
+    assert.equal(sq.base.chart?.height, 1080);
   });
 
-  it("createDefaultConfig(870x1080) validates", () => {
-    const cfg = createDefaultConfig({ canvas: "870x1080" });
+  it("createDefaultConfig(1080x1080) validates", () => {
+    const cfg = createDefaultConfig({ canvas: "1080x1080" });
     const parsed = parseConfig(cfg);
-    assert.equal(parsed.base.chart?.width, 870);
+    assert.equal(parsed.base.chart?.width, 1080);
     assert.equal(parsed.base.chart?.height, 1080);
   });
 });
 
 describe("@allure-notifications/config schema vs repo fixtures", () => {
-  it("validates builder-shaped SQ-1080 default (synthetic export)", () => {
+  it("validates builder-shaped CB-870 default (synthetic export)", () => {
     const exported = createDefaultConfig();
     const result = safeParseConfig(exported);
     assert.equal(result.success, true, result.success ? "" : JSON.stringify(result.error.format()));
