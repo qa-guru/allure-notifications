@@ -1,5 +1,15 @@
 # Changelog
 
+## Unreleased (propose **6.0.5**)
+
+### English
+
+- **Allure 3 plugin** — `@allure-notifications/plugin` (`packages/plugin`): `Plugin.done` → parseConfig → core collage PNG → CLI messengers; `mode` dry-run|mock|live (default dry-run); example `examples/allurerc.notifications.mjs`
+
+### Russian
+
+- **Allure 3 plugin** — `@allure-notifications/plugin` (`packages/plugin`): `Plugin.done` → parseConfig → collage PNG (core) → messengers (CLI); `mode` dry-run|mock|live (default dry-run); пример `examples/allurerc.notifications.mjs`
+
 ## v 6.0.3
 
 ### English

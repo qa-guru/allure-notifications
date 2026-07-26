@@ -115,6 +115,31 @@ importers:
         specifier: ^7.0.2
         version: 7.0.2
 
+  packages/plugin:
+    dependencies:
+      '@allure-notifications/config':
+        specifier: workspace:*
+        version: link:../config
+      '@allure-notifications/core':
+        specifier: workspace:*
+        version: link:../core
+      '@allurereport/plugin-api':
+        specifier: ^3.14.3
+        version: 3.14.3
+      allure-notifications:
+        specifier: workspace:*
+        version: link:../cli
+    devDependencies:
+      '@types/node':
+        specifier: ^22.13.10
+        version: 22.20.1
+      allure-node-test:
+        specifier: 3.10.2
+        version: 3.10.2(allure-playwright@3.10.2(@playwright/test@1.62.0))
+      typescript:
+        specifier: ^7.0.2
+        version: 7.0.2
+
   packages/pyramid:
     devDependencies:
       '@types/node':

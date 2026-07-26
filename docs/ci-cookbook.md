@@ -89,13 +89,13 @@ Quality contour close-out for this repo:
 
 | Gate | Policy |
 |------|--------|
-| Coverage | **blocker** — `c8` `check-coverage`: lines ≥ **70%**, statements ≥ **65%** on `packages/{config,pyramid,core,cli}/src` |
+| Coverage | **blocker** — `c8` `check-coverage`: lines ≥ **70%**, statements ≥ **65%** on `packages/{config,pyramid,core,cli,plugin}/src` |
 | Sonar | **blocker** when `SONAR_TOKEN` present + `SONAR_REQUIRED=true` and quality gate ≠ PASSED |
 | Forks / no token | Sonar **soft-skip** (exit 0); coverage still runs (no secrets needed) |
 | Visual / collage | Unchanged pixel/ahash gate in `pnpm test` — **not** part of coverage % floor |
 | TestOps / Telegram | Still informational / dry-run-on-PR as Q3–Q4 |
 
-Contour complete → next product line items: `packages/plugin`, AI (separate HQ OK).
+Contour complete. Phase 5 plugin **done** (`@allure-notifications/plugin` — see `examples/allurerc.notifications.mjs`). Next product: AI (separate HQ OK); npm publish plugin → **6.0.5**.
 
 ## TestOps (Q3, informational)
 
@@ -210,7 +210,7 @@ Live messenger send (token in credentials) is out of band until ADR 008 dogfood 
 |-------|-----|
 | `java -jar allure-notifications-*.jar` on 6.0 path | Legacy 5.0 only |
 | Jenkins Plugin Manager install | Not a Jenkins plugin |
-| Allure 3 plugin install for notify | CLI is the entrypoint; optional thin plugin = Phase 5 |
+| Allure 3 plugin as sole CI path | CLI remains primary; plugin = optional `allurerc` (`@allure-notifications/plugin`, Phase 5 done) |
 | HTML inject / `dashboard-overrides` in CI | Private zds stack only — not npm product |
 | Playwright for production PNG | Playwright = builder e2e only; collage = `@napi-rs/canvas` |
 
