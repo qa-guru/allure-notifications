@@ -1326,16 +1326,21 @@
   /**
    * Durations by layer — avg seconds per layer (horizontal pills).
    * Collage canon: Java DurationsPanel / core drawLayerAverages (not stacked hist).
+   * Top → bottom matches Testing pyramid (manual … unit), all 6 F5 layers.
    */
   function durationsByLayerSvg(host) {
     var v = tileVars(host);
-    // Dogfood-shaped sample (LAYER_ORDER reversed; only layers with data).
-    var rows = [
-      { k: "e2e", n: 1.0, c: "var(--layer-e2e)" },
-      { k: "integration", n: 0.1, c: "var(--layer-integration)" },
-      { k: "component", n: 0.0, c: "var(--layer-component)" },
-      { k: "unit", n: 0.1, c: "var(--layer-unit)" },
-    ];
+    var avgs = {
+      manual: 4.2,
+      e2e: 2.8,
+      api: 1.6,
+      integration: 0.9,
+      component: 0.4,
+      unit: 0.15,
+    };
+    var rows = LAYERS.map(function (l) {
+      return { k: l.k, n: avgs[l.k], c: l.c };
+    });
     var box = plotBox(host, 240);
     var W = box.W;
     var H = box.H;
@@ -1552,7 +1557,7 @@
       type: "durations",
       groupBy: "layer",
       title: "Durations by layer",
-      dots: ["red", "purple", "orange", "green"],
+      dots: ["red", "orange", "yellow", "purple", "green", "blue"],
     },
     { type: "durationDynamics", title: "Duration dynamics", dots: ["blue"] },
     { type: "statusAgePyramid", title: "Status age pyramid", dots: ["red", "yellow", "gray", "purple"] },
