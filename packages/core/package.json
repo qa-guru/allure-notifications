@@ -1,7 +1,7 @@
 {
   "name": "@allure-notifications/core",
-  "version": "6.0.1",
-  "description": "Allure 3 summary/results \u2192 native collage PNG (Phase 3 / Stage C).",
+  "version": "6.0.2",
+  "description": "Allure 3 summary/results → native collage PNG (Phase 3 / Stage C).",
   "type": "module",
   "exports": {
     ".": {

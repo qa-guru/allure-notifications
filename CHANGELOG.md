@@ -1,5 +1,17 @@
 # Changelog
 
+## v 6.0.2
+
+### English
+
+- **CLI `-V` / banner** — report version from `package.json` (npm `6.0.1` incorrectly printed `6.0.0`)
+- **Config validation errors** — path-scoped messages instead of raw Zod JSON dump
+
+### Russian
+
+- **CLI `-V` / banner** — версия из `package.json` (на npm `6.0.1` печаталось `6.0.0`)
+- **Ошибки валидации config** — path-scoped сообщения вместо сырого Zod JSON
+
 ## v 5.0.8
 
 ### English
