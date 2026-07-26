@@ -167,7 +167,7 @@ See [docs/ci-cookbook.md](docs/ci-cookbook.md): **primary** = `allure generate` 
 
 ## Stage F notes (CI)
 
-- Workflow: `.github/workflows/ci-6.0.yml` — Node 20 + pnpm 9.15 + Python 3.12; `pnpm install --frozen-lockfile`; Playwright Chromium; `pnpm test` (config/pyramid/core/cli + builder unit/e2e).
+- Workflow: `.github/workflows/ci-6.0.yml` — Node 24 + pnpm 9.15 + Python 3.12; `pnpm install --frozen-lockfile`; Playwright Chromium; `pnpm test` (config/pyramid/core/cli + builder unit/e2e).
 - Triggers: push `master` + `feature/6.0*`; PRs into `feature/6.0*` or `master` with path filter on `packages/**` / `apps/**` / pnpm lockfiles / this workflow.
 - Java `build.yml` (master) left intact — no shared job / no VERSION bump / no live Telegram in 6.0 CI.
 - Cookbook: `docs/ci-cookbook.md` documents real `send --config --dry-run` (+ workspace `pnpm exec` pre-publish).
