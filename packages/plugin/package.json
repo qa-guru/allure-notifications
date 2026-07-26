@@ -1,13 +1,13 @@
 {
   "name": "@allure-notifications/plugin",
-  "version": "6.0.5",
+  "version": "6.0.7",
   "description": "Allure 3 plugin — thin wrapper over core + CLI messengers (Phase 5).",
   "type": "module",
+  "main": "./dist/src/index.js",
+  "module": "./dist/src/index.js",
+  "types": "./dist/src/index.d.ts",
   "exports": {
-    ".": {
-      "types": "./dist/src/index.d.ts",
-      "import": "./dist/src/index.js"
-    }
+    ".": "./dist/src/index.js"
   },
   "files": [
     "dist/src",

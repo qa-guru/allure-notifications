@@ -11,11 +11,13 @@ npm add allure @allure-notifications/plugin
 # workspace: already in pnpm packages/plugin
 ```
 
-> **npm status:** package lands on the public registry with release **6.0.5**. Until then use the workspace / git dependency, or keep the CLI pin (`npx allure-notifications@6.0.5`).
+> **npm:** `@allure-notifications/plugin` — use **≥6.0.7** (`main` entry required for Allure resolve; skip 6.0.6). Workspace `packages/plugin` for monorepo dogfood.
 
 ## allurerc
 
 Full copy-paste example: [`examples/allurerc.notifications.mjs`](../../examples/allurerc.notifications.mjs).
+
+**GitHub Actions (plugin path):** [`examples/github-actions/`](../../examples/github-actions/) — copy-paste [`plugin-notify.yml`](../../examples/github-actions/plugin-notify.yml); runnable dogfood [`.github/workflows/example-plugin-notify.yml`](../../.github/workflows/example-plugin-notify.yml).
 
 ```js
 import { defineConfig } from "allure";
@@ -39,10 +41,11 @@ export default defineConfig({
 ```
 
 ```bash
+npx allure generate ./allure-results -o ./allure-report
 npx allure generate ./allure-results --config ./examples/allurerc.notifications.mjs
 ```
 
-The plugin fires **after** report generation (`done`). Point `options.config` at the same `config.json` the CLI would use.
+> **Generate twice for plugin path:** Allure calls `done` before `summary.json` is on disk. First generate writes the report; second generate (with `allurerc`) lets the plugin read it. Prefer CLI `send` when you only need a post-step. GH example: [`examples/github-actions/`](../../examples/github-actions/).
 
 ## Options
 

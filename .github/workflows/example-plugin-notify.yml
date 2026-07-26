@@ -1,0 +1,106 @@
+# Example: Allure 3 plugin notify (separate from CLI Q4 telegram job).
+# Manual only — does not gate PRs. Default mode = dry-run (no Telegram network).
+# live: TELEGRAM_* secrets; soft-skip if missing.
+#
+# Consumer-faithful: pnpm build + pack workspace plugin → npm install (like consumers).
+# Copy-paste template: examples/github-actions/plugin-notify.yml
+# Docs: examples/github-actions/README.md · packages/plugin/README.md · docs/ci-cookbook.md
+
+name: Example — plugin notify
+
+on:
+  workflow_dispatch:
+    inputs:
+      mode:
+        description: Messenger mode (live needs TELEGRAM_* secrets)
+        type: choice
+        options:
+          - dry-run
+          - live
+        default: dry-run
+
+concurrency:
+  group: example-plugin-notify-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  plugin-notify:
+    name: allure generate + plugin
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 9.15.0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: pnpm
+
+      - name: Install workspace + build plugin
+        run: |
+          set -euo pipefail
+          pnpm install --frozen-lockfile
+          pnpm --filter @allure-notifications/plugin... build
+
+      - name: Pack plugin (rewrites workspace:* → versions)
+        run: |
+          set -euo pipefail
+          mkdir -p dist-pack
+          # pnpm pack rejects --filter (Unknown option: recursive); pack from package dir
+          pnpm --filter @allure-notifications/plugin exec pnpm pack --pack-destination "$GITHUB_WORKSPACE/dist-pack"
+          ls -la dist-pack/
+
+      - name: Consumer-style npm install + dogfood notify
+        env:
+          NOTIFICATION_MODE: ${{ inputs.mode }}
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN || secrets.TELEGRAM_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+          TELEGRAM_TOPIC_ID: ${{ vars.TELEGRAM_TOPIC_ID || vars.TELEGRAM_ALLURE_NOTIFICATIONS_TOPIC_ID || '34' }}
+        run: |
+          set -euo pipefail
+          rm -rf example-run
+          mkdir example-run
+          cd example-run
+          npm init -y >/dev/null
+          npm install allure@^3.14.3 "$(ls ../dist-pack/allure-notifications-plugin-*.tgz)"
+
+          cp -R ../packages/core/test/fixtures/dogfood-results ./allure-results
+          mkdir -p examples/github-actions
+          cp ../examples/github-actions/allurerc.mjs \
+             ../examples/github-actions/notifications.config.json \
+             examples/github-actions/
+
+          # 1) Report files on disk (Plugin.done runs before flush)
+          npx allure generate ./allure-results -o ./allure-report
+
+          if [[ "${NOTIFICATION_MODE}" == "live" ]]; then
+            if [[ -z "${TELEGRAM_BOT_TOKEN:-}" || -z "${TELEGRAM_CHAT_ID:-}" ]]; then
+              echo "live requested but TELEGRAM_* missing — soft-skip"
+              exit 0
+            fi
+          fi
+
+          # 2) Generate again with plugin — reads report from step 1
+          npx allure generate ./allure-results \
+            --config ./examples/github-actions/allurerc.mjs
+
+          test -f collage-plugin.png
+          ls -la collage-plugin.png
+
+      - name: Upload collage + report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: example-plugin-notify
+          path: |
+            example-run/collage-plugin.png
+            example-run/allure-report/
+          if-no-files-found: warn
+          retention-days: 7

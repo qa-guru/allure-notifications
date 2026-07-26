@@ -81,6 +81,12 @@ pnpm --filter @allure-notifications/plugin publish --access public --no-git-chec
 
 **6.0.5 note:** first release that publishes `@allure-notifications/plugin` (CLI + scoped libs already on npm through 6.0.4). Do not publish plugin alone without the matching CLI/core cut.
 
+**6.0.7 note (plugin-only):** npm `6.0.6` is broken (`exports`-only, no `main`). Publish only `@allure-notifications/plugin@6.0.7`; CLI/libs stay at **6.0.5**. Skip `publish:packages` for this cut — use:
+
+```bash
+pnpm --filter @allure-notifications/plugin publish --access public --no-git-checks
+```
+
 ## Consumer
 
 ```bash
