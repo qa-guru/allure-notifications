@@ -45,3 +45,16 @@ pnpm --filter @allure-notifications/core test
 
 Canon: monorepo `docs/allure-notifications/canon/CANON.md` +
 `collage-cb870-free-dogfood-5.0.3.png`.
+
+### Visual gate (dogfood vs Java CB-870)
+
+| Check | Threshold |
+|-------|-----------|
+| Full-frame pixel match | sample **128×160**, RGB **Δ≤28**, floor **≥0.90** |
+| aHash 16×16 | Hamming **≤40** / 256 |
+| Panel regions (pie / pyramid / durations) | crop→**64×80**, Δ≤30, floor **≥0.85** |
+| Palette | unit green `#94ca66` count **>500**; outer bg `#222` **>100** |
+
+Fail-closed when `docs/allure-notifications/canon/` is present (zds/CI).
+Silent skip only outside zds (standalone GH checkout without that tree).
+Playwright is never used for PNG production render.

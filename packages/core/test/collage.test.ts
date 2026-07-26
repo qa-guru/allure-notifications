@@ -37,20 +37,73 @@ import { panelContext } from "../src/collage/context.js";
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const fixtures = join(__dirname, "../../test/fixtures");
 
-/** Walk up until monorepo docs/allure-notifications/canon is found (optional outside zds). */
-function findCanonPng(): string | null {
+const CANON_PNG = "collage-cb870-free-dogfood-5.0.3.png";
+
+/** Visual gate thresholds vs Java CB-870 free dogfood (fonts may differ). */
+const GATE = {
+  sampleW: 128,
+  sampleH: 160,
+  rgbTol: 28,
+  fullFloor: 0.9,
+  aHashSize: 16,
+  aHashMaxHamming: 40,
+  regionSampleW: 64,
+  regionSampleH: 80,
+  regionTol: 30,
+  regionFloor: 0.85,
+  unitGreenMin: 500,
+  outerBgMin: 100,
+} as const;
+
+/** Walk up to monorepo `docs/allure-notifications/canon/` (absent outside zds). */
+function findCanonDir(): string | null {
   let dir = __dirname;
   for (let i = 0; i < 14; i++) {
-    const candidate = join(
-      dir,
-      "docs/allure-notifications/canon/collage-cb870-free-dogfood-5.0.3.png",
-    );
+    const candidate = join(dir, "docs/allure-notifications/canon");
     if (existsSync(candidate)) {
       return candidate;
     }
     dir = join(dir, "..");
   }
   return null;
+}
+
+function findCanonPng(): string | null {
+  const dir = findCanonDir();
+  if (!dir) return null;
+  const png = join(dir, CANON_PNG);
+  return existsSync(png) ? png : null;
+}
+
+/** Card rects matching `renderCollagePng` free-grid (floor cells + half-gap). */
+function freeCardRect(
+  collageW: number,
+  collageH: number,
+  cols: number,
+  rows: number,
+  cardGap: number,
+  item: { x: number; y: number; w: number; h: number },
+): { left: number; top: number; width: number; height: number } {
+  const half = Math.floor(cardGap / 2);
+  const cellW = Math.floor(collageW / cols);
+  const cellH = Math.floor(collageH / rows);
+  let { x, y, w, h } = item;
+  if (x + w > cols) w = cols - x;
+  if (y + h > rows) h = rows - y;
+  const rawLeft = x * cellW;
+  const rawTop = y * cellH;
+  const rawRight = (x + w) * cellW;
+  const rawBottom = (y + h) * cellH;
+  const left = x === 0 ? cardGap : rawLeft + half;
+  const top = y === 0 ? cardGap : rawTop + half;
+  const right = x + w === cols ? collageW - cardGap : rawRight - half;
+  const bottom = y + h === rows ? collageH - cardGap : rawBottom - half;
+  return {
+    left,
+    top,
+    width: Math.max(1, right - left),
+    height: Math.max(1, bottom - top),
+  };
 }
 
 function cb870Config(opts: {
@@ -155,21 +208,64 @@ function hamming(a: bigint, b: bigint): number {
 }
 
 /**
- * Downscale both images and count near-matching pixels (RGB Δ≤40).
+ * Downscale both images and count near-matching pixels.
  * Captures layout/palette parity without requiring font identity.
  */
 async function pixelMatchRatio(
   a: Buffer,
   b: Buffer,
-  tw = 64,
-  th = 80,
-  tol = 40,
+  tw = GATE.sampleW,
+  th = GATE.sampleH,
+  tol = GATE.rgbTol,
 ): Promise<number> {
   async function sample(png: Buffer): Promise<Uint8ClampedArray> {
     const img = await loadImage(png);
     const canvas = createCanvas(tw, th);
     const ctx = canvas.getContext("2d");
     ctx.drawImage(img, 0, 0, tw, th);
+    return ctx.getImageData(0, 0, tw, th).data;
+  }
+  const da = await sample(a);
+  const db = await sample(b);
+  let match = 0;
+  const pixels = tw * th;
+  for (let i = 0; i < pixels; i++) {
+    const o = i * 4;
+    if (
+      Math.abs(da[o]! - db[o]!) <= tol &&
+      Math.abs(da[o + 1]! - db[o + 1]!) <= tol &&
+      Math.abs(da[o + 2]! - db[o + 2]!) <= tol
+    ) {
+      match++;
+    }
+  }
+  return match / pixels;
+}
+
+/** Crop a free-grid card region, then downscale-compare (panel regression). */
+async function regionMatchRatio(
+  a: Buffer,
+  b: Buffer,
+  rect: { left: number; top: number; width: number; height: number },
+  tw = GATE.regionSampleW,
+  th = GATE.regionSampleH,
+  tol = GATE.regionTol,
+): Promise<number> {
+  async function sample(png: Buffer): Promise<Uint8ClampedArray> {
+    const img = await loadImage(png);
+    const canvas = createCanvas(tw, th);
+    const ctx = canvas.getContext("2d");
+    ctx.drawImage(
+      img,
+      rect.left,
+      rect.top,
+      rect.width,
+      rect.height,
+      0,
+      0,
+      tw,
+      th,
+    );
     return ctx.getImageData(0, 0, tw, th).data;
   }
   const da = await sample(a);
@@ -259,32 +355,59 @@ describe("@allure-notifications/core collage", () => {
 
     const unitGreen = await countNearColor(png, { r: 0x94, g: 0xca, b: 0x66 });
     assert.ok(
-      unitGreen > 200,
+      unitGreen > GATE.unitGreenMin,
       `canon unit=#94ca66 must appear in pyramid/pie, got ${unitGreen}`,
     );
 
+    const outer = await countNearColor(png, { r: 34, g: 34, b: 34 }, 2, 4);
+    assert.ok(
+      outer > GATE.outerBgMin,
+      `expected outer bg #222, got ${outer}`,
+    );
+
+    // Fail-closed in zds/CI: canon dir present → PNG required + gate mandatory.
+    // Silent skip only outside zds (standalone GH checkout without monorepo docs).
+    const canonDir = findCanonDir();
+    if (!canonDir) return;
     const canonPath = findCanonPng();
-    // Pixel/hash vs monorepo canon — skipped in standalone GitHub checkout.
-    if (!canonPath) return;
-    const canon = readFileSync(canonPath);
+    assert.ok(
+      canonPath,
+      `zds visual gate: missing ${CANON_PNG} under ${canonDir}`,
+    );
+    const canon = readFileSync(canonPath!);
     const canonSize = await pngSize(canon);
     assert.equal(canonSize.w, 1024);
     assert.equal(canonSize.h, 1280);
 
     const ratio = await pixelMatchRatio(png, canon);
     assert.ok(
-      ratio >= 0.45,
-      `downscaled pixel match vs canon expected ≥0.45, got ${ratio.toFixed(3)}`,
+      ratio >= GATE.fullFloor,
+      `downscaled pixel match vs canon expected ≥${GATE.fullFloor} ` +
+        `(${GATE.sampleW}×${GATE.sampleH}, Δ≤${GATE.rgbTol}), got ${ratio.toFixed(3)}`,
     );
 
-    const ha = await aHash(png);
-    const hb = await aHash(canon);
+    const ha = await aHash(png, GATE.aHashSize);
+    const hb = await aHash(canon, GATE.aHashSize);
     const dist = hamming(ha, hb);
-    // 16×16 = 256 bits; fonts/AA differ — allow structural drift
     assert.ok(
-      dist <= 110,
-      `ahash Hamming vs canon expected ≤110, got ${dist}`,
+      dist <= GATE.aHashMaxHamming,
+      `ahash Hamming vs canon expected ≤${GATE.aHashMaxHamming}/256, got ${dist}`,
     );
+
+    // Panel regions — catch single-card regressions the full-frame average can hide.
+    const regions: Array<[string, { x: number; y: number; w: number; h: number }]> = [
+      ["pie", { x: 0, y: 0, w: 5, h: 5 }],
+      ["pyramid", { x: 5, y: 0, w: 5, h: 5 }],
+      ["durations", { x: 0, y: 5, w: 10, h: 5 }],
+    ];
+    for (const [name, item] of regions) {
+      const rect = freeCardRect(1024, 1280, 10, 10, 14, item);
+      const regionRatio = await regionMatchRatio(png, canon, rect);
+      assert.ok(
+        regionRatio >= GATE.regionFloor,
+        `${name} region match expected ≥${GATE.regionFloor}, got ${regionRatio.toFixed(3)}`,
+      );
+    }
   });
 });
 
