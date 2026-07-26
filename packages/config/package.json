@@ -1,22 +1,36 @@
 {
   "name": "@allure-notifications/config",
-  "version": "6.0.0",
-  "private": true,
+  "version": "6.0.1",
   "description": "Shared config schema + PANEL_CATALOG / DEFAULT_ITEMS / canvas presets (Phase 1).",
   "type": "module",
   "exports": {
     ".": {
-      "types": "./dist/index.d.ts",
-      "import": "./dist/index.js"
+      "types": "./dist/src/index.d.ts",
+      "import": "./dist/src/index.js"
+    },
+    "./browser": {
+      "types": "./dist/src/browser.d.ts",
+      "import": "./dist/src/browser.js"
     }
   },
   "files": [
-    "dist"
+    "dist/src",
+    "README.md"
   ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/qa-guru/allure-notifications.git",
+    "directory": "packages/config"
+  },
+  "license": "Apache-2.0",
+  "engines": {
+    "node": ">=20"
+  },
   "scripts": {
     "build": "tsc -p tsconfig.json",
     "test": "pnpm run build && node --test dist/test/*.test.js",
-    "typecheck": "tsc -p tsconfig.json --noEmit"
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "prepublishOnly": "pnpm run build"
   },
   "dependencies": {
     "zod": "^3.24.2"
@@ -24,5 +38,8 @@
   "devDependencies": {
     "@types/node": "^22.13.10",
     "typescript": "^5.8.2"
+  },
+  "publishConfig": {
+    "access": "public"
   }
 }

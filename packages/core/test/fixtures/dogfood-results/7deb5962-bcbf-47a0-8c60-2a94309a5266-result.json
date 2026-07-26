@@ -1,0 +1,22 @@
+{
+  "uuid": "7deb5962-bcbf-47a0-8c60-2a94309a5266",
+  "name": "unitTest3",
+  "fullName": "guru.qa.reference.unit.UnitTest.case3",
+  "status": "passed",
+  "start": 1723000000960,
+  "stop": 1723000001480,
+  "labels": [
+    {
+      "name": "layer",
+      "value": "unit"
+    },
+    {
+      "name": "suite",
+      "value": "UnitSuite"
+    },
+    {
+      "name": "severity",
+      "value": "trivial"
+    }
+  ]
+}

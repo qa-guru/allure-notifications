@@ -1,0 +1,16 @@
+/* Lang toggle — составной примитив (icon-btn + label overlay) */
+
+.lang-toggle {
+  position: relative;
+  display: inline-block;
+}
+
+.lang-toggle__label {
+  position: absolute;
+  bottom: var(--lang-label-inset);
+  right: var(--lang-label-inset);
+  font-size: var(--lang-label-font-size);
+  font-weight: 600;
+  line-height: 1;
+  pointer-events: none;
+}

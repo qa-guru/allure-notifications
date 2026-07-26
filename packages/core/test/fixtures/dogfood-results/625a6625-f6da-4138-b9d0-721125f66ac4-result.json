@@ -1,0 +1,22 @@
+{
+  "uuid": "625a6625-f6da-4138-b9d0-721125f66ac4",
+  "name": "e2eTest1",
+  "fullName": "guru.qa.reference.e2e.E2eTest.case1",
+  "status": "failed",
+  "start": 1723000033850,
+  "stop": 1723000040350,
+  "labels": [
+    {
+      "name": "layer",
+      "value": "e2e"
+    },
+    {
+      "name": "suite",
+      "value": "E2eSuite"
+    },
+    {
+      "name": "severity",
+      "value": "critical"
+    }
+  ]
+}

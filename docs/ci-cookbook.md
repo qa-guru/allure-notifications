@@ -1,24 +1,50 @@
-# CI cookbook sketch (6.0 TypeScript)
+# CI cookbook (6.0 TypeScript)
 
-Target public surface after Phase 3. **Not** runnable end-to-end until `packages/cli` ships. Java `java -jar` remains the 5.0 path under `legacy/java/`.
+Public surface after Phase 3 / Stages C–D: CLI `send --config` renders a native collage PNG (`@napi-rs/canvas`) and dry-runs or mocks messengers. Java `java -jar` remains the **5.0** path under [`legacy/java/`](../legacy/java/).
 
 ## Contract
 
-1. Generate Allure 3 report (or ensure `allure-report/` exists).
+1. Generate Allure 3 report (or point `base.allureFolder` / `base.allureResultsFolder` at existing artifacts).
 2. Run **allure-notifications** as a separate post-step with `config.json`.
-3. CLI reads report artifacts / summary → native collage PNG → messenger(s).
+3. CLI reads report summary/results → collage PNG → messenger(s).
 4. CLI does **not** patch awesome/dashboard HTML.
 
 ```bash
-npx allure generate
-npx allure-notifications send --config config.json
+npx allure generate allure-results --clean -o allure-report
+npx allure-notifications send --config config.json --dry-run
 ```
 
-## GitHub Actions (sketch)
+| Flag | Behavior |
+|------|----------|
+| `send --config <path>` | Required — load config, collage via `@allure-notifications/core` |
+| `--dry-run` | Render PNG; list messengers that *would* send; **no network** |
+| `--mock` | Render PNG; mock deliveries; **no network** |
+| `--out <png>` | Write PNG buffer to disk |
+
+Default without `--mock` / `--live` is safe **dry-run**. Live Telegram = explicit `--live` + env credentials ([`telegram-dogfood.md`](telegram-dogfood.md)); **not** in `ci-6.0.yml`.
+
+## Workspace (local / before `npx`)
+
+```bash
+pnpm install
+pnpm --filter allure-notifications run build
+pnpm exec allure-notifications send \
+  --config packages/cli/test/fixtures/config.dry-run.json \
+  --dry-run \
+  --out /tmp/collage-dry-run.png
+```
+
+Fixture config already points at `packages/core/test/fixtures/dogfood-report` + `dogfood-results`.
+
+## GitHub Actions — product CI (this repo)
+
+TS tests live in [`.github/workflows/ci-6.0.yml`](../.github/workflows/ci-6.0.yml) (`pnpm i` + `pnpm test` on `master` + `feature/6.0*`). Builder Pages: [`pages-builder.yml`](../.github/workflows/pages-builder.yml) (static `apps/builder/` on `master` + `feature/6.0*`; see [`pages-cutover.md`](pages-cutover.md)). Java jar CI stays in [`build.yml`](../.github/workflows/build.yml) (**master** only; cwd `legacy/java`).
+
+## GitHub Actions — consumer notify (dry-run)
 
 ```yaml
-# .github/workflows/notify.yml — sketch only
-name: allure-notifications
+# Example post-step after your test job uploads/generates Allure artifacts
+name: allure-notifications (dry-run)
 on:
   workflow_run:
     workflows: [tests]
@@ -30,45 +56,69 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      # … restore allure-results / generate report …
+
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 9.15.0
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: pnpm
+
+      # … restore allure-results / checkout this repo as a path dependency, or use npx after publish …
       - name: Generate Allure report
         run: npx allure generate allure-results --clean -o allure-report
-      - name: Send notifications
-        env:
-          TELEGRAM_TOKEN: ${{ secrets.TELEGRAM_TOKEN }}
-          TELEGRAM_CHAT: ${{ secrets.TELEGRAM_CHAT }}
-        run: npx allure-notifications send --config config/notifications.json
+
+      - name: Collage dry-run (no Telegram network)
+        run: |
+          npx allure-notifications send \
+            --config config/notifications.json \
+            --dry-run \
+            --out collage.png
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: collage
+          path: collage.png
 ```
 
-## Jenkins (sketch)
+Replace `npx allure-notifications` with `pnpm exec allure-notifications` when consuming the workspace before publish. Point `base.allureFolder` / `base.allureResultsFolder` in `config/notifications.json` at the generated paths.
 
-Freestyle / Pipeline — two shell steps after tests (same as GH):
+## Jenkins (dry-run)
+
+Freestyle / Pipeline — shell after tests:
 
 ```groovy
-// Pipeline fragment — sketch only
 stage('Allure report') {
   steps {
     sh 'npx allure generate allure-results --clean -o allure-report'
   }
 }
-stage('Notifications') {
+stage('Notifications dry-run') {
   steps {
-    withCredentials([string(credentialsId: 'telegram-token', variable: 'TELEGRAM_TOKEN')]) {
-      sh 'npx allure-notifications send --config config/notifications.json'
-    }
+    sh '''
+      npx allure-notifications send \
+        --config config/notifications.json \
+        --dry-run \
+        --out collage.png
+    '''
   }
 }
 ```
+
+Live messenger send (token in credentials) is out of band until ADR 008 dogfood is OK’d; keep CI default on `--dry-run`.
 
 ## Explicit non-goals (this cookbook)
 
 | Avoid | Why |
 |-------|-----|
-| `java -jar allure-notifications-*.jar` on 6.0 path | Legacy 5.0 only (`legacy/java/`) |
+| `java -jar allure-notifications-*.jar` on 6.0 path | Legacy 5.0 only |
 | Jenkins Plugin Manager install | Not a Jenkins plugin |
 | Allure 3 plugin install for notify | CLI is the entrypoint; optional thin plugin = Phase 5 |
 | HTML inject / `dashboard-overrides` in CI | Private zds stack only — not npm product |
+| Playwright for production PNG | Playwright = builder e2e only; collage = `@napi-rs/canvas` |
 
 ## Config
 
-Use builder export (`apps/builder/` after merge) → `config.json` with free layout (`chart.layout: "free"`, `items`). Default canvas target: **SQ-1080**.
+Use builder export (`apps/builder/`) → `config.json` with free layout (`chart.layout: "free"`, `items`). Default canvas target: **SQ-1080**. Example dry-run fixture: `packages/cli/test/fixtures/config.dry-run.json` (CB-870 pie + pyramid + durations).

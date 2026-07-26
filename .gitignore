@@ -43,3 +43,6 @@ node_modules/
 packages/*/dist/
 packages/*/coverage/
 *.tsbuildinfo
+apps/*/test-results/
+apps/*/playwright-report/
+apps/*/playwright/.cache/

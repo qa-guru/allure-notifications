@@ -1,0 +1,62 @@
+@import url("tokens.css");
+
+/*
+ * Indicator — a small signal dot. Neutral (muted) by default; modifiers cover
+ * the semantic palette, the allure result statuses (aliases of the semantic
+ * colors) and the macOS-style window controls used in the panel bar.
+ *
+ * Colors come from tokens.css via --indicator-color; brightness is one
+ * color-mix step (--indicator-mix). Default 55% matches the panel--content bar
+ * dots. Use --solid for full brightness, --soft for an extra-dim state.
+ */
+
+.indicator {
+  --indicator-color: var(--color-text-muted);
+  --indicator-mix: 55%;
+  display: inline-block;
+  flex-shrink: 0;
+  width: var(--indicator-size);
+  height: var(--indicator-size);
+  border-radius: 50%;
+  background: color-mix(in srgb, var(--indicator-color) var(--indicator-mix), transparent);
+}
+
+/* Semantic signals */
+.indicator--neutral { --indicator-color: var(--color-text-muted); }
+.indicator--success { --indicator-color: var(--color-success); }
+.indicator--warning { --indicator-color: var(--color-warning); }
+.indicator--danger  { --indicator-color: var(--color-danger); }
+.indicator--info    { --indicator-color: var(--color-info); }
+
+/* Allure result statuses — alias the semantic palette (see tests-table.css) */
+.indicator--passed  { --indicator-color: var(--color-success); }
+.indicator--failed  { --indicator-color: var(--color-danger); }
+.indicator--broken  { --indicator-color: var(--color-warning); }
+.indicator--skipped { --indicator-color: var(--color-text-muted); }
+.indicator--unknown { --indicator-color: var(--color-text-muted); }
+
+/* Status families (Allure 3 dashboard tile dots) — chart swatches from tokens */
+.indicator--status-red    { --indicator-color: var(--color-status-failed); }
+.indicator--status-orange { --indicator-color: var(--color-status-orange); }
+.indicator--status-yellow { --indicator-color: var(--color-status-broken); }
+.indicator--status-purple { --indicator-color: var(--color-status-unknown); }
+.indicator--status-gray   { --indicator-color: var(--color-status-skipped); }
+.indicator--status-green  { --indicator-color: var(--color-status-passed-chart); }
+.indicator--status-blue   { --indicator-color: var(--color-info); }
+
+/* Window controls — macOS traffic-lights (same as panel bar dots) */
+.indicator--close    { --indicator-color: var(--indicator-close); }
+.indicator--minimize { --indicator-color: var(--indicator-minimize); }
+.indicator--maximize { --indicator-color: var(--indicator-maximize); }
+
+/* Brightness — solid (full) / soft (extra dim); default is the muted 55% bar look */
+.indicator--solid { --indicator-mix: 100%; }
+.indicator--soft  { --indicator-mix: 35%; }
+
+/* Row wrapper — evenly spaced indicators (e.g. a panel bar dot cluster) */
+.indicator-row {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--panel-dot-gap);
+  flex-shrink: 0;
+}

@@ -2,8 +2,7 @@
  * @allure-notifications/config — shared config schema + builder catalog / presets.
  *
  * Phase 1 SSOT for `config.json` (SQ-1080 free + chrome knobs).
- * Extracted from allure-notifications-builder `js/app.js` (builder still has a local copy
- * until Phase 4 wires imports after `apps/builder/` merge).
+ * Browser runtime (no zod): `./browser` — synced into apps/builder vendor (Phase 4).
  */
 
 export const PACKAGE = "@allure-notifications/config";

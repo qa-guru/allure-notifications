@@ -1,0 +1,91 @@
+/* Code highlight — JSON / shell token palettes (primitive).
+   Pairs with panel__code; standalone .ch-code for bare pre.
+   React mirror: packages/react-ui/src/styles/code-highlight.css */
+
+.ch-code {
+  --ch-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  --ch-code-bg: #1a1917;
+  --ch-code-fg: #e6edf3;
+  margin: 0;
+  padding: var(--space-3);
+  overflow: auto;
+  font-family: var(--ch-mono);
+  font-size: var(--font-size-sm);
+  line-height: 1.55;
+  color: var(--ch-code-fg);
+  white-space: pre-wrap;
+  word-break: break-word;
+  background: var(--ch-code-bg);
+  border-radius: var(--radius-sm);
+}
+
+/* Inside terminal panel — panel__code owns padding / mono / color */
+.panel__code.ch-code {
+  padding: var(--space-3);
+  padding-bottom: calc(var(--space-3) + 0.25em);
+  background: transparent;
+  border-radius: 0;
+  color: var(--panel-code-color);
+}
+
+.ch-code--plain {
+  color: #e6edf3;
+}
+
+/* Default palette — VS Code Dark+ (canonical); :where() keeps specificity at (0,1,0) so .ch-theme--* wins */
+:where(.ch-code:not(.ch-code--plain)) .ch-tok-key,
+.ch-theme--vscode .ch-tok-key { color: #9cdcfe; }
+:where(.ch-code:not(.ch-code--plain)) .ch-tok-str,
+.ch-theme--vscode .ch-tok-str { color: #ce9178; }
+:where(.ch-code:not(.ch-code--plain)) .ch-tok-num,
+.ch-theme--vscode .ch-tok-num { color: #b5cea8; }
+:where(.ch-code:not(.ch-code--plain)) .ch-tok-bool,
+.ch-theme--vscode .ch-tok-bool { color: #569cd6; }
+:where(.ch-code:not(.ch-code--plain)) .ch-tok-null,
+.ch-theme--vscode .ch-tok-null { color: #569cd6; }
+:where(.ch-code:not(.ch-code--plain)) .ch-tok-punct,
+.ch-theme--vscode .ch-tok-punct { color: #d4d4d4; opacity: 0.55; }
+:where(.ch-code:not(.ch-code--plain)) .ch-tok-comment,
+.ch-theme--vscode .ch-tok-comment { color: #6a9955; }
+:where(.ch-code:not(.ch-code--plain)) .ch-tok-cmd,
+.ch-theme--vscode .ch-tok-cmd { color: #dcdcaa; }
+
+/* GitHub Dark */
+.ch-theme--github .ch-tok-key { color: #79c0ff; }
+.ch-theme--github .ch-tok-str { color: #7ee787; }
+.ch-theme--github .ch-tok-num { color: #ffa657; }
+.ch-theme--github .ch-tok-bool { color: #ff7b72; }
+.ch-theme--github .ch-tok-null { color: #ff7b72; }
+.ch-theme--github .ch-tok-punct { color: #8b949e; }
+.ch-theme--github .ch-tok-comment { color: #8b949e; }
+.ch-theme--github .ch-tok-cmd { color: #d2a8ff; }
+
+/* Muted keys — акцент на значениях */
+.ch-theme--muted .ch-tok-key { color: rgba(255, 255, 255, 0.45); }
+.ch-theme--muted .ch-tok-str { color: #7ee787; }
+.ch-theme--muted .ch-tok-num { color: #ffa657; }
+.ch-theme--muted .ch-tok-bool { color: #d2a8ff; }
+.ch-theme--muted .ch-tok-null { color: #d2a8ff; }
+.ch-theme--muted .ch-tok-punct { color: rgba(255, 255, 255, 0.22); }
+.ch-theme--muted .ch-tok-comment { color: rgba(255, 255, 255, 0.35); }
+.ch-theme--muted .ch-tok-cmd { color: #d2a8ff; }
+
+/* High contrast — selenoid terminal */
+.ch-theme--contrast .ch-tok-key { color: #20aee3; }
+.ch-theme--contrast .ch-tok-str { color: #fbbf24; }
+.ch-theme--contrast .ch-tok-num { color: #4ade80; }
+.ch-theme--contrast .ch-tok-bool { color: #f87171; }
+.ch-theme--contrast .ch-tok-null { color: #f87171; }
+.ch-theme--contrast .ch-tok-punct { color: rgba(255, 255, 255, 0.35); }
+.ch-theme--contrast .ch-tok-comment { color: rgba(255, 255, 255, 0.4); }
+.ch-theme--contrast .ch-tok-cmd { color: #c084fc; }
+
+/* Light terminal paper — readable on panel--terminal-light */
+.panel--terminal-light.ch-theme--vscode .ch-tok-key { color: #0451a5; }
+.panel--terminal-light.ch-theme--vscode .ch-tok-str { color: #a31515; }
+.panel--terminal-light.ch-theme--vscode .ch-tok-num { color: #098658; }
+.panel--terminal-light.ch-theme--vscode .ch-tok-bool { color: #0000ff; }
+.panel--terminal-light.ch-theme--vscode .ch-tok-null { color: #0000ff; }
+.panel--terminal-light.ch-theme--vscode .ch-tok-punct { color: #393a34; opacity: 0.55; }
+.panel--terminal-light.ch-theme--vscode .ch-tok-comment { color: #008000; }
+.panel--terminal-light.ch-theme--vscode .ch-tok-cmd { color: #795e26; }

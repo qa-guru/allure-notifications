@@ -1,0 +1,27 @@
+@import url("tokens.css");
+
+/* Plaque divider — sole rule primitive (fixed size, not sibling border).
+   Vertical (default): between nav links, header status/metrics, plaque label|control.
+   Horizontal (--horizontal): full-bleed 1px rule.
+   Same color: --color-border.
+   Do not fake with border-left/right/top on siblings (size would track the box). */
+
+.plaque-divider {
+  flex-shrink: 0;
+  align-self: center;
+  width: 1px;
+  height: var(--plaque-divider-height, calc(var(--font-size-sm) * 1.35));
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: var(--color-border);
+}
+
+.plaque-divider--horizontal {
+  align-self: center;
+  width: calc(100% - 2 * var(--plaque-divider-inset));
+  max-width: calc(100% - 2 * var(--plaque-divider-inset));
+  height: 1px;
+  min-height: 1px;
+  margin-inline: var(--plaque-divider-inset);
+}

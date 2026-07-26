@@ -1,0 +1,55 @@
+.grid {
+  display: grid;
+  gap: var(--space-4);
+}
+
+.grid--2 {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.grid--3 {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.grid--4 {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+/* Fixed topology: exactly two slots (configurator / sidebar layouts) */
+.grid--2x1 {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+@media (min-width: 769px) {
+  .grid--2x1 {
+    /* Default: independent column heights (no bottom magnet). */
+    align-items: start;
+  }
+
+  .grid--2x1 > :first-child {
+    align-self: start;
+  }
+
+  /*
+   * Sticky aside only: stretch containing block so panel--sticky / section--sticky
+   * can travel along main. Panel chrome itself must stay content-height
+   * (see configurator__layout--terminal .panel { flex: 0 1 auto }).
+   */
+  .grid--2x1:has(.panel--sticky, .section--sticky) > :last-child {
+    align-self: stretch;
+  }
+}
+
+.grid--1x2 {
+  grid-template-columns: minmax(0, 1fr);
+  grid-template-rows: auto;
+}
+
+@media (max-width: 768px) {
+  .grid--2,
+  .grid--3,
+  .grid--4,
+  .grid--2x1 {
+    grid-template-columns: 1fr;
+  }
+}

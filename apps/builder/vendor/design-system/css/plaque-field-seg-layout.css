@@ -1,0 +1,89 @@
+@import url("tokens.css");
+
+/* Plaque field seg — layout integration (grid / stack / mixed)
+   Loaded after plaque-field-seg.css; higher-specificity hooks only. */
+
+.plaque-field-grid .plaque-field--divided:has(> .plaque-field-seg-track) {
+  padding-left: var(--plaque-shell-pad-x);
+  padding-right: var(--plaque-seg-shell-end);
+}
+
+.plaque-field-grid .plaque-field--divided > .plaque-field-seg-track {
+  grid-column: 3;
+  justify-self: end;
+  margin-left: 0;
+  width: auto;
+  max-width: none;
+  min-width: min-content;
+  flex-shrink: 0;
+}
+
+/* --many in a grid cell: track fills the control slot (wrap + flex-end on seg). */
+.plaque-field-grid .plaque-field--divided > .plaque-field-seg-track--many {
+  justify-self: unset;
+  flex: 1 1 auto;
+  width: auto;
+  max-width: none;
+  min-width: 0;
+  flex-shrink: 1;
+}
+
+.plaque-field-grid .plaque-field--divided:has(> .plaque-field-seg-track--many) {
+  display: flex;
+  height: auto;
+  min-height: var(--plaque-control-height);
+  overflow: visible;
+  align-items: flex-start;
+  grid-template-columns: unset;
+}
+
+.plaque-field-grid .plaque-field--divided:has(> .plaque-field-seg-track--many) > .plaque-divider {
+  /* metrics from --many shell in plaque-field.css */
+  align-self: flex-start;
+}
+
+.plaque-field-grid-stack .plaque-field--divided > .plaque-field-seg-track {
+  grid-column: 3;
+  justify-self: end;
+  width: auto;
+}
+
+.plaque-field-grid-stack .plaque-field--divided > .plaque-field-seg-track--many {
+  grid-column: unset;
+  justify-self: unset;
+  width: auto;
+  max-width: none;
+  min-width: 0;
+}
+
+.plaque-field-grid .plaque-field--divided .plaque-field-seg-track .plaque-field-seg {
+  min-width: min-content;
+  flex-shrink: 0;
+}
+
+.plaque-field-grid .plaque-field--divided .plaque-field-seg-track--many .plaque-field-seg {
+  min-width: 0;
+  width: auto;
+  max-width: none;
+  flex-shrink: 1;
+}
+
+.plaque-field-grid .plaque-field--divided .plaque-field-seg-track .plaque-field-seg__btn {
+  padding: 0 var(--space-1);
+  flex: 0 0 auto;
+  flex-shrink: 0;
+  min-width: calc(4ch + var(--space-2));
+}
+
+/* Control-first: never clip true|false text inside grid cells */
+.plaque-field-grid .plaque-field--divided .plaque-field-seg-track .plaque-field-seg__btn {
+  overflow: visible;
+  text-overflow: clip;
+}
+
+.plaque-field-grid--mixed .plaque-field--divided > .plaque-field-seg-track--many {
+  justify-self: unset;
+  width: auto;
+  max-width: none;
+  min-width: 0;
+}

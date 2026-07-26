@@ -1,0 +1,22 @@
+{
+  "uuid": "9b144f0b-231d-45c1-9170-60d7c2c3f707",
+  "name": "componentTest8",
+  "fullName": "guru.qa.reference.component.ComponentTest.case8",
+  "status": "passed",
+  "start": 1723000017270,
+  "stop": 1723000018590,
+  "labels": [
+    {
+      "name": "layer",
+      "value": "component"
+    },
+    {
+      "name": "suite",
+      "value": "ComponentSuite"
+    },
+    {
+      "name": "severity",
+      "value": "minor"
+    }
+  ]
+}

@@ -1,0 +1,85 @@
+# Deploy apps/builder static site to GitHub Pages (6.0 line).
+# No Telegram secrets. Does not touch ci-6.0.yml or Java build.yml.
+#
+# Prep: workflow + artifact only. Custom domain cutover is manual —
+# see docs/pages-cutover.md (phase-0-checklist row 5).
+
+name: Pages (builder)
+
+on:
+  push:
+    branches:
+      - master
+      - 'feature/6.0*'
+    paths:
+      - 'apps/builder/index.html'
+      - 'apps/builder/css/**'
+      - 'apps/builder/js/**'
+      - 'apps/builder/vendor/**'
+      - 'apps/builder/scripts/sync-config.mjs'
+      - 'packages/config/**'
+      - '.github/workflows/pages-builder.yml'
+      - 'docs/pages-cutover.md'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages-builder
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    name: Deploy apps/builder
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 9.15.0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Sync @config into apps/builder/vendor
+        run: pnpm --filter @allure-notifications/builder run sync-config
+
+      - name: Assemble static site (index / css / js / vendor)
+        run: |
+          set -euo pipefail
+          rm -rf _site
+          mkdir -p _site
+          cp apps/builder/index.html _site/
+          cp -R apps/builder/css apps/builder/js apps/builder/vendor _site/
+          # Current prod hostname on allure-notifications-builder Pages.
+          # Domain switch in GitHub UI is manual (docs/pages-cutover.md).
+          printf '%s\n' 'allure-notifications.qa.guru' > _site/CNAME
+
+      - name: Setup Pages
+        uses: actions/configure-pages@v5
+
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: _site
+
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4

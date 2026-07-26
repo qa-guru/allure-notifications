@@ -1,0 +1,22 @@
+{
+  "uuid": "c8a1ae4d-ae22-42ae-b124-b5be6daf4192",
+  "name": "manualTest2",
+  "fullName": "guru.qa.reference.manual.ManualTest.case2",
+  "status": "passed",
+  "start": 1723000056730,
+  "stop": 1723000059790,
+  "labels": [
+    {
+      "name": "layer",
+      "value": "manual"
+    },
+    {
+      "name": "suite",
+      "value": "ManualSuite"
+    },
+    {
+      "name": "severity",
+      "value": "blocker"
+    }
+  ]
+}

@@ -1,5 +1,27 @@
 [![en](https://img.shields.io/badge/lang-en-blue.svg)](#) [![ru](https://img.shields.io/badge/lang-ru-white.svg)](README.ru.md) [![fr](https://img.shields.io/badge/lang-fr-white.svg)](README.fr.md)
 
+> **Version lines:** **6.0.\*** = TypeScript CLI + builder (this line) · **5.0.\*** = Java jar (**legacy freeze** at **5.0.8** only).  
+> There is **no 5.1**. Jar / Gradle: [`legacy/java/`](legacy/java/) (`cd legacy/java && ./gradlew assemble`).  
+> TS workspace: root `pnpm test` · see [`MIGRATION.md`](MIGRATION.md).
+
+## What's new in 6.0.0
+
+Public product is the **TypeScript CLI** (not a Java 6.0 jar):
+
+```bash
+npx allure generate allure-results --clean -o allure-report
+npx allure-notifications send --config config.json --live
+```
+
+| Piece | 6.0.0 |
+|-------|--------|
+| Entrypoint | `npx allure-notifications` / `pnpm exec allure-notifications` |
+| Collage PNG | `@napi-rs/canvas` in `@allure-notifications/core` (Playwright = tests only) |
+| Config builder | `apps/builder/` → [allure-notifications.qa.guru](https://allure-notifications.qa.guru/) |
+| Packages | `@allure-notifications/config` · `pyramid` · `core` · bin package `allure-notifications` |
+| Java **5.0.8** | Remains under [`legacy/java/`](legacy/java/) — bugfix/security only |
+
+Docs: [`docs/ci-cookbook.md`](docs/ci-cookbook.md) · [`docs/npm-publish.md`](docs/npm-publish.md) · Telegram dogfood [`docs/telegram-dogfood.md`](docs/telegram-dogfood.md).
 
 ## Visual canon (5.0.3)
 
@@ -8,7 +30,7 @@ Locked collage rules + PNG: [`docs/canon/CANON.md`](docs/canon/CANON.md) · [`do
 - Pyramid: quieter corners/gaps, compact single-layer (not full-bleed)
 - `unit` = pie success (`ChartTheme.STATUS_PASSED` / `#94ca66`) — do not reintroduce a separate green
 - Rounded durations / success-rate tops; suites pills
-- Consumers: `base.darkMode: true` + jar pin **5.0.8** (freeze tip; GitHub release [`v5.0.8`](https://github.com/qa-guru/allure-notifications/releases/tag/v5.0.8))
+- Consumers (6.0): `base.darkMode: true` + CLI pin **6.0.0** · Legacy jar-only jobs: **5.0.8** ([`v5.0.8`](https://github.com/qa-guru/allure-notifications/releases/tag/v5.0.8))
 
 ### 5.0.6–5.0.8
 

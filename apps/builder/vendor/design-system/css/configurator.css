@@ -1,0 +1,280 @@
+/* Configurator page shell — prompt-builder, autotests-builder, playground, selenoid-ui */
+
+/* Skill row — configurator-shell mock + prompt-builder skill pick */
+.skill-row {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-3);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  background: var(--color-surface);
+  cursor: pointer;
+  transition: border-color var(--duration-fast) var(--ease-out);
+}
+
+.skill-row__input {
+  flex-shrink: 0;
+  accent-color: var(--color-primary);
+}
+
+.skill-row--on {
+  border-color: var(--color-primary);
+  background: color-mix(in srgb, var(--color-primary) 8%, var(--color-surface));
+}
+
+.configurator__main > .panel--content {
+  width: 100%;
+}
+
+.configurator__back {
+  display: inline-block;
+  margin-bottom: var(--space-4);
+  font-size: var(--font-size-sm);
+  color: var(--color-text-muted);
+  text-decoration: none;
+}
+
+.configurator__back:hover {
+  color: var(--color-primary);
+}
+
+.configurator__intro {
+  margin-bottom: var(--space-6);
+}
+
+.configurator__title {
+  margin: 0 0 var(--space-2);
+  font-size: 1.5rem;
+  font-weight: 600;
+}
+
+.configurator__lead {
+  margin: 0;
+  color: var(--color-text-muted);
+  line-height: 1.5;
+}
+
+.configurator__toolbar {
+  margin-bottom: var(--space-6);
+}
+
+.configurator__layout.grid {
+  gap: var(--space-6);
+}
+
+.configurator__main,
+.configurator__aside {
+  min-width: 0;
+}
+
+@media (min-width: 769px) {
+  .configurator__aside {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .configurator__aside .panel--sticky {
+    flex: 1 1 auto;
+    min-height: 0;
+  }
+}
+
+/*
+ * Terminal shell — 6-col session constant (continuous shed, no media jumps).
+ *
+ * Mental: 1░ + cfg 2–3 + term 4–6.
+ * ░ = padding-left (not a grid track — avoids phantom column-gap when ░→0).
+ * Tracks: cfg | term. span-2 = 2×rest + gap.
+ *
+ * One formula ≥769 — stages via clamp:
+ *   1) term shrinks; gutter=rest, cfg=span-2 — cfg does not move
+ *   2) gutter → 0; cfg+term stay span-2 — group slides left
+ *   3) cfg → rest; term stays span-2
+ *   4) term → rest; cfg stays rest
+ *   ≤768 stack (grid--2x1)
+ *
+ * When gutter>0, pad = gutter+gap (mental track + gap). When gutter=0, pad=0
+ * (no leftover gap — left page-pad matches right page-pad).
+ *
+ * Rest @1600: (1600px - 2×page-padding-x - 5×space-6) / 6
+ */
+.configurator.page-shell:has(.configurator__layout--terminal) {
+  max-width: none;
+  width: 100%;
+  box-sizing: border-box;
+  margin-inline: 0;
+}
+
+.configurator__layout--terminal {
+  /* cfg + term chrome heights independent — no bottom magnet */
+  align-items: start;
+  width: 100%;
+  justify-content: start;
+  --configurator-col-rest: calc(
+    (1600px - 2 * var(--page-padding-x) - 5 * var(--space-6)) / 6
+  );
+  --configurator-span-2: calc(
+    2 * var(--configurator-col-rest) + var(--space-6)
+  );
+}
+
+.configurator__layout--terminal > .configurator__main,
+.configurator__layout--terminal > .configurator__aside {
+  grid-column: auto;
+}
+
+/* Continuous stages 1–4 — padding gutter + cfg|term, no track rebuild */
+@media (min-width: 769px) {
+  .configurator__layout--terminal {
+    box-sizing: border-box;
+    /*
+     * Reserve cfg+term at span-2 (+ gaps as in 3-track mental model).
+     * 100% → padding containing block ≈ layout width.
+     */
+    --configurator-gutter: clamp(
+      0px,
+      calc(100% - 2 * var(--configurator-span-2) - 2 * var(--space-6)),
+      var(--configurator-col-rest)
+    );
+    /* gap after ░ shrinks with gutter (not binary 24↔0 — that jumped) */
+    --configurator-gutter-gap: min(
+      var(--space-6),
+      var(--configurator-gutter)
+    );
+    padding-left: calc(
+      var(--configurator-gutter) + var(--configurator-gutter-gap)
+    );
+    /* 100% below = content box (width − padding-left) */
+    --configurator-cfg: clamp(
+      var(--configurator-col-rest),
+      calc(100% - var(--configurator-span-2) - var(--space-6)),
+      var(--configurator-span-2)
+    );
+    --configurator-term: calc(
+      100% - var(--configurator-cfg) - var(--space-6)
+    );
+    grid-template-columns: var(--configurator-cfg) var(--configurator-term);
+    align-items: start;
+  }
+
+  .configurator__layout--terminal > .configurator__main {
+    grid-column: 1 / 2;
+    align-self: start;
+  }
+
+  /*
+   * Aside stretches as sticky containing block (travel along main),
+   * but panel chrome stays content-height — no equal-bottom magnet.
+   */
+  .configurator__layout--terminal > .configurator__aside {
+    grid-column: 2 / 3;
+    align-self: stretch;
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .configurator__output-panel {
+    flex: 0 1 auto;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .configurator__aside .configurator__output-sticky {
+    flex: 0 1 auto;
+    min-height: 0;
+  }
+
+  .configurator__layout--terminal .panel {
+    flex: 0 1 auto;
+  }
+
+  .configurator__output-sticky .panel--sticky {
+    z-index: 1;
+  }
+
+  .configurator__layout--terminal .panel__code {
+    max-height: none;
+    min-height: 240px;
+  }
+}
+
+@media (max-width: 768px) {
+  .configurator__layout--terminal .panel__code {
+    min-height: 160px;
+    max-height: min(40vh, 360px);
+  }
+}
+
+/* Params grid — 1-col by default; 2-up only at rest (≥1600) */
+.autotests-builder__params-grid {
+  display: grid;
+  gap: var(--space-3);
+  align-items: stretch;
+  grid-template-columns: minmax(0, 1fr);
+}
+
+.autotests-builder__params-grid > .autotests-builder__group {
+  min-width: 0;
+}
+
+/*
+ * Wide groups — plaque-field-grid-stack / panel-stack bundles (build, driver, parallel, remote).
+ * Span full params-grid width when 2-up is on.
+ */
+.configurator__group--wide {
+  grid-column: span 1;
+}
+
+/* Dense groups — flat 5+ params; 2-col only at rest */
+.configurator__group--dense .panel__body {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--space-2) var(--space-3);
+}
+
+@media (min-width: 1600px) {
+  .autotests-builder__params-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .configurator__group--wide {
+    grid-column: span 2;
+  }
+
+  .configurator__group--dense .panel__body {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+/* Param wrapper — field row inside configurator group cards */
+.configurator__param {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  align-items: stretch;
+  min-width: 0;
+}
+
+.configurator__param .plaque-field,
+.configurator__param > label.plaque-field {
+  width: 100%;
+}
+
+.configurator__param .plaque-field-list {
+  width: 100%;
+}
+
+.configurator__param .plaque-field-list.plaque-field-list--dense {
+  gap: var(--space-1);
+}
+
+.configurator__param--tagstrip .plaque-field-tagstrip {
+  width: 100%;
+}
+
+.configurator__param-caption {
+  margin: 0;
+}
