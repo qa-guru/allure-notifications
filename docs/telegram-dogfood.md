@@ -1,7 +1,9 @@
 # Telegram dogfood (6.0 CLI · ADR 008)
 
-Live `sendPhoto` of a CB-870 collage via `@allure-notifications/cli`.  
+Live `sendPhoto` of a CB-870 collage via **`@allure-notifications/cli` (primary)**.  
 **Default CLI mode stays `--dry-run` / `--mock` (no network).** Live requires explicit `--live`.
+
+**Alternate:** Allure 3 plugin (`mode: "live"`) after `allure generate` — same credentials / ADR 008. Example: [`examples/allurerc.notifications.mjs`](../examples/allurerc.notifications.mjs) · [`packages/plugin/README.md`](../packages/plugin/README.md). Consumer CI keeps the CLI pin until npm **6.0.5** publishes the plugin.
 
 ## Canon (ADR 008)
 
@@ -65,9 +67,18 @@ node packages/cli/dist/src/bin.js send \
   - Forks: never `--live`.
   - Config prefers this run’s `allure-report/` / `allure-results/`; fallback dogfood CB-870.
 
+## Consumer pin checklist (after 6.0.5)
+
+Do **not** bump live pins in this docs-prep increment (`VERSION` stays **6.0.4**). After release **6.0.5**:
+
+1. Bump monorepo `docs/allure-notifications/VERSION` → `6.0.5`
+2. Sync agent file `/opt/qa-guru/etc/allure-notifications.version` (from VERSION)
+3. Ethalon / RAG hard-coded pins → `6.0.5` (where not reading VERSION)
+4. Optional: try plugin path via `allurerc` — CLI remains primary
+
 ## See also
 
 - ADR 008 · monorepo `docs/adr/008-allure-notifications-monitoring.md`
-- CI cookbook: [`ci-cookbook.md`](ci-cookbook.md) (§ Telegram Q4)
+- CI cookbook: [`ci-cookbook.md`](ci-cookbook.md) (§ Telegram Q4 · § Alternate plugin)
 - Hub plan: `projects/allure-notifications-home/PLAN-6.0.md`
 - Instance contour: monorepo `docs/allure-notifications/QUALITY-CONTOUR.md`

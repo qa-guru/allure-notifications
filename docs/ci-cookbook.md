@@ -5,9 +5,10 @@ Public surface after Phase 3 / Stages C–D: CLI `send --config` renders a nativ
 ## Contract
 
 1. Generate Allure 3 report (or point `base.allureFolder` / `base.allureResultsFolder` at existing artifacts).
-2. Run **allure-notifications** as a separate post-step with `config.json`.
+2. **Primary:** run **allure-notifications CLI** as a separate post-step with `config.json`.
 3. CLI reads report summary/results → collage PNG → messenger(s).
 4. CLI does **not** patch awesome/dashboard HTML.
+5. **Alternate (after generate):** Allure 3 plugin via `allurerc` — [`examples/allurerc.notifications.mjs`](../examples/allurerc.notifications.mjs) · [`packages/plugin/README.md`](../packages/plugin/README.md). Same config schema / modes; not required for consumers.
 
 ```bash
 npx allure generate allure-results --clean -o allure-report
@@ -21,7 +22,24 @@ npx allure-notifications send --config config.json --dry-run
 | `--mock` | Render PNG; mock deliveries; **no network** |
 | `--out <png>` | Write PNG buffer to disk |
 
-Default without `--mock` / `--live` is safe **dry-run**. Live Telegram = explicit `--live` + env credentials ([`telegram-dogfood.md`](telegram-dogfood.md)). Product CI job **`telegram`** in `ci-6.0.yml` (Q4): PR `--dry-run`; `master` / `workflow_dispatch` `--live` when secrets present.
+Default without `--mock` / `--live` is safe **dry-run**. Live Telegram = explicit `--live` + env credentials ([`telegram-dogfood.md`](telegram-dogfood.md)). Product CI job **`telegram`** in `ci-6.0.yml` (Q4): PR `--dry-run`; `master` / `workflow_dispatch` `--live` when secrets present. CLI pin SSOT: monorepo `docs/allure-notifications/VERSION` (**6.0.4** until release **6.0.5**).
+
+### Alternate — Allure 3 plugin (`allurerc`)
+
+Use when notifications should run **inside** `allure generate` (plugin `done` hook), not as a separate shell step:
+
+```bash
+npx allure generate ./allure-results --config ./examples/allurerc.notifications.mjs
+```
+
+| | CLI (primary) | Plugin (alternate) |
+|--|---------------|--------------------|
+| Invoke | `npx allure-notifications send --config …` | `plugins.notifications` in `allurerc` |
+| Safe default | `--dry-run` | `mode: "dry-run"` |
+| Live | `--live` + `TELEGRAM_*` | `mode: "live"` + same env |
+| Config | `config.json` | `options.config` → same schema |
+
+npm `@allure-notifications/plugin` publishes with **6.0.5** (404 until then). Keep consumer CI on the CLI pin until that release.
 
 ## Workspace (local / before `npx`)
 
@@ -95,7 +113,7 @@ Quality contour close-out for this repo:
 | Visual / collage | Unchanged pixel/ahash gate in `pnpm test` — **not** part of coverage % floor |
 | TestOps / Telegram | Still informational / dry-run-on-PR as Q3–Q4 |
 
-Contour complete. Phase 5 plugin **done** (`@allure-notifications/plugin` — see `examples/allurerc.notifications.mjs`). Next product: AI (separate HQ OK); npm publish plugin → **6.0.5**.
+Contour complete. Phase 5 plugin **done** (docs + example wired; npm publish → **6.0.5**). Next product after release: AI (separate HQ OK).
 
 ## TestOps (Q3, informational)
 
@@ -210,7 +228,7 @@ Live messenger send (token in credentials) is out of band until ADR 008 dogfood 
 |-------|-----|
 | `java -jar allure-notifications-*.jar` on 6.0 path | Legacy 5.0 only |
 | Jenkins Plugin Manager install | Not a Jenkins plugin |
-| Allure 3 plugin as sole CI path | CLI remains primary; plugin = optional `allurerc` (`@allure-notifications/plugin`, Phase 5 done) |
+| Allure 3 plugin as sole CI path | CLI remains primary; plugin = optional `allurerc` after `allure generate` (see § Alternate) |
 | HTML inject / `dashboard-overrides` in CI | Private zds stack only — not npm product |
 | Playwright for production PNG | Playwright = builder e2e only; collage = `@napi-rs/canvas` |
 

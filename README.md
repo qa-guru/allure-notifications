@@ -13,15 +13,16 @@ npx allure generate allure-results --clean -o allure-report
 npx allure-notifications send --config config.json --live
 ```
 
-| Piece | 6.0.0 |
+| Piece | 6.0.* |
 |-------|--------|
-| Entrypoint | `npx allure-notifications` / `pnpm exec allure-notifications` |
+| Entrypoint (primary) | `npx allure-notifications` / `pnpm exec allure-notifications` |
 | Collage PNG | `@napi-rs/canvas` in `@allure-notifications/core` (Playwright = tests only) |
 | Config builder | `apps/builder/` → [allure-notifications.qa.guru](https://allure-notifications.qa.guru/) |
-| Packages | `@allure-notifications/config` · `pyramid` · `core` · bin package `allure-notifications` |
+| Packages | `@allure-notifications/config` · `pyramid` · `core` · bin `allure-notifications` · **plugin** `@allure-notifications/plugin` |
+| Allure 3 plugin (alternate) | `done` hook via [`examples/allurerc.notifications.mjs`](examples/allurerc.notifications.mjs) — see [`packages/plugin/README.md`](packages/plugin/README.md) |
 | Java **5.0.8** | Remains under [`legacy/java/`](legacy/java/) — bugfix/security only |
 
-Docs: [`docs/ci-cookbook.md`](docs/ci-cookbook.md) · [`docs/npm-publish.md`](docs/npm-publish.md) · Telegram dogfood [`docs/telegram-dogfood.md`](docs/telegram-dogfood.md).
+Docs: [`docs/ci-cookbook.md`](docs/ci-cookbook.md) · [`docs/npm-publish.md`](docs/npm-publish.md) · Telegram dogfood [`docs/telegram-dogfood.md`](docs/telegram-dogfood.md) · Migration [`MIGRATION.md`](MIGRATION.md).
 
 ## Visual canon (5.0.3)
 
