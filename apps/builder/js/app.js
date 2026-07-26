@@ -2,6 +2,7 @@ import { PHRASES } from './phrases.js';
 import { CANVAS_PRESETS, DEFAULT_CANVAS, DEFAULT_CARD_GAP, DEFAULT_HEADER_HEIGHT, DEFAULT_TILE_PAD, GRID_COLS, GRID_ROWS, PANEL_CATALOG, PANEL_META, createDefaultConfig, resolvePanelMeta, } from '@allure-notifications/config';
 import { CORNER_RATIO, PYRAMID_COLORS_DARK, PYRAMID_COLORS_LIGHT, STATUS_COLORS, TIER_GAP_RATIO, } from '@allure-notifications/pyramid';
 import { mountHighlightedOutput } from '../vendor/design-system/js/code-highlight.js';
+import { syncThemeToggleIcon } from '../vendor/design-system/js/theme-icons.js';
 /** Default tile footprint + flush 5-up packing on 10-col grid (2×2, no gutters). */
 const DEFAULT_TILE_W = 2;
 const DEFAULT_TILE_H = 2;
@@ -294,8 +295,7 @@ function syncEditorChrome() {
 }
 /**
  * Drive `--layer-*` + geometry ratios from `@pyramid` (SSOT over DS token pin).
- * Page chrome: `:root` / `html.theme-light` (header toggle).
- * Collage + export preview: `[data-anb-dark]` from jar `base.darkMode` (independent).
+ * Page chrome + collage share the same dark/light palettes (`base.darkMode` sync).
  */
 function injectPyramidSsot() {
     const id = 'anb-pyramid-ssot';
@@ -309,9 +309,13 @@ function injectPyramidSsot() {
         .map(([layer, hex]) => `  --layer-${layer}: ${hex};`)
         .join('\n');
     const collageDark = '.anb-canvas[data-anb-dark="true"], ' +
-        '.anb-export-popover__stage[data-anb-dark="true"]';
+        '.anb-export-popover__viewport[data-anb-dark="true"], ' +
+        '.anb-export-popover__stage[data-anb-dark="true"], ' +
+        '.anb-messenger-pane[data-anb-dark="true"]';
     const collageLight = '.anb-canvas[data-anb-dark="false"], ' +
-        '.anb-export-popover__stage[data-anb-dark="false"]';
+        '.anb-export-popover__viewport[data-anb-dark="false"], ' +
+        '.anb-export-popover__stage[data-anb-dark="false"], ' +
+        '.anb-messenger-pane[data-anb-dark="false"]';
     style.textContent = [
         ':root {',
         layerBlock(PYRAMID_COLORS_DARK),
@@ -329,6 +333,34 @@ function injectPyramidSsot() {
         layerBlock(PYRAMID_COLORS_LIGHT),
         '}',
     ].join('\n');
+}
+function themeToggleButtons() {
+    return [
+        ...document.querySelectorAll('[data-testid="header-theme-toggle"], [data-testid="header-menu-theme-toggle"]'),
+    ];
+}
+/** Align page `html.theme-light` + header icon with jar `base.darkMode`. */
+function syncPageThemeFromDarkMode(darkMode) {
+    document.documentElement.classList.toggle('theme-light', !darkMode);
+    for (const btn of themeToggleButtons()) {
+        syncThemeToggleIcon(btn);
+    }
+}
+/** Header sun/moon also writes `base.darkMode` (same SSOT as Options seg). */
+function wireHeaderThemeDarkModeSync() {
+    for (const btn of themeToggleButtons()) {
+        btn.addEventListener('click', () => {
+            const darkMode = !document.documentElement.classList.contains('theme-light');
+            if (Boolean(getPath('base.darkMode')) !== darkMode) {
+                setPath('base.darkMode', darkMode);
+                const field = document.querySelector('[data-anb-bool="base.darkMode"]');
+                if (field instanceof HTMLElement)
+                    syncBoolSeg(field, darkMode);
+            }
+            applyChartFlags();
+            renderTerminal();
+        });
+    }
 }
 /**
  * Logical canvas px → displayed height from shell width (GridStack must not pin old height).
@@ -849,14 +881,20 @@ function syncBoolSeg(root, value) {
     });
 }
 /**
- * Mirror jar flags onto the collage preview: `base.darkMode` → canvas / export theme,
+ * Mirror jar flags onto UI: `base.darkMode` → page theme + collage / export / TG pane,
  * `base.enableChart` → editor/chart chrome gated.
  */
 function applyChartFlags() {
     const enableChart = Boolean(getPath('base.enableChart'));
     const darkMode = Boolean(getPath('base.darkMode'));
     const anbDark = darkMode ? 'true' : 'false';
-    for (const id of ['anb-canvas', 'anb-export-popover-stage']) {
+    syncPageThemeFromDarkMode(darkMode);
+    for (const id of [
+        'anb-canvas',
+        'anb-export-popover-viewport',
+        'anb-export-popover-stage',
+        'anb-messenger-telegram',
+    ]) {
         const el = document.getElementById(id);
         if (el instanceof HTMLElement) {
             el.dataset.anbDark = anbDark;
@@ -1555,6 +1593,7 @@ function initGrid() {
 function init() {
     injectPyramidSsot();
     bindControls();
+    wireHeaderThemeDarkModeSync();
     wireMessengerTabs();
     wireExportPreviews();
     wireVectorInput();

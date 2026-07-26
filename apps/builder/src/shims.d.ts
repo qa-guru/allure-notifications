@@ -16,6 +16,18 @@ declare module '*code-highlight.js' {
   ): void;
 }
 
+declare module '../vendor/design-system/js/theme-icons.js' {
+  export function syncThemeToggleIcon(
+    themeBtn: HTMLElement | null | undefined,
+  ): void;
+}
+
+declare module '*theme-icons.js' {
+  export function syncThemeToggleIcon(
+    themeBtn: HTMLElement | null | undefined,
+  ): void;
+}
+
 interface GridStackNode {
   x?: number;
   y?: number;

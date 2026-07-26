@@ -204,12 +204,13 @@ body {
 }
 
 /*
- * Jar `base.darkMode` → collage / export preview theme.
+ * Jar `base.darkMode` → page theme + collage / export / TG caption.
  * Palette SSOT: ChartTheme + CollageRenderer (outer #222 · card #323232 · header #3c3c3c).
- * Independent of page header `html.theme-light` (must not share selectors).
  */
 .anb-canvas[data-anb-dark="true"],
-.anb-export-popover__stage[data-anb-dark="true"] {
+.anb-export-popover__viewport[data-anb-dark="true"],
+.anb-export-popover__stage[data-anb-dark="true"],
+.anb-messenger-pane[data-anb-dark="true"] {
   --color-surface: #323232;
   --color-surface-soft: #3c3c3c;
   --color-text: #dcdcdc;
@@ -220,7 +221,9 @@ body {
 }
 
 .anb-canvas[data-anb-dark="false"],
-.anb-export-popover__stage[data-anb-dark="false"] {
+.anb-export-popover__viewport[data-anb-dark="false"],
+.anb-export-popover__stage[data-anb-dark="false"],
+.anb-messenger-pane[data-anb-dark="false"] {
   --color-surface: #ffffff;
   --color-surface-soft: #f7f7f9;
   --color-text: #1a1a1a;
@@ -471,7 +474,7 @@ html.theme-light .anb-canvas--chart-off::after {
   text-decoration: none;
 }
 
-html.theme-light .anb-editor__caption a {
+.anb-messenger-pane[data-anb-dark="false"] .anb-editor__caption a {
   color: #1c6fc2;
 }
 
