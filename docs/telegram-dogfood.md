@@ -67,13 +67,13 @@ node packages/cli/dist/src/bin.js send \
   - Forks: never `--live`.
   - Config prefers this run’s `allure-report/` / `allure-results/`; fallback dogfood CB-870.
 
-## Consumer pin checklist (after 6.0.5)
+## Consumer pin checklist (6.0.5)
 
-Do **not** bump live pins in this docs-prep increment (`VERSION` = **6.0.5**). Checklist:
+Monorepo `VERSION` / nested CI pin = **6.0.5**. Remaining human ops:
 
-1. Bump monorepo `docs/allure-notifications/VERSION` → `6.0.5`
-2. Sync agent file `/opt/qa-guru/etc/allure-notifications.version` (from VERSION)
-3. Ethalon / RAG hard-coded pins → `6.0.5` (where not reading VERSION)
+1. Sync agent file `/opt/qa-guru/etc/allure-notifications.version` (from VERSION)
+2. Ethalon / RAG hard-coded pins → `6.0.5` (where not reading VERSION)
+3. Jenkins `send-allure-telegram` consumers → redeploy agent pin (CLI primary)
 4. Optional: try plugin path via `allurerc` — CLI remains primary
 
 ## See also
