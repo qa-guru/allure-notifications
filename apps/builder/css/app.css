@@ -10,7 +10,7 @@ html,
 body {
   min-height: 100%;
   margin: 0;
-  background: var(--color-bg);
+  background: var(--color-surface);
   color: var(--color-text);
 }
 
@@ -19,6 +19,8 @@ body {
   width: 100%;
   box-sizing: border-box;
   margin-inline: 0;
+  background: var(--color-surface-soft);
+  color: var(--color-text);
 }
 
 .anb-stub {
@@ -177,7 +179,7 @@ body {
   padding: 4px 10px;
   border: 1px solid var(--color-border);
   border-radius: var(--radius-sm, 6px);
-  background: var(--color-surface, var(--color-bg));
+  background: var(--color-surface);
   color: var(--color-text-muted);
   font: inherit;
   font-size: var(--font-size-sm);
@@ -330,7 +332,7 @@ html.theme-light .anb-canvas--chart-off::after {
   padding: var(--space-4);
   border: 1px dashed var(--color-border);
   border-radius: var(--radius-sm, 6px);
-  background: color-mix(in srgb, var(--color-bg) 92%, var(--color-text) 8%);
+  background: color-mix(in srgb, var(--color-surface) 92%, var(--color-text) 8%);
 }
 
 .anb-messenger-stub__title {
@@ -400,7 +402,7 @@ html.theme-light .anb-canvas--chart-off::after {
   border: 1px solid var(--color-border);
   border-radius: var(--radius-sm, 6px);
   box-shadow: none;
-  background: var(--color-surface, var(--color-bg));
+  background: var(--color-surface);
   --wt-pad: 4px;
   --wt-bar-height: 22px;
 }
