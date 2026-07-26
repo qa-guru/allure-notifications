@@ -1412,65 +1412,6 @@ function wireEditorChrome() {
         }
     });
 }
-const RESIZE_VARIANTS = ['bracket', 'arrow', 'dots', 'tick', 'se'];
-const RESIZE_SIZES = ['12', '14', '16', '20'];
-const RESIZE_LS_VARIANT = 'anb-resize-variant';
-const RESIZE_LS_SIZE = 'anb-resize-size';
-function readResizePrefs() {
-    let variant = 'bracket';
-    let size = '14';
-    try {
-        const v = localStorage.getItem(RESIZE_LS_VARIANT);
-        const s = localStorage.getItem(RESIZE_LS_SIZE);
-        if (v && RESIZE_VARIANTS.includes(v))
-            variant = v;
-        if (s && RESIZE_SIZES.includes(s))
-            size = s;
-    }
-    catch {
-        /* ignore */
-    }
-    return { variant, size };
-}
-/** Apply handle look on `#anb-canvas` (chrome only — not exported to jar). */
-function applyResizeHandlePrefs(variant, size) {
-    const prefs = readResizePrefs();
-    const v = variant && RESIZE_VARIANTS.includes(variant) ? variant : prefs.variant;
-    const s = size && RESIZE_SIZES.includes(size) ? size : prefs.size;
-    const canvas = document.getElementById('anb-canvas');
-    if (canvas instanceof HTMLElement) {
-        canvas.dataset.anbResize = v;
-        canvas.dataset.anbResizeSize = s;
-        const chart = /** @type {{ headerHeight?: number }} */ (state.base.chart);
-        const barH = typeof chart.headerHeight === 'number' ? chart.headerHeight : 22;
-        canvas.style.setProperty('--anb-bar-h', `${barH}px`);
-    }
-    const variantEl = document.getElementById('anb-resize-variant');
-    const sizeEl = document.getElementById('anb-resize-size');
-    if (variantEl instanceof HTMLSelectElement)
-        variantEl.value = v;
-    if (sizeEl instanceof HTMLSelectElement)
-        sizeEl.value = s;
-}
-function wireResizeKnobs() {
-    const variantEl = document.getElementById('anb-resize-variant');
-    const sizeEl = document.getElementById('anb-resize-size');
-    const persist = () => {
-        const v = variantEl instanceof HTMLSelectElement ? variantEl.value : 'bracket';
-        const s = sizeEl instanceof HTMLSelectElement ? sizeEl.value : '14';
-        try {
-            localStorage.setItem(RESIZE_LS_VARIANT, v);
-            localStorage.setItem(RESIZE_LS_SIZE, s);
-        }
-        catch {
-            /* ignore */
-        }
-        applyResizeHandlePrefs(v, s);
-    };
-    variantEl?.addEventListener('change', persist);
-    sizeEl?.addEventListener('change', persist);
-    applyResizeHandlePrefs();
-}
 function initGrid() {
     const GridStackCtor = globalThis.GridStack;
     if (!GridStackCtor) {
@@ -1560,7 +1501,6 @@ function init() {
     renderPalette();
     wireCanvasDrop();
     wireEditorChrome();
-    wireResizeKnobs();
     initGrid();
     loadItems(
     /** @type {ChartItem[]} */ (
