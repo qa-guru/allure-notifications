@@ -85,7 +85,7 @@ pnpm --filter @allure-notifications/plugin publish --access public --no-git-chec
 
 ```bash
 # primary — CLI pin from docs/allure-notifications/VERSION
-npx allure-notifications@6.0.4 send --config config.json --live
+npx allure-notifications@6.0.5 send --config config.json --live
 
 # alternate (after 6.0.5) — Allure 3 plugin via allurerc
 # see examples/allurerc.notifications.mjs

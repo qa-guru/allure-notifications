@@ -12,9 +12,9 @@ There is **no 5.1** line. Historical Java A3 MVP stays at **5.0.8**; product con
 |------|--------|-------|--------|
 | **4.\*** | Allure 2 | Java | Historical A2 |
 | **5.\*** | Allure 3 | Java MVP (Gradle fat jar **5.0.8**) | **Historical build** under [`legacy/java/`](legacy/java/) — **keep forever**; bugfix / security only; **no TypeScript**; **do not delete** |
-| **6.\*** | Allure 3 | TypeScript / typescript-go · CLI · builder · A3 plugin · AI | **Product** on `master` — pin `docs/allure-notifications/VERSION` (**6.0.4** CLI) |
+| **6.\*** | Allure 3 | TypeScript / typescript-go · CLI · builder · A3 plugin · AI | **Product** on `master` — pin `docs/allure-notifications/VERSION` (**6.0.5** CLI) |
 
-Monorepo pin = **6.0.4**. Product packages: npm **`allure-notifications`** + scoped `@allure-notifications/*` (plugin ships with next publish / **6.0.5**).
+Monorepo pin = **6.0.5**. Product packages: npm **`allure-notifications`** + scoped `@allure-notifications/*` (plugin published with **6.0.5**).
 
 ## Public product 6.\* (locked)
 

@@ -62,14 +62,14 @@ node packages/cli/dist/src/bin.js send \
 - Unit tests mock `fetch` — **no** live network in default `pnpm test`.
 - Optional real send in tests: `ALLURE_NOTIFICATIONS_LIVE_TEST=1` + token env (off in CI).
 - Quality contour **Q4**: job **`telegram`** in [`.github/workflows/ci-6.0.yml`](../.github/workflows/ci-6.0.yml) via [`scripts/ci-telegram.sh`](../scripts/ci-telegram.sh).
-  - PR / feature: `npx allure-notifications@6.0.4 send --config … --dry-run` (+ optional collage artifact).
+  - PR / feature: `npx allure-notifications@6.0.5 send --config … --dry-run` (+ optional collage artifact).
   - `master` + `workflow_dispatch`: `--live` when `TELEGRAM_*` present → topic **34**; else soft-skip.
   - Forks: never `--live`.
   - Config prefers this run’s `allure-report/` / `allure-results/`; fallback dogfood CB-870.
 
 ## Consumer pin checklist (after 6.0.5)
 
-Do **not** bump live pins in this docs-prep increment (`VERSION` stays **6.0.4**). After release **6.0.5**:
+Do **not** bump live pins in this docs-prep increment (`VERSION` = **6.0.5**). Checklist:
 
 1. Bump monorepo `docs/allure-notifications/VERSION` → `6.0.5`
 2. Sync agent file `/opt/qa-guru/etc/allure-notifications.version` (from VERSION)

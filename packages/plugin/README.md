@@ -11,7 +11,7 @@ npm add allure @allure-notifications/plugin
 # workspace: already in pnpm packages/plugin
 ```
 
-> **npm status:** package lands on the public registry with release **6.0.5**. Until then use the workspace / git dependency, or keep the CLI pin (`npx allure-notifications@6.0.4`).
+> **npm status:** package lands on the public registry with release **6.0.5**. Until then use the workspace / git dependency, or keep the CLI pin (`npx allure-notifications@6.0.5`).
 
 ## allurerc
 
