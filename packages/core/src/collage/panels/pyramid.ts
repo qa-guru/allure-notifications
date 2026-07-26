@@ -25,6 +25,7 @@ import {
 
 import { hexToRgb, rgbCss, type ChartTheme, type Rgb } from "../../theme.js";
 import type { PanelContext } from "../context.js";
+import { renderSuitesPanel } from "./suites.js";
 
 const MARGIN = 16;
 const TITLE_HEIGHT = 24;
@@ -111,8 +112,14 @@ function roundRectPath(
 }
 
 export function renderPyramidPanel(context: PanelContext): Buffer {
-  const { width, height, theme, analytics, showTitle } = context;
+  const { width, height, theme, analytics, showTitle, config } = context;
   const breakdown = layerBreakdownFrom(analytics.layers);
+  const fallback =
+    config.base.chart?.pyramidFallback?.trim().toLowerCase() || "suites";
+  // Java: no known layers + pyramidFallback=suites → SuitesPanel (not "other"-only pyramid).
+  if (!breakdown.knownCounts.size && fallback === "suites") {
+    return renderSuitesPanel(context);
+  }
 
   const canvas = createCanvas(width, height);
   const ctx = canvas.getContext("2d");
