@@ -759,20 +759,21 @@ html.theme-light .anb-panel__action:hover {
   opacity: 0.9;
 }
 
+/* !important — GridStack injects .gs-id-* { top: 0 } after our sheet */
 .anb-canvas .grid-stack-item > .ui-resizable-ne,
 .anb-canvas .grid-stack-item > .ui-resizable-nw {
-  top: var(--anb-bar-h);
+  top: var(--anb-bar-h) !important;
 }
 
 .anb-canvas .grid-stack-item > .ui-resizable-n {
-  top: var(--anb-bar-h);
+  top: var(--anb-bar-h) !important;
   height: 8px;
 }
 
 .anb-canvas .grid-stack-item > .ui-resizable-e,
 .anb-canvas .grid-stack-item > .ui-resizable-w {
   width: 8px;
-  top: calc(var(--anb-bar-h) + 6px);
+  top: calc(var(--anb-bar-h) + 6px) !important;
 }
 
 .anb-canvas .grid-stack-item > .ui-resizable-s {
