@@ -11,9 +11,11 @@ import type { Config } from "@allure-notifications/config";
 import {
   loadHistoryAnalytics,
   type HistoryAnalytics,
+  type StabilityCase,
 } from "./history.js";
 import {
   durationMsOf,
+  labelOf,
   layerOf,
   readAllureResults,
   resolveResultsFolder,
@@ -43,6 +45,7 @@ export function buildAnalytics(
   const severityCounts: Record<string, number> = {};
   const durations: number[] = [];
   const durationsByLayer: Record<string, number[]> = {};
+  const stabilityCases: StabilityCase[] = [];
   let hasLayerLabels = false;
   let hasKnownLayerLabels = false;
 
@@ -78,6 +81,32 @@ export function buildAnalytics(
         durationsByLayer[layerKey] = bucket;
       }
     }
+
+    const status = (result.status ?? "unknown").trim().toLowerCase();
+    if (status !== "skipped" && status !== "unknown") {
+      const labels: Record<string, string> = {};
+      for (const label of result.labels) {
+        if (label.name && label.value && labels[label.name] == null) {
+          labels[label.name] = label.value;
+        }
+      }
+      // Ensure common Allure labels are present even if only via helpers.
+      const feature = labelOf(result, "feature");
+      const epic = labelOf(result, "epic");
+      const story = labelOf(result, "story");
+      const component = labelOf(result, "component");
+      if (feature) labels.feature = feature;
+      if (epic) labels.epic = epic;
+      if (story) labels.story = story;
+      if (component) labels.component = component;
+
+      stabilityCases.push({
+        id: result.uuid ?? result.fullName ?? result.name ?? `r-${stabilityCases.length}`,
+        labels,
+        passed: status === "passed" ? 1 : 0,
+        total: 1,
+      });
+    }
   }
 
   const suites: SuiteStat[] = Object.entries(suiteCounts)
@@ -98,6 +127,7 @@ export function buildAnalytics(
     hasKnownLayerLabels,
     resultCount: results.length,
     history,
+    stabilityCases,
   };
 }
 

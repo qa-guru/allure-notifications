@@ -106,6 +106,7 @@ describe("@allure-notifications/cli telegram caption + sendPhoto", () => {
         hasKnownLayerLabels: false,
         resultCount: 3,
         history: null,
+        stabilityCases: [],
       },
     );
     assert.match(caption, /allure-notifications/);

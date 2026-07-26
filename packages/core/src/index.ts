@@ -12,11 +12,18 @@ export const PNG_BACKEND = "@napi-rs/canvas" as const;
 export type {
   AllureLabel,
   AllureTestResult,
+  CoverageDiffCell,
+  GrowthPoint,
   HistoryAnalytics,
   HistoryRun,
   HistoryTestResult,
+  ProblemsByEnvironment,
   ReportAnalytics,
+  StabilityBar,
+  StabilityCase,
   Statistic,
+  StatusAgeBucket,
+  StatusTransitionPoint,
   SuiteStat,
   Summary,
 } from "./report/types.js";
@@ -35,14 +42,18 @@ export {
 export {
   DEFAULT_HISTORY_FILE,
   DEFAULT_HISTORY_LIMIT,
+  STATUS_AGE_BANDS,
   STATUS_KEYS,
+  STABILITY_THRESHOLD,
   SUCCESS_BUCKETS,
   historyFromRuns,
   historyWithBuckets,
   isHistoryEmpty,
   loadHistoryAnalytics,
   readHistoryFile,
+  resolveGroupByLabel,
   resolveHistoryFile,
+  stabilityBarsFromCases,
 } from "./report/history.js";
 export {
   DEFAULT_TOP_SUITES,
@@ -63,6 +74,13 @@ export { orderedSeverities, renderSeveritiesPanel } from "./collage/panels/sever
 export { renderSuitesPanel } from "./collage/panels/suites.js";
 export { renderStatusDynamicsPanel } from "./collage/panels/statusDynamics.js";
 export { renderSuccessRateDistributionPanel } from "./collage/panels/successRateDistribution.js";
+export { renderStatusTransitionsPanel } from "./collage/panels/statusTransitions.js";
+export { renderTestBaseGrowthPanel } from "./collage/panels/testBaseGrowth.js";
+export { renderCoverageDiffPanel } from "./collage/panels/coverageDiff.js";
+export { renderProblemsDistributionPanel } from "./collage/panels/problemsDistribution.js";
+export { renderStabilityDistributionPanel } from "./collage/panels/stabilityDistribution.js";
+export { renderDurationDynamicsPanel } from "./collage/panels/durationDynamics.js";
+export { renderStatusAgePyramidPanel } from "./collage/panels/statusAgePyramid.js";
 export { stackedSegmentHeights } from "./collage/panels/bars.js";
 export {
   STATUS_RGB,

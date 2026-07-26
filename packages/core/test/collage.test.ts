@@ -411,18 +411,8 @@ describe("@allure-notifications/core collage", () => {
   });
 });
 
-/** Catalog stubs without TS analytics yet (+ groupBy / by variants). */
-const EMPTY_STUB_TYPES = [
-  "statusTransitions",
-  "testBaseGrowthDynamics",
-  "coverageDiff",
-  "problemsDistribution",
-  "stabilityDistribution",
-  "durationDynamics",
-  "statusAgePyramid",
-] as const;
-
-const EMPTY_STUB_ITEMS: ChartItem[] = [
+/** Former catalog stubs — now real panels (+ groupBy / by variants). */
+const CATALOG_PANEL_ITEMS: ChartItem[] = [
   { type: "statusTransitions", x: 0, y: 0, w: 2, h: 2 },
   { type: "testBaseGrowthDynamics", x: 2, y: 0, w: 2, h: 2 },
   { type: "coverageDiff", x: 4, y: 0, w: 2, h: 2 },
@@ -501,7 +491,7 @@ describe("@allure-notifications/core empty-state panels", () => {
     assert.equal(DEFAULT_EMPTY_MESSAGE, "No data yet");
   });
 
-  it("resolveCardTitle: stub catalog ids → PANEL_CATALOG titles", () => {
+  it("resolveCardTitle: catalog ids → PANEL_CATALOG titles", () => {
     const config = parseConfig({
       base: {
         project: "Title Project",
@@ -546,7 +536,7 @@ describe("@allure-notifications/core empty-state panels", () => {
       "Durations by layer (s)",
     );
 
-    for (const item of EMPTY_STUB_ITEMS) {
+    for (const item of CATALOG_PANEL_ITEMS) {
       const meta = resolvePanelMeta(item);
       assert.ok(meta, `catalog meta for ${item.type}`);
       assert.equal(
@@ -556,7 +546,6 @@ describe("@allure-notifications/core empty-state panels", () => {
       );
     }
 
-    // Key catalog ids (real analytics + remaining stubs share catalog titles).
     for (const id of [
       "statusTransitions",
       "coverageDiff",
@@ -584,7 +573,7 @@ describe("@allure-notifications/core empty-state panels", () => {
     }
   });
 
-  it("each stub type + unknown → PNG tile (no throw / no silent skip)", async () => {
+  it("catalog panels + unknown → PNG tiles (no throw / no silent skip)", async () => {
     const summary = await readSummary(
       join(fixtures, "allure3-report/summary.json"),
     );
@@ -592,12 +581,12 @@ describe("@allure-notifications/core empty-state panels", () => {
     const analytics = buildAnalytics(summary, results);
 
     const items: ChartItem[] = [
-      ...EMPTY_STUB_ITEMS,
+      ...CATALOG_PANEL_ITEMS,
       { type: "totallyUnknownPanel", x: 6, y: 2, w: 2, h: 2 },
     ];
     const config = parseConfig({
       base: {
-        project: "empty-stubs",
+        project: "catalog-panels",
         allureFolder: join(fixtures, "allure3-report"),
         allureResultsFolder: join(fixtures, "allure-results"),
         enableChart: true,
@@ -622,19 +611,13 @@ describe("@allure-notifications/core empty-state panels", () => {
     assert.equal(size.w, 1000);
     assert.equal(size.h, 600);
 
-    // Empty bodies leave muted markers; unknown must not drop the tile.
+    // Unknown tile keeps empty-state muted marker (history panels may be text-empty).
     const muted = await countNearColor(png, { r: 150, g: 150, b: 150 }, 8, 2);
     assert.ok(
-      muted > 80,
-      `expected empty-state markers across stub tiles, got ${muted}`,
+      muted > 20,
+      `expected empty-state marker for unknown tile, got ${muted}`,
     );
 
-    for (const t of EMPTY_STUB_TYPES) {
-      assert.ok(
-        items.some((i) => i.type === t),
-        `fixture includes stub ${t}`,
-      );
-    }
     assert.equal(
       resolveCardTitle(
         { type: "totallyUnknownPanel", x: 0, y: 0, w: 1, h: 1 },
@@ -645,7 +628,7 @@ describe("@allure-notifications/core empty-state panels", () => {
     );
   });
 
-  it("SQ-1080 dense mix (real + stub) renders 1080×1080", async () => {
+  it("SQ-1080 dense mix (real catalog panels) renders 1080×1080", async () => {
     const summary = await readSummary(
       join(fixtures, "allure3-report/summary.json"),
     );
@@ -653,7 +636,7 @@ describe("@allure-notifications/core empty-state panels", () => {
     const analytics = buildAnalytics(summary, results);
 
     const raw = createSq1080Config({
-      project: "SQ-1080 empty polish",
+      project: "SQ-1080 catalog",
       allureFolder: join(fixtures, "allure3-report"),
       allureResultsFolder: join(fixtures, "allure-results"),
     });
@@ -677,12 +660,6 @@ describe("@allure-notifications/core empty-state panels", () => {
     assert.ok(
       unitGreen > 30,
       `real pie/pyramid must still paint #94ca66, got ${unitGreen}`,
-    );
-
-    const muted = await countNearColor(png, { r: 150, g: 150, b: 150 }, 8, 2);
-    assert.ok(
-      muted > 40,
-      `SQ-1080 stub tiles need empty-state markers, got ${muted}`,
     );
   });
 });

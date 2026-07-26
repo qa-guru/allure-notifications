@@ -87,16 +87,19 @@ describe("@allure-notifications/core analytics history", () => {
     assert.equal(history.statusDynamics.length, 3);
     assert.equal(history.successRateDistribution.length, SUCCESS_BUCKETS);
 
-    // run1: passed=2 failed=1
+    // run1: passed=2 failed=1 broken=1
     assert.equal(history.statusDynamics[0]!.passed, 2);
     assert.equal(history.statusDynamics[0]!.failed, 1);
+    assert.equal(history.statusDynamics[0]!.broken, 1);
     for (const key of STATUS_KEYS) {
       assert.ok(key in history.statusDynamics[0]!);
     }
 
-    // case a: 2/3 passed → bucket floor(2/3*10)=6; b: 1/3 → 3; c: 2/3 → 6
+    // a:2/3→6; b:1/3→3; c:2/3→6; d:0/1→0; e:0/2→0; f:1/1→9
+    assert.equal(history.successRateDistribution[0], 2);
     assert.equal(history.successRateDistribution[3], 1);
     assert.equal(history.successRateDistribution[6], 2);
+    assert.equal(history.successRateDistribution[9], 1);
   });
 
   it("severities ordered blocker→trivial then extras alpha", () => {

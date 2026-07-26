@@ -23,20 +23,27 @@ import {
   type Rgb,
 } from "../theme.js";
 import { panelContext } from "./context.js";
+import { renderCoverageDiffPanel } from "./panels/coverageDiff.js";
 import { renderDurationsPanel } from "./panels/durations.js";
+import { renderDurationDynamicsPanel } from "./panels/durationDynamics.js";
 import {
   DEFAULT_EMPTY_MESSAGE,
   renderEmptyPanel,
 } from "./panels/empty.js";
 import { renderPiePanel } from "./panels/pie.js";
+import { renderProblemsDistributionPanel } from "./panels/problemsDistribution.js";
 import {
   layerBreakdownFrom,
   renderPyramidPanel,
 } from "./panels/pyramid.js";
 import { renderSeveritiesPanel } from "./panels/severities.js";
+import { renderStabilityDistributionPanel } from "./panels/stabilityDistribution.js";
+import { renderStatusAgePyramidPanel } from "./panels/statusAgePyramid.js";
 import { renderStatusDynamicsPanel } from "./panels/statusDynamics.js";
+import { renderStatusTransitionsPanel } from "./panels/statusTransitions.js";
 import { renderSuccessRateDistributionPanel } from "./panels/successRateDistribution.js";
 import { renderSuitesPanel } from "./panels/suites.js";
+import { renderTestBaseGrowthPanel } from "./panels/testBaseGrowth.js";
 
 const DEFAULT_WIDTH = 1000;
 const DEFAULT_HEIGHT = 600;
@@ -65,17 +72,13 @@ const PANEL_STATUS_DYNAMICS = "statusdynamics";
 const PANEL_SUCCESS_RATE = "successratedistribution";
 const PANEL_SEVERITIES = "testresultseverities";
 const PANEL_SUITES = "suites";
-
-/** Catalog stubs without TS analytics yet — keep free-grid tiles (not silent-drop). */
-const EMPTY_STATE = new Set([
-  "statustransitions",
-  "testbasegrowthdynamics",
-  "coveragediff",
-  "problemsdistribution",
-  "stabilitydistribution",
-  "durationdynamics",
-  "statusagepyramid",
-]);
+const PANEL_STATUS_TRANSITIONS = "statustransitions";
+const PANEL_TEST_BASE_GROWTH = "testbasegrowthdynamics";
+const PANEL_COVERAGE_DIFF = "coveragediff";
+const PANEL_PROBLEMS = "problemsdistribution";
+const PANEL_STABILITY = "stabilitydistribution";
+const PANEL_DURATION_DYNAMICS = "durationdynamics";
+const PANEL_STATUS_AGE = "statusagepyramid";
 
 function normalize(raw: string | undefined | null): string | null {
   if (raw == null) {
@@ -107,8 +110,26 @@ function normalize(raw: string | undefined | null): string | null {
   if (key === PANEL_SUITES) {
     return PANEL_SUITES;
   }
-  if (EMPTY_STATE.has(key)) {
-    return key;
+  if (key === PANEL_STATUS_TRANSITIONS) {
+    return PANEL_STATUS_TRANSITIONS;
+  }
+  if (key === PANEL_TEST_BASE_GROWTH) {
+    return PANEL_TEST_BASE_GROWTH;
+  }
+  if (key === PANEL_COVERAGE_DIFF) {
+    return PANEL_COVERAGE_DIFF;
+  }
+  if (key === PANEL_PROBLEMS) {
+    return PANEL_PROBLEMS;
+  }
+  if (key === PANEL_STABILITY) {
+    return PANEL_STABILITY;
+  }
+  if (key === PANEL_DURATION_DYNAMICS || key === "duration-trend") {
+    return PANEL_DURATION_DYNAMICS;
+  }
+  if (key === PANEL_STATUS_AGE) {
+    return PANEL_STATUS_AGE;
   }
   return null;
 }
@@ -205,6 +226,7 @@ export function resolveCardTitle(
   if (key === PANEL_SUCCESS_RATE) {
     return "Success rate";
   }
+  // Catalog titles for remaining analytics panels (incl. groupBy/by variants).
   const meta = resolvePanelMeta({
     type: item.type,
     groupBy: item.groupBy,
@@ -253,7 +275,28 @@ function renderPanelPng(
   if (key === PANEL_SUITES) {
     return renderSuitesPanel(ctx);
   }
-  // Catalog stubs + unknown tiles: empty-state body (card chrome carries title).
+  if (key === PANEL_STATUS_TRANSITIONS) {
+    return renderStatusTransitionsPanel(ctx);
+  }
+  if (key === PANEL_TEST_BASE_GROWTH) {
+    return renderTestBaseGrowthPanel(ctx);
+  }
+  if (key === PANEL_COVERAGE_DIFF) {
+    return renderCoverageDiffPanel(ctx);
+  }
+  if (key === PANEL_PROBLEMS) {
+    return renderProblemsDistributionPanel(ctx);
+  }
+  if (key === PANEL_STABILITY) {
+    return renderStabilityDistributionPanel(ctx);
+  }
+  if (key === PANEL_DURATION_DYNAMICS) {
+    return renderDurationDynamicsPanel(ctx);
+  }
+  if (key === PANEL_STATUS_AGE) {
+    return renderStatusAgePyramidPanel(ctx);
+  }
+  // Unknown tiles: empty-state body (card chrome carries title).
   return renderEmptyPanel(ctx, DEFAULT_EMPTY_MESSAGE);
 }
 
