@@ -981,10 +981,10 @@ function applyChartFlags() {
   }
   syncEditorChrome();
 
-  const shell = document.getElementById('anb-canvas-shell');
-  if (shell instanceof HTMLElement) {
-    shell.classList.toggle('anb-canvas-shell--chart-off', !enableChart);
-    shell.setAttribute('aria-disabled', enableChart ? 'false' : 'true');
+  const canvas = document.getElementById('anb-canvas');
+  if (canvas instanceof HTMLElement) {
+    canvas.classList.toggle('anb-canvas--chart-off', !enableChart);
+    canvas.setAttribute('aria-disabled', enableChart ? 'false' : 'true');
   }
 
   const chartGroup = document.querySelector('[data-testid="anb-group-chart"]');

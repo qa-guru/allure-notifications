@@ -301,14 +301,13 @@ body {
 }
 
 /* Jar `base.enableChart: false` — gate collage editor chrome. */
-.anb-canvas-shell--chart-off {
-  position: relative;
+.anb-canvas--chart-off {
   opacity: 0.5;
   pointer-events: none;
   filter: grayscale(0.35);
 }
 
-.anb-canvas-shell--chart-off::after {
+.anb-canvas--chart-off::after {
   content: "enableChart: false";
   position: absolute;
   inset: 0;
@@ -323,7 +322,7 @@ body {
   pointer-events: none;
 }
 
-html.theme-light .anb-canvas-shell--chart-off::after {
+html.theme-light .anb-canvas--chart-off::after {
   color: rgba(26, 35, 48, 0.65);
   background: rgba(238, 242, 246, 0.55);
 }
@@ -366,10 +365,13 @@ html.theme-light .anb-canvas-shell--chart-off::after {
   color: var(--color-text-muted);
 }
 
-.anb-preview .anb-editor {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-3);
+/* Preview panel: canvas edge-to-edge; caption keeps its own inset. */
+.panel__body.anb-preview {
+  padding: 0;
+}
+
+.anb-preview > .anb-messenger-pane {
+  gap: 0;
 }
 
 .anb-editor__toolbar {
@@ -472,7 +474,7 @@ html.theme-light .anb-canvas-shell--chart-off::after {
   width: 100%;
   max-width: 480px;
   margin: 0;
-  padding: 0;
+  padding: var(--space-3) var(--space-4);
   background: transparent;
   color: var(--color-text, #f1f5f9);
   font-family: var(--font-sans, system-ui, sans-serif);
@@ -501,19 +503,9 @@ html.theme-light .anb-editor__caption a {
   text-decoration: underline;
 }
 
-.anb-canvas-shell {
-  position: relative;
-  width: 100%;
-  overflow: auto;
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-sm, 6px);
-  background: color-mix(in srgb, var(--color-bg) 88%, var(--color-text) 12%);
-  padding: 4px;
-  box-sizing: border-box;
-}
-
 .anb-canvas {
   position: relative;
+  box-sizing: border-box;
   width: 100%;
   height: auto;
   overflow: hidden;

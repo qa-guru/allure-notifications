@@ -236,10 +236,9 @@ test.describe('allure-notifications-builder smoke', () => {
     const dark = page.getByTestId('anb-bool-darkMode');
     const terminal = page.getByTestId('anb-terminal');
     const canvas = page.getByTestId('anb-canvas');
-    const shell = page.getByTestId('anb-canvas-shell');
 
     await expect(canvas).toHaveAttribute('data-anb-dark', 'true');
-    await expect(shell).not.toHaveClass(/anb-canvas-shell--chart-off/);
+    await expect(canvas).not.toHaveClass(/anb-canvas--chart-off/);
 
     await dark.locator('.plaque-field-seg__btn[data-value="false"]').click();
     await expect(dark.locator('.plaque-field-seg__btn--on')).toHaveAttribute(
@@ -277,10 +276,10 @@ test.describe('allure-notifications-builder smoke', () => {
       'false',
     );
     await expect(terminal).toContainText('"enableChart": false');
-    await expect(shell).toHaveClass(/anb-canvas-shell--chart-off/);
+    await expect(canvas).toHaveClass(/anb-canvas--chart-off/);
 
     await enable.locator('.plaque-field-seg__btn[data-value="true"]').click();
-    await expect(shell).not.toHaveClass(/anb-canvas-shell--chart-off/);
+    await expect(canvas).not.toHaveClass(/anb-canvas--chart-off/);
     await expect(terminal).toContainText('"enableChart": true');
   });
 
