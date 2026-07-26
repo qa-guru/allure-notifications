@@ -2,6 +2,7 @@
 # Java 5.0.8 jar CI stays in build.yml (master) — do not merge jobs.
 # Q1: Allure results + generate + soft c8 coverage artifacts (no % gate).
 # Q2: Sonar upload + sonar-gate-wait (soft SONAR_REQUIRED=false).
+# Q3: TestOps upload+close via allurectl (informational; skip without ALLURE_*).
 
 name: CI 6.0 (TypeScript)
 
@@ -168,4 +169,128 @@ jobs:
             echo "- dashboard: ${SONAR_HOST_URL%/}/dashboard?id=allure-notifications"
             echo "- SONAR_REQUIRED: \`${{ vars.SONAR_REQUIRED || 'false' }}\`"
             echo "- commit: \`${GITHUB_SHA:0:7}\`"
+          } >> "$GITHUB_STEP_SUMMARY"
+
+  testops:
+    name: TestOps (informational)
+    needs: test
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    # Informational — never a merge blocker. Forks / missing ALLURE_* → soft-skip.
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Download allure-results
+        uses: actions/download-artifact@v4
+        with:
+          name: allure-results
+          path: allure-results/
+
+      - name: Gate (forks / secrets / results)
+        id: gate
+        env:
+          IS_FORK: ${{ github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name != github.repository }}
+          ALLURE_PROJECT_ID: ${{ vars.ALLURE_PROJECT_ID }}
+          # Never pass token on fork PRs.
+          ALLURE_TOKEN: ${{ (github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository) && secrets.ALLURE_TOKEN || '' }}
+        run: |
+          if [[ "$IS_FORK" == "true" ]]; then
+            echo "skip=true" >> "$GITHUB_OUTPUT"
+            echo "reason=fork" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          if [[ -z "${ALLURE_PROJECT_ID}" || -z "${ALLURE_TOKEN}" ]]; then
+            echo "skip=true" >> "$GITHUB_OUTPUT"
+            echo "reason=missing-secrets" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          if [[ ! -d allure-results ]] || [[ -z "$(ls -A allure-results 2>/dev/null)" ]]; then
+            echo "skip=true" >> "$GITHUB_OUTPUT"
+            echo "reason=no-results" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          echo "skip=false" >> "$GITHUB_OUTPUT"
+          echo "reason=upload" >> "$GITHUB_OUTPUT"
+
+      - name: Install allurectl
+        if: steps.gate.outputs.skip == 'false'
+        continue-on-error: true
+        id: setup-allurectl
+        uses: allure-framework/setup-allurectl@v1
+        with:
+          allure-endpoint: ${{ vars.ALLURE_ENDPOINT || 'https://allure.qa.guru' }}
+          allure-token: ${{ secrets.ALLURE_TOKEN }}
+          allure-project-id: ${{ vars.ALLURE_PROJECT_ID }}
+
+      - name: Upload results to Allure TestOps
+        if: steps.gate.outputs.skip == 'false' && steps.setup-allurectl.outcome == 'success'
+        continue-on-error: true
+        id: testops-upload
+        env:
+          ALLURE_ENDPOINT: ${{ vars.ALLURE_ENDPOINT || 'https://allure.qa.guru' }}
+          ALLURE_PROJECT_ID: ${{ vars.ALLURE_PROJECT_ID }}
+        run: |
+          set +e
+          export ALLURE_LAUNCH_NAME="allure-notifications · ${{ github.ref_name }} · ${{ github.sha }}"
+          allurectl upload allure-results 2>&1 | tee allurectl-upload.log
+          UPLOAD_EXIT=${PIPESTATUS[0]}
+          echo "upload_exit=${UPLOAD_EXIT}" >> "$GITHUB_OUTPUT"
+          if [[ "$UPLOAD_EXIT" -eq 0 ]]; then
+            LAUNCH_URL=$(grep -Eo 'https://[^ ]+/launch/[0-9]+' allurectl-upload.log | head -1 || true)
+            if [[ -z "$LAUNCH_URL" ]] && allurectl job-run env >/tmp/allure-env 2>/dev/null; then
+              # shellcheck disable=SC1091
+              source /tmp/allure-env
+              LAUNCH_URL="${ALLURE_LAUNCH_URL:-}"
+            fi
+            if [[ -n "$LAUNCH_URL" ]]; then
+              echo "launch_url=${LAUNCH_URL}" >> "$GITHUB_OUTPUT"
+            fi
+          fi
+          set -e
+
+      - name: Close TestOps launch
+        if: >-
+          steps.gate.outputs.skip == 'false' &&
+          steps.testops-upload.outcome == 'success' &&
+          steps.testops-upload.outputs.launch_url != ''
+        continue-on-error: true
+        env:
+          ALLURE_ENDPOINT: ${{ vars.ALLURE_ENDPOINT || 'https://allure.qa.guru' }}
+          ALLURE_TOKEN: ${{ secrets.ALLURE_TOKEN }}
+          LAUNCH_URL: ${{ steps.testops-upload.outputs.launch_url }}
+        run: |
+          LAUNCH_ID="${LAUNCH_URL##*/}"
+          curl -fsS -X POST \
+            "${ALLURE_ENDPOINT%/}/api/rs/launch/${LAUNCH_ID}/close" \
+            -H "Authorization: Api-Token ${ALLURE_TOKEN}" \
+            -H "Accept: application/json" \
+            -H "User-Agent: Mozilla/5.0 (compatible; qa-guru-ci/1.0)"
+
+      - name: Job summary
+        if: always()
+        env:
+          ALLURE_ENDPOINT: ${{ vars.ALLURE_ENDPOINT || 'https://allure.qa.guru' }}
+          ALLURE_PROJECT_ID: ${{ vars.ALLURE_PROJECT_ID }}
+          GATE_SKIP: ${{ steps.gate.outputs.skip }}
+          GATE_REASON: ${{ steps.gate.outputs.reason }}
+          LAUNCH_URL: ${{ steps.testops-upload.outputs.launch_url }}
+        run: |
+          {
+            echo "## TestOps (informational)"
+            echo ""
+            echo "- endpoint: \`${ALLURE_ENDPOINT}\`"
+            echo "- project id: \`${ALLURE_PROJECT_ID:-unset}\`"
+            echo "- project: ${ALLURE_ENDPOINT%/}/project/${ALLURE_PROJECT_ID}"
+            if [[ "${GATE_SKIP}" == "true" ]]; then
+              echo "- status: soft-skip (\`${GATE_REASON}\`)"
+            elif [[ -n "${LAUNCH_URL}" ]]; then
+              echo "- status: uploaded"
+              echo "- launch: [${LAUNCH_URL}](${LAUNCH_URL})"
+            else
+              echo "- status: upload attempted (see job log; not a merge blocker)"
+            fi
+            echo "- commit: \`${GITHUB_SHA:0:7}\`"
+            echo "- launch name: \`allure-notifications · ${{ github.ref_name }} · ${{ github.sha }}\`"
           } >> "$GITHUB_STEP_SUMMARY"
