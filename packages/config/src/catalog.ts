@@ -24,33 +24,37 @@ export type ChartItem = {
   by?: string;
 };
 
+/**
+ * Palette / add-from-catalog footprint is always 2×2 (`hint` + defaultW/H).
+ * Grid preset sizes live in `DEFAULT_ITEMS` (presets.ts) — do not mix them here.
+ */
 /** @type {ReadonlyArray<PanelMeta>} */
 export const PANEL_CATALOG: ReadonlyArray<PanelMeta> = Object.freeze([
-  { id: "pie", type: "pie", title: "Current status", hint: "4×4", defaultW: 4, defaultH: 4 },
+  { id: "pie", type: "pie", title: "Current status", hint: "2×2", defaultW: 2, defaultH: 2 },
   {
     id: "testingPyramid",
     type: "testingPyramid",
     title: "Testing pyramid",
-    hint: "3×3",
-    defaultW: 3,
-    defaultH: 3,
+    hint: "2×2",
+    defaultW: 2,
+    defaultH: 2,
   },
   {
     id: "durationsByLayer",
     type: "durations",
     groupBy: "layer",
     title: "Durations by layer",
-    hint: "4×3",
-    defaultW: 4,
-    defaultH: 3,
+    hint: "2×2",
+    defaultW: 2,
+    defaultH: 2,
   },
   {
     id: "durationDynamics",
     type: "durationDynamics",
     title: "Duration dynamics",
-    hint: "6×4",
-    defaultW: 6,
-    defaultH: 4,
+    hint: "2×2",
+    defaultW: 2,
+    defaultH: 2,
   },
   {
     id: "statusAgePyramid",

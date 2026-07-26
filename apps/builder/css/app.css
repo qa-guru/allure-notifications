@@ -360,16 +360,13 @@ html.theme-light .anb-canvas-shell--chart-off::after {
   text-align: left;
 }
 
-.anb-palette__item--wide {
-  grid-column: 1 / -1;
-}
-
 .anb-palette__item:hover .anb-palette__tile,
 .anb-palette__item:focus-visible .anb-palette__tile {
   border-color: var(--color-accent, #2563eb);
   outline: none;
 }
 
+/* Uniform 2×2 thumbs — do not mirror grid DEFAULT_ITEMS footprints. */
 .anb-palette__tile.widget-tile {
   width: 100%;
   margin: 0;
@@ -386,10 +383,6 @@ html.theme-light .anb-canvas-shell--chart-off::after {
 .anb-palette__tile .widget-tile__body {
   aspect-ratio: 1;
   width: 100%;
-}
-
-.anb-palette__tile--wide .widget-tile__body {
-  aspect-ratio: 2 / 1;
 }
 
 .anb-palette__tile .widget-tile__body > svg {
