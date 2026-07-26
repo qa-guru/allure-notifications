@@ -113,7 +113,7 @@ Quality contour close-out for this repo:
 | Visual / collage | Unchanged pixel/ahash gate in `pnpm test` — **not** part of coverage % floor |
 | TestOps / Telegram | Still informational / dry-run-on-PR as Q3–Q4 |
 
-Contour complete. Phase 5 plugin **done** (docs + example wired; npm publish → **6.0.5**). Next product after release: AI (separate HQ OK).
+Contour complete. Phase 5 plugin **done** (GH example #492/#493…; plugin pin **`@6.0.7`**, CLI **`@6.0.5`**). Next product: **AI** only (separate HQ OK).
 
 ## TestOps (Q3, informational)
 
