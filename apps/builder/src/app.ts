@@ -66,7 +66,7 @@ let activeMessenger = 'telegram';
 let vectorDraft: string | null = null;
 let vectorMiss = false;
 
-const TG_BOT_NAME = 'Monitoring Bot';
+const TG_BOT_NAME = 'Test Notifications Bot';
 /** Dogfood preview stats — mirrors telegram.ftl when no local summary.json. */
 const TG_PREVIEW_STATS: Readonly<{
   total: number;
