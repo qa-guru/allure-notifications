@@ -27,15 +27,15 @@ export const DEFAULT_CARD_GAP = 14;
 export const DEFAULT_TILE_PAD = 6;
 
 /**
- * Default layout — 4-tile on full 10×10 substrate (empty rows 8–9 stay visible).
- * pie · durationDynamics · testingPyramid + durations groupBy:layer.
+ * Default layout — 4-tile on full 10×10 substrate.
+ * pie 5×5 · durationDynamics 5×3 (gap under it) · pyramid|durations h=4 · empty row 9.
  * See builder CANON.md.
  */
 export const DEFAULT_ITEMS: ReadonlyArray<ChartItem> = Object.freeze([
   { type: "pie", x: 0, y: 0, w: 5, h: 5 },
-  { type: "durationDynamics", x: 5, y: 0, w: 5, h: 5 },
-  { type: "testingPyramid", x: 0, y: 5, w: 4, h: 3 },
-  { type: "durations", x: 4, y: 5, w: 6, h: 3, groupBy: "layer" },
+  { type: "durationDynamics", x: 5, y: 0, w: 5, h: 3 },
+  { type: "testingPyramid", x: 0, y: 5, w: 4, h: 4 },
+  { type: "durations", x: 4, y: 5, w: 6, h: 4, groupBy: "layer" },
 ]);
 
 export type DefaultConfigOptions = {

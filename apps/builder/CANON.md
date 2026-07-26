@@ -7,8 +7,8 @@
 | Canvas | **870×1080** · grid **10×10** · cell **87×108** |
 | Presets only | **870×1080** · **1080×1080** · **1410×1080** (no 1024×1280) |
 | Panels | **17 catalog** (pie ↔ currentStatus · ChartType + groupBy/by) · mocks synced |
-| Layout | **4-tile on 10×10** — pie·durationDynamics top · pyramid + durations-by-layer mid · empty rows 8–9 (substrate stays 10×10) |
-| Palette defaults | pie / durationDynamics **5×5** · pyramid **4×3** · durations-by-layer **6×3** · остальные catalog defaults (pie/pyramid **3×3**, durations **4×3**, …) |
+| Layout | **4-tile on 10×10** — pie 5×5 · durationDynamics 5×3 · pyramid|durations h=4 · empty under dynamics + row 9 |
+| Palette defaults | pie **5×5** · durationDynamics **5×3** · pyramid **4×4** · durations-by-layer **6×4** · остальные catalog defaults |
 | Float / overlap | float **on** (exact x,y — no upward compact) · overlap off · min **1×1** |
 | Legacy dogfood | classic CB-870 (pie 5×5 · pyramid 5×5 · durations 10×5) remains in dogfood fixtures |
 
@@ -63,9 +63,9 @@ Terminal exports full `config.json`. Chart block for jar free-grid (CB-870 defau
   "gridRows": 10,
   "items": [
     {"type": "pie", "x": 0, "y": 0, "w": 5, "h": 5},
-    {"type": "durationDynamics", "x": 5, "y": 0, "w": 5, "h": 5},
-    {"type": "testingPyramid", "x": 0, "y": 5, "w": 4, "h": 3},
-    {"type": "durations", "x": 4, "y": 5, "w": 6, "h": 3, "groupBy": "layer"}
+    {"type": "durationDynamics", "x": 5, "y": 0, "w": 5, "h": 3},
+    {"type": "testingPyramid", "x": 0, "y": 5, "w": 4, "h": 4},
+    {"type": "durations", "x": 4, "y": 5, "w": 6, "h": 4, "groupBy": "layer"}
   ],
   "pyramidFallback": "suites"
 }

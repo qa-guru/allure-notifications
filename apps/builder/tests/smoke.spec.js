@@ -4,9 +4,9 @@ const { test, expect } = require('@playwright/test');
 /** SQ-1080 canon 4-tile compact-hero — must match @allure-notifications/config DEFAULT_ITEMS + CANON.md */
 const SQ1080_ITEMS = [
   { type: 'pie', x: 0, y: 0, w: 5, h: 5 },
-  { type: 'durationDynamics', x: 5, y: 0, w: 5, h: 5 },
-  { type: 'testingPyramid', x: 0, y: 5, w: 4, h: 3 },
-  { type: 'durations', x: 4, y: 5, w: 6, h: 3, groupBy: 'layer' },
+  { type: 'durationDynamics', x: 5, y: 0, w: 5, h: 3 },
+  { type: 'testingPyramid', x: 0, y: 5, w: 4, h: 4 },
+  { type: 'durations', x: 4, y: 5, w: 6, h: 4, groupBy: 'layer' },
 ];
 
 test.describe('allure-notifications-builder smoke', () => {
