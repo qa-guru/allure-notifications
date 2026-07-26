@@ -2,10 +2,10 @@
   "base": {
     "project": "allure-notifications",
     "environment": "CI",
-    "comment": "cb870-mid-dynamics · library unit tests (dogfood)",
+    "comment": "Q4 quality contour · this-run Allure (fallback dogfood CB-870 in ci-telegram.sh)",
     "language": "en",
-    "allureFolder": "legacy/java/allure-notifications-api/build/allure-report/",
-    "allureResultsFolder": "legacy/java/allure-notifications-api/build/allure-results/",
+    "allureFolder": "../allure-report",
+    "allureResultsFolder": "../allure-results",
     "enableChart": true,
     "darkMode": true,
     "enableSuitesPublishing": false,

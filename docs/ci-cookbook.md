@@ -21,7 +21,7 @@ npx allure-notifications send --config config.json --dry-run
 | `--mock` | Render PNG; mock deliveries; **no network** |
 | `--out <png>` | Write PNG buffer to disk |
 
-Default without `--mock` / `--live` is safe **dry-run**. Live Telegram = explicit `--live` + env credentials ([`telegram-dogfood.md`](telegram-dogfood.md)); **not** in `ci-6.0.yml`.
+Default without `--mock` / `--live` is safe **dry-run**. Live Telegram = explicit `--live` + env credentials ([`telegram-dogfood.md`](telegram-dogfood.md)). Product CI job **`telegram`** in `ci-6.0.yml` (Q4): PR `--dry-run`; `master` / `workflow_dispatch` `--live` when secrets present.
 
 ## Workspace (local / before `npx`)
 
@@ -38,7 +38,7 @@ Fixture config already points at `packages/core/test/fixtures/dogfood-report` + 
 
 ## GitHub Actions — product CI (this repo)
 
-TS tests live in [`.github/workflows/ci-6.0.yml`](../.github/workflows/ci-6.0.yml) (`pnpm i` + `pnpm typecheck` + `pnpm test` + soft `pnpm coverage` + `pnpm allure:generate` on `master` + `feature/6.0*` + `feature/quality-*`). Artifacts: `allure-results/` · `allure-report/` · `coverage/` (retain ≥7d). Job **Sonar (soft)** needs coverage → `scripts/ci-sonar.sh` + vendored `scripts/sonar-gate-wait.py` (`projectKey=allure-notifications`; `SONAR_REQUIRED=false`). Job **TestOps (informational)** needs `allure-results` → `setup-allurectl@v1` + `allurectl upload` + close (soft-skip without `ALLURE_*`; forks never upload). Builder Pages: [`pages-builder.yml`](../.github/workflows/pages-builder.yml) (static `apps/builder/` on `master` + `feature/6.0*`; see [`pages-cutover.md`](pages-cutover.md)). Java jar CI stays in [`build.yml`](../.github/workflows/build.yml) (**master** only; cwd `legacy/java`).
+TS tests live in [`.github/workflows/ci-6.0.yml`](../.github/workflows/ci-6.0.yml) (`pnpm i` + `pnpm typecheck` + `pnpm test` + soft `pnpm coverage` + `pnpm allure:generate` on `master` + `feature/6.0*` + `feature/quality-*`). Artifacts: `allure-results/` · `allure-report/` · `coverage/` (retain ≥7d). Job **Sonar (soft)** needs coverage → `scripts/ci-sonar.sh` + vendored `scripts/sonar-gate-wait.py` (`projectKey=allure-notifications`; `SONAR_REQUIRED=false`). Job **TestOps (informational)** needs `allure-results` → `setup-allurectl@v1` + `allurectl upload` + close (soft-skip without `ALLURE_*`; forks never upload). Job **Telegram (Q4)** needs `allure-report` → `scripts/ci-telegram.sh` + `config/ci-telegram.json` (`npx allure-notifications@6.0.4`; PR dry-run / master live → topic 34). Builder Pages: [`pages-builder.yml`](../.github/workflows/pages-builder.yml) (static `apps/builder/` on `master` + `feature/6.0*`; see [`pages-cutover.md`](pages-cutover.md)). Java jar CI stays in [`build.yml`](../.github/workflows/build.yml) (**master** only; cwd `legacy/java`).
 
 ## Own tests → Allure results (Q1)
 
@@ -94,6 +94,32 @@ Upload this repo’s own `allure-results/` to Allure TestOps after the test job.
 | `ALLURE_PROJECT_ID` | var | TestOps project id (GH var only — not in git) |
 
 Launch name: `allure-notifications · <ref_name> · <sha>`. Job summary prints the launch URL when upload succeeds. Missing secrets / empty results / forks → soft-skip (job still green).
+
+## Telegram (Q4)
+
+Dogfood collage of **this run’s** Allure report into ADR 008 Monitoring topic **34** (`allure-notifications`). Wrapper: [`scripts/ci-telegram.sh`](../scripts/ci-telegram.sh). Template config: [`config/ci-telegram.json`](../config/ci-telegram.json) (points at `../allure-report` + `../allure-results`; runtime file gitignored). If `allure-report/summary.json` is missing → fallback dogfood CB-870 fixtures under `packages/core/test/fixtures/`.
+
+| Event | Mode |
+|-------|------|
+| Same-repo PR / feature push | `--dry-run` (no network; **fail = fix wiring**) |
+| `master` push / `workflow_dispatch` | `--live` when `TELEGRAM_*` present; else soft-skip |
+| Fork PR | never `--live` (dry-run only) |
+
+| Var / secret | Kind | Default / note |
+|--------------|------|----------------|
+| `TELEGRAM_BOT_TOKEN` or `TELEGRAM_TOKEN` | secret | never on fork PRs; never commit |
+| `TELEGRAM_CHAT_ID` | secret | `-1004381150566` |
+| `TELEGRAM_TOPIC_ID` | var | **34** (alias `TELEGRAM_ALLURE_NOTIFICATIONS_TOPIC_ID`) |
+
+CLI pin: `npx allure-notifications@6.0.4`. Optional artifact: `collage-telegram.png`. Job summary prints `message_id` on live success. Missing secrets on live path → soft-skip (not a merge blocker).
+
+Local rehearsal:
+
+```bash
+# with this-run report already generated:
+MODE=dry-run bash scripts/ci-telegram.sh
+# force dogfood fallback: move/rename allure-report/summary.json first
+```
 
 ## GitHub Actions — consumer notify (dry-run)
 
