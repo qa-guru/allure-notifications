@@ -1,0 +1,20 @@
+{
+  "reporter": ["lcov", "text"],
+  "reports-dir": "coverage",
+  "include": ["packages/*/src/**/*.ts", "packages/*/dist/src/**/*.js"],
+  "exclude": [
+    "**/node_modules/**",
+    "**/vendor/**",
+    "**/test/fixtures/**",
+    "**/apps/builder/js/**",
+    "**/*.test.*",
+    "**/dist/test/**",
+    "**/coverage/**",
+    "**/allure-results/**",
+    "**/allure-report/**"
+  ],
+  "extension": [".js", ".ts"],
+  "all": false,
+  "skip-full": false,
+  "check-coverage": false
+}

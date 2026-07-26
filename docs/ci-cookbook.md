@@ -38,7 +38,30 @@ Fixture config already points at `packages/core/test/fixtures/dogfood-report` + 
 
 ## GitHub Actions — product CI (this repo)
 
-TS tests live in [`.github/workflows/ci-6.0.yml`](../.github/workflows/ci-6.0.yml) (`pnpm i` + `pnpm test` on `master` + `feature/6.0*`). Builder Pages: [`pages-builder.yml`](../.github/workflows/pages-builder.yml) (static `apps/builder/` on `master` + `feature/6.0*`; see [`pages-cutover.md`](pages-cutover.md)). Java jar CI stays in [`build.yml`](../.github/workflows/build.yml) (**master** only; cwd `legacy/java`).
+TS tests live in [`.github/workflows/ci-6.0.yml`](../.github/workflows/ci-6.0.yml) (`pnpm i` + `pnpm typecheck` + `pnpm test` + soft `pnpm coverage` + `pnpm allure:generate` on `master` + `feature/6.0*` + `feature/quality-*`). Artifacts: `allure-results/` · `allure-report/` · `coverage/` (retain ≥7d). Builder Pages: [`pages-builder.yml`](../.github/workflows/pages-builder.yml) (static `apps/builder/` on `master` + `feature/6.0*`; see [`pages-cutover.md`](pages-cutover.md)). Java jar CI stays in [`build.yml`](../.github/workflows/build.yml) (**master** only; cwd `legacy/java`).
+
+## Own tests → Allure results (Q1)
+
+This repo’s **own** test run writes Allure results for the quality contour. Separate from product dogfood fixtures under `packages/core/test/fixtures/dogfood-*` (those feed CLI collage, not CI report of unit/e2e).
+
+| Slice | Adapter | Output |
+|-------|---------|--------|
+| Packages `node:test` | **`allure-node-test`** reporter (`allure-js` ecosystem + `allure-js-commons`) | `allure-results/` at repo root |
+| Builder unit `node:test` | same reporter | same dir |
+| Builder Playwright e2e | **`allure-playwright`** in `apps/builder/playwright.config.js` | same dir |
+
+```bash
+pnpm test                 # sets ALLURE_RESULTS_DIR=<repo>/allure-results, runs workspace tests
+pnpm coverage             # c8 → coverage/lcov.info (soft; no % gate; packages only)
+pnpm allure:generate      # allure generate allure-results --output allure-report
+```
+
+Notes:
+
+- Node before 26.1: reporter-only mode (pass/fail/skip) — no `allure-js-commons` runtime API preload required. CI uses Node 20.
+- `ALLURE_RESULTS_DIR` must point at the **repo root** `allure-results/` (root `scripts/run-tests.mjs`); do not write into package cwd.
+- Coverage excludes: `dist` test emit noise, `node_modules`, `vendor`, `test/fixtures`, `apps/builder/js`, `**/*.test.*`. Soft collect only until Q5.
+- Forks/PR: no live secrets needed for this path (tests + Allure generate + coverage artifact).
 
 ## GitHub Actions — consumer notify (dry-run)
 
