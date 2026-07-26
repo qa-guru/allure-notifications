@@ -1323,65 +1323,82 @@
     return parts.join("");
   }
 
-  /** Durations by layer — stacked histogram tinted by layer. */
+  /**
+   * Durations by layer — avg seconds per layer (horizontal pills).
+   * Collage canon: Java DurationsPanel / core drawLayerAverages (not stacked hist).
+   */
   function durationsByLayerSvg(host) {
     var v = tileVars(host);
-    var stacks = [
-      [0.4, 0.3, 0.3],
-      [0.35, 0.4, 0.25],
-      [0.5, 0.25, 0.25],
-      [0.3, 0.35, 0.35],
-      [0, 0, 0],
-      [0, 0, 0],
-      [0.45, 0.3, 0.25],
-      [0, 0, 0],
-      [0, 0, 0],
-      [0.4, 0.35, 0.25],
-    ];
-    var heights = [150, 96, 92, 55, 0, 0, 40, 0, 0, 78];
-    var layerColors = [
-      "var(--layer-unit)",
-      "var(--layer-api)",
-      "var(--layer-e2e)",
+    // Dogfood-shaped sample (LAYER_ORDER reversed; only layers with data).
+    var rows = [
+      { k: "e2e", n: 1.0, c: "var(--layer-e2e)" },
+      { k: "integration", n: 0.1, c: "var(--layer-integration)" },
+      { k: "component", n: 0.0, c: "var(--layer-component)" },
+      { k: "unit", n: 0.1, c: "var(--layer-unit)" },
     ];
     var box = plotBox(host, 240);
     var W = box.W;
     var H = box.H;
-    var padT = v.tier === "micro" ? 4 : 8;
-    var padB = v.tier === "micro" ? 4 : 10;
-    var padX = v.tier === "micro" ? 4 : 6;
-    var plotH = H - padT - padB;
-    var n = heights.length;
-    var slot = (W - padX * 2) / n;
-    var barW = barWForSlot(slot, v.tier === "micro" ? 0.82 : 0.72, v.mark, v.tier);
-    var maxH = heights.reduce(function (m, h) {
-      return Math.max(m, h);
-    }, 1);
-    var rx = v.tier === "micro" ? Math.max(2, CHART_RX / 2) : CHART_RX;
-    var parts = [svgMeet("Durations by layer", W, H)];
-    heights.forEach(function (h, i) {
-      if (h <= 0) return;
-      var barH = (h / maxH) * plotH;
-      var x = padX + i * slot + (slot - barW) / 2;
-      var y = padT + plotH;
-      var segs = [];
-      stacks[i].forEach(function (frac, si) {
-        if (frac <= 0) return;
-        segs.push({ frac: frac, c: layerColors[si] });
-      });
-      segs.forEach(function (seg, si) {
-        var segH = seg.frac * barH;
-        y -= segH;
-        var rBot = si === 0 ? rx : 0;
-        var rTop = si === segs.length - 1 ? rx : 0;
+    var padX = v.tier === "micro" ? 4 : 10;
+    var padY = v.tier === "micro" ? 4 : 10;
+    var n = rows.length;
+    var plotH = H - padY * 2;
+    var rowH = plotH / n;
+    var showLabels = v.tier !== "micro";
+    var labelW = showLabels ? Math.min(90, Math.floor((W - padX * 2) / 3)) : 0;
+    var valueW = showLabels ? (v.tier === "compact" ? 28 : 36) : 0;
+    var barArea = Math.max(1, W - padX * 2 - labelW - valueW);
+    var maxAvg = rows.reduce(function (m, r) {
+      return Math.max(m, r.n);
+    }, 0.001);
+    var barH = Math.max(
+      6,
+      Math.floor(rowH * (v.tier === "micro" ? 0.7 : v.tier === "compact" ? 0.5 : 0.55))
+    );
+    var font = Math.round(
+      (v.tier === "compact" ? 9 : v.tier === "hero" ? 12 : 11) * v.font
+    );
+    var parts = [svgMeet("Durations by layer (s)", W, H)];
+    rows.forEach(function (r, i) {
+      var rowY = padY + i * rowH;
+      var baseline = rowY + rowH * 0.7;
+      var barY = rowY + (rowH - barH) / 2;
+      var barW = Math.max(2, Math.floor((r.n / maxAvg) * barArea));
+      var barX = padX + labelW;
+      var rPill = barH / 2;
+      if (showLabels) {
         parts.push(
-          '<path d="' +
-            vBarPath(x, y, barW, segH, rTop, rBot) +
-            '" fill="' +
-            seg.c +
-            '" />'
+          '<text x="' +
+            padX +
+            '" y="' +
+            baseline.toFixed(1) +
+            '" font-family="var(--font-sans)" font-size="' +
+            font +
+            '" fill="var(--color-text)">' +
+            (v.tier === "compact" ? r.k.slice(0, 3) : r.k) +
+            "</text>"
         );
-      });
+      }
+      parts.push(
+        '<path d="' +
+          hBarPath(barX, barY, barW, barH, rPill, rPill) +
+          '" fill="' +
+          r.c +
+          '" />'
+      );
+      if (showLabels && v.tier !== "compact") {
+        parts.push(
+          '<text x="' +
+            (barX + barW + 6).toFixed(1) +
+            '" y="' +
+            baseline.toFixed(1) +
+            '" font-family="var(--font-sans)" font-size="' +
+            font +
+            '" fill="var(--color-text)">' +
+            r.n.toFixed(1) +
+            "</text>"
+        );
+      }
     });
     parts.push("</svg>");
     return parts.join("");
@@ -1531,7 +1548,12 @@
       dots: ["red", "yellow", "green"],
     },
     { type: "durations", groupBy: "none", title: "Durations", dots: ["blue"] },
-    { type: "durations", groupBy: "layer", title: "Durations by layer", dots: ["red", "yellow", "blue"] },
+    {
+      type: "durations",
+      groupBy: "layer",
+      title: "Durations by layer",
+      dots: ["red", "purple", "orange", "green"],
+    },
     { type: "durationDynamics", title: "Duration dynamics", dots: ["blue"] },
     { type: "statusAgePyramid", title: "Status age pyramid", dots: ["red", "yellow", "gray", "purple"] },
   ];
