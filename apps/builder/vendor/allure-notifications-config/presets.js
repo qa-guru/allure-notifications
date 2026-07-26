@@ -17,17 +17,15 @@ export const DEFAULT_CARD_GAP = 14;
 /** Preview-only — maps to `--wt-pad`; jar parses but does not apply yet. */
 export const DEFAULT_TILE_PAD = 6;
 /**
- * SQ-1080 canon — 7 tiles, 3 rows (3+3+4 cols).
- * See builder CANON.md / `DEFAULT_ITEMS` in `js/app.js`.
+ * SQ-1080 canon — 4-tile compact-hero.
+ * pie · durationDynamics · testingPyramid + durations groupBy:layer.
+ * See builder CANON.md.
  */
 export const DEFAULT_ITEMS = Object.freeze([
-    { type: "testingPyramid", x: 0, y: 0, w: 3, h: 3 },
-    { type: "pie", x: 3, y: 0, w: 3, h: 3 },
-    { type: "durations", x: 6, y: 0, w: 4, h: 3 },
-    { type: "coverageDiff", x: 0, y: 3, w: 3, h: 3 },
-    { type: "successRateDistribution", x: 3, y: 3, w: 3, h: 3 },
-    { type: "problemsDistribution", x: 6, y: 3, w: 4, h: 3, by: "environment" },
-    { type: "stabilityDistribution", x: 6, y: 6, w: 4, h: 4, groupBy: "feature" },
+    { type: "pie", x: 0, y: 0, w: 5, h: 5 },
+    { type: "durationDynamics", x: 5, y: 0, w: 5, h: 5 },
+    { type: "testingPyramid", x: 0, y: 5, w: 4, h: 5 },
+    { type: "durations", x: 4, y: 5, w: 6, h: 5, groupBy: "layer" },
 ]);
 /**
  * Builder-shaped default `config.json` (SQ-1080 free + chrome knobs).

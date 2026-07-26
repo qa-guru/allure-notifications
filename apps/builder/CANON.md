@@ -7,8 +7,8 @@
 | Canvas | **1080×1080** · grid **10×10** · cell **108×108** |
 | Presets only | **870×1080** · **1080×1080** · **1410×1080** (no 1024×1280) |
 | Panels | **17 catalog** (pie ↔ currentStatus · ChartType + groupBy/by) · mocks synced |
-| Layout | **7-tile canon** — row1 pyramid·pie·durations · row2 coverage·success·problems · row3 stability by feature (see `DEFAULT_ITEMS`) |
-| Palette defaults | pie/pyramid **3×3** · durations **4×3** · coverage/success **3×3** · problems **4×3** · stability by feature **4×5** (reset grid → **4×4**, ceiling 10 rows) · остальные **2×2** |
+| Layout | **4-tile compact-hero** — pie·durationDynamics top · pyramid + durations-by-layer bottom (see `DEFAULT_ITEMS`) |
+| Palette defaults | pie / durationDynamics **5×5** · pyramid **4×5** · durations-by-layer **6×5** · остальные catalog defaults (pie/pyramid **3×3**, durations **4×3**, …) |
 | Float / overlap | float **on** (exact x,y — no upward compact) · overlap off · min **1×1** |
 | Legacy | CB-870 (pie 5×5 · pyramid 5×5 · durations 10×5 @ 870×1080) remains a preset + dogfood |
 
@@ -62,13 +62,10 @@ Terminal exports full `config.json`. Chart block for jar free-grid (SQ-1080 defa
   "gridCols": 10,
   "gridRows": 10,
   "items": [
-    {"type": "testingPyramid", "x": 0, "y": 0, "w": 3, "h": 3},
-    {"type": "pie", "x": 3, "y": 0, "w": 3, "h": 3},
-    {"type": "durations", "x": 6, "y": 0, "w": 4, "h": 3},
-    {"type": "coverageDiff", "x": 0, "y": 3, "w": 3, "h": 3},
-    {"type": "successRateDistribution", "x": 3, "y": 3, "w": 3, "h": 3},
-    {"type": "problemsDistribution", "x": 6, "y": 3, "w": 4, "h": 3, "by": "environment"},
-    {"type": "stabilityDistribution", "x": 6, "y": 6, "w": 4, "h": 4, "groupBy": "feature"}
+    {"type": "pie", "x": 0, "y": 0, "w": 5, "h": 5},
+    {"type": "durationDynamics", "x": 5, "y": 0, "w": 5, "h": 5},
+    {"type": "testingPyramid", "x": 0, "y": 5, "w": 4, "h": 5},
+    {"type": "durations", "x": 4, "y": 5, "w": 6, "h": 5, "groupBy": "layer"}
   ],
   "pyramidFallback": "suites"
 }

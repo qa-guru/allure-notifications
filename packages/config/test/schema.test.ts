@@ -51,13 +51,13 @@ describe("@allure-notifications/config catalog", () => {
 });
 
 describe("@allure-notifications/config presets", () => {
-  it("has three canvas presets and SQ-1080 DEFAULT_ITEMS (7 tiles)", () => {
+  it("has three canvas presets and SQ-1080 DEFAULT_ITEMS (4-tile compact-hero)", () => {
     assert.deepEqual(Object.keys(CANVAS_PRESETS).sort(), [
       "1080x1080",
       "1410x1080",
       "870x1080",
     ]);
-    assert.equal(DEFAULT_ITEMS.length, 7);
+    assert.equal(DEFAULT_ITEMS.length, 4);
     assert.equal(DEFAULT_HEADER_HEIGHT, 22);
     assert.equal(DEFAULT_CARD_GAP, 14);
     assert.equal(DEFAULT_TILE_PAD, 6);
@@ -75,7 +75,7 @@ describe("@allure-notifications/config presets", () => {
     assert.equal(parsed.base.chart?.headerHeight, 22);
     assert.equal(parsed.base.chart?.cardGap, 14);
     assert.equal(parsed.base.chart?.tilePad, 6);
-    assert.equal(parsed.base.chart?.items?.length, 7);
+    assert.equal(parsed.base.chart?.items?.length, 4);
     assert.equal(parsed.telegram?.token, "0:t");
   });
 

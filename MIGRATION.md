@@ -110,7 +110,7 @@ See [docs/ci-cookbook.md](docs/ci-cookbook.md): `allure generate` → `allure-no
 `@allure-notifications/config` (`packages/config/`):
 
 - zod `ConfigSchema` — `base.chart` free layout + chrome knobs (`headerHeight` / `cardGap` / `tilePad`)
-- `PANEL_CATALOG` (17), `DEFAULT_ITEMS` (SQ-1080 7-tile), `CANVAS_PRESETS` (870/1080/1410×1080), `createDefaultConfig()`
+- `PANEL_CATALOG` (17), `DEFAULT_ITEMS` (SQ-1080 4-tile compact-hero), `CANVAS_PRESETS` (870/1080/1410×1080), `createDefaultConfig()`
 - Extracted from hub builder `allure-notifications-builder/js/app.js` (builder still has a local copy until Phase 4 / `apps/builder/` merge)
 - Verify: `pnpm --filter @allure-notifications/config test`
 

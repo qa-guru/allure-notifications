@@ -1,22 +1,12 @@
 // @ts-check
 const { test, expect } = require('@playwright/test');
 
-/** SQ-1080 canon 7-tile — must match @allure-notifications/config DEFAULT_ITEMS + CANON.md */
+/** SQ-1080 canon 4-tile compact-hero — must match @allure-notifications/config DEFAULT_ITEMS + CANON.md */
 const SQ1080_ITEMS = [
-  { type: 'testingPyramid', x: 0, y: 0, w: 3, h: 3 },
-  { type: 'pie', x: 3, y: 0, w: 3, h: 3 },
-  { type: 'durations', x: 6, y: 0, w: 4, h: 3 },
-  { type: 'coverageDiff', x: 0, y: 3, w: 3, h: 3 },
-  { type: 'successRateDistribution', x: 3, y: 3, w: 3, h: 3 },
-  { type: 'problemsDistribution', x: 6, y: 3, w: 4, h: 3, by: 'environment' },
-  {
-    type: 'stabilityDistribution',
-    x: 6,
-    y: 6,
-    w: 4,
-    h: 4,
-    groupBy: 'feature',
-  },
+  { type: 'pie', x: 0, y: 0, w: 5, h: 5 },
+  { type: 'durationDynamics', x: 5, y: 0, w: 5, h: 5 },
+  { type: 'testingPyramid', x: 0, y: 5, w: 4, h: 5 },
+  { type: 'durations', x: 4, y: 5, w: 6, h: 5, groupBy: 'layer' },
 ];
 
 test.describe('allure-notifications-builder smoke', () => {
