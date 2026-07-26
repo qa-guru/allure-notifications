@@ -4,31 +4,31 @@
  */
 /** @type {ReadonlyArray<PanelMeta>} */
 export const PANEL_CATALOG = Object.freeze([
-    { id: "pie", type: "pie", title: "Current status", hint: "2×2", defaultW: 2, defaultH: 2 },
+    { id: "pie", type: "pie", title: "Current status", hint: "4×4", defaultW: 4, defaultH: 4 },
     {
         id: "testingPyramid",
         type: "testingPyramid",
         title: "Testing pyramid",
-        hint: "2×2",
-        defaultW: 2,
-        defaultH: 2,
+        hint: "3×3",
+        defaultW: 3,
+        defaultH: 3,
     },
     {
         id: "durationsByLayer",
         type: "durations",
         groupBy: "layer",
         title: "Durations by layer",
-        hint: "2×2",
-        defaultW: 2,
-        defaultH: 2,
+        hint: "4×3",
+        defaultW: 4,
+        defaultH: 3,
     },
     {
         id: "durationDynamics",
         type: "durationDynamics",
         title: "Duration dynamics",
-        hint: "2×2",
-        defaultW: 2,
-        defaultH: 2,
+        hint: "6×4",
+        defaultW: 6,
+        defaultH: 4,
     },
     {
         id: "statusAgePyramid",

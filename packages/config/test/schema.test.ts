@@ -52,14 +52,19 @@ describe("@allure-notifications/config catalog", () => {
 });
 
 describe("@allure-notifications/config presets", () => {
-  it("has three canvas presets and DEFAULT_ITEMS (4-tile compact-hero)", () => {
+  it("has three canvas presets and DEFAULT_ITEMS (4-tile screenshot layout)", () => {
     assert.deepEqual(Object.keys(CANVAS_PRESETS).sort(), [
       "1080x1080",
       "1410x1080",
       "870x1080",
     ]);
     assert.equal(DEFAULT_CANVAS, "870x1080");
-    assert.equal(DEFAULT_ITEMS.length, 4);
+    assert.deepEqual([...DEFAULT_ITEMS], [
+      { type: "pie", x: 0, y: 0, w: 4, h: 4 },
+      { type: "durationDynamics", x: 4, y: 0, w: 6, h: 4 },
+      { type: "testingPyramid", x: 0, y: 4, w: 3, h: 3 },
+      { type: "durations", x: 3, y: 4, w: 4, h: 3, groupBy: "layer" },
+    ]);
     assert.equal(DEFAULT_HEADER_HEIGHT, 22);
     assert.equal(DEFAULT_CARD_GAP, 14);
     assert.equal(DEFAULT_TILE_PAD, 6);
