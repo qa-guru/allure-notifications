@@ -1,5 +1,5 @@
 /**
- * Build ReportAnalytics from summary + allure-results.
+ * Build ReportAnalytics from summary + allure-results (+ optional history).
  */
 
 import { isKnownLayer } from "@allure-notifications/pyramid";
@@ -8,6 +8,10 @@ import { join } from "node:path";
 
 import type { Config } from "@allure-notifications/config";
 
+import {
+  loadHistoryAnalytics,
+  type HistoryAnalytics,
+} from "./history.js";
 import {
   durationMsOf,
   layerOf,
@@ -25,12 +29,13 @@ import type {
   Summary,
 } from "./types.js";
 
-const DEFAULT_TOP_SUITES = 10;
+export const DEFAULT_TOP_SUITES = 10;
 
 export function buildAnalytics(
   summary: Summary,
   results: AllureTestResult[],
   topSuites = DEFAULT_TOP_SUITES,
+  history: HistoryAnalytics | null = null,
 ): ReportAnalytics {
   const statistic: Statistic = { ...summary.statistic };
   const layerCounts: Record<string, number> = {};
@@ -92,6 +97,7 @@ export function buildAnalytics(
     hasLayerLabels,
     hasKnownLayerLabels,
     resultCount: results.length,
+    history,
   };
 }
 
@@ -125,5 +131,10 @@ export async function loadReportAnalytics(
     allureFolder,
   );
   const results = await readAllureResults(resultsFolder);
-  return buildAnalytics(summary, results);
+  const history = await loadHistoryAnalytics(
+    config,
+    allureFolder,
+    resultsFolder,
+  );
+  return buildAnalytics(summary, results, DEFAULT_TOP_SUITES, history);
 }

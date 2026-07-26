@@ -12,6 +12,9 @@ export const PNG_BACKEND = "@napi-rs/canvas" as const;
 export type {
   AllureLabel,
   AllureTestResult,
+  HistoryAnalytics,
+  HistoryRun,
+  HistoryTestResult,
   ReportAnalytics,
   Statistic,
   SuiteStat,
@@ -29,7 +32,23 @@ export {
   severityOf,
   suiteNameOf,
 } from "./report/results.js";
-export { buildAnalytics, loadReportAnalytics } from "./report/analytics.js";
+export {
+  DEFAULT_HISTORY_FILE,
+  DEFAULT_HISTORY_LIMIT,
+  STATUS_KEYS,
+  SUCCESS_BUCKETS,
+  historyFromRuns,
+  historyWithBuckets,
+  isHistoryEmpty,
+  loadHistoryAnalytics,
+  readHistoryFile,
+  resolveHistoryFile,
+} from "./report/history.js";
+export {
+  DEFAULT_TOP_SUITES,
+  buildAnalytics,
+  loadReportAnalytics,
+} from "./report/analytics.js";
 
 export { renderCollagePng, resolveCardTitle } from "./collage/render.js";
 export {
@@ -40,6 +59,11 @@ export {
   PYRAMID_GEOMETRY,
   layerBreakdownFrom,
 } from "./collage/panels/pyramid.js";
+export { orderedSeverities, renderSeveritiesPanel } from "./collage/panels/severities.js";
+export { renderSuitesPanel } from "./collage/panels/suites.js";
+export { renderStatusDynamicsPanel } from "./collage/panels/statusDynamics.js";
+export { renderSuccessRateDistributionPanel } from "./collage/panels/successRateDistribution.js";
+export { stackedSegmentHeights } from "./collage/panels/bars.js";
 export {
   STATUS_RGB,
   themeFromDarkMode,

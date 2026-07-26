@@ -30,12 +30,10 @@ Free-layout collage panels:
 
 | Kind | Types |
 |------|--------|
-| **Real (analytics)** | `pie` (alias `currentStatus`) · `testingPyramid` · `durations` (+ `groupBy: layer`) |
-| **Empty-state stubs** | Remaining `PANEL_CATALOG` slots + any unknown type → themed card (`No data yet`), **not** silent-drop |
+| **Real (analytics)** | `pie` (alias `currentStatus`) · `testingPyramid` · `durations` (+ `groupBy: layer`) · `testResultSeverities` (aliases `severities`/`severity`) · `suites` · `statusDynamics` · `successRateDistribution` |
+| **Empty-state stubs** | Remaining catalog: `statusTransitions`, `testBaseGrowthDynamics`, `coverageDiff`, `problemsDistribution`, `stabilityDistribution`, `durationDynamics`, `statusAgePyramid` + unknown → themed card (`No data yet`), **not** silent-drop |
 
-Empty-state body mirrors Java `EmptyStatePanel` (theme background, muted caption, marker bar).
-Card header title comes from `resolvePanelMeta` / `PANEL_CATALOG`. Full analytics for
-`statusDynamics` / `successRateDistribution` / `testResultSeverities` / suites = later OK.
+**History source** (Java `HistoryAnalytics` / `ReportAnalyticsBuilder` parity): Allure 3 `history.jsonl` via `chart.historyPath` or auto-discover next to report/results (and parents). Without history → `statusDynamics` / `successRateDistribution` show **"No history data"** (tile kept). `pyramidFallback: "suites"` → real `SuitesPanel` when no known layers.
 
 ## Verify
 

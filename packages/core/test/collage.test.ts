@@ -556,7 +556,7 @@ describe("@allure-notifications/core empty-state panels", () => {
       );
     }
 
-    // Key catalog ids (incl. analytics-deferred panels that stay empty-state for now).
+    // Key catalog ids (real analytics + remaining stubs share catalog titles).
     for (const id of [
       "statusTransitions",
       "coverageDiff",
@@ -594,7 +594,6 @@ describe("@allure-notifications/core empty-state panels", () => {
     const items: ChartItem[] = [
       ...EMPTY_STUB_ITEMS,
       { type: "totallyUnknownPanel", x: 6, y: 2, w: 2, h: 2 },
-      { type: "statusDynamics", x: 8, y: 2, w: 2, h: 2 },
     ];
     const config = parseConfig({
       base: {

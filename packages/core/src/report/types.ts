@@ -2,6 +2,10 @@
  * Shared report types for collage analytics.
  */
 
+import type { HistoryAnalytics } from "./history.js";
+
+export type { HistoryAnalytics, HistoryRun, HistoryTestResult } from "./history.js";
+
 export type Statistic = {
   passed: number;
   failed: number;
@@ -46,4 +50,6 @@ export type ReportAnalytics = {
   hasLayerLabels: boolean;
   hasKnownLayerLabels: boolean;
   resultCount: number;
+  /** History panels; null/empty → "No history data" empty-state (not throw). */
+  history: HistoryAnalytics | null;
 };

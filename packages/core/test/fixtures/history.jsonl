@@ -1,0 +1,3 @@
+{"uuid":"r1","timestamp":1000,"testResults":{"a":{"id":"a","status":"passed"},"b":{"id":"b","status":"failed"},"c":{"id":"c","status":"passed"}}}
+{"uuid":"r2","timestamp":2000,"testResults":{"a":{"id":"a","status":"passed"},"b":{"id":"b","status":"passed"},"c":{"id":"c","status":"broken"}}}
+{"uuid":"r3","timestamp":3000,"testResults":{"a":{"id":"a","status":"failed"},"b":{"id":"b","status":"skipped"},"c":{"id":"c","status":"passed"}}}

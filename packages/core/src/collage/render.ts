@@ -33,6 +33,10 @@ import {
   layerBreakdownFrom,
   renderPyramidPanel,
 } from "./panels/pyramid.js";
+import { renderSeveritiesPanel } from "./panels/severities.js";
+import { renderStatusDynamicsPanel } from "./panels/statusDynamics.js";
+import { renderSuccessRateDistributionPanel } from "./panels/successRateDistribution.js";
+import { renderSuitesPanel } from "./panels/suites.js";
 
 const DEFAULT_WIDTH = 1000;
 const DEFAULT_HEIGHT = 600;
@@ -57,7 +61,12 @@ const DOT_MAXIMIZE: Rgb = { r: 0x28, g: 0xc8, b: 0x40 };
 const PANEL_PIE = "pie";
 const PANEL_PYRAMID = "testingpyramid";
 const PANEL_DURATIONS = "durations";
+const PANEL_STATUS_DYNAMICS = "statusdynamics";
+const PANEL_SUCCESS_RATE = "successratedistribution";
+const PANEL_SEVERITIES = "testresultseverities";
+const PANEL_SUITES = "suites";
 
+/** Catalog stubs without TS analytics yet — keep free-grid tiles (not silent-drop). */
 const EMPTY_STATE = new Set([
   "statustransitions",
   "testbasegrowthdynamics",
@@ -66,9 +75,6 @@ const EMPTY_STATE = new Set([
   "stabilitydistribution",
   "durationdynamics",
   "statusagepyramid",
-  "statusdynamics",
-  "successratedistribution",
-  "testresultseverities",
 ]);
 
 function normalize(raw: string | undefined | null): string | null {
@@ -85,10 +91,24 @@ function normalize(raw: string | undefined | null): string | null {
   if (key === PANEL_DURATIONS || key === "duration") {
     return PANEL_DURATIONS;
   }
-  if (EMPTY_STATE.has(key) || key === "severities" || key === "severity") {
-    return key === "severities" || key === "severity"
-      ? "testresultseverities"
-      : key;
+  if (key === PANEL_STATUS_DYNAMICS) {
+    return PANEL_STATUS_DYNAMICS;
+  }
+  if (key === PANEL_SUCCESS_RATE) {
+    return PANEL_SUCCESS_RATE;
+  }
+  if (
+    key === PANEL_SEVERITIES ||
+    key === "severities" ||
+    key === "severity"
+  ) {
+    return PANEL_SEVERITIES;
+  }
+  if (key === PANEL_SUITES) {
+    return PANEL_SUITES;
+  }
+  if (EMPTY_STATE.has(key)) {
+    return key;
   }
   return null;
 }
@@ -173,6 +193,18 @@ export function resolveCardTitle(
     }
     return "Durations (s)";
   }
+  if (key === PANEL_SUITES) {
+    return "Suites";
+  }
+  if (key === PANEL_SEVERITIES) {
+    return "Results by severity";
+  }
+  if (key === PANEL_STATUS_DYNAMICS) {
+    return "Status dynamics";
+  }
+  if (key === PANEL_SUCCESS_RATE) {
+    return "Success rate";
+  }
   const meta = resolvePanelMeta({
     type: item.type,
     groupBy: item.groupBy,
@@ -208,6 +240,18 @@ function renderPanelPng(
   }
   if (key === PANEL_DURATIONS) {
     return renderDurationsPanel(ctx);
+  }
+  if (key === PANEL_STATUS_DYNAMICS) {
+    return renderStatusDynamicsPanel(ctx);
+  }
+  if (key === PANEL_SUCCESS_RATE) {
+    return renderSuccessRateDistributionPanel(ctx);
+  }
+  if (key === PANEL_SEVERITIES) {
+    return renderSeveritiesPanel(ctx);
+  }
+  if (key === PANEL_SUITES) {
+    return renderSuitesPanel(ctx);
   }
   // Catalog stubs + unknown tiles: empty-state body (card chrome carries title).
   return renderEmptyPanel(ctx, DEFAULT_EMPTY_MESSAGE);
