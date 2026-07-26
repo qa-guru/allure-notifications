@@ -39,7 +39,7 @@ npx allure generate ./allure-results --config ./examples/allurerc.notifications.
 | Live | `--live` + `TELEGRAM_*` | `mode: "live"` + same env |
 | Config | `config.json` | `options.config` → same schema |
 
-npm `@allure-notifications/plugin` publishes with **6.0.5** (404 until then). Keep consumer CI on the CLI pin until that release.
+npm `@allure-notifications/plugin` — needs **`main`** for Allure `require.resolve` (**≥6.0.6**; workspace dogfood OK). **Separate GitHub Actions example (plugin, not CLI):** [`examples/github-actions/`](../examples/github-actions/) · runnable workflow [`.github/workflows/example-plugin-notify.yml`](../.github/workflows/example-plugin-notify.yml) (`workflow_dispatch`, default dry-run).
 
 ## Workspace (local / before `npx`)
 
@@ -197,6 +197,25 @@ jobs:
 ```
 
 Replace `npx allure-notifications` with `pnpm exec allure-notifications` when consuming the workspace before publish. Point `base.allureFolder` / `base.allureResultsFolder` in `config/notifications.json` at the generated paths.
+
+## GitHub Actions — consumer notify via plugin (alternate)
+
+Same job shape as the CLI consumer example, but notifications run in `allurerc` (`done` hook). **Two generate steps** (Allure flushes `summary.json` after `Plugin.done` — see [`examples/github-actions/README.md`](../examples/github-actions/README.md)). Full template: [`examples/github-actions/plugin-notify.yml`](../examples/github-actions/plugin-notify.yml). Product dogfood: Actions → **Example — plugin notify**.
+
+```yaml
+- name: Install Allure 3 + plugin
+  run: npm install allure@^3.14.3 @allure-notifications/plugin@6.0.6
+
+- name: Generate report (files on disk)
+  run: npx allure generate ./allure-results -o ./allure-report
+
+- name: Generate again + plugin notify
+  env:
+    NOTIFICATION_MODE: dry-run   # or live + TELEGRAM_*
+  run: |
+    npx allure generate ./allure-results \
+      --config ./examples/github-actions/allurerc.mjs
+```
 
 ## Jenkins (dry-run)
 

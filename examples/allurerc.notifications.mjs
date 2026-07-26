@@ -10,6 +10,7 @@
  * Default mode is dry-run (collage + messenger plan, no network).
  * Set mode: "live" only with TELEGRAM_* credentials (ADR 008).
  * Docs: packages/plugin/README.md · docs/ci-cookbook.md · docs/telegram-dogfood.md
+ * GitHub Actions (plugin): examples/github-actions/ · .github/workflows/example-plugin-notify.yml
  */
 import { defineConfig } from "allure";
 

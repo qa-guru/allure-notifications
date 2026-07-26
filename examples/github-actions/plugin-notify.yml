@@ -1,0 +1,75 @@
+# Consumer copy-paste: Allure 3 generate + @allure-notifications/plugin (done hook).
+#
+# Difference from CLI post-step:
+#   CLI:     npx allure generate … && npx allure-notifications send --config …
+#   Plugin:  generate report → generate again with allurerc (notifications in done)
+#
+# Requires @allure-notifications/plugin ≥6.0.6 (`main` entry — Allure resolve).
+# Drop into .github/workflows/ or merge steps into your test workflow.
+# Docs: packages/plugin/README.md · docs/ci-cookbook.md · examples/github-actions/README.md
+#
+# Runnable dogfood in this repo:
+#   .github/workflows/example-plugin-notify.yml  (Actions → Run workflow)
+
+name: allure-notifications (plugin)
+
+on:
+  workflow_dispatch:
+    inputs:
+      mode:
+        description: Messenger mode (live needs TELEGRAM_* secrets)
+        type: choice
+        options:
+          - dry-run
+          - live
+        default: dry-run
+
+jobs:
+  notify-via-plugin:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      # Pin ≥6.0.6 (main entry for Allure require.resolve). Bump with VERSION checklist.
+      - name: Install Allure 3 + notifications plugin
+        run: npm install allure@^3.14.3 @allure-notifications/plugin@6.0.6
+
+      # Expect ./allure-results from your test job (upload/download-artifact or same job).
+
+      - name: Generate report (files on disk)
+        run: npx allure generate ./allure-results -o ./allure-report
+
+      - name: Generate again + plugin notify
+        env:
+          NOTIFICATION_MODE: ${{ inputs.mode }}
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN || secrets.TELEGRAM_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+          TELEGRAM_TOPIC_ID: ${{ vars.TELEGRAM_TOPIC_ID || '34' }}
+        run: |
+          set -euo pipefail
+          if [[ "${NOTIFICATION_MODE}" == "live" ]]; then
+            if [[ -z "${TELEGRAM_BOT_TOKEN:-}" || -z "${TELEGRAM_CHAT_ID:-}" ]]; then
+              echo "live requested but TELEGRAM_* missing — soft-skip (use dry-run locally)"
+              exit 0
+            fi
+          fi
+          # Keep allurerc + config from this example in your repo:
+          #   examples/github-actions/allurerc.mjs
+          #   examples/github-actions/notifications.config.json
+          npx allure generate ./allure-results \
+            --config ./examples/github-actions/allurerc.mjs
+
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: collage-plugin
+          path: |
+            collage-plugin.png
+            allure-report/
+          if-no-files-found: warn
+          retention-days: 7
