@@ -46,3 +46,9 @@ packages/*/coverage/
 apps/*/test-results/
 apps/*/playwright-report/
 apps/*/playwright/.cache/
+
+# Own-test quality artifacts (Q1) — not product dogfood fixtures
+allure-results/
+allure-report/
+coverage/
+.coverage-allure-tmp/

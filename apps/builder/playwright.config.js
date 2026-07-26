@@ -1,4 +1,5 @@
 // @ts-check
+const path = require('node:path');
 const { defineConfig } = require('@playwright/test');
 
 // Default 13011: avoid reusing stale :3011 hub clone (cwd mismatch vs apps/builder).
@@ -13,6 +14,10 @@ const headed =
   process.argv.includes('--headed');
 const headless = !headed;
 
+const allureResultsDir =
+  process.env.ALLURE_RESULTS_DIR ||
+  path.join(__dirname, '..', '..', 'allure-results');
+
 module.exports = defineConfig({
   testDir: './tests',
   testMatch: /.*\.spec\.js/,
@@ -20,7 +25,11 @@ module.exports = defineConfig({
   fullyParallel: false,
   forbidOnly: !!process.env.CI,
   retries: process.env.CI ? 1 : 0,
-  reporter: process.env.CI ? [['list'], ['html', { open: 'never' }]] : 'list',
+  reporter: [
+    ['list'],
+    ...(process.env.CI ? [['html', { open: 'never' }]] : []),
+    ['allure-playwright', { resultsDir: allureResultsDir }],
+  ],
   use: {
     baseURL,
     headless,

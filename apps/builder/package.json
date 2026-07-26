@@ -10,7 +10,7 @@
     "typecheck": "tsc -p tsconfig.json --noEmit",
     "pretest": "pnpm run build && pnpm run sync-config && pnpm run sync-pyramid",
     "test": "pnpm run test:unit && pnpm run test:e2e",
-    "test:unit": "node --test tests/config-parity.test.mjs tests/pyramid-parity.test.mjs",
+    "test:unit": "node --test --test-reporter=spec --test-reporter-destination=stdout --test-reporter=allure-node-test/reporter --test-reporter-destination=stdout tests/config-parity.test.mjs tests/pyramid-parity.test.mjs",
     "test:e2e": "PLAYWRIGHT_HEADLESS=1 playwright test",
     "test:headed": "PW_HEADED=1 playwright test --headed",
     "test:ui": "playwright test --ui",
@@ -22,6 +22,8 @@
   },
   "devDependencies": {
     "@playwright/test": "^1.61.1",
+    "allure-node-test": "3.10.2",
+    "allure-playwright": "3.10.2",
     "typescript": "^7.0.2",
     "@types/node": "^22.13.10"
   }

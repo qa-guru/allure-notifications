@@ -1,5 +1,6 @@
-# 6.0 TypeScript monorepo CI (master + feature/6.0* line).
+# 6.0 TypeScript monorepo CI (master + feature/6.0* + quality contour lines).
 # Java 5.0.8 jar CI stays in build.yml (master) — do not merge jobs.
+# Q1: Allure results + generate + soft c8 coverage artifacts (no % gate).
 
 name: CI 6.0 (TypeScript)
 
@@ -9,14 +10,18 @@ on:
       - master
       - 'feature/6.0*'
       - 'feature/builder-ts'
+      - 'feature/quality-*'
   pull_request:
     branches:
       - 'feature/6.0*'
       - 'feature/builder-ts'
+      - 'feature/quality-*'
       - master
     paths:
       - 'packages/**'
       - 'apps/**'
+      - 'scripts/**'
+      - 'c8.config.json'
       - 'package.json'
       - 'pnpm-lock.yaml'
       - 'pnpm-workspace.yaml'
@@ -62,8 +67,45 @@ jobs:
       - name: Typecheck (packages + builder, typescript@7)
         run: pnpm typecheck
 
-      - name: Test (packages + builder unit/e2e)
+      - name: Test (packages + builder unit/e2e → allure-results)
         env:
           CI: true
           PLAYWRIGHT_HEADLESS: '1'
+          ALLURE_RESULTS_DIR: ${{ github.workspace }}/allure-results
         run: pnpm test
+
+      - name: Coverage (packages, soft — no % gate)
+        env:
+          CI: true
+          ALLURE_RESULTS_DIR: ${{ github.workspace }}/allure-results
+        run: pnpm coverage
+
+      - name: Allure generate
+        run: pnpm allure:generate
+
+      - name: Upload allure-results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: allure-results
+          path: allure-results/
+          if-no-files-found: error
+          retention-days: 7
+
+      - name: Upload allure-report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: allure-report
+          path: allure-report/
+          if-no-files-found: warn
+          retention-days: 7
+
+      - name: Upload coverage
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage
+          path: coverage/
+          if-no-files-found: warn
+          retention-days: 7
