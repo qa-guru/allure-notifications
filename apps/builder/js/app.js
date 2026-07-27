@@ -1134,8 +1134,9 @@ function addItem(panelId, opts = {}) {
     const meta = PANEL_META[panelId] || resolvePanelMeta({ type: panelId });
     if (!meta || !grid)
         return;
-    const w = Math.max(1, opts.w || meta.defaultW);
-    const h = Math.max(1, opts.h || meta.defaultH);
+    /* New tiles from palette → 2×2. Explicit w/h (copy, drop spot) win; grid presets stay in DEFAULT_ITEMS. */
+    const w = Math.max(1, opts.w || DEFAULT_TILE_W);
+    const h = Math.max(1, opts.h || DEFAULT_TILE_H);
     const preferX = opts.preferX != null ? opts.preferX : opts.x;
     const preferY = opts.preferY != null ? opts.preferY : opts.y;
     const spot = findFreeSpot(w, h, preferX, preferY);
@@ -1256,22 +1257,22 @@ function clearAll() {
  */
 function paletteItemHtml(item) {
     const chartType = item.type === 'pie' ? 'currentStatus' : item.type;
-    const wide = item.defaultW > item.defaultH;
+    const hint = `${DEFAULT_TILE_W}×${DEFAULT_TILE_H}`;
     let attrs = `data-chart="${escapeHtml(chartType)}"`;
     if (item.groupBy)
         attrs += ` data-group-by="${escapeHtml(item.groupBy)}"`;
     if (item.by)
         attrs += ` data-by="${escapeHtml(item.by)}"`;
-    return (`<button type="button" class="anb-palette__item${wide ? ' anb-palette__item--wide' : ''}" data-anb-panel-id="${escapeHtml(item.id)}" ` +
+    /* Palette thumbs are always 2×2 — grid footprints stay on canvas / DEFAULT_ITEMS. */
+    return (`<button type="button" class="anb-palette__item" data-anb-panel-id="${escapeHtml(item.id)}" ` +
         `data-testid="anb-palette-${escapeHtml(item.id)}" draggable="true" title="${escapeHtml(item.title)}">` +
-        `<div class="widget-tile widget-tile--tier-micro anb-palette__tile` +
-        `${wide ? ' anb-palette__tile--wide' : ''}" ${attrs}>` +
+        `<div class="widget-tile widget-tile--tier-micro widget-tile--span-2x2 anb-palette__tile" ${attrs}>` +
         `<div class="widget-tile__bar">` +
         `<span class="widget-tile__title">${escapeHtml(item.title)}</span>` +
         `</div>` +
         `<div class="widget-tile__body"></div>` +
         `</div>` +
-        `<span class="anb-palette__hint">${escapeHtml(item.hint)}</span>` +
+        `<span class="anb-palette__hint">${hint}</span>` +
         `</button>`);
 }
 function renderPalette() {
@@ -1318,12 +1319,11 @@ function wireCanvasDrop() {
         const cellH = rect.height / GRID_ROWS;
         const x = Math.floor(localX / cellW);
         const y = Math.floor(localY / cellH);
-        const meta = PANEL_META[panelId];
         addItem(panelId, {
             preferX: x,
             preferY: y,
-            w: meta.defaultW,
-            h: meta.defaultH,
+            w: DEFAULT_TILE_W,
+            h: DEFAULT_TILE_H,
         });
     });
 }
