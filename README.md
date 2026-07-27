@@ -1,494 +1,265 @@
 [![en](https://img.shields.io/badge/lang-en-blue.svg)](#) [![ru](https://img.shields.io/badge/lang-ru-white.svg)](README.ru.md) [![fr](https://img.shields.io/badge/lang-fr-white.svg)](README.fr.md)
 
-> **Version lines:** **6.0.\*** = TypeScript CLI + builder (this line) · **5.0.\*** = Java jar (**legacy freeze** at **5.0.8** only).  
-> There is **no 5.1**. Jar / Gradle: [`legacy/java/`](legacy/java/) (`cd legacy/java && ./gradlew assemble`).  
-> TS workspace: root `pnpm test` · see [`MIGRATION.md`](MIGRATION.md).
-
-## What's new in 6.0.0
-
-Public product is the **TypeScript CLI** (not a Java 6.0 jar):
-
-```bash
-npx allure generate allure-results --clean -o allure-report
-npx allure-notifications send --config config.json --live
-```
-
-| Piece | 6.0.* |
-|-------|--------|
-| Entrypoint (primary) | `npx allure-notifications` / `pnpm exec allure-notifications` |
-| Collage PNG | `@napi-rs/canvas` in `@allure-notifications/core` (Playwright = tests only) |
-| Config builder | `apps/builder/` → [allure-notifications.qa.guru](https://allure-notifications.qa.guru/) |
-| Packages | `@allure-notifications/config` · `pyramid` · `core` · bin `allure-notifications` · **plugin** `@allure-notifications/plugin` |
-| Allure 3 plugin (alternate) | `done` hook via [`examples/allurerc.notifications.mjs`](examples/allurerc.notifications.mjs) — see [`packages/plugin/README.md`](packages/plugin/README.md) |
-| Java **5.0.8** | Remains under [`legacy/java/`](legacy/java/) — bugfix/security only |
-
-Docs: [`docs/ci-cookbook.md`](docs/ci-cookbook.md) · [`docs/npm-publish.md`](docs/npm-publish.md) · Telegram dogfood [`docs/telegram-dogfood.md`](docs/telegram-dogfood.md) · Migration [`MIGRATION.md`](MIGRATION.md).
-
-## Visual canon (5.0.3)
-
-Locked collage rules + PNG: [`docs/canon/CANON.md`](docs/canon/CANON.md) · [`docs/canon/collage-cb870-free-dogfood-5.0.3.png`](docs/canon/collage-cb870-free-dogfood-5.0.3.png).
-
-- Pyramid: quieter corners/gaps, compact single-layer (not full-bleed)
-- `unit` = pie success (`ChartTheme.STATUS_PASSED` / `#94ca66`) — do not reintroduce a separate green
-- Rounded durations / success-rate tops; suites pills
-- Consumers (6.0): `base.darkMode: true` + CLI pin **6.0.0** · Legacy jar-only jobs: **5.0.8** ([`v5.0.8`](https://github.com/qa-guru/allure-notifications/releases/tag/v5.0.8))
-
-### 5.0.6–5.0.8
-
-- **5.0.8** — cap horizontal bar height for sparse suites/severities/durations-by-layer
-- **5.0.7** — exact stacked status-dynamics bar heights; `durations` pyramid layer order
-- **5.0.6** — Telegram proxy from `config.json` (`proxy.type`: `http` | `socks5`)
-
-### 5.0.5
-
-- SQ-1080 dense 12-tile free layout: all catalog tiles kept (empty-state, no silent drop)
-- `ChartPanelItem.by` / `groupBy`; `chart.tilePad` parsed (preview parity)
-- Stub panels: `statusTransitions`, `problemsDistribution`, `coverageDiff`, `statusAgePyramid`, `stabilityDistribution`, `durationDynamics` (+ `testBaseGrowthDynamics`)
-- `durations` + `groupBy: layer` → layer averages, else histogram fallback
-- Dogfood: [`config/config.preview-sq1080.json`](config/config.preview-sq1080.json) → [`config/chart-sq1080-dogfood.png`](config/chart-sq1080-dogfood.png)
-
-### 5.0.4
-
-- `chart.cardGap` (default 14) + existing `chart.headerHeight` (default 68) drive collage spacing/chrome
-- New panel: `testResultSeverities` (from `severity` labels); `pie` ↔ `currentStatus` alias for free `items`
-- Dogfood: [`config/config.preview-cb870-cardgap.json`](config/config.preview-cb870-cardgap.json) → [`config/chart-cb870-cardgap-dogfood.png`](config/chart-cb870-cardgap-dogfood.png)
-- **Jar Panel coverage vs awesome-charts catalog (17 slots / 13 unique types)**
-  - **Implemented:** `currentStatus`/`pie`, `testingPyramid` (+ `suites` fallback), `durations` (+ `groupBy: layer`), `statusDynamics`, `successRateDistribution`, `testResultSeverities`
-  - **Empty-state (no analytics yet):** `statusTransitions`, `testBaseGrowthDynamics`, `coverageDiff`, `problemsDistribution`, `stabilityDistribution`, `durationDynamics`, `statusAgePyramid`
+> **6.0.\*** — product: TypeScript CLI + web builder + collage PNG + messengers. Pin **6.0.8**.  
+> **5.0.8** — Java jar legacy freeze only (`legacy/java/`). There is **no 5.1**.  
+> Changelog for older 5.x patches → [GitHub Releases](https://github.com/qa-guru/allure-notifications/releases). Migration notes → [`MIGRATION.md`](MIGRATION.md).
 
 # Allure notifications
-**Allure notifications** is a library that sends automatic notifications about automated test results to your preferred messenger (Telegram, Slack, ~~Skype~~, Email, Mattermost, Discord, Loop, Rocket.Chat, Zoho Cliq, Microsoft Teams).
 
-Notification languages: 🇬🇧 🇫🇷 🇷🇺 🇺🇦 🇧🇾 🇨🇳
+CLI that turns an Allure report into a messenger notification: text + optional collage PNG.
+
+Messengers: Telegram, Slack, Email, Mattermost, Discord, Loop, Rocket.Chat, Zoho Cliq, Microsoft Teams.  
+Languages: 🇬🇧 🇫🇷 🇷🇺 🇺🇦 🇧🇾 🇨🇳
+
+Build `config.json` in the [Config builder](#config-builder), then send with the CLI.
 
 ## Table of contents
-+ [How it works](#how-it-works)
-+ [What the notifications look like](#what-the-notifications-look-like)
-+ [What's new in 5.0](#whats-new-in-50)
-+ [How to use in your project](#how-to-use-in-your-project)
-  + [Running locally](#running-locally)
-  + [Running from Jenkins](#running-from-jenkins)
-+ [Messenger-specific config.json settings](#messenger-specific-configjson-settings)
 
++ [What's new in 6.0](#whats-new-in-60)
++ [How it works](#how-it-works)
++ [Quick start](#quick-start)
++ [config.json](#configjson)
++ [Config builder](#config-builder)
++ [Visual canon](#visual-canon)
++ [Plugin (alternate)](#plugin-alternate)
++ [Legacy Java 5.0.8](#legacy-java-508)
++ [CI cookbook](#ci-cookbook)
+
+## What's new in 6.0
+
+| Piece | Role |
+|-------|------|
+| **CLI** | `npx allure-notifications@6.0.8 send --config …` — primary runtime |
+| **Collage PNG** | `@napi-rs/canvas` in `@allure-notifications/core` (Playwright = tests only) |
+| **Config builder** | Web UI → full `config.json` + free-layout collage — [`apps/builder/`](apps/builder/) |
+| **Packages** | `@allure-notifications/config` · `pyramid` · `core` · bin `allure-notifications` · plugin `@allure-notifications/plugin` |
+| **Allure 3 plugin** | Alternate `done` hook — see [Plugin](#plugin-alternate) |
 
 ## How it works
-After automated tests finish, Allure generates a `summary.json` with test statistics. The library locates it automatically:
+
+After tests finish, Allure writes a summary. The CLI finds it automatically:
 
 - **Allure 2** — `<allureFolder>/widgets/summary.json`
 - **Allure 3** — `<allureFolder>/summary.json`
 
-The summary drives notification text and chart rendering. In **collage** mode (`chart.mode: "collage"`, 5.0+), the library also reads `*-result.json` from `allure-results` for pyramid, suites, and duration panels.
+Summary drives notification text. In collage mode the CLI also reads `*-result.json` from `allureResultsFolder` for pyramid, suites, durations, and other panels.
 
 ```mermaid
 flowchart LR
     A[Running\nautomated tests] --> B[Generating\nsummary.json]
     B --> C
     subgraph C[Allure Notifications]
-        D[Building notification\nchart and text] --> E[Sending notification\nto messenger]
+        D[Building collage\nand text] --> E[Sending to\nmessenger]
     end
 ```
 
-Example `summary.json`:
-```json
-{
-  "reportName" : "Allure Report",
-  "testRuns" : [ ],
-  "statistic" : {
-    "failed" : 182,
-    "broken" : 70,
-    "skipped" : 118,
-    "passed" : 439,
-    "unknown" : 42,
-    "total" : 851
-  },
-  "time" : {
-    "start" : 1590795193703,
-    "stop" : 1590932641296,
-    "duration" : 11311,
-    "minDuration" : 7901,
-    "maxDuration" : 109870,
-    "sumDuration" : 150125
-  }
-}
-```
-If the Allure Summary plugin is connected, a `suites.json` file will also be generated and its data will be included in the statistics.
-
-
-## What the notifications look like
-Example notification in Telegram
+Example notification (Telegram):
 
 <img width="660" alt="Telegram notification example" src="docs/telegram_notification.png">
 
-In **5.0 collage** mode the chart is a single 1000×600 PNG: status pie (top-left), testing pyramid or suites bar (top-right), duration histogram (bottom). See [migration guide](docs/migration-5.0.md).
+## Quick start
 
+```bash
+npx allure generate allure-results --clean -o allure-report
+npx allure-notifications@6.0.8 send --config config.json --live
+```
 
-## What's new in 5.0
+| Flag | Behavior |
+|------|----------|
+| `--dry-run` | Render collage; list messengers that *would* send; **no network** (PR / local without secrets) |
+| `--mock` | Render collage; mock deliveries; **no network** |
+| `--live` | Actually send (Telegram when credentials are set) |
+| `--out <png>` | Write collage PNG to disk |
 
-| Feature | Description |
-|---------|-------------|
-| **Collage chart** | `chart.mode: "collage"` + `layout: "free"` — Telegram canvas **870×1080**; layout per consumer (`cb870-mid-dynamics` default · dense-split / compact-hero / pyramid-mid / dense-live) |
-| **Links block** | `links.report`, `dashboard`, `testops`, `build` in templates (i18n) |
-| **Allure 3** | Auto-detect `summary.json` at report root (`stats` → legacy model) |
-| **Results analytics** | `allureResultsFolder` for layer labels, suites, per-test durations |
-| **Card chrome (5.0.4)** | `chart.headerHeight` (68) + `chart.cardGap` (14); panel `testResultSeverities` |
-| **Backward compat** | Default `chart.mode: "pie"` and deprecated `reportLink` still work |
+Default without `--live` / `--mock` is safe **dry-run**.
 
-**Docs:** [Migration 4.x → 5.0](docs/migration-5.0.md) · [CI cookbook](docs/ci-cookbook-5.0.md) · [Example config](config/config-5.0-collage.example.json)
+## config.json
 
-Minimal 5.0 config sketch:
+Schema: [`packages/config`](packages/config) (zod). Prefer Export from the [Config builder](#config-builder).
+
+Minimal **6.0** example — collage + free layout + one messenger:
 
 ```json
 {
   "base": {
-    "allureFolder": "build/allure-report/",
-    "allureResultsFolder": "build/allure-results/",
+    "project": "my-project",
+    "environment": "ci",
+    "comment": "",
+    "language": "en",
+    "allureFolder": "allure-report/",
+    "allureResultsFolder": "allure-results/",
     "enableChart": true,
-    "chart": { "mode": "collage" },
+    "darkMode": true,
+    "chart": {
+      "mode": "collage",
+      "layout": "free",
+      "width": 870,
+      "height": 1080,
+      "headerHeight": 22,
+      "cardGap": 14,
+      "tilePad": 6,
+      "gridCols": 10,
+      "gridRows": 10,
+      "items": [
+        { "type": "pie", "x": 0, "y": 0, "w": 4, "h": 4 },
+        { "type": "durationDynamics", "x": 4, "y": 0, "w": 6, "h": 4 },
+        { "type": "testingPyramid", "x": 0, "y": 4, "w": 3, "h": 3 },
+        { "type": "durations", "x": 3, "y": 4, "w": 4, "h": 3, "groupBy": "layer" }
+      ],
+      "pyramidFallback": "suites"
+    },
     "links": {
       "report": "${ALLURE_REPORT_URL}",
       "dashboard": "${ALLURE_DASHBOARD_URL}",
+      "testops": "",
       "build": "${BUILD_URL}"
     }
-  }
-}
-```
-
-
-## How to use in your project
-
-### Running locally
-1. Install Java (not required when running from Jenkins).
-2. Create a `notifications` folder in the root of your project.
-3. [Download](https://github.com/qa-guru/allure-notifications/releases) the latest `allure-notifications-<version>.jar` and place it in the `notifications` folder.
-4. Inside `notifications`, create a `config.json` file with the following structure (keep the `base` section and only the messenger block you need):
-```json
-{
-  "base": {
-    "logo": "",
-    "project": "",
-    "environment": "",
-    "comment": "",
-    "reportLink": "",
-    "links": {
-      "report": "",
-      "dashboard": "",
-      "testops": "",
-      "build": ""
-    },
-    "language": "en",
-    "allureFolder": "",
-    "allureResultsFolder": "",
-    "enableChart": false,
-    "chart": {
-      "mode": "pie",
-      "panels": ["pie", "testingPyramid", "durations"],
-      "pyramidFallback": "suites",
-      "width": 1000,
-      "height": 600
-    },
-    "darkMode": false,
-    "enableSuitesPublishing": false,
-    "customData": {}
   },
   "telegram": {
-    "token": "",
-    "chat": "",
+    "token": "${TELEGRAM_BOT_TOKEN}",
+    "chat": "${TELEGRAM_CHAT_ID}",
     "topic": "",
-    "replyTo": "",
     "templatePath": "/templates/telegram.ftl"
-  },
-  "slack": {
-    "token": "",
-    "chat": "",
-    "replyTo": "",
-    "templatePath": "/templates/markdown.ftl"
-  },
-  "mattermost": {
-    "url": "",
-    "token": "",
-    "chat": "",
-    "templatePath": "/templates/markdown.ftl"
-  },
-  "rocketChat" : {
-    "url": "",
-    "auth_token": "",
-    "user_id": "",
-    "channel": "",
-    "templatePath": "/templates/rocket.ftl"
-  },
-  "mail": {
-    "host": "",
-    "port": "",
-    "username": "",
-    "password": "",
-    "securityProtocol": null,
-    "from": "",
-    "to": "",
-    "cc": "",
-    "bcc": "",
-    "templatePath": "/templates/html.ftl"
-  },
-  "discord": {
-    "botToken": "",
-    "channelId": "",
-    "templatePath": "/templates/markdown.ftl"
-  },
-  "loop": {
-    "webhookUrl": "",
-    "templatePath": "/templates/markdown.ftl"
-  },
-  "cliq": {
-    "token": "",
-    "chat": "",
-    "bot": "",
-    "dataCenter": "eu",
-    "templatePath": "/templates/markdown.ftl"
-  },
-  "teams": {
-    "webhookUrl": "",
-    "templatePath": "/templates/teams.ftl"
-  },
-  "proxy": {
-    "type": "http",
-    "host": "",
-    "port": 0,
-    "username": "",
-    "password": ""
-  }
-}
-```
-The `proxy` block configures outbound HTTP/SOCKS proxy for **Telegram**, **Slack**, and **Cliq** (Apache HttpClient).  
-`type` defaults to `http` when omitted (backward compatible). Use `socks5` for SOCKS proxies without auth (e.g. `proxy.qaguru.school:7777`).
-
-```json
-"proxy": {
-  "type": "socks5",
-  "host": "proxy.qaguru.school",
-  "port": 7777
-}
-```
-
-System properties override JSON fields: `-Dnotifications.proxy.type=socks5 -Dnotifications.proxy.host=…`
-The `templatePath` parameter is optional and allows you to provide a path to a custom Freemarker template. Example:
-```json
-{
-  "base": { "..." : "..." },
-  "mail": {
-    "host": "smtp.gmail.com",
-    "port": "465",
-    "username": "username",
-    "password": "password",
-    "securityProtocol": "SSL",
-    "from": "test@gmail.com",
-    "to": "test1@gmail.com",
-    "cc": "testCC1@gmail.com, testCC2@gmail.com",
-    "bcc": "testBCC1@gmail.com, testBCC2@gmail.com",
-    "templatePath": "/templates/html_custom.ftl"
   }
 }
 ```
 
-5. Fill in the `base` block:
-```json
-"base": {
-    "project": "some project",
-    "environment": "some env",
-    "comment": "some comment",
-    "links": {
-      "report": "https://ci.example.com/allure-report/",
-      "dashboard": "https://ci.example.com/dashboard/",
-      "testops": "https://testops.example.com/job/42",
-      "build": "https://ci.example.com/job/42"
-    },
-    "language": "en",
-    "allureFolder": "build/allure-report/",
-    "allureResultsFolder": "build/allure-results/",
-    "enableChart": true,
-    "chart": {
-      "mode": "collage",
-      "pyramidFallback": "suites",
-      "width": 1000,
-      "height": 600
-    },
-    "darkMode": true,
-    "enableSuitesPublishing": true,
-    "logo": "logo.png",
-    "durationFormat": "HH:mm:ss.SSS",
-    "customData": {
-      "variable1": "value1",
-      "variable2": "value2"
-    }
-}
-```
-Fields:
-+ `project`, `environment`, `comment` — project name, environment name, and an arbitrary comment.
-+ `links` — notification URLs (5.0+): `report`, `dashboard`, `testops`, `build`. Only non-empty links appear in templates.
-+ `reportLink` — **deprecated** since 5.0; use `links.report`. Still supported as fallback.
-+ `language` — notification language (`en` / `fr` / `ru` / `ua` / `by` / `cn`).
-+ `allureFolder` — path to the generated Allure report folder.
-+ `allureResultsFolder` — path to raw `allure-results` (for collage pyramid / durations; optional for pie-only).
-+ `enableChart` — whether to attach a chart image (`true` / `false`).
-+ `chart.mode` — `pie` (default, 4.x compatible) or `collage` (1000×600 PNG, 5.0+).
-+ `chart.pyramidFallback` — `suites` when no `layer` labels in results (default `suites`).
-+ `chart.width` / `chart.height` — collage PNG size in pixels (default 1000×600).
-+ `chart.headerHeight` — card title-bar height in px (default 68).
-+ `chart.cardGap` — gap around/between cards in px (default 14, **5.0.4**).
-+ `darkMode` — whether to render the chart in dark mode (`true` / `false`).
-+ `enableSuitesPublishing` — whether to publish per-suite statistics (`true` / `false`, default `false`). Requires `suites.json` inside `<allureFolder>/widgets`.
-+ `logo` — path to a logo file; if set, the logo is displayed in the top-left corner of the pie chart.
-+ `durationFormat` (optional, default `HH:mm:ss.SSS`) — output format for test duration.
-+ `customData` — extra key-value data available in custom Freemarker templates (optional).
+### `base` fields
 
-6. Fill in the messenger block: see [Messenger-specific config.json settings](#messenger-specific-configjson-settings).
+| Field | Notes |
+|-------|--------|
+| `project`, `environment`, `comment` | Shown in notification text |
+| `links` | `report`, `dashboard`, `testops`, `build` — only non-empty links appear |
+| `reportLink` | **Deprecated** — use `links.report` (still accepted as fallback) |
+| `language` | `en` / `fr` / `ru` / `ua` / `by` / `cn` / `cnt` |
+| `allureFolder` | Generated Allure report directory |
+| `allureResultsFolder` | Raw `allure-results` (needed for collage analytics) |
+| `enableChart` | Attach collage / chart image |
+| `chart.mode` | `collage` (primary) or `pie` |
+| `chart.layout` | **`free` + `items`** is the main path. Legacy `grid` \| `stacked` \| `row` still supported |
+| `chart.width` / `height` | Canvas size (px) |
+| `chart.headerHeight` / `cardGap` / `tilePad` | Card chrome (builder defaults: 22 / 14 / 6) |
+| `darkMode` | Chart theme |
+| `enableSuitesPublishing` | Per-suite stats from `suites.json` when present |
+| `logo`, `durationFormat`, `customData` | Optional |
 
-7. Run the following command in your terminal:
-```shell
-java "-DconfigFile=notifications/config.json" -jar notifications/allure-notifications-5.0.8.jar
-```
-Notes:
-+ `summary.json` must already be generated before running this command.
-+ Replace the jar version with the one you downloaded.
-+ Settings can be overridden via system properties (system properties take precedence over `config.json`):
-```shell
-java "-DconfigFile=notifications/config.json" \
-  "-Dnotifications.base.environment=${STAND}" \
-  "-Dnotifications.base.links.report=${ALLURE_SERVICE_URL}" \
-  "-Dnotifications.base.chart.mode=collage" \
-  "-Dnotifications.base.project=${PROJECT_ID}" \
-  "-Dnotifications.telegram.token=${TG_BOT_TOKEN}" \
-  "-Dnotifications.telegram.chat=${TG_CHAT_ID}" \
-  "-Dnotifications.telegram.topic=${TG_CHAT_TOPIC_ID}" \
-  -jar allure-notifications.jar
-```
-ℹ️ Custom data property prefixes are stripped: `-Dbase.customData.variable1=someValue` becomes the key `variable1` with value `someValue`.  
-⚠️ Using `base.customData.` without a trailing name is also valid.
+### Messengers
 
+Keep `base` and only the messenger block you need. Optional `templatePath` points to a custom Freemarker template.
 
-### Running from Jenkins
-1. Open the build configuration in Jenkins.
-2. Under **Build**, click **Add build step** and choose **Create/Update Text File**.
+**Telegram** — [wiki](https://github.com/qa-guru/knowledge-base/wiki/12.-Телеграм-бот.-Отправляем-уведомления-о-результатах-прохождения-тестов): `token`, `chat`, optional `topic` / `replyTo`.
 
-<img width="739" alt="image" src="https://user-images.githubusercontent.com/109241600/213293791-75eecef5-9e6d-449b-9b10-520561e2f112.png">
+**Slack** — [wiki](https://github.com/qa-guru/allure-notifications/wiki/Slack-configuration): `token`, `chat`, optional `replyTo`.
 
-Fill it in as shown below:
+**Email** — [wiki](https://github.com/qa-guru/allure-notifications/wiki/Email-configuration): `host`, `port`, `username`, `password`, `from`, `to`, optional `cc` / `bcc` / `securityProtocol`.
 
-<img width="745" alt="image" src="https://user-images.githubusercontent.com/109241600/213294133-164df8c0-85da-4059-97e7-3e4c8a386538.png">
-<img width="744" alt="image" src="https://user-images.githubusercontent.com/109241600/213294275-31a5efeb-d400-496d-b963-c6071f187e94.png">
+**Mattermost** — [wiki](https://github.com/qa-guru/allure-notifications/wiki/Mattermost-configuration): `url`, `token`, `chat`.
 
-Notes:
-+ General `base` block settings are described [above](#5-fill-in-the-base-block).
-+ Use Jenkins variables as values: `"project": "${JOB_BASE_NAME}"`, `"links.report": "${ALLURE_REPORT_URL}"`, `"links.build": "${BUILD_URL}"`. See [CI cookbook](docs/ci-cookbook-5.0.md).
-+ Messenger-specific settings are described in the [next section](#messenger-specific-configjson-settings).
+<details>
+<summary>Discord</summary>
 
-3. Under **Post-build Actions**, click **Add post-build action** → **Post build task**.
+`botToken`, `channelId`. Enable Developer mode → Discord developer portal → Applications → Bot token; right-click channel → Copy ID.
+</details>
 
-<img width="743" alt="image" src="https://user-images.githubusercontent.com/109241600/213299612-d28334c1-5dba-4e53-9f8d-32ef40b713ad.png">
+<details>
+<summary>Loop</summary>
 
-In the **Script** field, enter:
+`webhookUrl` — Integrations → Incoming Webhooks → create webhook for the channel.
+</details>
+
+<details>
+<summary>Rocket.Chat</summary>
+
+`url`, `auth_token`, `user_id`, `channel`. Generate token in user settings (also yields `user_id`).
+</details>
+
+<details>
+<summary>Zoho Cliq</summary>
+
+`token` (zapikey), `chat`, optional `bot`, `dataCenter` (`com` / `eu` / `in` / `au` / `jp` / `ca`; default `eu`).
+</details>
+
+<details>
+<summary>Microsoft Teams</summary>
+
+`webhookUrl` from the Workflows app template *“Post to a channel when a webhook request is received”* (legacy Office 365 Connectors are retiring). Chart embeds as base64; payload ≤ 28 KB; ~4 req/s throttle.
+</details>
+
+Optional top-level `proxy` (`type`: `http` \| `socks5`, `host`, `port`, …) for outbound HTTP/SOCKS where supported.
+
+## Config builder
+
+Web UI that exports a full `config.json` (`base` · `chart` · `links` · messengers) with a free-layout collage editor.
+
+| | |
+|--|--|
+| **Prod** | [allure-notifications.qa.guru](https://allure-notifications.qa.guru/) |
+| **Project Pages** | [qa-guru.github.io/allure-notifications](https://qa-guru.github.io/allure-notifications/) |
+| **Source** | [`apps/builder/`](apps/builder/) |
+| **Canon** | [`apps/builder/CANON.md`](apps/builder/CANON.md) |
+
+### Canvas presets
+
+| Preset | Size | Notes |
+|--------|------|--------|
+| **SQ-1080** | 1080×1080 | Dense 12-tile default square canvas |
+| **CB-870** | 870×1080 | Telegram-oriented editor canvas (post cap 1024×1280) |
+| **WD-1410** | 1410×1080 | Wide canvas |
+
+### Export → CLI
+
+1. Arrange panels in the builder → **Export** / Download `config.json`.
+2. Point `base.allureFolder` / `base.allureResultsFolder` at your report and results.
+3. Fill messenger credentials (or env placeholders).
+4. Send:
+
 ```bash
-cd ..
-FILE=allure-notifications-5.0.8.jar
-if [ ! -f "$FILE" ]; then
-   wget https://github.com/qa-guru/allure-notifications/releases/download/v5.0.8/allure-notifications-5.0.8.jar
-fi
+npx allure-notifications@6.0.8 send --config <exported>.json
 ```
-Click **Add another task** and in the second **Script** field enter:
+
+### Local stand (monorepo)
+
 ```bash
-java "-DconfigFile=notifications/config.json" -jar ../allure-notifications-5.0.8.jar
+python scripts/stands/ensure.py allure-notifications-builder
 ```
 
-4. Save the configuration and run your tests. A notification will be sent to the configured messenger upon completion.
+Opens the static builder at [http://localhost:3011/](http://localhost:3011/).
 
+### Collage preview
 
-## Messenger-specific config.json settings
-+ <a href="https://github.com/qa-guru/knowledge-base/wiki/12.-Телеграм-бот.-Отправляем-уведомления-о-результатах-прохождения-тестов" target="_blank">Telegram config</a>
-  + `telegram` block parameters:
-    <ul>
-      <li><code>topic</code> — optional; unique identifier of the target message thread (topic) of the chat to send the message to. See <a href="https://stackoverflow.com/questions/74773675/how-to-get-topic-id-for-telegram-group-chat">Stackoverflow answers</a> for how to get this value.</li>
-    </ul>
-+ <a href="https://github.com/qa-guru/allure-notifications/wiki/Slack-configuration" target="_blank">Slack config</a>
-+ <a href="https://github.com/qa-guru/allure-notifications/wiki/Email-configuration" target="_blank">Email config</a>
-+ <a href="https://github.com/qa-guru/allure-notifications/wiki/Mattermost-configuration" target="_blank">Mattermost config</a>
-+ <details>
-    <summary>Discord config</summary>
-    To enable Discord notifications provide 2 parameters: <code>botToken</code> and <code>channelId</code>.
-    <ul>
-      <li>To create a Discord bot and get its token:
-        <ol>
-          <li>Enable "Developer mode" in your Discord account.</li>
-          <li>Open the Discord API developer portal and click "Applications".</li>
-          <li>Click "New Application", name it, and click "Create".</li>
-          <li>Go to "Bot" and generate a token with "Add Bot".</li>
-          <li>Copy the token and paste it into the JSON config.</li>
-          <li>Under "OAuth2", activate "bot", set permissions, and copy the invite URL to add the bot to your server.</li>
-        </ol>
-      </li>
-      <li>To get a Channel ID: right-click the channel and click "Copy ID", then paste it into the JSON config.</li>
-    </ul>
-  </details>
-+ <details>
-    <summary>Loop config</summary>
-    To create a Loop webhook URL:
-    <ul>
-      <li>Open the main menu of the Loop application.</li>
-      <li>Click "Integrations" → "Incoming Webhooks".</li>
-      <li>Click "Add Incoming Webhook", fill in the form, select a channel, and click "Save".</li>
-      <li>Copy the generated webhook URL into the JSON config.</li>
-    </ul>
-  </details>
-+ <details>
-    <summary>Rocket.Chat config</summary>
-    Required parameters: <code>url</code>, <code>auth_token</code>, <code>user_id</code>, <code>channel</code>.
-    <ol>
-      <li>Generate an <code>auth_token</code> from your user settings — this also provides the <code>user_id</code>.</li>
-      <li>Retrieve the channel name using the generated tokens via the <a href="https://developer.rocket.chat/reference/api/rest-api/endpoints/rooms/channels-endpoints/info" target="_blank">Rocket.Chat REST API</a>.</li>
-    </ol>
-  </details>
-+ <details>
-    <summary>Zoho Cliq config</summary>
-    Required parameters:
-    <ul>
-      <li><code>token</code> — your Zoho Cliq API token (zapikey). To obtain it:
-        <ol>
-          <li>Go to your Zoho Cliq account settings.</li>
-          <li>Navigate to "Bots &amp; Tools" → "Bot".</li>
-          <li>Create a new bot or use an existing one.</li>
-          <li>Copy the token (zapikey) from the "Webhook URL".</li>
-        </ol>
-      </li>
-      <li><code>chat</code> — the name of the channel to send notifications to.</li>
-      <li><code>bot</code> — (optional) unique name of the bot to send messages as.</li>
-      <li><code>dataCenter</code> — Zoho data center region:
-        <ul>
-          <li><code>com</code> — United States (cliq.zoho.com)</li>
-          <li><code>eu</code> — Europe (cliq.zoho.eu) — default</li>
-          <li><code>in</code> — India (cliq.zoho.in)</li>
-          <li><code>au</code> — Australia (cliq.zoho.com.au)</li>
-          <li><code>jp</code> — Japan (cliq.zoho.jp)</li>
-          <li><code>ca</code> — Canada (cliq.zohocloud.ca)</li>
-        </ul>
-      </li>
-    </ul>
-    See the <a href="https://www.zoho.com/cliq/help/restapi/v2/" target="_blank">official Zoho Cliq API documentation</a> for more details.
-  </details>
-+ <details>
-    <summary>Microsoft Teams config</summary>
-    Notifications are delivered as an Adaptive Card to a Teams webhook URL generated by the <strong>Workflows</strong> app (Power Automate). Microsoft 365 Connectors (the legacy "Incoming Webhook" connector) are <a href="https://devblogs.microsoft.com/microsoft365dev/retirement-of-office-365-connectors-within-microsoft-teams/" target="_blank">being retired</a> — use Workflows for new integrations.
-    <p>The only required parameter is <code>webhookUrl</code>.</p>
-    <strong>How to obtain the webhook URL:</strong>
-    <ol>
-      <li>In Microsoft Teams open the target team and channel.</li>
-      <li>Click <strong>More options (…)</strong> next to the channel → <strong>Workflows</strong>.</li>
-      <li>Choose the template <em>"Post to a channel when a webhook request is received"</em>.</li>
-      <li>Configure the parameters and click <strong>Save</strong>.</li>
-      <li>Copy the generated webhook URL and paste it into the <code>teams.webhookUrl</code> field of <code>config.json</code>.</li>
-    </ol>
-    See the <a href="https://learn.microsoft.com/en-us/microsoftteams/platform/webhooks-and-connectors/how-to/add-incoming-webhook" target="_blank">official Microsoft Teams documentation</a> for more details.
-    <p><strong>Notes &amp; limitations</strong> (per Teams docs):</p>
-    <ul>
-      <li>The chart (when <code>enableChart=true</code>) is embedded into the Adaptive Card as a base64 image, so no external hosting is required.</li>
-      <li>Total message payload must be ≤ <strong>28 KB</strong>. Very large charts may need to be disabled or hosted externally.</li>
-      <li>Teams throttles webhook requests at <strong>4 requests/second</strong>.</li>
-      <li>The Adaptive Card uses <code>$schema</code> <code>http://adaptivecards.io/schemas/adaptive-card.json</code>, version <code>1.5</code>. To customize the card, provide your own template via <code>templatePath</code> — the file content becomes the <code>TextBlock.text</code> field (Teams-flavored Markdown: <code>**bold**</code>, <code>_italic_</code>, lists, links).</li>
-    </ul>
-  </details>
+<img width="420" alt="SQ-1080 collage example" src="config/chart-sq1080-dogfood.png">
+<img width="340" alt="CB-870 collage example" src="config/chart-cb870-dogfood.png">
+
+## Visual canon
+
+Locked collage rules and reference PNG: [`docs/canon/CANON.md`](docs/canon/CANON.md).
+
+## Plugin (alternate)
+
+Allure 3 plugin — thin wrapper over the same core pipeline. CLI remains primary.
+
+```bash
+npm add allure @allure-notifications/plugin@6.0.8
+```
+
+- Docs: [`packages/plugin/README.md`](packages/plugin/README.md)
+- Example: [`examples/allurerc.notifications.mjs`](examples/allurerc.notifications.mjs)
+- GitHub Actions sample: [`examples/github-actions/`](examples/github-actions/)
+
+## Legacy Java 5.0.8
+
+Historical Java MVP — **bugfix / security only**. Sources and jar build: [`legacy/java/`](legacy/java/).
+
+```bash
+java -DconfigFile=notifications/config.json -jar allure-notifications-5.0.8.jar
+```
+
+- Release: [v5.0.8](https://github.com/qa-guru/allure-notifications/releases/tag/v5.0.8)
+- Migration 4.x → 5.0: [`docs/migration-5.0.md`](docs/migration-5.0.md)
+
+For new work use the **6.0** CLI above.
+
+## CI cookbook
+
+Primary: [`docs/ci-cookbook.md`](docs/ci-cookbook.md) (6.0 TypeScript).  
+Older jar-oriented notes: [`docs/ci-cookbook-5.0.md`](docs/ci-cookbook-5.0.md).

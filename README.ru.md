@@ -1,437 +1,265 @@
 [![en](https://img.shields.io/badge/lang-en-white.svg)](README.md) [![ru](https://img.shields.io/badge/lang-ru-blue.svg)](#) [![fr](https://img.shields.io/badge/lang-fr-white.svg)](README.fr.md)
 
-# Allure notifications
-**Allure notifications** — это библиотека, позволяющая выполнять автоматическое оповещение о результатах прохождения автотестов, которое направляется в нужный вам мессенджер (Telegram, Slack, ~~Skype~~, Email, Mattermost, Discord, Loop, Rocket.Chat, Zoho Cliq, Microsoft Teams).
+> **6.0.\*** — продукт: TypeScript CLI + web builder + collage PNG + мессенджеры. Pin **6.0.8**.  
+> **5.0.8** — Java jar, только legacy freeze (`legacy/java/`). Линии **5.1 нет**.  
+> Changelog старых патчей 5.x → [GitHub Releases](https://github.com/qa-guru/allure-notifications/releases). Миграция → [`MIGRATION.md`](MIGRATION.md).
 
-Языки оповещений: 🇬🇧 🇫🇷 🇷🇺 🇺🇦 🇧🇾 🇨🇳
+# Allure notifications
+
+CLI: отчёт Allure → уведомление в мессенджер (текст + опциональный collage PNG).
+
+Мессенджеры: Telegram, Slack, Email, Mattermost, Discord, Loop, Rocket.Chat, Zoho Cliq, Microsoft Teams.  
+Языки: 🇬🇧 🇫🇷 🇷🇺 🇺🇦 🇧🇾 🇨🇳
+
+Соберите `config.json` в [Config builder](#config-builder), затем отправьте через CLI.
 
 ## Содержание
-+ [Принцип работы](#принцип-работы)
-+ [Как выглядят оповещения](#как-выглядят-оповещения)
-+ [Что нового в 5.0](#что-нового-в-50)
-+ [Как использовать в своём проекте](#как-использовать-в-своём-проекте)
-  + [Для запуска локально](#для-запуска-локально)
-  + [Для запуска из Jenkins](#для-запуска-из-jenkins)
-+ [Особенности заполнения config.json в зависимости от мессенджера](#особенности-заполнения-configjson-в-зависимости-от-мессенджера)
 
++ [Что нового в 6.0](#что-нового-в-60)
++ [Принцип работы](#принцип-работы)
++ [Quick start](#quick-start)
++ [config.json](#configjson)
++ [Config builder](#config-builder)
++ [Визуальный канон](#визуальный-канон)
++ [Плагин (альтернатива)](#плагин-альтернатива)
++ [Legacy Java 5.0.8](#legacy-java-508)
++ [CI cookbook](#ci-cookbook)
+
+## Что нового в 6.0
+
+| Часть | Роль |
+|-------|------|
+| **CLI** | `npx allure-notifications@6.0.8 send --config …` — основной runtime |
+| **Collage PNG** | `@napi-rs/canvas` в `@allure-notifications/core` (Playwright — только тесты) |
+| **Config builder** | Web UI → полный `config.json` + free-layout collage — [`apps/builder/`](apps/builder/) |
+| **Пакеты** | `@allure-notifications/config` · `pyramid` · `core` · bin `allure-notifications` · plugin `@allure-notifications/plugin` |
+| **Плагин Allure 3** | Альтернативный `done` hook — см. [Плагин](#плагин-альтернатива) |
 
 ## Принцип работы
-После выполнения автотестов Allure генерирует `summary.json` со статистикой. Библиотека находит его автоматически:
+
+После тестов Allure пишет summary. CLI находит его автоматически:
 
 - **Allure 2** — `<allureFolder>/widgets/summary.json`
 - **Allure 3** — `<allureFolder>/summary.json`
 
-По summary формируется текст уведомления и диаграмма. В режиме **collage** (`chart.mode: "collage"`, 5.0+) дополнительно читаются `*-result.json` из `allure-results` для пирамид, сьютов и длительностей.
+По summary строится текст уведомления. В режиме collage дополнительно читаются `*-result.json` из `allureResultsFolder` (пирамида, сьюты, длительности и др.).
 
 ```mermaid
 flowchart LR
-    A[Выполнение\nавтотестов] --> B[Генерация файла\nsummary.json]
+    A[Выполнение\nавтотестов] --> B[Генерация\nsummary.json]
     B --> C
     subgraph C[Allure Notifications]
-        D[Формирование уведомления\nдиаграмма и текст] --> E[Отправка уведомления\nв мессенджер]
+        D[Collage и текст] --> E[Отправка в\nмессенджер]
     end
 ```
 
-Пример файла `summary.json`:
-```json
-{
-  "reportName" : "Allure Report",
-  "testRuns" : [ ],
-  "statistic" : {
-    "failed" : 182,
-    "broken" : 70,
-    "skipped" : 118,
-    "passed" : 439,
-    "unknown" : 42,
-    "total" : 851
-  },
-  "time" : {
-    "start" : 1590795193703,
-    "stop" : 1590932641296,
-    "duration" : 11311,
-    "minDuration" : 7901,
-    "maxDuration" : 109870,
-    "sumDuration" : 150125
-  }
-}
+Пример уведомления (Telegram):
+
+<img width="660" alt="Пример уведомления в Telegram" src="docs/telegram_notification.png">
+
+## Quick start
+
+```bash
+npx allure generate allure-results --clean -o allure-report
+npx allure-notifications@6.0.8 send --config config.json --live
 ```
-Кроме этого, если подключён Allure Summary плагин, также будет сгенерирован файл `suites.json`, данные из которого тоже будут включены в статистику.
 
+| Флаг | Поведение |
+|------|----------|
+| `--dry-run` | Рендер collage; список мессенджеров без сети (PR / локально без секретов) |
+| `--mock` | Рендер collage; mock-доставки; **без сети** |
+| `--live` | Реальная отправка (Telegram при наличии credentials) |
+| `--out <png>` | Записать collage PNG на диск |
 
-## Как выглядят оповещения
-Пример оповещения в Telegram
+Без `--live` / `--mock` по умолчанию безопасный **dry-run**.
 
-<img width="660" alt="Telegram notification example" src="docs/telegram_notification.png">
+## config.json
 
-В режиме **collage** Telegram — узкий canvas **870×1080**; default `cb870-mid-dynamics`, у проектов разные раскладки под динамику (wide dynamics / pie hero / pyramid-mid / dense-live). См. [гайд по миграции](docs/migration-5.0.md) и [пример](config/config-5.0-collage.example.json).
+Схема: [`packages/config`](packages/config) (zod). Удобнее всего Export из [Config builder](#config-builder).
 
-
-## Что нового в 5.0
-
-| Возможность | Описание |
-|-------------|----------|
-| **Collage chart** | `chart.mode: "collage"` + `layout: "free"` — Telegram canvas **870×1080**; раскладка по consumer (`cb870-mid-dynamics` default · dense-split / compact-hero / pyramid-mid / dense-live) |
-| **Блок links** | `links.report`, `dashboard`, `testops`, `build` в шаблонах (i18n) |
-| **Allure 3** | Автоопределение `summary.json` в корне отчёта (`stats` → legacy-модель) |
-| **Аналитика results** | `allureResultsFolder` для layer labels, suites, длительностей |
-| **Chrome карточек (5.0.4)** | `chart.headerHeight` (68) + `chart.cardGap` (14); панель `testResultSeverities` |
-| **Обратная совместимость** | По умолчанию `chart.mode: "pie"` и deprecated `reportLink` работают |
-
-**Документация:** [Миграция 4.x → 5.0](docs/migration-5.0.md) · [CI cookbook](docs/ci-cookbook-5.0.md) · [Пример config](config/config-5.0-collage.example.json)
-
-Минимальный sketch config 5.0:
+Минимальный пример **6.0** — collage + free + один мессенджер:
 
 ```json
 {
   "base": {
-    "allureFolder": "build/allure-report/",
-    "allureResultsFolder": "build/allure-results/",
+    "project": "my-project",
+    "environment": "ci",
+    "comment": "",
+    "language": "ru",
+    "allureFolder": "allure-report/",
+    "allureResultsFolder": "allure-results/",
     "enableChart": true,
-    "chart": { "mode": "collage" },
+    "darkMode": true,
+    "chart": {
+      "mode": "collage",
+      "layout": "free",
+      "width": 870,
+      "height": 1080,
+      "headerHeight": 22,
+      "cardGap": 14,
+      "tilePad": 6,
+      "gridCols": 10,
+      "gridRows": 10,
+      "items": [
+        { "type": "pie", "x": 0, "y": 0, "w": 4, "h": 4 },
+        { "type": "durationDynamics", "x": 4, "y": 0, "w": 6, "h": 4 },
+        { "type": "testingPyramid", "x": 0, "y": 4, "w": 3, "h": 3 },
+        { "type": "durations", "x": 3, "y": 4, "w": 4, "h": 3, "groupBy": "layer" }
+      ],
+      "pyramidFallback": "suites"
+    },
     "links": {
       "report": "${ALLURE_REPORT_URL}",
       "dashboard": "${ALLURE_DASHBOARD_URL}",
+      "testops": "",
       "build": "${BUILD_URL}"
     }
-  }
-}
-```
-
-
-## Как использовать в своём проекте
-
-### Для запуска локально
-1. Установить Java (для запуска из Jenkins не требуется).
-2. Создать в корне проекта папку `notifications`.
-3. [Скачать](https://github.com/qa-guru/allure-notifications/releases) актуальную версию файла `allure-notifications-<version>.jar` и разместить его в папке `notifications`.
-4. В папке `notifications` создать файл `config.json` со следующей структурой (оставить раздел `base` и тот мессенджер, на который требуется отправлять оповещения):
-```json
-{
-  "base": {
-    "logo": "",
-    "project": "",
-    "environment": "",
-    "comment": "",
-    "reportLink": "",
-    "links": {
-      "report": "",
-      "dashboard": "",
-      "testops": "",
-      "build": ""
-    },
-    "language": "ru",
-    "allureFolder": "",
-    "allureResultsFolder": "",
-    "enableChart": false,
-    "chart": {
-      "mode": "pie",
-      "panels": ["pie", "testingPyramid", "durations"],
-      "pyramidFallback": "suites",
-      "width": 1000,
-      "height": 600
-    },
-    "darkMode": false,
-    "enableSuitesPublishing": false,
-    "customData": {}
   },
   "telegram": {
-    "token": "",
-    "chat": "",
+    "token": "${TELEGRAM_BOT_TOKEN}",
+    "chat": "${TELEGRAM_CHAT_ID}",
     "topic": "",
-    "replyTo": "",
     "templatePath": "/templates/telegram.ftl"
-  },
-  "slack": {
-    "token": "",
-    "chat": "",
-    "replyTo": "",
-    "templatePath": "/templates/markdown.ftl"
-  },
-  "mattermost": {
-    "url": "",
-    "token": "",
-    "chat": "",
-    "templatePath": "/templates/markdown.ftl"
-  },
-  "rocketChat" : {
-    "url": "",
-    "auth_token": "",
-    "user_id": "",
-    "channel": "",
-    "templatePath": "/templates/rocket.ftl"
-  },
-  "mail": {
-    "host": "",
-    "port": "",
-    "username": "",
-    "password": "",
-    "securityProtocol": null,
-    "from": "",
-    "to": "",
-    "cc": "",
-    "bcc": "",
-    "templatePath": "/templates/html.ftl"
-  },
-  "discord": {
-    "botToken": "",
-    "channelId": "",
-    "templatePath": "/templates/markdown.ftl"
-  },
-  "loop": {
-    "webhookUrl": "",
-    "templatePath": "/templates/markdown.ftl"
-  },
-  "cliq": {
-    "token": "",
-    "chat": "",
-    "bot": "",
-    "dataCenter": "eu",
-    "templatePath": "/templates/markdown.ftl"
-  },
-  "teams": {
-    "webhookUrl": "",
-    "templatePath": "/templates/teams.ftl"
-  },
-  "proxy": {
-    "type": "http",
-    "host": "",
-    "port": 0,
-    "username": "",
-    "password": ""
-  }
-}
-```
-Блок `proxy` задаёт исходящий HTTP/SOCKS-прокси для **Telegram**, **Slack** и **Cliq** (Apache HttpClient).  
-`type` по умолчанию `http` (обратная совместимость). Для SOCKS без auth — `socks5` (напр. `proxy.qaguru.school:7777`).
-
-```json
-"proxy": {
-  "type": "socks5",
-  "host": "proxy.qaguru.school",
-  "port": 7777
-}
-```
-
-Override через system properties: `-Dnotifications.proxy.type=socks5 -Dnotifications.proxy.host=…`
-Параметр `templatePath` является опциональным и позволяет установить путь к собственному Freemarker-шаблону. Пример:
-```json
-{
-  "base": { "..." : "..." },
-  "mail": {
-    "host": "smtp.gmail.com",
-    "port": "465",
-    "username": "username",
-    "password": "password",
-    "securityProtocol": "SSL",
-    "from": "test@gmail.com",
-    "to": "test1@gmail.com",
-    "cc": "testCC1@gmail.com, testCC2@gmail.com",
-    "bcc": "testBCC1@gmail.com, testBCC2@gmail.com",
-    "templatePath": "/templates/html_custom.ftl"
   }
 }
 ```
 
-5. Заполнить блок `base` в файле `config.json`:
-```json
-"base": {
-    "project": "some project",
-    "environment": "some env",
-    "comment": "some comment",
-    "links": {
-      "report": "https://ci.example.com/allure-report/",
-      "dashboard": "https://ci.example.com/dashboard/",
-      "testops": "https://testops.example.com/job/42",
-      "build": "https://ci.example.com/job/42"
-    },
-    "language": "ru",
-    "allureFolder": "build/allure-report/",
-    "allureResultsFolder": "build/allure-results/",
-    "enableChart": true,
-    "chart": {
-      "mode": "collage",
-      "pyramidFallback": "suites",
-      "width": 1000,
-      "height": 600
-    },
-    "darkMode": true,
-    "enableSuitesPublishing": true,
-    "logo": "logo.png",
-    "durationFormat": "HH:mm:ss.SSS",
-    "customData": {
-      "variable1": "value1",
-      "variable2": "value2"
-    }
-}
-```
-Описание полей:
-+ `project`, `environment`, `comment` — имя проекта, название окружения и произвольный комментарий.
-+ `links` — ссылки в уведомлении (5.0+): `report`, `dashboard`, `testops`, `build`. В шаблон попадают только непустые.
-+ `reportLink` — **устарел** с 5.0; используйте `links.report`. Пока поддерживается как fallback.
-+ `language` — язык оповещения (`en` / `fr` / `ru` / `ua` / `by` / `cn`).
-+ `allureFolder` — путь к сгенерированному Allure report.
-+ `allureResultsFolder` — путь к сырым `allure-results` (для collage pyramid / durations; для pie-only необязателен).
-+ `enableChart` — прикреплять ли изображение диаграммы (`true` / `false`).
-+ `chart.mode` — `pie` (по умолчанию, как в 4.x) или `collage` (PNG 1000×600, 5.0+).
-+ `chart.pyramidFallback` — `suites`, если в results нет `layer` labels (по умолчанию `suites`).
-+ `chart.width` / `chart.height` — размер collage PNG в пикселях (по умолчанию 1000×600).
-+ `chart.headerHeight` — высота шапки карточки в px (по умолчанию 68).
-+ `chart.cardGap` — зазор вокруг/между карточками в px (по умолчанию 14, **5.0.4**).
-+ `darkMode` — отображать ли диаграмму в тёмном режиме (`true` / `false`).
-+ `enableSuitesPublishing` — публиковать ли статистику по каждому набору тестов (`true` / `false`, по умолчанию `false`). Требует наличия `suites.json` в `<allureFolder>/widgets`.
-+ `logo` — путь к файлу логотипа; если задан, отображается в левом верхнем углу pie chart.
-+ `durationFormat` (опционально, по умолчанию `HH:mm:ss.SSS`) — формат отображения продолжительности тестов.
-+ `customData` — дополнительные данные для использования в собственных Freemarker-шаблонах (опционально).
+### Поля `base`
 
-6. Заполнить блок нужного мессенджера: см. [Особенности заполнения config.json](#особенности-заполнения-configjson-в-зависимости-от-мессенджера).
+| Поле | Заметки |
+|------|--------|
+| `project`, `environment`, `comment` | В тексте уведомления |
+| `links` | `report`, `dashboard`, `testops`, `build` — только непустые |
+| `reportLink` | **Deprecated** — используйте `links.report` (fallback ещё работает) |
+| `language` | `en` / `fr` / `ru` / `ua` / `by` / `cn` / `cnt` |
+| `allureFolder` | Каталог сгенерированного отчёта Allure |
+| `allureResultsFolder` | Сырые `allure-results` (нужны для analytics collage) |
+| `enableChart` | Прикреплять изображение collage / chart |
+| `chart.mode` | `collage` (основной) или `pie` |
+| `chart.layout` | Основной путь — **`free` + `items`**. Legacy `grid` \| `stacked` \| `row` ещё поддерживаются |
+| `chart.width` / `height` | Размер canvas (px) |
+| `chart.headerHeight` / `cardGap` / `tilePad` | Chrome карточек (defaults builder: 22 / 14 / 6) |
+| `darkMode` | Тема chart |
+| `enableSuitesPublishing` | Статистика по suites из `suites.json` |
+| `logo`, `durationFormat`, `customData` | Опционально |
 
-7. Выполнить в терминале:
-```shell
-java "-DconfigFile=notifications/config.json" -jar notifications/allure-notifications-5.0.8.jar
-```
-Примечания:
-+ На момент запуска файл `summary.json` уже должен быть сформирован.
-+ Укажите версию jar-файла, соответствующую скачанному.
-+ Настройки можно переопределить через системные свойства (они имеют приоритет над `config.json`):
-```shell
-java "-DconfigFile=notifications/config.json" \
-  "-Dnotifications.base.environment=${STAND}" \
-  "-Dnotifications.base.links.report=${ALLURE_SERVICE_URL}" \
-  "-Dnotifications.base.chart.mode=collage" \
-  "-Dnotifications.base.project=${PROJECT_ID}" \
-  "-Dnotifications.telegram.token=${TG_BOT_TOKEN}" \
-  "-Dnotifications.telegram.chat=${TG_CHAT_ID}" \
-  "-Dnotifications.telegram.topic=${TG_CHAT_TOPIC_ID}" \
-  -jar allure-notifications.jar
-```
-ℹ️ Префиксы для параметров `customData` удаляются: `-Dbase.customData.variable1=someValue` становится ключом `variable1` со значением `someValue`.  
-⚠️ Использование `base.customData.` без имени параметра допустимо.
+### Мессенджеры
 
+Оставьте `base` и только нужный блок мессенджера. `templatePath` — опциональный путь к своему Freemarker-шаблону.
 
-### Для запуска из Jenkins
-1. Перейти в настройки сборки в Jenkins.
-2. В разделе **Сборка** нажать **Добавить шаг сборки** → **Create/Update Text File**.
+**Telegram** — [wiki](https://github.com/qa-guru/knowledge-base/wiki/12.-Телеграм-бот.-Отправляем-уведомления-о-результатах-прохождения-тестов): `token`, `chat`, опционально `topic` / `replyTo`.
 
-<img width="739" alt="image" src="https://user-images.githubusercontent.com/109241600/213293791-75eecef5-9e6d-449b-9b10-520561e2f112.png">
+**Slack** — [wiki](https://github.com/qa-guru/allure-notifications/wiki/Slack-configuration): `token`, `chat`, опционально `replyTo`.
 
-Заполнить следующим образом:
+**Email** — [wiki](https://github.com/qa-guru/allure-notifications/wiki/Email-configuration): `host`, `port`, `username`, `password`, `from`, `to`, опционально `cc` / `bcc` / `securityProtocol`.
 
-<img width="745" alt="image" src="https://user-images.githubusercontent.com/109241600/213294133-164df8c0-85da-4059-97e7-3e4c8a386538.png">
-<img width="744" alt="image" src="https://user-images.githubusercontent.com/109241600/213294275-31a5efeb-d400-496d-b963-c6071f187e94.png">
+**Mattermost** — [wiki](https://github.com/qa-guru/allure-notifications/wiki/Mattermost-configuration): `url`, `token`, `chat`.
 
-Примечания:
-+ Описание блока `base` приведено [выше](#5-заполнить-блок-base-в-файле-configjson).
-+ В качестве значений используйте переменные Jenkins: `"project": "${JOB_BASE_NAME}"`, `"links.report": "${ALLURE_REPORT_URL}"`, `"links.build": "${BUILD_URL}"`. См. [CI cookbook](docs/ci-cookbook-5.0.md).
-+ Особенности заполнения блока мессенджера описаны в [следующем разделе](#особенности-заполнения-configjson-в-зависимости-от-мессенджера).
+<details>
+<summary>Discord</summary>
 
-3. В разделе **Послесборочные операции** нажать **Добавить шаг после сборки** → **Post build task**.
+`botToken`, `channelId`. Developer mode → Discord developer portal → Applications → Bot token; ПКМ по каналу → Copy ID.
+</details>
 
-<img width="743" alt="image" src="https://user-images.githubusercontent.com/109241600/213299612-d28334c1-5dba-4e53-9f8d-32ef40b713ad.png">
+<details>
+<summary>Loop</summary>
 
-В поле **Script** указать:
+`webhookUrl` — Integrations → Incoming Webhooks → создать webhook для канала.
+</details>
+
+<details>
+<summary>Rocket.Chat</summary>
+
+`url`, `auth_token`, `user_id`, `channel`. Токен в настройках пользователя (там же `user_id`).
+</details>
+
+<details>
+<summary>Zoho Cliq</summary>
+
+`token` (zapikey), `chat`, опционально `bot`, `dataCenter` (`com` / `eu` / `in` / `au` / `jp` / `ca`; default `eu`).
+</details>
+
+<details>
+<summary>Microsoft Teams</summary>
+
+`webhookUrl` из шаблона Workflows *“Post to a channel when a webhook request is received”* (legacy Office 365 Connectors уходят). Chart — base64; payload ≤ 28 KB; throttle ~4 req/s.
+</details>
+
+Опциональный top-level `proxy` (`type`: `http` \| `socks5`, `host`, `port`, …) для исходящего HTTP/SOCKS где поддерживается.
+
+## Config builder
+
+Web UI: полный `config.json` (`base` · `chart` · `links` · messengers) + редактор free-layout collage.
+
+| | |
+|--|--|
+| **Prod** | [allure-notifications.qa.guru](https://allure-notifications.qa.guru/) |
+| **Project Pages** | [qa-guru.github.io/allure-notifications](https://qa-guru.github.io/allure-notifications/) |
+| **Исходники** | [`apps/builder/`](apps/builder/) |
+| **Canon** | [`apps/builder/CANON.md`](apps/builder/CANON.md) |
+
+### Canvas presets
+
+| Preset | Размер | Заметки |
+|--------|--------|--------|
+| **SQ-1080** | 1080×1080 | Dense 12-tile, квадратный canvas |
+| **CB-870** | 870×1080 | Canvas под Telegram (post cap 1024×1280) |
+| **WD-1410** | 1410×1080 | Широкий canvas |
+
+### Export → CLI
+
+1. Раскладка панелей в builder → **Export** / Download `config.json`.
+2. Укажите `base.allureFolder` / `base.allureResultsFolder`.
+3. Заполните credentials мессенджера (или env-плейсхолдеры).
+4. Отправка:
+
 ```bash
-cd ..
-FILE=allure-notifications-5.0.8.jar
-if [ ! -f "$FILE" ]; then
-   wget https://github.com/qa-guru/allure-notifications/releases/download/v5.0.8/allure-notifications-5.0.8.jar
-fi
+npx allure-notifications@6.0.8 send --config <exported>.json
 ```
-Нажать **Add another task** и во втором поле **Script** указать:
+
+### Локальный стенд (monorepo)
+
 ```bash
-java "-DconfigFile=notifications/config.json" -jar ../allure-notifications-5.0.8.jar
+python scripts/stands/ensure.py allure-notifications-builder
 ```
 
-4. Сохранить настройки и запустить тесты. По завершении в мессенджер будет направлено уведомление.
+Статический builder: [http://localhost:3011/](http://localhost:3011/).
 
+### Превью collage
 
-## Особенности заполнения config.json в зависимости от мессенджера
-+ <a href="https://github.com/qa-guru/knowledge-base/wiki/12.-Телеграм-бот.-Отправляем-уведомления-о-результатах-прохождения-тестов" target="_blank">Telegram config</a>
-  + Параметры блока `telegram`:
-    <ul>
-      <li><code>topic</code> — необязательный параметр, определяющий уникальный идентификатор топика чата. Как получить значение — см. <a href="https://stackoverflow.com/questions/74773675/how-to-get-topic-id-for-telegram-group-chat">ответы на Stackoverflow</a>.</li>
-    </ul>
-+ <a href="https://github.com/qa-guru/allure-notifications/wiki/Slack-configuration" target="_blank">Slack config</a>
-+ <a href="https://github.com/qa-guru/allure-notifications/wiki/Email-configuration" target="_blank">Email config</a>
-+ <a href="https://github.com/qa-guru/allure-notifications/wiki/Mattermost-configuration" target="_blank">Mattermost config</a>
-+ <details>
-    <summary>Discord config</summary>
-    Для включения уведомлений Discord необходимо указать <code>botToken</code> и <code>channelId</code>.
-    <ul>
-      <li>Создание бота и получение токена:
-        <ol>
-          <li>Включить "Developer mode" в настройках Discord.</li>
-          <li>Открыть портал Discord API → "Applications" → "New Application".</li>
-          <li>Задать имя и нажать "Create".</li>
-          <li>В разделе "Bot" нажать "Add Bot" и скопировать токен в JSON-конфиг.</li>
-          <li>В разделе "OAuth2" активировать "bot", выставить права и скопировать ссылку-приглашение для добавления бота на сервер.</li>
-        </ol>
-      </li>
-      <li>Для получения Channel ID: правый клик по каналу → "Copy ID", вставить в JSON-конфиг.</li>
-    </ul>
-  </details>
-+ <details>
-    <summary>Loop config</summary>
-    Создание webhook URL для Loop:
-    <ul>
-      <li>Открыть главное меню приложения Loop.</li>
-      <li>Нажать "Integrations" → "Incoming Webhooks" → "Add Incoming Webhook".</li>
-      <li>Заполнить форму, выбрать канал, нажать "Save".</li>
-      <li>Скопировать URL вебхука в JSON-конфиг.</li>
-    </ul>
-  </details>
-+ <details>
-    <summary>Rocket.Chat config</summary>
-    Обязательные параметры: <code>url</code>, <code>auth_token</code>, <code>user_id</code>, <code>channel</code>.
-    <ol>
-      <li>Сгенерировать <code>auth_token</code> в настройках пользователя — там же будет доступен <code>user_id</code>.</li>
-      <li>Получить название канала через <a href="https://developer.rocket.chat/reference/api/rest-api/endpoints/rooms/channels-endpoints/info" target="_blank">Rocket.Chat REST API</a>.</li>
-    </ol>
-  </details>
-+ <details>
-    <summary>Zoho Cliq config</summary>
-    Обязательные параметры:
-    <ul>
-      <li><code>token</code> — API-токен Zoho Cliq (zapikey). Получение:
-        <ol>
-          <li>Перейти в настройки аккаунта Zoho Cliq.</li>
-          <li>Открыть "Боты и инструменты" → "Бот".</li>
-          <li>Создать нового бота или выбрать существующего.</li>
-          <li>Скопировать токен (zapikey) из "Webhook URL".</li>
-        </ol>
-      </li>
-      <li><code>chat</code> — имя канала для отправки уведомлений.</li>
-      <li><code>bot</code> — (необязательно) уникальное имя бота.</li>
-      <li><code>dataCenter</code> — регион дата-центра Zoho:
-        <ul>
-          <li><code>com</code> — США (cliq.zoho.com)</li>
-          <li><code>eu</code> — Европа (cliq.zoho.eu) — по умолчанию</li>
-          <li><code>in</code> — Индия (cliq.zoho.in)</li>
-          <li><code>au</code> — Австралия (cliq.zoho.com.au)</li>
-          <li><code>jp</code> — Япония (cliq.zoho.jp)</li>
-          <li><code>ca</code> — Канада (cliq.zohocloud.ca)</li>
-        </ul>
-      </li>
-    </ul>
-    Подробнее — в <a href="https://www.zoho.com/cliq/help/restapi/v2/" target="_blank">официальной документации Zoho Cliq API</a>.
-  </details>
-+ <details>
-    <summary>Конфигурация Microsoft Teams</summary>
-    Уведомления отправляются как Adaptive Card на webhook-URL, сгенерированный приложением <strong>Workflows</strong> (Power Automate). Legacy-коннекторы Microsoft 365 (старый «Incoming Webhook») <a href="https://devblogs.microsoft.com/microsoft365dev/retirement-of-office-365-connectors-within-microsoft-teams/" target="_blank">выводятся из эксплуатации</a> — для новых интеграций используйте Workflows.
-    <p>Единственный обязательный параметр — <code>webhookUrl</code>.</p>
-    <strong>Как получить webhook-URL:</strong>
-    <ol>
-      <li>В Microsoft Teams откройте нужную команду и канал.</li>
-      <li>Нажмите <strong>Дополнительные параметры (…)</strong> рядом с каналом → <strong>Workflows</strong>.</li>
-      <li>Выберите шаблон <em>«Post to a channel when a webhook request is received»</em>.</li>
-      <li>Заполните параметры и нажмите <strong>Save</strong>.</li>
-      <li>Скопируйте сгенерированный webhook-URL и вставьте в поле <code>teams.webhookUrl</code> в <code>config.json</code>.</li>
-    </ol>
-    Подробнее — в <a href="https://learn.microsoft.com/en-us/microsoftteams/platform/webhooks-and-connectors/how-to/add-incoming-webhook" target="_blank">официальной документации Microsoft Teams</a>.
-    <p><strong>Замечания и ограничения</strong> (согласно документации Teams):</p>
-    <ul>
-      <li>График (при <code>enableChart=true</code>) встраивается в Adaptive Card как base64-картинка — внешний хостинг не нужен.</li>
-      <li>Общий размер сообщения должен быть ≤ <strong>28 KB</strong>. При очень больших графиках их, возможно, придётся отключить либо размещать снаружи.</li>
-      <li>Teams ограничивает частоту запросов: <strong>не более 4 запросов в секунду</strong>.</li>
-      <li>Adaptive Card использует <code>$schema</code> <code>http://adaptivecards.io/schemas/adaptive-card.json</code>, версия <code>1.5</code>. Для кастомизации карточки передайте собственный шаблон через <code>templatePath</code> — его содержимое подставляется в поле <code>TextBlock.text</code> (Teams-Markdown: <code>**жирный**</code>, <code>_курсив_</code>, списки, ссылки).</li>
-    </ul>
-  </details>
+<img width="420" alt="Пример collage SQ-1080" src="config/chart-sq1080-dogfood.png">
+<img width="340" alt="Пример collage CB-870" src="config/chart-cb870-dogfood.png">
+
+## Визуальный канон
+
+Правила collage и reference PNG: [`docs/canon/CANON.md`](docs/canon/CANON.md).
+
+## Плагин (альтернатива)
+
+Плагин Allure 3 — тонкая обёртка над тем же core. Основной путь — CLI.
+
+```bash
+npm add allure @allure-notifications/plugin@6.0.8
+```
+
+- Документация: [`packages/plugin/README.md`](packages/plugin/README.md)
+- Пример: [`examples/allurerc.notifications.mjs`](examples/allurerc.notifications.mjs)
+- GitHub Actions: [`examples/github-actions/`](examples/github-actions/)
+
+## Legacy Java 5.0.8
+
+Исторический Java MVP — **только bugfix / security**. Исходники и сборка jar: [`legacy/java/`](legacy/java/).
+
+```bash
+java -DconfigFile=notifications/config.json -jar allure-notifications-5.0.8.jar
+```
+
+- Релиз: [v5.0.8](https://github.com/qa-guru/allure-notifications/releases/tag/v5.0.8)
+- Миграция 4.x → 5.0: [`docs/migration-5.0.md`](docs/migration-5.0.md)
+
+Для новой работы используйте CLI **6.0** выше.
+
+## CI cookbook
+
+Основной: [`docs/ci-cookbook.md`](docs/ci-cookbook.md) (6.0 TypeScript).  
+Старые заметки про jar: [`docs/ci-cookbook-5.0.md`](docs/ci-cookbook-5.0.md).
