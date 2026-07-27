@@ -97,6 +97,7 @@ describe("@allure-notifications/cli telegram caption + sendPhoto", () => {
           unknown: 0,
           total: 3,
         },
+        durationMs: 1234,
         layers: {},
         suites: [],
         durationsMs: [],
@@ -109,10 +110,66 @@ describe("@allure-notifications/cli telegram caption + sendPhoto", () => {
         stabilityCases: [],
       },
     );
-    assert.match(caption, /allure-notifications/);
+    assert.match(caption, /Results:/);
     assert.match(caption, /CB-870/);
-    assert.match(caption, /total:<\/b> 3/);
+    assert.match(caption, /Total scenarios: <\/b>3/);
+    assert.match(caption, /Total passed: <\/b>2 \(66\.7 %\)/);
+    assert.match(caption, /Total failed: <\/b>1 \(33\.3 %\)/);
+    assert.match(caption, /Duration: <\/b>00:00:01\.234/);
     assert.doesNotMatch(caption, /SECRET_TOKEN_VALUE/);
+  });
+
+  it("caption includes RU phrases and HTML links", () => {
+    const caption = buildTelegramCaption(
+      {
+        base: {
+          project: "allure-notifications",
+          language: "ru",
+          environment: "dogfood",
+          comment: "full collage",
+          links: {
+            report: "https://allure.qa.guru/project/5297",
+            dashboard:
+              "https://sonar.qa.guru/dashboard?id=allure-notifications",
+            testops: "https://allure.qa.guru/project/5297",
+            build:
+              "https://github.com/qa-guru/allure-notifications/actions/runs/30258259618",
+          },
+        },
+        telegram: { token: "SECRET" },
+      },
+      {
+        statistic: {
+          passed: 30,
+          failed: 2,
+          broken: 1,
+          skipped: 1,
+          unknown: 0,
+          total: 34,
+        },
+        durationMs: 59840,
+        layers: {},
+        suites: [],
+        durationsMs: [],
+        durationsMsByLayer: {},
+        severities: {},
+        hasLayerLabels: false,
+        hasKnownLayerLabels: false,
+        resultCount: 34,
+        history: null,
+        stabilityCases: [],
+      },
+    );
+    assert.match(caption, /Результаты:/);
+    assert.match(caption, /Рабочее окружение:/);
+    assert.match(caption, /Дашборд:/);
+    assert.match(caption, /TestOps:/);
+    assert.match(caption, /Сборка:/);
+    assert.match(
+      caption,
+      /href="https:\/\/sonar\.qa\.guru\/dashboard\?id=allure-notifications"/,
+    );
+    assert.doesNotMatch(caption, /SECRET/);
   });
 
   it("sendTelegramPhoto posts multipart and returns message id (mocked fetch)", async () => {

@@ -1,8 +1,8 @@
 {
   "base": {
     "project": "allure-notifications",
-    "environment": "dogfood",
-    "comment": "Full collage dogfood · history + severity filled",
+    "environment": "CI / dogfood",
+    "comment": "Q4 quality contour · dogfood-full collage (history + severity)",
     "language": "ru",
     "allureFolder": "../packages/core/test/fixtures/dogfood-report",
     "allureResultsFolder": "../packages/core/test/fixtures/dogfood-results",
@@ -68,10 +68,10 @@
       "pyramidFallback": "suites"
     },
     "links": {
-      "report": "",
-      "dashboard": "",
-      "testops": "",
-      "build": ""
+      "report": "https://allure.qa.guru/project/5297",
+      "dashboard": "https://sonar.qa.guru/dashboard?id=allure-notifications",
+      "testops": "https://allure.qa.guru/project/5297",
+      "build": "https://github.com/qa-guru/allure-notifications/actions/runs/30258259618"
     }
   },
   "telegram": {

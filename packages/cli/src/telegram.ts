@@ -85,29 +85,174 @@ export function resolveTelegramCredentials(
   return { token, chat, topic, replyTo };
 }
 
-/** Short HTML caption for dogfood / MVP (no FreeMarker). */
+type CaptionPhrases = {
+  results: string;
+  environment: string;
+  comment: string;
+  duration: string;
+  totalScenarios: string;
+  totalPassed: string;
+  totalFailed: string;
+  totalBroken: string;
+  totalUnknown: string;
+  totalSkipped: string;
+  links: {
+    report: string;
+    dashboard: string;
+    testops: string;
+    build: string;
+  };
+};
+
+const PHRASES_EN: CaptionPhrases = {
+  results: "Results",
+  environment: "Environment",
+  comment: "Comment",
+  duration: "Duration",
+  totalScenarios: "Total scenarios",
+  totalPassed: "Total passed",
+  totalFailed: "Total failed",
+  totalBroken: "Total broken",
+  totalUnknown: "Total unknown",
+  totalSkipped: "Total skipped",
+  links: {
+    report: "Report",
+    dashboard: "Dashboard",
+    testops: "TestOps",
+    build: "Build",
+  },
+};
+
+const PHRASES_RU: CaptionPhrases = {
+  results: "Результаты",
+  environment: "Рабочее окружение",
+  comment: "Комментарий",
+  duration: "Продолжительность",
+  totalScenarios: "Всего сценариев",
+  totalPassed: "Всего успешных тестов",
+  totalFailed: "Всего упавших тестов",
+  totalBroken: "Всего сломанных тестов",
+  totalUnknown: "Всего неизвестных тестов",
+  totalSkipped: "Всего пропущенных тестов",
+  links: {
+    report: "Отчёт",
+    dashboard: "Дашборд",
+    testops: "TestOps",
+    build: "Сборка",
+  },
+};
+
+function phrasesFor(language: string | undefined): CaptionPhrases {
+  return language?.toLowerCase() === "ru" ? PHRASES_RU : PHRASES_EN;
+}
+
+/** Format ms as HH:mm:ss.SSS (Java DurationFormatUtils parity). */
+export function formatDurationMs(
+  durationMs: number,
+  pattern = "HH:mm:ss.SSS",
+): string {
+  const ms = Math.max(0, Math.floor(durationMs));
+  const hours = Math.floor(ms / 3_600_000);
+  const minutes = Math.floor((ms % 3_600_000) / 60_000);
+  const seconds = Math.floor((ms % 60_000) / 1000);
+  const millis = ms % 1000;
+  const pad = (n: number, w: number) => String(n).padStart(w, "0");
+  return pattern
+    .replace("HH", pad(hours, 2))
+    .replace("mm", pad(minutes, 2))
+    .replace("ss", pad(seconds, 2))
+    .replace("SSS", pad(millis, 3));
+}
+
+function printPercentage(part: number, total: number): string {
+  if (total <= 0) return "(0 %)";
+  const pct = (part * 100) / total;
+  const rounded = Math.round(pct * 10) / 10;
+  const text = Number.isInteger(rounded)
+    ? String(rounded)
+    : rounded.toFixed(1);
+  return `(${text} %)`;
+}
+
+const LINK_KEYS = ["report", "dashboard", "testops", "build"] as const;
+
+/**
+ * HTML caption for Telegram sendPhoto — FreeMarker `telegram.ftl` parity
+ * (environment / stats / duration / links). No FreeMarker runtime.
+ */
 export function buildTelegramCaption(
   config: Config,
   analytics?: ReportAnalytics,
 ): string {
   const base = config.base ?? {};
-  const project = base.project?.trim() || "allure-notifications";
+  const phrases = phrasesFor(base.language);
   const environment = base.environment?.trim() || "";
   const comment = base.comment?.trim() || "";
-  const lines = [`<b>${escapeHtml(project)}</b>`];
+  const durationFormat = base.durationFormat?.trim() || "HH:mm:ss.SSS";
+  const lines: string[] = [`<b>${escapeHtml(phrases.results)}:</b>`];
+
   if (environment) {
-    lines.push(`<b>environment:</b> ${escapeHtml(environment)}`);
-  }
-  if (comment) {
-    lines.push(`<b>comment:</b> ${escapeHtml(comment)}`);
-  }
-  if (analytics) {
-    const s = analytics.statistic;
     lines.push(
-      `<b>total:</b> ${s.total} · passed ${s.passed} · failed ${s.failed} · broken ${s.broken}`,
+      `<b>${escapeHtml(phrases.environment)}: </b>${escapeHtml(environment)}`,
     );
   }
-  lines.push("<i>6.0 TS dogfood · ADR 008</i>");
+  if (comment) {
+    lines.push(
+      `<b>${escapeHtml(phrases.comment)}: </b>${escapeHtml(comment)}`,
+    );
+  }
+
+  if (analytics) {
+    const s = analytics.statistic;
+    const durationMs =
+      analytics.durationMs > 0
+        ? analytics.durationMs
+        : analytics.durationsMs.reduce((a, b) => a + b, 0);
+    lines.push(
+      `<b>${escapeHtml(phrases.duration)}: </b>${escapeHtml(
+        formatDurationMs(durationMs, durationFormat),
+      )}`,
+    );
+    lines.push(
+      `<b>${escapeHtml(phrases.totalScenarios)}: </b>${s.total}`,
+    );
+    if (s.passed !== 0) {
+      lines.push(
+        `<b>${escapeHtml(phrases.totalPassed)}: </b>${s.passed} ${printPercentage(s.passed, s.total)}`,
+      );
+    }
+    if (s.failed !== 0) {
+      lines.push(
+        `<b>${escapeHtml(phrases.totalFailed)}: </b>${s.failed} ${printPercentage(s.failed, s.total)}`,
+      );
+    }
+    if (s.broken !== 0) {
+      lines.push(
+        `<b>${escapeHtml(phrases.totalBroken)}: </b>${s.broken}`,
+      );
+    }
+    if (s.unknown !== 0) {
+      lines.push(
+        `<b>${escapeHtml(phrases.totalUnknown)}: </b>${s.unknown}`,
+      );
+    }
+    if (s.skipped !== 0) {
+      lines.push(
+        `<b>${escapeHtml(phrases.totalSkipped)}: </b>${s.skipped}`,
+      );
+    }
+  }
+
+  const links = base.links ?? {};
+  for (const key of LINK_KEYS) {
+    const href = nonEmpty(links[key]);
+    if (!href) continue;
+    const label = phrases.links[key];
+    lines.push(
+      `<b>${escapeHtml(label)}:</b> <a href="${escapeHtml(href)}">${escapeHtml(href)}</a>`,
+    );
+  }
+
   return lines.join("\n");
 }
 

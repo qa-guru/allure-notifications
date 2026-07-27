@@ -53,6 +53,8 @@ export type SuiteStat = {
 
 export type ReportAnalytics = {
   statistic: Statistic;
+  /** Wall-clock / summary duration from Allure summary.json (ms). */
+  durationMs: number;
   layers: Record<string, number>;
   suites: SuiteStat[];
   durationsMs: number[];

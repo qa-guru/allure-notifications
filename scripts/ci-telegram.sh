@@ -73,13 +73,13 @@ SHORT_SHA="${SHORT_SHA:0:7}"
 BUILD_URL="${BUILD_URL:-}"
 
 python - "$TEMPLATE" "$RUNTIME_CONFIG" "$SOURCE" "$REF_NAME" "$SHORT_SHA" "$BUILD_URL" "$REASON" <<'PY'
-import json, sys
+import json, os, sys
 from pathlib import Path
 
 template, out, source, ref, sha, build, reason = sys.argv[1:8]
 cfg = json.loads(Path(template).read_text())
 cfg["base"]["project"] = f"allure-notifications · {ref} · {sha}"
-cfg["base"]["environment"] = "CI" if source == "run-allure-report" else "dogfood"
+cfg["base"]["environment"] = "CI" if source == "run-allure-report" else "CI / dogfood"
 cfg["base"]["language"] = cfg["base"].get("language") or "ru"
 
 comments = {
@@ -103,9 +103,25 @@ else:
     cfg["base"]["allureResultsFolder"] = "../allure-results"
     chart.pop("historyPath", None)
 
+# Realistic caption links (telegram.ftl parity). Prefer CI env; keep template defaults.
 links = cfg["base"].setdefault("links", {})
+endpoint = (os.environ.get("ALLURE_ENDPOINT") or "https://allure.qa.guru").rstrip("/")
+project_id = (os.environ.get("ALLURE_PROJECT_ID") or "").strip()
+testops = f"{endpoint}/project/{project_id}" if project_id else f"{endpoint}/project/5297"
+links.setdefault("report", testops)
+links.setdefault("testops", testops)
+links.setdefault(
+    "dashboard",
+    os.environ.get("SONAR_DASHBOARD_URL")
+    or "https://sonar.qa.guru/dashboard?id=allure-notifications",
+)
 if build:
     links["build"] = build
+else:
+    links.setdefault(
+        "build",
+        "https://github.com/qa-guru/allure-notifications/actions",
+    )
 
 # Credentials stay empty in file — CLI resolves TELEGRAM_* from env (never commit).
 tg = cfg.setdefault("telegram", {})

@@ -118,6 +118,7 @@ export function buildAnalytics(
 
   return {
     statistic,
+    durationMs: summary.durationMs ?? 0,
     layers: layerCounts,
     suites,
     durationsMs: durations,
