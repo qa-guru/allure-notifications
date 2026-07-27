@@ -1,13 +1,5 @@
 [![en](https://img.shields.io/badge/lang-en-white.svg)](README.md) [![ru](https://img.shields.io/badge/lang-ru-blue.svg)](#) [![fr](https://img.shields.io/badge/lang-fr-white.svg)](README.fr.md)
 
-| Версия | Стек | Allure | Статус |
-|--------|------|--------|--------|
-| **4.\*** | Java | Allure 2 | Историческая |
-| **5.\*** | Java | Allure 3 | Legacy freeze на **5.0.8** (`legacy/java/`); версии **5.1 нет** |
-| **6.\*** | TypeScript | Allure 3 | **Продукт** — pin **6.0.8** (CLI + builder + plugin) |
-
-Патч-ноты → [GitHub Releases](https://github.com/qa-guru/allure-notifications/releases) · миграция → [`MIGRATION.md`](MIGRATION.md).
-
 # Allure notifications
 
 CLI: отчёт Allure → уведомление в мессенджер (текст + опциональный collage PNG).
@@ -30,6 +22,14 @@ CLI: отчёт Allure → уведомление в мессенджер (те�
 + [CI cookbook](#ci-cookbook)
 
 ## Что нового в 6.0
+
+| Версия | Стек | Allure | Статус |
+|--------|------|--------|--------|
+| **4.\*** | Java | Allure 2 | Историческая |
+| **5.\*** | Java | Allure 3 | Legacy freeze на **5.0.8** (`legacy/java/`); версии **5.1 нет** |
+| **6.\*** | TypeScript | Allure 3 | **Продукт** — pin **6.0.8** (CLI + builder + plugin) |
+
+Патч-ноты → [GitHub Releases](https://github.com/qa-guru/allure-notifications/releases) · миграция → [`MIGRATION.md`](MIGRATION.md).
 
 | Часть | Роль |
 |-------|------|

@@ -1,13 +1,5 @@
 [![en](https://img.shields.io/badge/lang-en-blue.svg)](#) [![ru](https://img.shields.io/badge/lang-ru-white.svg)](README.ru.md) [![fr](https://img.shields.io/badge/lang-fr-white.svg)](README.fr.md)
 
-| Version | Stack | Allure | Status |
-|---------|-------|--------|--------|
-| **4.\*** | Java | Allure 2 | Historical |
-| **5.\*** | Java | Allure 3 | Legacy freeze at **5.0.8** (`legacy/java/`); there is **no 5.1** |
-| **6.\*** | TypeScript | Allure 3 | **Product** — pin **6.0.8** (CLI + builder + plugin) |
-
-Older patch notes → [GitHub Releases](https://github.com/qa-guru/allure-notifications/releases) · migration → [`MIGRATION.md`](MIGRATION.md).
-
 # Allure notifications
 
 CLI that turns an Allure report into a messenger notification: text + optional collage PNG.
@@ -30,6 +22,14 @@ Build `config.json` in the [Config builder](#config-builder), then send with the
 + [CI cookbook](#ci-cookbook)
 
 ## What's new in 6.0
+
+| Version | Stack | Allure | Status |
+|---------|-------|--------|--------|
+| **4.\*** | Java | Allure 2 | Historical |
+| **5.\*** | Java | Allure 3 | Legacy freeze at **5.0.8** (`legacy/java/`); there is **no 5.1** |
+| **6.\*** | TypeScript | Allure 3 | **Product** — pin **6.0.8** (CLI + builder + plugin) |
+
+Older patch notes → [GitHub Releases](https://github.com/qa-guru/allure-notifications/releases) · migration → [`MIGRATION.md`](MIGRATION.md).
 
 | Piece | Role |
 |-------|------|
