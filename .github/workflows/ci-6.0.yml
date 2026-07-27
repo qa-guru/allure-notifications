@@ -371,7 +371,7 @@ jobs:
         if: steps.gate.outputs.mode != 'skip'
         env:
           MODE: ${{ steps.gate.outputs.mode }}
-          CLI_PIN: '6.0.4'
+          CLI_PIN: '6.0.8'
           REF_NAME: ${{ github.ref_name }}
           SHORT_SHA: ${{ github.sha }}
           BUILD_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
@@ -404,7 +404,7 @@ jobs:
             echo "## Telegram (Q4)"
             echo ""
             echo "- topic: slug \`allure-notifications\` → id **34** (ADR 008)"
-            echo "- CLI pin: \`allure-notifications@6.0.4\`"
+            echo "- CLI pin: \`allure-notifications@6.0.8\`"
             echo "- gate: \`${GATE_MODE}\` (\`${GATE_REASON}\`)"
             if [[ "${GATE_MODE}" == "skip" ]]; then
               echo "- status: soft-skip (missing TELEGRAM_* — not a merge blocker)"

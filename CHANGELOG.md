@@ -1,5 +1,17 @@
 # Changelog
 
+## v 6.0.8
+
+### English
+
+- **Version sync** — CLI, libs, and `@allure-notifications/plugin` all publish as **6.0.8** (align after plugin-only 6.0.7; skip broken 6.0.6)
+- No product feature change vs 6.0.5/6.0.7 — consumer pin is now one number
+
+### Russian
+
+- **Синхронизация версий** — CLI, libs и `@allure-notifications/plugin` публикуются как **6.0.8** (выравнивание после plugin-only 6.0.7; битый 6.0.6 пропускаем)
+- Без новых фич относительно 6.0.5/6.0.7 — один номер для consumers
+
 ## v 6.0.7
 
 ### English

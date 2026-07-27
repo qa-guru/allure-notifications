@@ -3,7 +3,7 @@
 Live `sendPhoto` of a CB-870 collage via **`@allure-notifications/cli` (primary)**.  
 **Default CLI mode stays `--dry-run` / `--mock` (no network).** Live requires explicit `--live`.
 
-**Alternate:** Allure 3 plugin (`mode: "live"`) after `allure generate` — same credentials / ADR 008. Example: [`examples/allurerc.notifications.mjs`](../examples/allurerc.notifications.mjs) · [`packages/plugin/README.md`](../packages/plugin/README.md). Consumer CI keeps the CLI pin until npm **6.0.5** publishes the plugin.
+**Alternate:** Allure 3 plugin (`mode: "live"`) after `allure generate` — same credentials / ADR 008. Example: [`examples/allurerc.notifications.mjs`](../examples/allurerc.notifications.mjs) · [`packages/plugin/README.md`](../packages/plugin/README.md). CLI and plugin pins match (**6.0.8**).
 
 ## Canon (ADR 008)
 
@@ -62,17 +62,17 @@ node packages/cli/dist/src/bin.js send \
 - Unit tests mock `fetch` — **no** live network in default `pnpm test`.
 - Optional real send in tests: `ALLURE_NOTIFICATIONS_LIVE_TEST=1` + token env (off in CI).
 - Quality contour **Q4**: job **`telegram`** in [`.github/workflows/ci-6.0.yml`](../.github/workflows/ci-6.0.yml) via [`scripts/ci-telegram.sh`](../scripts/ci-telegram.sh).
-  - PR / feature: `npx allure-notifications@6.0.5 send --config … --dry-run` (+ optional collage artifact).
+  - PR / feature: `npx allure-notifications@6.0.8 send --config … --dry-run` (+ optional collage artifact).
   - `master` + `workflow_dispatch`: `--live` when `TELEGRAM_*` present → topic **34**; else soft-skip.
   - Forks: never `--live`.
   - Config prefers this run’s `allure-report/` / `allure-results/`; fallback dogfood CB-870.
 
-## Consumer pin checklist (6.0.5)
+## Consumer pin checklist (6.0.8)
 
-Monorepo `VERSION` / nested CI pin = **6.0.5**. Remaining human ops:
+Monorepo `VERSION` / nested CI pin = **6.0.8** (CLI + plugin). Remaining human ops:
 
 1. Sync agent file `/opt/qa-guru/etc/allure-notifications.version` (from VERSION)
-2. Ethalon / RAG hard-coded pins → `6.0.5` (where not reading VERSION)
+2. Ethalon / RAG hard-coded pins → `6.0.8` (where not reading VERSION)
 3. Jenkins `send-allure-telegram` consumers → redeploy agent pin (CLI primary)
 4. Optional: try plugin path via `allurerc` — CLI remains primary
 
