@@ -1,7 +1,7 @@
 [![en](https://img.shields.io/badge/lang-en-blue.svg)](#) [![ru](https://img.shields.io/badge/lang-ru-white.svg)](README.ru.md) [![fr](https://img.shields.io/badge/lang-fr-white.svg)](README.fr.md)
 
-| Line | Stack | Allure | Status |
-|------|-------|--------|--------|
+| Version | Stack | Allure | Status |
+|---------|-------|--------|--------|
 | **4.\*** | Java | Allure 2 | Historical |
 | **5.\*** | Java | Allure 3 | Legacy freeze at **5.0.8** (`legacy/java/`); there is **no 5.1** |
 | **6.\*** | TypeScript | Allure 3 | **Product** — pin **6.0.8** (CLI + builder + plugin) |

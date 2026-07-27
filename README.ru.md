@@ -1,7 +1,7 @@
 [![en](https://img.shields.io/badge/lang-en-white.svg)](README.md) [![ru](https://img.shields.io/badge/lang-ru-blue.svg)](#) [![fr](https://img.shields.io/badge/lang-fr-white.svg)](README.fr.md)
 
-| Линия | Стек | Allure | Статус |
-|-------|------|--------|--------|
+| Версия | Стек | Allure | Статус |
+|--------|------|--------|--------|
 | **4.\*** | Java | Allure 2 | Историческая |
 | **5.\*** | Java | Allure 3 | Legacy freeze на **5.0.8** (`legacy/java/`); линии **5.1 нет** |
 | **6.\*** | TypeScript | Allure 3 | **Продукт** — pin **6.0.8** (CLI + builder + plugin) |
