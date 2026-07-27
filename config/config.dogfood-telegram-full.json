@@ -1,11 +1,11 @@
 {
   "base": {
     "project": "allure-notifications",
-    "environment": "CI",
-    "comment": "Q4 quality contour · this-run Allure (fallback dogfood-full when history/severity missing)",
+    "environment": "dogfood",
+    "comment": "Full collage dogfood · history + severity filled",
     "language": "ru",
-    "allureFolder": "../allure-report",
-    "allureResultsFolder": "../allure-results",
+    "allureFolder": "../packages/core/test/fixtures/dogfood-report",
+    "allureResultsFolder": "../packages/core/test/fixtures/dogfood-results",
     "enableChart": true,
     "darkMode": true,
     "enableSuitesPublishing": false,
@@ -19,6 +19,7 @@
       "tilePad": 6,
       "gridCols": 10,
       "gridRows": 10,
+      "historyPath": "../packages/core/test/fixtures/history-dogfood-full.jsonl",
       "items": [
         {
           "type": "pie",

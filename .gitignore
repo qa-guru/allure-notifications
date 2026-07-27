@@ -54,3 +54,6 @@ allure-results/
 allure-report/
 coverage/
 .coverage-allure-tmp/
+
+# CI telegram runtime (generated)
+config/ci-telegram.runtime.json

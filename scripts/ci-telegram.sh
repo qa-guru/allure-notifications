@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 # Q4 Telegram collage: dry-run (PR) / live (master + workflow_dispatch).
-# Prefer this run's allure-report/results; fallback dogfood CB-870.
+# Prefer this run's allure-report/results when history + severity are present;
+# otherwise full dogfood (fixtures + history-dogfood-full) so no empty tiles.
 # Env:
 #   MODE=dry-run|live|skip
 #   TELEGRAM_BOT_TOKEN | TELEGRAM_TOKEN, TELEGRAM_CHAT_ID, TELEGRAM_TOPIC_ID (live)
@@ -29,12 +30,41 @@ if [[ "$MODE" != "dry-run" && "$MODE" != "live" ]]; then
 fi
 
 TEMPLATE="config/ci-telegram.json"
-SOURCE="run-allure-report"
+SOURCE="dogfood-full"
+REASON="no-allure-report"
+
 if [[ -f allure-report/summary.json ]]; then
-  echo "==> using this run's allure-report (+ allure-results if present)"
+  # This-run only if collage history panels + severity would not be empty.
+  HAS_HISTORY=0
+  for cand in \
+    allure-report/history.jsonl \
+    allure-results/history.jsonl \
+    history.jsonl
+  do
+    if [[ -f "$cand" ]]; then
+      HAS_HISTORY=1
+      break
+    fi
+  done
+
+  HAS_SEVERITY=0
+  if [[ -d allure-results ]]; then
+    if grep -R --quiet -E '"name"[[:space:]]*:[[:space:]]*"severity"' allure-results --include='*-result.json' 2>/dev/null; then
+      HAS_SEVERITY=1
+    fi
+  fi
+
+  if [[ "$HAS_HISTORY" -eq 1 && "$HAS_SEVERITY" -eq 1 ]]; then
+    SOURCE="run-allure-report"
+    REASON="this-run-complete"
+    echo "==> using this run's allure-report (+ history + severity)"
+  else
+    SOURCE="dogfood-full"
+    REASON="this-run-missing-history-or-severity"
+    echo "==> this-run incomplete (history=${HAS_HISTORY} severity=${HAS_SEVERITY}) — dogfood-full collage"
+  fi
 else
-  SOURCE="dogfood-cb870"
-  echo "==> allure-report/summary.json missing — fallback dogfood CB-870"
+  echo "==> allure-report/summary.json missing — dogfood-full collage"
 fi
 
 REF_NAME="${REF_NAME:-local}"
@@ -42,26 +72,36 @@ SHORT_SHA="${SHORT_SHA:-0000000}"
 SHORT_SHA="${SHORT_SHA:0:7}"
 BUILD_URL="${BUILD_URL:-}"
 
-python - "$TEMPLATE" "$RUNTIME_CONFIG" "$SOURCE" "$REF_NAME" "$SHORT_SHA" "$BUILD_URL" <<'PY'
+python - "$TEMPLATE" "$RUNTIME_CONFIG" "$SOURCE" "$REF_NAME" "$SHORT_SHA" "$BUILD_URL" "$REASON" <<'PY'
 import json, sys
 from pathlib import Path
 
-template, out, source, ref, sha, build = sys.argv[1:7]
+template, out, source, ref, sha, build, reason = sys.argv[1:8]
 cfg = json.loads(Path(template).read_text())
 cfg["base"]["project"] = f"allure-notifications · {ref} · {sha}"
-cfg["base"]["environment"] = "CI"
-cfg["base"]["comment"] = (
-    "Q4 quality contour · this-run Allure"
-    if source == "run-allure-report"
-    else "Q4 quality contour · dogfood CB-870 fallback"
-)
-if source == "dogfood-cb870":
+cfg["base"]["environment"] = "CI" if source == "run-allure-report" else "dogfood"
+cfg["base"]["language"] = cfg["base"].get("language") or "ru"
+
+comments = {
+    "run-allure-report": "Q4 quality contour · this-run Allure",
+    "dogfood-full": "Q4 quality contour · dogfood-full (history + severity)",
+}
+cfg["base"]["comment"] = comments.get(source, comments["dogfood-full"])
+if source != "run-allure-report" and reason:
+    cfg["base"]["comment"] += f" · {reason}"
+
+chart = cfg["base"].setdefault("chart", {})
+if source == "dogfood-full":
     # Paths relative to config/ (same as TEMPLATE dir).
     cfg["base"]["allureFolder"] = "../packages/core/test/fixtures/dogfood-report"
     cfg["base"]["allureResultsFolder"] = "../packages/core/test/fixtures/dogfood-results"
+    # Absolute historyPath: published CLI ≤6.0.8 resolves history from cwd only.
+    hist = (Path.cwd() / "packages/core/test/fixtures/history-dogfood-full.jsonl").resolve()
+    chart["historyPath"] = str(hist)
 else:
     cfg["base"]["allureFolder"] = "../allure-report"
     cfg["base"]["allureResultsFolder"] = "../allure-results"
+    chart.pop("historyPath", None)
 
 links = cfg["base"].setdefault("links", {})
 if build:
@@ -75,7 +115,7 @@ tg["topic"] = ""
 tg["replyTo"] = ""
 
 Path(out).write_text(json.dumps(cfg, indent=2) + "\n")
-print(f"wrote {out} (source={source})")
+print(f"wrote {out} (source={source} reason={reason})")
 PY
 
 FLAG="--dry-run"
@@ -109,6 +149,7 @@ MESSAGE_ID="$(grep -Eo 'message_id=[0-9]+' "$SEND_LOG" | head -1 | cut -d= -f2 |
 {
   echo "source=${SOURCE}"
   echo "mode=${MODE}"
+  echo "reason=${REASON}"
   echo "send_exit=${SEND_EXIT}"
   if [[ -n "${MESSAGE_ID}" ]]; then
     echo "message_id=${MESSAGE_ID}"

@@ -53,8 +53,8 @@ function resolveMaybeRelative(
 }
 
 /**
- * Resolve `base.allureFolder` / `base.allureResultsFolder` relative to the
- * config file directory (CI-friendly relative paths).
+ * Resolve `base.allureFolder` / `base.allureResultsFolder` / `chart.historyPath`
+ * relative to the config file directory (CI-friendly relative paths).
  */
 export function resolveConfigPaths(config: Config, configDir: string): Config {
   const base = { ...config.base };
@@ -68,6 +68,12 @@ export function resolveConfigPaths(config: Config, configDir: string): Config {
   }
   if (allureResultsFolder !== undefined) {
     base.allureResultsFolder = allureResultsFolder;
+  }
+  if (base.chart?.historyPath) {
+    const historyPath = resolveMaybeRelative(base.chart.historyPath, configDir);
+    if (historyPath !== undefined) {
+      base.chart = { ...base.chart, historyPath };
+    }
   }
   return { ...config, base };
 }

@@ -39,6 +39,13 @@ From repo root (`feature/6.0-phase-0-1`):
 pnpm install
 pnpm --filter @allure-notifications/cli run build
 
+# Full 6-tile dogfood (history + severity filled — preferred showcase)
+node packages/cli/dist/src/bin.js send \
+  --config config/config.dogfood-telegram-full.json \
+  --live \
+  --out /tmp/an-6.0-dogfood-full.png
+
+# Classic CB-870 free (pie / pyramid / durations only)
 node packages/cli/dist/src/bin.js send \
   --config packages/cli/test/fixtures/config.dogfood-cb870.json \
   --live \
@@ -46,15 +53,16 @@ node packages/cli/dist/src/bin.js send \
 ```
 
 Fixture = CB-870 free (pie / pyramid / durations) against `packages/core` dogfood Allure fixtures.  
+**Full collage** = same dogfood results + `history-dogfood-full.jsonl` (12 runs) → statusDynamics / successRate / severities all populated.  
 Stdout reports `[sent] telegram: … message_id=… chat=… topic=…` (no token).
 
 Safe rehearsal (no network):
 
 ```bash
 node packages/cli/dist/src/bin.js send \
-  --config packages/cli/test/fixtures/config.dogfood-cb870.json \
+  --config config/config.dogfood-telegram-full.json \
   --dry-run \
-  --out /tmp/an-6.0-dogfood-cb870.png
+  --out /tmp/an-6.0-dogfood-full.png
 ```
 
 ## Tests / CI
@@ -62,10 +70,11 @@ node packages/cli/dist/src/bin.js send \
 - Unit tests mock `fetch` — **no** live network in default `pnpm test`.
 - Optional real send in tests: `ALLURE_NOTIFICATIONS_LIVE_TEST=1` + token env (off in CI).
 - Quality contour **Q4**: job **`telegram`** in [`.github/workflows/ci-6.0.yml`](../.github/workflows/ci-6.0.yml) via [`scripts/ci-telegram.sh`](../scripts/ci-telegram.sh).
+  - Config prefers this run’s `allure-report/` / `allure-results/` **when history + severity are present**; else **dogfood-full** (`dogfood-report` + `history-dogfood-full.jsonl`) so collage tiles are never empty.
+  - Showcase: [`config/config.dogfood-telegram-full.json`](../config/config.dogfood-telegram-full.json).
   - PR / feature: `npx allure-notifications@6.0.8 send --config … --dry-run` (+ optional collage artifact).
   - `master` + `workflow_dispatch`: `--live` when `TELEGRAM_*` present → topic **34**; else soft-skip.
   - Forks: never `--live`.
-  - Config prefers this run’s `allure-report/` / `allure-results/`; fallback dogfood CB-870.
 
 ## Consumer pin checklist (6.0.8)
 
