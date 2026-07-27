@@ -3,7 +3,7 @@
 | Версия | Стек | Allure | Статус |
 |--------|------|--------|--------|
 | **4.\*** | Java | Allure 2 | Историческая |
-| **5.\*** | Java | Allure 3 | Legacy freeze на **5.0.8** (`legacy/java/`); линии **5.1 нет** |
+| **5.\*** | Java | Allure 3 | Legacy freeze на **5.0.8** (`legacy/java/`); версии **5.1 нет** |
 | **6.\*** | TypeScript | Allure 3 | **Продукт** — pin **6.0.8** (CLI + builder + plugin) |
 
 Патч-ноты → [GitHub Releases](https://github.com/qa-guru/allure-notifications/releases) · миграция → [`MIGRATION.md`](MIGRATION.md).
