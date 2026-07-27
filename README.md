@@ -1,8 +1,12 @@
 [![en](https://img.shields.io/badge/lang-en-blue.svg)](#) [![ru](https://img.shields.io/badge/lang-ru-white.svg)](README.ru.md) [![fr](https://img.shields.io/badge/lang-fr-white.svg)](README.fr.md)
 
-> **6.0.\*** — product: TypeScript CLI + web builder + collage PNG + messengers. Pin **6.0.8**.  
-> **5.0.8** — Java jar legacy freeze only (`legacy/java/`). There is **no 5.1**.  
-> Changelog for older 5.x patches → [GitHub Releases](https://github.com/qa-guru/allure-notifications/releases). Migration notes → [`MIGRATION.md`](MIGRATION.md).
+| Line | Stack | Allure | Status |
+|------|-------|--------|--------|
+| **4.\*** | Java | Allure 2 | Historical |
+| **5.\*** | Java | Allure 3 | Legacy freeze at **5.0.8** (`legacy/java/`); there is **no 5.1** |
+| **6.\*** | TypeScript | Allure 3 | **Product** — pin **6.0.8** (CLI + builder + plugin) |
+
+Older patch notes → [GitHub Releases](https://github.com/qa-guru/allure-notifications/releases) · migration → [`MIGRATION.md`](MIGRATION.md).
 
 # Allure notifications
 
@@ -248,18 +252,14 @@ npm add allure @allure-notifications/plugin@6.0.8
 
 ## Legacy Java 5.0.8
 
-Historical Java MVP — **bugfix / security only**. Sources and jar build: [`legacy/java/`](legacy/java/).
+Bugfix / security only. Build: [`legacy/java/`](legacy/java/).
 
 ```bash
 java -DconfigFile=notifications/config.json -jar allure-notifications-5.0.8.jar
 ```
 
-- Release: [v5.0.8](https://github.com/qa-guru/allure-notifications/releases/tag/v5.0.8)
-- Migration 4.x → 5.0: [`docs/migration-5.0.md`](docs/migration-5.0.md)
-
-For new work use the **6.0** CLI above.
+Release: [v5.0.8](https://github.com/qa-guru/allure-notifications/releases/tag/v5.0.8) · 4.x → 5.0 notes: [`docs/migration-5.0.md`](docs/migration-5.0.md).
 
 ## CI cookbook
 
-Primary: [`docs/ci-cookbook.md`](docs/ci-cookbook.md) (6.0 TypeScript).  
-Older jar-oriented notes: [`docs/ci-cookbook-5.0.md`](docs/ci-cookbook-5.0.md).
+[`docs/ci-cookbook.md`](docs/ci-cookbook.md) · jar-era notes: [`docs/ci-cookbook-5.0.md`](docs/ci-cookbook-5.0.md).

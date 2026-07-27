@@ -1,8 +1,12 @@
 [![en](https://img.shields.io/badge/lang-en-white.svg)](README.md) [![ru](https://img.shields.io/badge/lang-ru-blue.svg)](#) [![fr](https://img.shields.io/badge/lang-fr-white.svg)](README.fr.md)
 
-> **6.0.\*** — продукт: TypeScript CLI + web builder + collage PNG + мессенджеры. Pin **6.0.8**.  
-> **5.0.8** — Java jar, только legacy freeze (`legacy/java/`). Линии **5.1 нет**.  
-> Changelog старых патчей 5.x → [GitHub Releases](https://github.com/qa-guru/allure-notifications/releases). Миграция → [`MIGRATION.md`](MIGRATION.md).
+| Линия | Стек | Allure | Статус |
+|-------|------|--------|--------|
+| **4.\*** | Java | Allure 2 | Историческая |
+| **5.\*** | Java | Allure 3 | Legacy freeze на **5.0.8** (`legacy/java/`); линии **5.1 нет** |
+| **6.\*** | TypeScript | Allure 3 | **Продукт** — pin **6.0.8** (CLI + builder + plugin) |
+
+Патч-ноты → [GitHub Releases](https://github.com/qa-guru/allure-notifications/releases) · миграция → [`MIGRATION.md`](MIGRATION.md).
 
 # Allure notifications
 
@@ -248,18 +252,14 @@ npm add allure @allure-notifications/plugin@6.0.8
 
 ## Legacy Java 5.0.8
 
-Исторический Java MVP — **только bugfix / security**. Исходники и сборка jar: [`legacy/java/`](legacy/java/).
+Только bugfix / security. Сборка: [`legacy/java/`](legacy/java/).
 
 ```bash
 java -DconfigFile=notifications/config.json -jar allure-notifications-5.0.8.jar
 ```
 
-- Релиз: [v5.0.8](https://github.com/qa-guru/allure-notifications/releases/tag/v5.0.8)
-- Миграция 4.x → 5.0: [`docs/migration-5.0.md`](docs/migration-5.0.md)
-
-Для новой работы используйте CLI **6.0** выше.
+Релиз: [v5.0.8](https://github.com/qa-guru/allure-notifications/releases/tag/v5.0.8) · заметки 4.x → 5.0: [`docs/migration-5.0.md`](docs/migration-5.0.md).
 
 ## CI cookbook
 
-Основной: [`docs/ci-cookbook.md`](docs/ci-cookbook.md) (6.0 TypeScript).  
-Старые заметки про jar: [`docs/ci-cookbook-5.0.md`](docs/ci-cookbook-5.0.md).
+[`docs/ci-cookbook.md`](docs/ci-cookbook.md) · заметки эпохи jar: [`docs/ci-cookbook-5.0.md`](docs/ci-cookbook-5.0.md).
