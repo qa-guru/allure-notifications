@@ -19,6 +19,8 @@ const RING_MARGIN_RATIO = 0.14;
 const PCT_FONT_RATIO = 0.15;
 const SUB_FONT_RATIO = 0.06;
 const SEGMENT_GAP_DEGREES = 3.0;
+/** Skia/@napi-rs/canvas drops round-cap strokes below ~0.1° — paint a dot instead. */
+const MIN_RENDERABLE_SWEEP_DEGREES = 0.5;
 
 type Segment = { value: number; color: Rgb };
 
@@ -157,11 +159,26 @@ function drawDonut(
     let angle = 90; // top, clockwise
     for (let i = 0; i < segments.length; i++) {
       const footprint = slots[i]! - SEGMENT_GAP_DEGREES;
-      const sweep = Math.max(footprint - 2 * capAngle, 0.01);
-      const start = angle - (SEGMENT_GAP_DEGREES / 2 + capAngle);
-      // Draw clockwise: start at `start`, sweep negative in Java; here use strokeArc
-      // with negative sweep via end < start in clockwise mode.
-      strokeArc(start, -sweep, segments[i]!.color);
+      const rawSweep = footprint - 2 * capAngle;
+      // Round-cap arcs shorter than MIN_RENDERABLE vanish in Skia (empty slot = "bite").
+      // Intent of minSlot is a single round dot — paint that explicitly.
+      if (rawSweep < MIN_RENDERABLE_SWEEP_DEGREES) {
+        const midDeg = angle - slots[i]! / 2;
+        const midRad = (-midDeg * Math.PI) / 180;
+        ctx.fillStyle = rgbCss(segments[i]!.color);
+        ctx.beginPath();
+        ctx.arc(
+          centerX + radius * Math.cos(midRad),
+          centerY + radius * Math.sin(midRad),
+          stroke / 2,
+          0,
+          Math.PI * 2,
+        );
+        ctx.fill();
+      } else {
+        const start = angle - (SEGMENT_GAP_DEGREES / 2 + capAngle);
+        strokeArc(start, -rawSweep, segments[i]!.color);
+      }
       angle -= slots[i]!;
     }
   }

@@ -33,6 +33,8 @@ import {
   themeFromDarkMode,
 } from "../src/index.js";
 import { panelContext } from "../src/collage/context.js";
+import { renderPiePanel } from "../src/collage/panels/pie.js";
+import type { ReportAnalytics } from "../src/report/types.js";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const fixtures = join(__dirname, "../../test/fixtures");
@@ -408,6 +410,43 @@ describe("@allure-notifications/core collage", () => {
         `${name} region match expected ≥${GATE.regionFloor}, got ${regionRatio.toFixed(3)}`,
       );
     }
+  });
+
+  it("pie paints broken/skipped dots when 1-test slices would vanish in Skia", async () => {
+    const theme = themeFromDarkMode(true);
+    const analytics = {
+      statistic: {
+        total: 34,
+        passed: 30,
+        failed: 2,
+        broken: 1,
+        skipped: 1,
+        unknown: 0,
+      },
+    } as ReportAnalytics;
+    const png = renderPiePanel(
+      panelContext(
+        parseConfig({
+          base: {
+            project: "pie-dot",
+            language: "en",
+            allureFolder: fixtures,
+            enableChart: true,
+            darkMode: true,
+          },
+        }),
+        theme,
+        411,
+        343,
+        analytics,
+      ),
+    );
+    const broken = await countNearColor(png, { r: 255, g: 206, b: 87 }, 24, 1);
+    const skipped = await countNearColor(png, { r: 170, g: 170, b: 170 }, 24, 1);
+    const failed = await countNearColor(png, { r: 255, g: 87, b: 68 }, 24, 1);
+    assert.ok(failed > 20, `failed arc must paint, got ${failed}`);
+    assert.ok(broken > 20, `broken 1-test slice must paint as dot, got ${broken}`);
+    assert.ok(skipped > 20, `skipped 1-test slice must paint as dot, got ${skipped}`);
   });
 });
 
