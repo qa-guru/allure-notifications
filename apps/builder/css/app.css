@@ -10,7 +10,7 @@ html,
 body {
   min-height: 100%;
   margin: 0;
-  background: var(--color-bg);
+  background: var(--color-surface);
   color: var(--color-text);
 }
 
@@ -115,7 +115,7 @@ body {
   padding: var(--space-2);
   border: 1px solid var(--color-border);
   border-radius: var(--radius-sm, 8px);
-  background: var(--color-surface, var(--color-bg));
+  background: var(--color-surface);
   box-shadow: 0 12px 40px rgba(26, 35, 48, 0.28);
   display: flex;
   flex-direction: column;
@@ -193,7 +193,7 @@ body {
   padding: 4px 10px;
   border: 1px solid var(--color-border);
   border-radius: var(--radius-sm, 6px);
-  background: var(--color-surface, var(--color-bg));
+  background: var(--color-surface);
   color: var(--color-text-muted);
   font: inherit;
   font-size: var(--font-size-sm);
@@ -368,7 +368,7 @@ body {
   padding: var(--space-4);
   border: 1px dashed var(--color-border);
   border-radius: var(--radius-sm, 6px);
-  background: color-mix(in srgb, var(--color-bg) 92%, var(--color-text) 8%);
+  background: color-mix(in srgb, var(--color-surface) 92%, var(--color-text) 8%);
 }
 
 .anb-messenger-stub__title {
@@ -435,7 +435,7 @@ body {
   border: 1px solid var(--color-border);
   border-radius: var(--radius-sm, 6px);
   box-shadow: none;
-  background: var(--color-surface, var(--color-bg));
+  background: var(--color-surface);
   --wt-pad: 4px;
   --wt-bar-height: 22px;
 }
@@ -523,7 +523,7 @@ html.theme-light .anb-editor__caption a {
   overflow: auto;
   border: 1px solid var(--color-border);
   border-radius: var(--radius-sm, 6px);
-  background: color-mix(in srgb, var(--color-bg) 88%, var(--color-text) 12%);
+  background: color-mix(in srgb, var(--color-surface) 88%, var(--color-text) 12%);
   padding: 4px;
   box-sizing: border-box;
 }
