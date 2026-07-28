@@ -2,7 +2,8 @@
  * Panel catalog extracted from allure-notifications-builder `js/app.js`.
  * 17 slots ↔ awesome-charts / ChartType (+ groupBy / by variants).
  *
- * Palette add footprint is always 2×2 (`hint` / `defaultW` / `defaultH`).
+ * Palette add footprint is always 2×2 (`defaultW` / `defaultH`).
+ * `hint` = panel title (palette caption under thumb).
  * Grid layout footprints live only in `DEFAULT_ITEMS` / vector `items` — never here.
  */
 
@@ -30,14 +31,13 @@ export type ChartItem = {
 /** Palette / add-from-catalog footprint — not grid preset sizes. */
 const PALETTE_W = 2;
 const PALETTE_H = 2;
-const PALETTE_HINT = "2×2";
 
 type PanelSeed = Omit<PanelMeta, "hint" | "defaultW" | "defaultH">;
 
 function panel(seed: PanelSeed): PanelMeta {
   return {
     ...seed,
-    hint: PALETTE_HINT,
+    hint: seed.title,
     defaultW: PALETTE_W,
     defaultH: PALETTE_H,
   };

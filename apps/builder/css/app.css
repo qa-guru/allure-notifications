@@ -183,42 +183,6 @@ body {
   aspect-ratio: 1 / 1;
 }
 
-.anb-messenger-tabs {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 4px;
-}
-
-.anb-messenger-tabs__btn {
-  padding: 4px 10px;
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-sm, 6px);
-  background: var(--color-surface);
-  color: var(--color-text-muted);
-  font: inherit;
-  font-size: var(--font-size-sm);
-  cursor: pointer;
-}
-
-.anb-messenger-tabs__btn.is-active {
-  border-color: var(--color-accent, #2563eb);
-  color: var(--color-text);
-  font-weight: 600;
-}
-
-.anb-messenger-tabs__btn--stub {
-  opacity: 0.55;
-  color: var(--color-text-muted);
-  border-style: dashed;
-  cursor: not-allowed;
-  pointer-events: none;
-}
-
-.anb-messenger-tabs__btn--stub.is-active {
-  opacity: 0.85;
-  font-weight: 600;
-}
-
 /*
  * Jar `base.darkMode` → entire collage panel (outer grid + cards + chart inks).
  * Independent of page header theme. Palette SSOT: ChartTheme + outerBackground
@@ -364,24 +328,6 @@ body {
   display: none !important;
 }
 
-.anb-messenger-pane--stub {
-  padding: var(--space-4);
-  border: 1px dashed var(--color-border);
-  border-radius: var(--radius-sm, 6px);
-  background: color-mix(in srgb, var(--color-surface) 92%, var(--color-text) 8%);
-}
-
-.anb-messenger-stub__title {
-  margin: 0 0 var(--space-2);
-  font-size: 1rem;
-  font-weight: 600;
-}
-
-.anb-messenger-stub__hint {
-  margin: 0;
-  color: var(--color-text-muted);
-}
-
 .anb-preview .anb-editor {
   display: flex;
   flex-direction: column;
@@ -397,7 +343,7 @@ body {
 
 .anb-palette {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: var(--space-2);
   width: 100%;
   min-width: 0;
@@ -450,11 +396,8 @@ body {
   height: 100%;
 }
 
-.anb-palette__tile .widget-tile__title {
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  min-width: 0;
+.anb-palette__tile .widget-tile__bar:empty {
+  display: none;
 }
 
 .anb-palette__hint {
@@ -849,22 +792,6 @@ html.theme-light .anb-editor__caption a {
 .anb-group__hint {
   margin: 0;
   color: var(--color-text-muted);
-}
-
-.anb-group__hint--stubs {
-  margin-top: var(--space-3);
-}
-
-.anb-messenger-stub {
-  opacity: 0.55;
-  pointer-events: none;
-  cursor: not-allowed;
-  user-select: none;
-}
-
-.anb-messenger-stub .plaque-field__value {
-  color: var(--color-text-muted);
-  font-style: italic;
 }
 
 /* —— Telegram identity (preview bar) —— */

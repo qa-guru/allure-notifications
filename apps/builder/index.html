@@ -84,19 +84,6 @@
             </div>
           </div>
           <div class="panel__body anb-layout-options">
-            <div
-              class="anb-messenger-tabs"
-              id="anb-messenger-tabs"
-              data-testid="anb-messenger-tabs"
-              role="tablist"
-              aria-label="Messenger"
-            >
-              <button type="button" class="anb-messenger-tabs__btn is-active" role="tab" aria-selected="true" data-anb-messenger="telegram" data-testid="anb-tab-telegram">Telegram</button>
-              <button type="button" class="anb-messenger-tabs__btn anb-messenger-tabs__btn--stub" role="tab" aria-selected="false" aria-disabled="true" data-anb-messenger="slack" data-testid="anb-tab-slack" title="Disabled stub">Slack · soon</button>
-              <button type="button" class="anb-messenger-tabs__btn anb-messenger-tabs__btn--stub" role="tab" aria-selected="false" aria-disabled="true" data-anb-messenger="mail" data-testid="anb-tab-mail" title="Disabled stub">Mail · soon</button>
-              <button type="button" class="anb-messenger-tabs__btn anb-messenger-tabs__btn--stub" role="tab" aria-selected="false" aria-disabled="true" data-anb-messenger="mattermost" data-testid="anb-tab-mattermost" title="Disabled stub">Mattermost · soon</button>
-              <button type="button" class="anb-messenger-tabs__btn anb-messenger-tabs__btn--stub" role="tab" aria-selected="false" aria-disabled="true" data-anb-messenger="discord" data-testid="anb-tab-discord" title="Disabled stub">Discord · soon</button>
-            </div>
             <div class="anb-editor__toolbar" data-testid="anb-editor-toolbar">
               <div class="anb-palette" id="anb-palette" data-testid="anb-palette" role="group" aria-label="Panel palette"></div>
               <div class="anb-editor__actions">
@@ -323,44 +310,6 @@
                   <span class="plaque-divider" aria-hidden="true"></span>
                   <input type="text" class="plaque-field__control" data-anb-path="telegram.templatePath" />
                 </label>
-
-                <p class="anb-group__hint text text--sm anb-group__hint--stubs">Other · disabled stubs</p>
-                <div
-                  class="plaque-field plaque-field--divided anb-messenger-stub"
-                  aria-disabled="true"
-                  data-testid="anb-stub-slack"
-                >
-                  <span class="plaque-field__label">slack</span>
-                  <span class="plaque-divider" aria-hidden="true"></span>
-                  <span class="plaque-field__value">disabled · soon</span>
-                </div>
-                <div
-                  class="plaque-field plaque-field--divided anb-messenger-stub"
-                  aria-disabled="true"
-                  data-testid="anb-stub-mail"
-                >
-                  <span class="plaque-field__label">mail</span>
-                  <span class="plaque-divider" aria-hidden="true"></span>
-                  <span class="plaque-field__value">disabled · soon</span>
-                </div>
-                <div
-                  class="plaque-field plaque-field--divided anb-messenger-stub"
-                  aria-disabled="true"
-                  data-testid="anb-stub-mattermost"
-                >
-                  <span class="plaque-field__label">mattermost</span>
-                  <span class="plaque-divider" aria-hidden="true"></span>
-                  <span class="plaque-field__value">disabled · soon</span>
-                </div>
-                <div
-                  class="plaque-field plaque-field--divided anb-messenger-stub"
-                  aria-disabled="true"
-                  data-testid="anb-stub-discord"
-                >
-                  <span class="plaque-field__label">discord</span>
-                  <span class="plaque-divider" aria-hidden="true"></span>
-                  <span class="plaque-field__value">disabled · soon</span>
-                </div>
               </div>
             </div>
 
@@ -426,23 +375,6 @@
                   aria-label="Telegram caption preview"
                 ></div>
               </div>
-            </div>
-
-            <div class="anb-messenger-pane anb-messenger-pane--stub" id="anb-messenger-slack" data-anb-messenger-pane="slack" hidden data-testid="anb-messenger-slack" aria-disabled="true">
-              <p class="anb-messenger-stub__title">Slack · disabled</p>
-              <p class="anb-messenger-stub__hint text text--sm">Stub only — not wired. Layout source stays Telegram / free canvas.</p>
-            </div>
-            <div class="anb-messenger-pane anb-messenger-pane--stub" id="anb-messenger-mail" data-anb-messenger-pane="mail" hidden data-testid="anb-messenger-mail" aria-disabled="true">
-              <p class="anb-messenger-stub__title">Mail · disabled</p>
-              <p class="anb-messenger-stub__hint text text--sm">Stub only — not wired.</p>
-            </div>
-            <div class="anb-messenger-pane anb-messenger-pane--stub" id="anb-messenger-mattermost" data-anb-messenger-pane="mattermost" hidden data-testid="anb-messenger-mattermost" aria-disabled="true">
-              <p class="anb-messenger-stub__title">Mattermost · disabled</p>
-              <p class="anb-messenger-stub__hint text text--sm">Stub only — not wired.</p>
-            </div>
-            <div class="anb-messenger-pane anb-messenger-pane--stub" id="anb-messenger-discord" data-anb-messenger-pane="discord" hidden data-testid="anb-messenger-discord" aria-disabled="true">
-              <p class="anb-messenger-stub__title">Discord · disabled</p>
-              <p class="anb-messenger-stub__hint text text--sm">Stub only — not wired.</p>
             </div>
           </div>
         </div>

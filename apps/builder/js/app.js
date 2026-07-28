@@ -16,7 +16,6 @@ const state = createDefaultState();
 let grid = null;
 let selectedEl = null;
 let suppressSync = false;
-let activeMessenger = 'telegram';
 let vectorDraft = null;
 let vectorMiss = false;
 const TG_BOT_NAME = 'Test Notifications Bot';
@@ -399,7 +398,6 @@ function applySnap(snap) {
     applyCanvasMetrics();
     const chart = /** @type {{ items?: ChartItem[] }} */ (state.base.chart);
     loadItems(Array.isArray(chart.items) ? chart.items.map((p) => ({ ...p })) : []);
-    setActiveMessenger('telegram');
     scheduleFitEditorScale();
     renderTerminal();
     renderMessengerPreview();
@@ -757,49 +755,6 @@ function renderMessengerPreview() {
     if (textEl)
         textEl.innerHTML = buildTgCaptionHtml();
     refreshExportPopoverIfOpen();
-}
-/**
- * @param {string} id
- */
-function setActiveMessenger(id) {
-    activeMessenger = id;
-    document.querySelectorAll('[data-anb-messenger]').forEach((btn) => {
-        if (!(btn instanceof HTMLElement))
-            return;
-        const on = btn.getAttribute('data-anb-messenger') === id;
-        btn.classList.toggle('is-active', on);
-        btn.setAttribute('aria-selected', on ? 'true' : 'false');
-    });
-    document.querySelectorAll('[data-anb-messenger-pane]').forEach((pane) => {
-        if (!(pane instanceof HTMLElement))
-            return;
-        const on = pane.getAttribute('data-anb-messenger-pane') === id;
-        pane.hidden = !on;
-    });
-    if (id === 'telegram') {
-        scheduleFitEditorScale();
-    }
-}
-function wireMessengerTabs() {
-    const tabs = document.getElementById('anb-messenger-tabs');
-    if (!tabs)
-        return;
-    tabs.addEventListener('click', (event) => {
-        const t = event.target;
-        if (!(t instanceof Element))
-            return;
-        const tab = t.closest('[data-anb-messenger]');
-        if (!(tab instanceof HTMLElement) || !tabs.contains(tab))
-            return;
-        if (tab.classList.contains('anb-messenger-tabs__btn--stub'))
-            return;
-        if (tab.getAttribute('aria-disabled') === 'true')
-            return;
-        const id = tab.getAttribute('data-anb-messenger');
-        if (!id)
-            return;
-        setActiveMessenger(id);
-    });
 }
 /**
  * @param {HTMLElement} root
@@ -1280,7 +1235,6 @@ function clearAll() {
  */
 function paletteItemHtml(item) {
     const chartType = item.type === 'pie' ? 'currentStatus' : item.type;
-    const hint = `${DEFAULT_TILE_W}×${DEFAULT_TILE_H}`;
     let attrs = `data-chart="${escapeHtml(chartType)}"`;
     if (item.groupBy)
         attrs += ` data-group-by="${escapeHtml(item.groupBy)}"`;
@@ -1290,12 +1244,10 @@ function paletteItemHtml(item) {
     return (`<button type="button" class="anb-palette__item" data-anb-panel-id="${escapeHtml(item.id)}" ` +
         `data-testid="anb-palette-${escapeHtml(item.id)}" draggable="true" title="${escapeHtml(item.title)}">` +
         `<div class="widget-tile widget-tile--tier-micro widget-tile--span-2x2 anb-palette__tile" ${attrs}>` +
-        `<div class="widget-tile__bar">` +
-        `<span class="widget-tile__title">${escapeHtml(item.title)}</span>` +
-        `</div>` +
+        `<div class="widget-tile__bar"></div>` +
         `<div class="widget-tile__body"></div>` +
         `</div>` +
-        `<span class="anb-palette__hint">${hint}</span>` +
+        `<span class="anb-palette__hint">${escapeHtml(item.title)}</span>` +
         `</button>`);
 }
 function renderPalette() {
@@ -1517,7 +1469,6 @@ function init() {
     injectPyramidSsot();
     hydrateControls();
     bindControls();
-    wireMessengerTabs();
     wireExportPreviews();
     wireVectorInput();
     applyCanvasMetrics();
@@ -1528,7 +1479,6 @@ function init() {
     loadItems(
     /** @type {ChartItem[]} */ (
     /** @type {{ items: ChartItem[] }} */ (state.base.chart).items));
-    setActiveMessenger('telegram');
     scheduleFitEditorScale();
     window.addEventListener('resize', () => {
         scheduleFitEditorScale();

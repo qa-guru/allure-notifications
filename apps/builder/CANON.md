@@ -8,7 +8,7 @@
 | Presets only | **870×1080** · **1080×1080** · **1410×1080** (no 1024×1280) |
 | Panels | **17 catalog** (pie ↔ currentStatus · ChartType + groupBy/by) · mocks synced |
 | Layout | **4-tile on 10×10** — pie 4×4 · durationDynamics 6×4 · pyramid 3×3 \| durations-by-layer 4×3 · empty cols 7–9 + rows 7–9 (`DEFAULT_ITEMS` only) |
-| Palette add | always **2×2** — catalog `defaultW/H` / hint never mirror grid presets |
+| Palette add | always **2×2** footprint — caption = panel title; `defaultW/H` never mirror grid presets |
 | Float / overlap | float **on** (exact x,y — no upward compact) · overlap off · min **1×1** |
 | Legacy dogfood | classic CB-870 (pie 5×5 · pyramid 5×5 · durations 10×5) remains in dogfood fixtures |
 

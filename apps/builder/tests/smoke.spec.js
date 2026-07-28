@@ -129,14 +129,10 @@ test.describe('allure-notifications-builder smoke', () => {
     expect(await canvasRatio('1410x1080')).toBeCloseTo(1410 / 1080, 2);
   });
 
-  test('telegram live; other messengers stubs', async ({ page }) => {
+  test('telegram messenger fields visible', async ({ page }) => {
     await page.goto('/');
-    await expect(page.getByTestId('anb-tab-telegram')).toBeVisible();
-    await expect(page.getByTestId('anb-stub-slack')).toBeVisible();
-    await expect(page.getByTestId('anb-tab-slack')).toHaveAttribute(
-      'aria-disabled',
-      'true',
-    );
+    await expect(page.getByTestId('anb-messenger-telegram')).toBeVisible();
+    await expect(page.getByTestId('anb-group-messengers')).toBeVisible();
   });
 
   test('export preview links in preview bar; caption under canvas', async ({ page }) => {
