@@ -11,10 +11,12 @@
 }
 
 .plaque-number {
-  display: flex;
+  /* Fixed tracks so − / value / + form vertical columns across rows */
+  display: grid;
+  grid-template-columns: 18px var(--plaque-number-value-width, 3.5ch) 18px;
+  column-gap: var(--space-2);
   align-items: center;
-  justify-content: flex-end;
-  gap: var(--space-2);
+  justify-content: end;
   flex: 1 1 auto;
   min-width: 0;
   min-height: calc(var(--plaque-control-height) - 2px);
@@ -22,11 +24,12 @@
 }
 
 .plaque-number > input.plaque-field__control {
-  flex: 0 1 auto;
-  width: auto;
-  min-width: 3ch;
+  grid-column: 2;
+  width: 100%;
+  min-width: 0;
   padding-right: 0;
   text-align: center;
+  font-variant-numeric: tabular-nums;
   -moz-appearance: textfield;
   appearance: textfield;
 }
