@@ -51,11 +51,16 @@
   background: transparent;
   color: color-mix(in srgb, var(--color-text) 55%, transparent);
   cursor: pointer;
+  /* SVG glyphs — not font −/+ (U+2212 baseline drifts vs digits) */
   font: inherit;
-  font-size: 13px;
-  font-weight: 500;
-  line-height: 1;
+  line-height: 0;
   flex-shrink: 0;
+}
+
+.plaque-number__btn svg {
+  display: block;
+  width: 10px;
+  height: 10px;
 }
 
 .plaque-number__btn:hover {

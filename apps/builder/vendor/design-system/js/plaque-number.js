@@ -45,6 +45,16 @@ export function syncPlaqueNumberDisabled(input) {
   }
 }
 
+/** Geometric ± — font U+2212/− sits off the digit optical center. */
+const SVG_DEC =
+  '<svg viewBox="0 0 10 10" aria-hidden="true" focusable="false">' +
+  '<path d="M2 5h6" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>' +
+  '</svg>';
+const SVG_INC =
+  '<svg viewBox="0 0 10 10" aria-hidden="true" focusable="false">' +
+  '<path d="M2 5h6M5 2v6" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>' +
+  '</svg>';
+
 /**
  * @param {number} dir
  * @param {string} label
@@ -57,8 +67,22 @@ function makeBtn(dir, label) {
   btn.setAttribute('data-plaque-number-dir', String(dir));
   btn.setAttribute('aria-label', label);
   btn.tabIndex = -1;
-  btn.textContent = dir < 0 ? '−' : '+';
+  btn.innerHTML = dir < 0 ? SVG_DEC : SVG_INC;
   return btn;
+}
+
+/**
+ * Replace legacy text −/+ in static markup with centered SVG.
+ * @param {ParentNode} [root=document]
+ */
+export function normalizePlaqueNumberGlyphs(root) {
+  const scope = root || document;
+  scope.querySelectorAll('.plaque-number__btn[data-plaque-number-dir]').forEach((btn) => {
+    if (!(btn instanceof HTMLButtonElement)) return;
+    if (btn.querySelector('svg')) return;
+    const dir = Number(btn.getAttribute('data-plaque-number-dir'));
+    btn.innerHTML = dir < 0 ? SVG_DEC : SVG_INC;
+  });
 }
 
 /**
@@ -95,6 +119,7 @@ export function enhancePlaqueNumbers(root) {
   scope.querySelectorAll('input[type="number"].plaque-field__control').forEach((el) => {
     if (el instanceof HTMLInputElement) wrapPlaqueNumber(el);
   });
+  normalizePlaqueNumberGlyphs(scope);
 }
 
 let bound = false;
