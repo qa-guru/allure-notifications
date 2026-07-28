@@ -176,6 +176,53 @@ function printPercentage(part: number, total: number): string {
 
 const LINK_KEYS = ["report", "dashboard", "testops", "build"] as const;
 
+function boldLabel(label: string, value: string): string {
+  return `<b>${escapeHtml(label)}: </b>${value}`;
+}
+
+function statisticCaptionLines(
+  phrases: CaptionPhrases,
+  analytics: ReportAnalytics,
+  durationFormat: string,
+): string[] {
+  const s = analytics.statistic;
+  const durationMs =
+    analytics.durationMs > 0
+      ? analytics.durationMs
+      : analytics.durationsMs.reduce((a, b) => a + b, 0);
+  const lines = [
+    boldLabel(phrases.duration, escapeHtml(formatDurationMs(durationMs, durationFormat))),
+    boldLabel(phrases.totalScenarios, String(s.total)),
+  ];
+  const optional: Array<[number, string, string]> = [
+    [s.passed, phrases.totalPassed, `${s.passed} ${printPercentage(s.passed, s.total)}`],
+    [s.failed, phrases.totalFailed, `${s.failed} ${printPercentage(s.failed, s.total)}`],
+    [s.broken, phrases.totalBroken, String(s.broken)],
+    [s.unknown, phrases.totalUnknown, String(s.unknown)],
+    [s.skipped, phrases.totalSkipped, String(s.skipped)],
+  ];
+  for (const [count, label, value] of optional) {
+    if (count !== 0) lines.push(boldLabel(label, value));
+  }
+  return lines;
+}
+
+function linkCaptionLines(
+  phrases: CaptionPhrases,
+  links: NonNullable<NonNullable<Config["base"]>["links"]>,
+): string[] {
+  const out: string[] = [];
+  for (const key of LINK_KEYS) {
+    const href = nonEmpty(links[key]);
+    if (!href) continue;
+    const label = phrases.links[key];
+    out.push(
+      `<b>${escapeHtml(label)}:</b> <a href="${escapeHtml(href)}">${escapeHtml(href)}</a>`,
+    );
+  }
+  return out;
+}
+
 /**
  * HTML caption for Telegram sendPhoto — FreeMarker `telegram.ftl` parity
  * (environment / stats / duration / links). No FreeMarker runtime.
@@ -192,66 +239,15 @@ export function buildTelegramCaption(
   const lines: string[] = [`<b>${escapeHtml(phrases.results)}:</b>`];
 
   if (environment) {
-    lines.push(
-      `<b>${escapeHtml(phrases.environment)}: </b>${escapeHtml(environment)}`,
-    );
+    lines.push(boldLabel(phrases.environment, escapeHtml(environment)));
   }
   if (comment) {
-    lines.push(
-      `<b>${escapeHtml(phrases.comment)}: </b>${escapeHtml(comment)}`,
-    );
+    lines.push(boldLabel(phrases.comment, escapeHtml(comment)));
   }
-
   if (analytics) {
-    const s = analytics.statistic;
-    const durationMs =
-      analytics.durationMs > 0
-        ? analytics.durationMs
-        : analytics.durationsMs.reduce((a, b) => a + b, 0);
-    lines.push(
-      `<b>${escapeHtml(phrases.duration)}: </b>${escapeHtml(
-        formatDurationMs(durationMs, durationFormat),
-      )}`,
-    );
-    lines.push(
-      `<b>${escapeHtml(phrases.totalScenarios)}: </b>${s.total}`,
-    );
-    if (s.passed !== 0) {
-      lines.push(
-        `<b>${escapeHtml(phrases.totalPassed)}: </b>${s.passed} ${printPercentage(s.passed, s.total)}`,
-      );
-    }
-    if (s.failed !== 0) {
-      lines.push(
-        `<b>${escapeHtml(phrases.totalFailed)}: </b>${s.failed} ${printPercentage(s.failed, s.total)}`,
-      );
-    }
-    if (s.broken !== 0) {
-      lines.push(
-        `<b>${escapeHtml(phrases.totalBroken)}: </b>${s.broken}`,
-      );
-    }
-    if (s.unknown !== 0) {
-      lines.push(
-        `<b>${escapeHtml(phrases.totalUnknown)}: </b>${s.unknown}`,
-      );
-    }
-    if (s.skipped !== 0) {
-      lines.push(
-        `<b>${escapeHtml(phrases.totalSkipped)}: </b>${s.skipped}`,
-      );
-    }
+    lines.push(...statisticCaptionLines(phrases, analytics, durationFormat));
   }
-
-  const links = base.links ?? {};
-  for (const key of LINK_KEYS) {
-    const href = nonEmpty(links[key]);
-    if (!href) continue;
-    const label = phrases.links[key];
-    lines.push(
-      `<b>${escapeHtml(label)}:</b> <a href="${escapeHtml(href)}">${escapeHtml(href)}</a>`,
-    );
-  }
+  lines.push(...linkCaptionLines(phrases, base.links ?? {}));
 
   return lines.join("\n");
 }

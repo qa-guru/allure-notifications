@@ -2,41 +2,19 @@
  * Duration dynamics — average duration (ms) per history run as line+area.
  */
 
-import { createCanvas } from "@napi-rs/canvas";
-
-import { isHistoryEmpty } from "../../report/history.js";
 import { rgbCss } from "../../theme.js";
 import type { PanelContext } from "../context.js";
-import { MARGIN, TITLE_HEIGHT, chartHeight, chartTop } from "./bars.js";
+import { MARGIN, chartHeight, chartTop } from "./bars.js";
+import { openHistoryPanel, paintPanelMessage } from "./panelFrame.js";
 
 export function renderDurationDynamicsPanel(context: PanelContext): Buffer {
-  const { width, height, theme, analytics, showTitle } = context;
-  const history = analytics.history;
+  const opened = openHistoryPanel(context, "Duration dynamics");
+  if (opened.empty) return opened.png;
+  const { canvas, ctx, history, width, height, showTitle, theme } = opened;
 
-  const canvas = createCanvas(width, height);
-  const ctx = canvas.getContext("2d");
-  ctx.fillStyle = rgbCss(theme.background);
-  ctx.fillRect(0, 0, width, height);
-
-  if (showTitle) {
-    ctx.fillStyle = rgbCss(theme.text);
-    ctx.font = "bold 14px sans-serif";
-    ctx.fillText("Duration dynamics", MARGIN, MARGIN + 12);
-  }
-
-  if (isHistoryEmpty(history)) {
-    ctx.fillStyle = rgbCss(theme.text);
-    ctx.font = "12px sans-serif";
-    ctx.fillText("No history data", MARGIN, MARGIN + TITLE_HEIGHT + 16);
-    return canvas.toBuffer("image/png");
-  }
-
-  const values = history!.durationDynamics;
+  const values = history.durationDynamics;
   if (values.length === 0) {
-    ctx.fillStyle = rgbCss(theme.text);
-    ctx.font = "12px sans-serif";
-    ctx.fillText("No duration data", MARGIN, MARGIN + TITLE_HEIGHT + 16);
-    return canvas.toBuffer("image/png");
+    return paintPanelMessage(ctx, theme, canvas, "No duration data");
   }
 
   const top = chartTop(showTitle);
@@ -47,9 +25,7 @@ export function renderDurationDynamicsPanel(context: PanelContext): Buffer {
   const n = values.length;
   const pts = values.map((val, i) => {
     const x =
-      n === 1
-        ? MARGIN + plotW / 2
-        : MARGIN + (i / (n - 1)) * plotW;
+      n === 1 ? MARGIN + plotW / 2 : MARGIN + (i / (n - 1)) * plotW;
     const y = top + (1 - (val - min) / (max - min)) * plotH;
     return [x, y] as const;
   });

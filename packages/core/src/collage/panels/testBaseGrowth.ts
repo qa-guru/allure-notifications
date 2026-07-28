@@ -2,48 +2,25 @@
  * Test base growth — added ↑ / removed ↓ between consecutive history runs.
  */
 
-import { createCanvas } from "@napi-rs/canvas";
-
-import { isHistoryEmpty } from "../../report/history.js";
 import { STATUS_RGB, rgbCss } from "../../theme.js";
 import type { PanelContext } from "../context.js";
 import {
   DEFAULT_ARC,
   MARGIN,
-  TITLE_HEIGHT,
   chartHeight,
   chartTop,
   fillStackedVertical,
 } from "./bars.js";
+import { openHistoryPanel, paintPanelMessage } from "./panelFrame.js";
 
 export function renderTestBaseGrowthPanel(context: PanelContext): Buffer {
-  const { width, height, theme, analytics, showTitle } = context;
-  const history = analytics.history;
+  const opened = openHistoryPanel(context, "Test base growth");
+  if (opened.empty) return opened.png;
+  const { canvas, ctx, history, width, height, showTitle, theme } = opened;
 
-  const canvas = createCanvas(width, height);
-  const ctx = canvas.getContext("2d");
-  ctx.fillStyle = rgbCss(theme.background);
-  ctx.fillRect(0, 0, width, height);
-
-  if (showTitle) {
-    ctx.fillStyle = rgbCss(theme.text);
-    ctx.font = "bold 14px sans-serif";
-    ctx.fillText("Test base growth", MARGIN, MARGIN + 12);
-  }
-
-  if (isHistoryEmpty(history)) {
-    ctx.fillStyle = rgbCss(theme.text);
-    ctx.font = "12px sans-serif";
-    ctx.fillText("No history data", MARGIN, MARGIN + TITLE_HEIGHT + 16);
-    return canvas.toBuffer("image/png");
-  }
-
-  const points = history!.testBaseGrowth;
+  const points = history.testBaseGrowth;
   if (points.length === 0) {
-    ctx.fillStyle = rgbCss(theme.text);
-    ctx.font = "12px sans-serif";
-    ctx.fillText("No growth data", MARGIN, MARGIN + TITLE_HEIGHT + 16);
-    return canvas.toBuffer("image/png");
+    return paintPanelMessage(ctx, theme, canvas, "No growth data");
   }
 
   let maxUp = 1;

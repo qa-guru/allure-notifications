@@ -3,50 +3,27 @@
  * Data: history.jsonl consecutive per-case status changes.
  */
 
-import { createCanvas } from "@napi-rs/canvas";
-
-import { isHistoryEmpty } from "../../report/history.js";
 import { STATUS_RGB, rgbCss } from "../../theme.js";
 import type { PanelContext } from "../context.js";
 import {
   DEFAULT_ARC,
   MARGIN,
-  TITLE_HEIGHT,
   chartHeight,
   chartTop,
   fillStackedVertical,
 } from "./bars.js";
+import { openHistoryPanel, paintPanelMessage } from "./panelFrame.js";
 
 const MALFUNCTIONED = { r: 0xff, g: 0x82, b: 0x00 };
 
 export function renderStatusTransitionsPanel(context: PanelContext): Buffer {
-  const { width, height, theme, analytics, showTitle } = context;
-  const history = analytics.history;
+  const opened = openHistoryPanel(context, "Status transitions");
+  if (opened.empty) return opened.png;
+  const { canvas, ctx, history, width, height, showTitle, theme } = opened;
 
-  const canvas = createCanvas(width, height);
-  const ctx = canvas.getContext("2d");
-  ctx.fillStyle = rgbCss(theme.background);
-  ctx.fillRect(0, 0, width, height);
-
-  if (showTitle) {
-    ctx.fillStyle = rgbCss(theme.text);
-    ctx.font = "bold 14px sans-serif";
-    ctx.fillText("Status transitions", MARGIN, MARGIN + 12);
-  }
-
-  if (isHistoryEmpty(history)) {
-    ctx.fillStyle = rgbCss(theme.text);
-    ctx.font = "12px sans-serif";
-    ctx.fillText("No history data", MARGIN, MARGIN + TITLE_HEIGHT + 16);
-    return canvas.toBuffer("image/png");
-  }
-
-  const points = history!.statusTransitions;
+  const points = history.statusTransitions;
   if (points.length === 0) {
-    ctx.fillStyle = rgbCss(theme.text);
-    ctx.font = "12px sans-serif";
-    ctx.fillText("No transition data", MARGIN, MARGIN + TITLE_HEIGHT + 16);
-    return canvas.toBuffer("image/png");
+    return paintPanelMessage(ctx, theme, canvas, "No transition data");
   }
 
   let maxUp = 1;

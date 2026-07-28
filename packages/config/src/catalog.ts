@@ -32,150 +32,102 @@ const PALETTE_W = 2;
 const PALETTE_H = 2;
 const PALETTE_HINT = "2×2";
 
-/** @type {ReadonlyArray<PanelMeta>} */
-export const PANEL_CATALOG: ReadonlyArray<PanelMeta> = Object.freeze([
-  {
-    id: "pie",
-    type: "pie",
-    title: "Current status",
+type PanelSeed = Omit<PanelMeta, "hint" | "defaultW" | "defaultH">;
+
+function panel(seed: PanelSeed): PanelMeta {
+  return {
+    ...seed,
     hint: PALETTE_HINT,
     defaultW: PALETTE_W,
     defaultH: PALETTE_H,
-  },
-  {
+  };
+}
+
+/** @type {ReadonlyArray<PanelMeta>} */
+export const PANEL_CATALOG: ReadonlyArray<PanelMeta> = Object.freeze([
+  panel({ id: "pie", type: "pie", title: "Current status" }),
+  panel({
     id: "testingPyramid",
     type: "testingPyramid",
     title: "Testing pyramid",
-    hint: PALETTE_HINT,
-    defaultW: PALETTE_W,
-    defaultH: PALETTE_H,
-  },
-  {
+  }),
+  panel({
     id: "durationsByLayer",
     type: "durations",
     groupBy: "layer",
     title: "Durations by layer",
-    hint: PALETTE_HINT,
-    defaultW: PALETTE_W,
-    defaultH: PALETTE_H,
-  },
-  {
+  }),
+  panel({
     id: "durationDynamics",
     type: "durationDynamics",
     title: "Duration dynamics",
-    hint: PALETTE_HINT,
-    defaultW: PALETTE_W,
-    defaultH: PALETTE_H,
-  },
-  {
+  }),
+  panel({
     id: "statusAgePyramid",
     type: "statusAgePyramid",
     title: "Status age pyramid",
-    hint: PALETTE_HINT,
-    defaultW: PALETTE_W,
-    defaultH: PALETTE_H,
-  },
-  {
-    id: "durations",
-    type: "durations",
-    title: "Durations",
-    hint: PALETTE_HINT,
-    defaultW: PALETTE_W,
-    defaultH: PALETTE_H,
-  },
-  {
+  }),
+  panel({ id: "durations", type: "durations", title: "Durations" }),
+  panel({
     id: "coverageDiff",
     type: "coverageDiff",
     title: "Coverage diff",
-    hint: PALETTE_HINT,
-    defaultW: PALETTE_W,
-    defaultH: PALETTE_H,
-  },
-  {
+  }),
+  panel({
     id: "problemsDistribution",
     type: "problemsDistribution",
     by: "environment",
     title: "Problems by environment",
-    hint: PALETTE_HINT,
-    defaultW: PALETTE_W,
-    defaultH: PALETTE_H,
-  },
-  {
+  }),
+  panel({
     id: "successRateDistribution",
     type: "successRateDistribution",
     title: "Success rate",
-    hint: PALETTE_HINT,
-    defaultW: PALETTE_W,
-    defaultH: PALETTE_H,
-  },
-  {
+  }),
+  panel({
     id: "testResultSeverities",
     type: "testResultSeverities",
     title: "Results by severity",
-    hint: PALETTE_HINT,
-    defaultW: PALETTE_W,
-    defaultH: PALETTE_H,
-  },
-  {
+  }),
+  panel({
     id: "statusTransitions",
     type: "statusTransitions",
     title: "Status transitions",
-    hint: PALETTE_HINT,
-    defaultW: PALETTE_W,
-    defaultH: PALETTE_H,
-  },
-  {
+  }),
+  panel({
     id: "testBaseGrowthDynamics",
     type: "testBaseGrowthDynamics",
     title: "Test base growth",
-    hint: PALETTE_HINT,
-    defaultW: PALETTE_W,
-    defaultH: PALETTE_H,
-  },
-  {
+  }),
+  panel({
     id: "statusDynamics",
     type: "statusDynamics",
     title: "Status dynamics",
-    hint: PALETTE_HINT,
-    defaultW: PALETTE_W,
-    defaultH: PALETTE_H,
-  },
-  {
+  }),
+  panel({
     id: "stabilityByComponent",
     type: "stabilityDistribution",
     groupBy: "label-name:component",
     title: "Stability by component",
-    hint: PALETTE_HINT,
-    defaultW: PALETTE_W,
-    defaultH: PALETTE_H,
-  },
-  {
+  }),
+  panel({
     id: "stabilityByFeature",
     type: "stabilityDistribution",
     groupBy: "feature",
     title: "Stability by feature",
-    hint: PALETTE_HINT,
-    defaultW: PALETTE_W,
-    defaultH: PALETTE_H,
-  },
-  {
+  }),
+  panel({
     id: "stabilityByEpic",
     type: "stabilityDistribution",
     groupBy: "epic",
     title: "Stability by epic",
-    hint: PALETTE_HINT,
-    defaultW: PALETTE_W,
-    defaultH: PALETTE_H,
-  },
-  {
+  }),
+  panel({
     id: "stabilityByStory",
     type: "stabilityDistribution",
     groupBy: "story",
     title: "Stability by story",
-    hint: PALETTE_HINT,
-    defaultW: PALETTE_W,
-    defaultH: PALETTE_H,
-  },
+  }),
 ]);
 
 export const PANEL_META: Readonly<Record<string, PanelMeta>> = Object.freeze(

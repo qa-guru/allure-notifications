@@ -2,23 +2,18 @@
  * Stacked status bars over history runs — port of Java StatusDynamicsPanel.
  */
 
-import { createCanvas } from "@napi-rs/canvas";
-
-import {
-  STATUS_KEYS,
-  isHistoryEmpty,
-} from "../../report/history.js";
+import { STATUS_KEYS } from "../../report/history.js";
 import { STATUS_RGB, rgbCss } from "../../theme.js";
 import type { PanelContext } from "../context.js";
 import {
   DEFAULT_ARC,
   MARGIN,
-  TITLE_HEIGHT,
   chartHeight,
   chartTop,
   fillStackedVertical,
   stackedSegmentHeights,
 } from "./bars.js";
+import { openHistoryPanel } from "./panelFrame.js";
 
 function statusColor(status: string) {
   switch (status) {
@@ -36,28 +31,11 @@ function statusColor(status: string) {
 }
 
 export function renderStatusDynamicsPanel(context: PanelContext): Buffer {
-  const { width, height, theme, analytics, showTitle } = context;
-  const history = analytics.history;
+  const opened = openHistoryPanel(context, "Status dynamics");
+  if (opened.empty) return opened.png;
+  const { canvas, ctx, history, width, height, showTitle } = opened;
 
-  const canvas = createCanvas(width, height);
-  const ctx = canvas.getContext("2d");
-  ctx.fillStyle = rgbCss(theme.background);
-  ctx.fillRect(0, 0, width, height);
-
-  if (showTitle) {
-    ctx.fillStyle = rgbCss(theme.text);
-    ctx.font = "bold 14px sans-serif";
-    ctx.fillText("Status dynamics", MARGIN, MARGIN + 12);
-  }
-
-  if (isHistoryEmpty(history)) {
-    ctx.fillStyle = rgbCss(theme.text);
-    ctx.font = "12px sans-serif";
-    ctx.fillText("No history data", MARGIN, MARGIN + TITLE_HEIGHT + 16);
-    return canvas.toBuffer("image/png");
-  }
-
-  const dynamics = history!.statusDynamics;
+  const dynamics = history.statusDynamics;
   const runs = dynamics.length;
   const top = chartTop(showTitle);
   const plotH = chartHeight(height, showTitle);

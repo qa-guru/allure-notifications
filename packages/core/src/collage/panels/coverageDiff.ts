@@ -3,12 +3,11 @@
  * Data: last two history.jsonl runs (case-id set + labels).
  */
 
-import { createCanvas } from "@napi-rs/canvas";
-
-import { isHistoryEmpty, type CoverageDiffCell } from "../../report/history.js";
+import { type CoverageDiffCell } from "../../report/history.js";
 import { STATUS_RGB, rgbCss, type Rgb } from "../../theme.js";
 import type { PanelContext } from "../context.js";
-import { MARGIN, TITLE_HEIGHT, chartHeight, chartTop } from "./bars.js";
+import { MARGIN, chartHeight, chartTop } from "./bars.js";
+import { openHistoryPanel, paintPanelMessage } from "./panelFrame.js";
 
 const ADDED: Rgb = { r: 0x6b, g: 0xbf, b: 0x59 };
 const REMOVED = STATUS_RGB.failed;
@@ -68,33 +67,13 @@ function layoutTreemap(
 }
 
 export function renderCoverageDiffPanel(context: PanelContext): Buffer {
-  const { width, height, theme, analytics, showTitle } = context;
-  const history = analytics.history;
+  const opened = openHistoryPanel(context, "Coverage diff");
+  if (opened.empty) return opened.png;
+  const { canvas, ctx, history, width, height, showTitle, theme } = opened;
 
-  const canvas = createCanvas(width, height);
-  const ctx = canvas.getContext("2d");
-  ctx.fillStyle = rgbCss(theme.background);
-  ctx.fillRect(0, 0, width, height);
-
-  if (showTitle) {
-    ctx.fillStyle = rgbCss(theme.text);
-    ctx.font = "bold 14px sans-serif";
-    ctx.fillText("Coverage diff", MARGIN, MARGIN + 12);
-  }
-
-  if (isHistoryEmpty(history)) {
-    ctx.fillStyle = rgbCss(theme.text);
-    ctx.font = "12px sans-serif";
-    ctx.fillText("No history data", MARGIN, MARGIN + TITLE_HEIGHT + 16);
-    return canvas.toBuffer("image/png");
-  }
-
-  const cells = history!.coverageDiff;
+  const cells = history.coverageDiff;
   if (cells.length === 0) {
-    ctx.fillStyle = rgbCss(theme.text);
-    ctx.font = "12px sans-serif";
-    ctx.fillText("No coverage data", MARGIN, MARGIN + TITLE_HEIGHT + 16);
-    return canvas.toBuffer("image/png");
+    return paintPanelMessage(ctx, theme, canvas, "No coverage data");
   }
 
   const top = chartTop(showTitle);

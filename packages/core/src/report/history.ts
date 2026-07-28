@@ -370,7 +370,7 @@ function buildProblemsByEnvironment(
     return counts;
   });
 
-  const environments = [...envSet].sort();
+  const environments = [...envSet].sort((a, b) => a.localeCompare(b));
   if (environments.length === 0) {
     return emptyProblems();
   }

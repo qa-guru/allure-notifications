@@ -153,7 +153,7 @@ export async function readAllureResults(
 
   const files: string[] = [];
   await walkResultFiles(resultsFolder, 0, files);
-  files.sort();
+  files.sort((a, b) => a.localeCompare(b));
 
   const results: AllureTestResult[] = [];
   for (const file of files) {

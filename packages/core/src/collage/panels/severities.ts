@@ -40,7 +40,7 @@ export function orderedSeverities(
   }
   const extras = Object.keys(raw)
     .filter((key) => !(CANON_ORDER as readonly string[]).includes(key))
-    .sort();
+    .sort((a, b) => a.localeCompare(b));
   for (const key of extras) {
     const count = raw[key];
     if (count != null && count > 0) {

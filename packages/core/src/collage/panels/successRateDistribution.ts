@@ -2,19 +2,16 @@
  * Success-rate histogram (0–10% … 90–100%) — port of Java SuccessRateDistributionPanel.
  */
 
-import { createCanvas } from "@napi-rs/canvas";
-
-import { isHistoryEmpty } from "../../report/history.js";
 import { STATUS_RGB, rgbCss, type Rgb } from "../../theme.js";
 import type { PanelContext } from "../context.js";
 import {
   DEFAULT_ARC,
   MARGIN,
-  TITLE_HEIGHT,
   chartHeight,
   chartTop,
   fillTopRounded,
 } from "./bars.js";
+import { openHistoryPanel } from "./panelFrame.js";
 
 /** Linear red→green: bucket 0 (low success) red, last bucket green. */
 function bucketColor(index: number, bins: number): Rgb {
@@ -31,28 +28,11 @@ function bucketColor(index: number, bins: number): Rgb {
 export function renderSuccessRateDistributionPanel(
   context: PanelContext,
 ): Buffer {
-  const { width, height, theme, analytics, showTitle } = context;
-  const history = analytics.history;
+  const opened = openHistoryPanel(context, "Success rate distribution");
+  if (opened.empty) return opened.png;
+  const { canvas, ctx, history, width, height, showTitle } = opened;
 
-  const canvas = createCanvas(width, height);
-  const ctx = canvas.getContext("2d");
-  ctx.fillStyle = rgbCss(theme.background);
-  ctx.fillRect(0, 0, width, height);
-
-  if (showTitle) {
-    ctx.fillStyle = rgbCss(theme.text);
-    ctx.font = "bold 14px sans-serif";
-    ctx.fillText("Success rate distribution", MARGIN, MARGIN + 12);
-  }
-
-  if (isHistoryEmpty(history)) {
-    ctx.fillStyle = rgbCss(theme.text);
-    ctx.font = "12px sans-serif";
-    ctx.fillText("No history data", MARGIN, MARGIN + TITLE_HEIGHT + 16);
-    return canvas.toBuffer("image/png");
-  }
-
-  const buckets = history!.successRateDistribution;
+  const buckets = history.successRateDistribution;
   const bins = buckets.length;
   const active: number[] = [];
   let maxCount = 1;
