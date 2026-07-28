@@ -7,12 +7,12 @@
     "policy": "copy-once pin; do not edit files under vendor/",
     "files": [
       {
-        "path": "assets/qa-guru-logo.svg",
-        "sha256_16": "a802c9737e0f23fd"
-      },
-      {
         "path": "assets/allure3-logo.svg",
         "sha256_16": "92d7a76a8e46fa13"
+      },
+      {
+        "path": "assets/qa-guru-logo.svg",
+        "sha256_16": "a802c9737e0f23fd"
       },
       {
         "path": "css/button.css",
@@ -80,7 +80,11 @@
       },
       {
         "path": "css/plaque-field.css",
-        "sha256_16": "1a5d14aad9f8d6ab"
+        "sha256_16": "0fb98fbd3489b8eb"
+      },
+      {
+        "path": "css/plaque-number.css",
+        "sha256_16": "51dc67db22a560da"
       },
       {
         "path": "css/stack.css",
@@ -117,6 +121,10 @@
       {
         "path": "js/header.js",
         "sha256_16": "a24b75cefaadbb2c"
+      },
+      {
+        "path": "js/plaque-number.js",
+        "sha256_16": "e0d4ad89383f36ec"
       },
       {
         "path": "js/theme-icons.js",

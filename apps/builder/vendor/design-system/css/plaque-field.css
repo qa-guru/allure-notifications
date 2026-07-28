@@ -2,6 +2,7 @@
 @import url("plaque-divider.css");
 @import url("plaque-field-seg.css?v=segfloat2");
 @import url("plaque-field-seg-layout.css?v=segfloat2");
+@import url("plaque-number.css");
 
 /* Plaque field — compact label+control shell (autotests-builder, forms) */
 

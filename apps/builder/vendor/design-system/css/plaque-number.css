@@ -1,0 +1,75 @@
+/* Plaque number — ± sides stepper (canon: variants #5)
+   Markup: .plaque-number > button[--dec] · input.plaque-field__control · button[--inc]
+   Or enhance bare input[type=number].plaque-field__control via plaque-number.js */
+
+.plaque-field--divided.plaque-field--stretch > .plaque-number {
+  grid-column: 3;
+  justify-self: stretch;
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+}
+
+.plaque-number {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: var(--space-2);
+  flex: 1 1 auto;
+  min-width: 0;
+  min-height: calc(var(--plaque-control-height) - 2px);
+  padding-right: 2px;
+}
+
+.plaque-number > input.plaque-field__control {
+  flex: 0 1 auto;
+  width: auto;
+  min-width: 3ch;
+  padding-right: 0;
+  text-align: center;
+  -moz-appearance: textfield;
+  appearance: textfield;
+}
+
+.plaque-number > input.plaque-field__control::-webkit-outer-spin-button,
+.plaque-number > input.plaque-field__control::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.plaque-number__btn {
+  box-sizing: border-box;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 18px;
+  height: 18px;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  border-radius: 4px;
+  background: transparent;
+  color: color-mix(in srgb, var(--color-text) 55%, transparent);
+  cursor: pointer;
+  font: inherit;
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 1;
+  flex-shrink: 0;
+}
+
+.plaque-number__btn:hover {
+  color: var(--color-text);
+  background: color-mix(in srgb, var(--color-text) 8%, transparent);
+}
+
+.plaque-number__btn:focus-visible {
+  outline: 1px solid var(--color-primary);
+  outline-offset: 1px;
+}
+
+.plaque-number__btn:disabled {
+  opacity: 0.35;
+  cursor: default;
+  background: transparent;
+}
