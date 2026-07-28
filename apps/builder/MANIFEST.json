@@ -3,7 +3,7 @@
   "phase": 6,
   "vendor": {
     "source": "projects/design-system-home/design-system/",
-    "copied": "2026-07-24",
+    "copied": "2026-07-28",
     "policy": "copy-once pin; do not edit files under vendor/",
     "files": [
       {
@@ -72,15 +72,15 @@
       },
       {
         "path": "css/plaque-field-seg-layout.css",
-        "sha256_16": "e96748422527860a"
+        "sha256_16": "40a27b452f6acb6c"
       },
       {
         "path": "css/plaque-field-seg.css",
-        "sha256_16": "6a0ee96d6eedb695"
+        "sha256_16": "82b795ef9a6edc07"
       },
       {
         "path": "css/plaque-field.css",
-        "sha256_16": "5d25770b60e913ee"
+        "sha256_16": "1a5d14aad9f8d6ab"
       },
       {
         "path": "css/stack.css",
@@ -96,7 +96,7 @@
       },
       {
         "path": "css/tokens.css",
-        "sha256_16": "11a3d6c031983367"
+        "sha256_16": "c73bad7049295513"
       },
       {
         "path": "css/widget-tile.css",

@@ -6,10 +6,12 @@
    Layout integration → plaque-field-seg-layout.css
    End inset SSOT: component-sizes.md → Plaque field seg */
 
-/* End inset — shell + track; --many adds track-end */
+/* End inset — shell + track; --many adds track-end.
+   Shell is full-width like select/input rows; chips hug + flex-end.
+   --pair cells override width to max-content (remote hub side-by-side). */
 
 .plaque-field--divided:has(> .plaque-field-seg-track) {
-  width: fit-content;
+  width: 100%;
   max-width: 100%;
   gap: var(--plaque-seg-gap);
   padding-left: var(--plaque-shell-pad-x);
@@ -126,56 +128,48 @@
   padding-right: 0;
 }
 
-/* --many: track fills the control slot; seg wraps chips with flex-end.
-   Each wrap line = --plaque-seg-band-height; row-gap = 1px rule between bands.
-   Shell stays label | divider | track (no display:contents, no ml:auto). */
+/* --many: ONE path for any chip count (true|false, tags, …).
+   Dissolve track/seg — chips participate in shell inline flow (float label +
+   text-align:right). ALWAYS right-aligned; wrap under the label. */
 .plaque-field--divided > .plaque-field-seg-track--many.plaque-field__control {
-  display: flex;
-  flex: 1 1 auto;
+  display: contents;
   width: auto;
   max-width: none;
   min-width: 0;
   height: auto;
-  min-height: var(--plaque-seg-band-height);
-  align-self: flex-start;
-  align-items: stretch;
+  min-height: 0;
+  flex: unset;
+  align-self: unset;
   margin-block: 0;
   padding-block: 0;
-  box-sizing: border-box;
 }
 
 .plaque-field--divided > .plaque-field-seg-track--many .plaque-field-seg {
-  display: flex;
-  flex: 1 1 auto;
-  flex-wrap: wrap;
-  justify-content: flex-end;
-  align-content: flex-start;
-  align-items: center;
-  column-gap: var(--plaque-seg-gap);
-  row-gap: var(--plaque-seg-row-gap);
-  width: 100%;
-  max-width: 100%;
-  min-width: 0;
+  display: contents;
 }
 
 .plaque-field--divided > .plaque-field-seg-track--many .plaque-field-seg__btn {
   display: inline-flex;
+  vertical-align: middle;
   flex: 0 0 auto;
   align-items: center;
-  align-self: center;
   min-width: min-content;
-  /* Glyph ~20 — never height:band. Vertical margin makes the flex line = band. */
+  /* Glyph ~20 — never height:band. Line box = band + row-gap so the shell
+     gradient (period band+gap) stays locked to chip air on every wrap row.
+     Last-row extra gap is pulled back by ::after in plaque-field.css. */
   min-height: var(--plaque-seg-chip-height);
   height: auto;
   box-sizing: border-box;
-  margin-block: var(--plaque-seg-chip-air);
-  margin-inline: 0;
+  margin-block-start: var(--plaque-seg-chip-air);
+  margin-block-end: calc(var(--plaque-seg-chip-air) + var(--plaque-seg-row-gap));
+  margin-left: var(--plaque-seg-gap);
+  margin-right: 0;
 }
 
 /* --stretch never stretches seg buttons — only select/input (plaque-field.css).
-   Seg stays content-hug; track justify-self:end in plaque-field-seg-layout.css. */
+   Chips stay content-hug + flex-end; shell is full-width (see rule above). */
 
-/* Seg shell — compact without divided grid (content-hug, not 50/50 fill) */
+/* Seg shell — compact without divided grid (chips hug, not 50/50 fill) */
 
 .plaque-field--seg-shell {
   height: calc(var(--plaque-control-height) - 2 * var(--plaque-seg-inset));

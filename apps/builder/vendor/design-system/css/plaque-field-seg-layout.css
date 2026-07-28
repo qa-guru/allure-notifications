@@ -18,28 +18,25 @@
   flex-shrink: 0;
 }
 
-/* --many in a grid cell: track fills the control slot (wrap + flex-end on seg). */
+/* --many in a grid cell: float wrap under the label (text-align:right). */
 .plaque-field-grid .plaque-field--divided > .plaque-field-seg-track--many {
   justify-self: unset;
-  flex: 1 1 auto;
   width: auto;
   max-width: none;
   min-width: 0;
-  flex-shrink: 1;
 }
 
 .plaque-field-grid .plaque-field--divided:has(> .plaque-field-seg-track--many) {
-  display: flex;
+  display: block;
   height: auto;
   min-height: var(--plaque-control-height);
   overflow: visible;
-  align-items: flex-start;
+  text-align: right;
   grid-template-columns: unset;
 }
 
 .plaque-field-grid .plaque-field--divided:has(> .plaque-field-seg-track--many) > .plaque-divider {
   /* metrics from --many shell in plaque-field.css */
-  align-self: flex-start;
 }
 
 .plaque-field-grid-stack .plaque-field--divided > .plaque-field-seg-track {
@@ -62,10 +59,8 @@
 }
 
 .plaque-field-grid .plaque-field--divided .plaque-field-seg-track--many .plaque-field-seg {
+  /* display:contents — chips are shell items (see plaque-field-seg.css). */
   min-width: 0;
-  width: auto;
-  max-width: none;
-  flex-shrink: 1;
 }
 
 .plaque-field-grid .plaque-field--divided .plaque-field-seg-track .plaque-field-seg__btn {

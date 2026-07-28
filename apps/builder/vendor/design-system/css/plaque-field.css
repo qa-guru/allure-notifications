@@ -1,7 +1,7 @@
 @import url("tokens.css");
 @import url("plaque-divider.css");
-@import url("plaque-field-seg.css?v=segwrap5");
-@import url("plaque-field-seg-layout.css?v=segwrap5");
+@import url("plaque-field-seg.css?v=segfloat2");
+@import url("plaque-field-seg-layout.css?v=segfloat2");
 
 /* Plaque field — compact label+control shell (autotests-builder, forms) */
 
@@ -18,33 +18,29 @@
   min-width: 0;
 }
 
-/* CANON: label (__label|__text) + short divider optically center in the FIRST
-   wrap band only (any param). NEVER align-items:center against full multi-band
-   height — that drops the label between wrap rows. Rule: plaque-many-first-row. */
+/* CANON: label + short divider float on row 1; chips inline + ALWAYS
+   right-aligned (text-align:right). Overflow wraps under the label.
+   Rule: plaque-many-first-row. */
 .plaque-field--divided:has(> .plaque-field-seg-track--many),
 .plaque-field--divided.plaque-field--stretch:has(> .plaque-field-seg-track--many) {
-  display: flex;
-  flex-wrap: nowrap;
-  align-items: flex-start;
-  align-content: flex-start;
-  column-gap: 0;
-  row-gap: 0;
+  display: block;
   height: auto;
   min-height: var(--plaque-control-height);
   grid-template-columns: unset;
   padding-top: 0;
   padding-bottom: 0;
   overflow: visible;
+  text-align: right;
   background-color: var(--color-surface);
   /* 1px rule between wrap bands (= --plaque-seg-row-gap).
-     Origin MUST be padding-box (same box as flex bands). border-box + clip
+     Origin MUST be padding-box (same box as wrap bands). border-box + clip
      padding shifts the rule ~1px up → closer to chips above than below. */
   background-image: repeating-linear-gradient(
     to bottom,
     transparent 0,
     transparent var(--plaque-seg-band-height),
-    var(--color-border) var(--plaque-seg-band-height),
-    var(--color-border) calc(var(--plaque-seg-band-height) + var(--plaque-seg-row-gap))
+    var(--plaque-seg-rule) var(--plaque-seg-band-height),
+    var(--plaque-seg-rule) calc(var(--plaque-seg-band-height) + var(--plaque-seg-row-gap))
   );
   background-origin: padding-box;
   background-clip: padding-box;
@@ -53,33 +49,44 @@
   background-repeat: no-repeat;
 }
 
+.plaque-field--divided:has(> .plaque-field-seg-track--many)::after {
+  content: "";
+  display: block;
+  clear: both;
+  /* Chips add row-gap into margin-block-end (line box = band+gap). Pull the
+     trailing gap on the last wrap line so outer = n×band + (n−1)×gap + 2 border. */
+  height: 0;
+  margin-block-start: calc(-1 * var(--plaque-seg-row-gap));
+}
+
 .plaque-field--divided:has(> .plaque-field-seg-track--many) > .plaque-field__label,
 .plaque-field--divided:has(> .plaque-field-seg-track--many) > .plaque-field__text {
-  float: none;
-  flex: 0 0 auto;
-  align-self: flex-start;
+  float: left;
   box-sizing: border-box;
   /* Same label column as sibling magnet rows — divider lines up with browser/… */
   width: var(--plaque-mixed-label-col, max-content);
+  min-width: 0;
   max-width: 100%;
   height: var(--plaque-seg-band-height);
   display: inline-flex;
   align-items: center;
   padding-right: var(--space-2);
   text-align: left;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
-/* First-row optical center inside band — short rule, not a tall magnet column. */
+/* First-row only — short float so wrapped chips clear under it. */
 .plaque-field--divided:has(> .plaque-field-seg-track--many) > .plaque-divider {
-  float: none;
-  flex: 0 0 auto;
-  align-self: flex-start;
+  float: left;
   height: var(--plaque-divider-height, calc(var(--font-size-sm) * 1.35));
   min-height: var(--plaque-divider-height, calc(var(--font-size-sm) * 1.35));
   margin-block-start: calc(
     (var(--plaque-seg-band-height) - var(--plaque-divider-height, calc(var(--font-size-sm) * 1.35))) / 2
   );
   margin-right: var(--plaque-seg-gap);
+  background: var(--plaque-seg-rule);
 }
 
 .plaque-field:not(:has(> .plaque-field-seg-track)) {
@@ -381,9 +388,9 @@ input.plaque-field__control {
   column-gap: 0;
 }
 
-/* Tagstrip / --many: flex wrap under label — not a 3-col grid. */
+/* Tagstrip / --many: float wrap under label — not a 3-col grid. */
 .plaque-field-grid--mixed .plaque-field-grid__cell .plaque-field--divided:has(> .plaque-field-seg-track--many) {
-  display: flex;
+  display: block;
   grid-template-columns: unset;
 }
 
@@ -614,19 +621,18 @@ html.theme-light .plaque-field-checkstrip--pill .plaque-field-checkstrip__item:h
   column-gap: var(--space-1);
 }
 
-/* --many: flex row under label (overrides overflow:hidden + 3-col grid above). */
+/* --many: float wrap under label (overrides overflow:hidden + 3-col grid above). */
 .plaque-field-grid .plaque-field--divided:has(> .plaque-field-seg-track--many) {
-  display: flex;
+  display: block;
   height: auto;
   min-height: var(--plaque-control-height);
   overflow: visible;
-  align-items: flex-start;
+  text-align: right;
   grid-template-columns: unset;
 }
 
 .plaque-field-grid .plaque-field--divided:has(> .plaque-field-seg-track--many) > .plaque-divider {
   /* metrics from --many shell in this file */
-  align-self: flex-start;
 }
 
 .plaque-field-grid .plaque-field:not(:has(> .plaque-field-seg-track)) {
@@ -872,9 +878,10 @@ html.theme-light .plaque-field-checkstrip--pill .plaque-field-checkstrip__item:h
    centers against the full wrap height (Test layer / junitTags). */
 .plaque-field-panel-stack--magnet > :not(.plaque-field-grid) .plaque-field--divided:has(> .plaque-field-seg-track--many),
 .plaque-field-panel-stack--magnet > :not(.plaque-field-grid) .plaque-field--divided.plaque-field--stretch:has(> .plaque-field-seg-track--many) {
-  display: flex;
+  display: block;
   grid-template-columns: unset;
   column-gap: unset;
+  text-align: right;
 }
 
 .plaque-field-panel-stack--magnet .plaque-field--divided:has(> .plaque-field-seg-track--many) > .plaque-field__label,
@@ -902,7 +909,7 @@ html.theme-light .plaque-field-checkstrip--pill .plaque-field-checkstrip__item:h
 /* Grid-stack — fixed label col on every divided field (default sync).
    Canon mixed default (outside stack) = min(--plaque-label-width, 44cqi) per __cell.
    Stack sync = shared --plaque-label-width; --hug / --magnet override.
-   Seg stays content-hug (justify-self: end). */
+   Seg chips hug right (justify-self / flex-end); shell full-width. */
 
 .plaque-field-grid-stack .plaque-field-grid--mixed .plaque-field-grid__cell .plaque-field--divided,
 .plaque-field-grid-stack .plaque-field-grid--mixed .plaque-field-grid__cell .plaque-field--divided:has(.plaque-field-seg-track),
@@ -979,9 +986,9 @@ html.theme-light .plaque-field-checkstrip--pill .plaque-field-checkstrip__item:h
   column-gap: 0;
 }
 
-/* --many: flex wrap under label — beat magnet 3-col template. */
+/* --many: float wrap under label — beat magnet 3-col template. */
 .plaque-field-grid-stack--magnet .plaque-field-grid--mixed .plaque-field-grid__cell .plaque-field--divided:has(> .plaque-field-seg-track--many) {
-  display: flex;
+  display: block;
   grid-template-columns: unset;
   column-gap: unset;
 }
@@ -1041,22 +1048,20 @@ html.theme-light .plaque-field-checkstrip--pill .plaque-field-checkstrip__item:h
   min-height: var(--plaque-control-height) !important;
 }
 
-/* Tagstrip (--many): track keeps wrap; shell grows under magnet --nowrap. */
+/* Tagstrip (--many): chips wrap under label; shell grows under magnet --nowrap. */
 .plaque-field--divided.plaque-field--nowrap:has(> .plaque-field-seg-track--many) {
-  display: flex !important;
-  flex-wrap: nowrap !important;
+  display: block !important;
   grid-template-columns: unset !important;
   height: auto !important;
   min-height: var(--plaque-control-height) !important;
   overflow: visible !important;
-  align-items: flex-start;
+  text-align: right;
 }
 
 .plaque-field--nowrap > .plaque-field-seg-track--many {
-  display: flex !important;
-  flex: 1 1 auto !important;
+  display: contents !important;
   justify-self: unset !important;
-  align-self: flex-start !important;
+  align-self: unset !important;
   width: auto !important;
   max-width: none !important;
   min-width: 0 !important;
@@ -1074,6 +1079,11 @@ html.theme-light .plaque-field-checkstrip--pill .plaque-field-checkstrip__item:h
   white-space: nowrap;
 }
 
+.plaque-field--nowrap:has(> .plaque-field-seg-track--many) > .plaque-field__label,
+.plaque-field--nowrap:has(> .plaque-field-seg-track--many) > .plaque-field__text {
+  flex: 0 1 auto !important;
+}
+
 .plaque-field--nowrap > .plaque-divider {
   grid-column: 2 !important;
   grid-row: 1 !important;
@@ -1081,10 +1091,16 @@ html.theme-light .plaque-field-checkstrip--pill .plaque-field-checkstrip__item:h
 
 .plaque-field--nowrap > .plaque-field__control,
 .plaque-field--nowrap > .plaque-field__value,
-.plaque-field--nowrap > .plaque-field-seg-track {
+.plaque-field--nowrap > .plaque-field-seg-track:not(.plaque-field-seg-track--many) {
   grid-column: 3 !important;
   grid-row: 1 !important;
   min-width: 0 !important;
+  max-width: 100% !important;
+}
+
+.plaque-field--nowrap > .plaque-field-seg-track--many {
+  grid-column: 3 !important;
+  grid-row: 1 !important;
   max-width: 100% !important;
 }
 

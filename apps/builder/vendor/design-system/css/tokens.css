@@ -81,6 +81,9 @@
   --plaque-seg-band-height: calc(var(--plaque-control-height) - 2px);
   /* 1px rule between wrapped --many bands (= flex row-gap; gradient origin padding-box). */
   --plaque-seg-row-gap: 1px;
+  /* Structural rules (wrap band + vertical divider in --many): softer than chip outline
+     so wrap separator does not merge with .plaque-field-seg__btn border (winner C). */
+  --plaque-seg-rule: color-mix(in srgb, var(--color-border) 40%, transparent);
   /* Shell ↔ seg btn. chip-air = vertical margin of ~20px glyph in band;
      shell-end uses the same token so top/bottom/right air match (no hardcode). */
   --plaque-seg-inset: var(--space-1);
