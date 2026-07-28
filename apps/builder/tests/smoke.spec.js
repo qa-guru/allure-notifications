@@ -248,6 +248,18 @@ test.describe('allure-notifications-builder smoke', () => {
     );
     await expect(terminal).toContainText('"darkMode": false');
     await expect(canvas).toHaveAttribute('data-anb-dark', 'false');
+    // Entire grid panel (outer + card + chart body), not just the grid lines.
+    await expect(canvas).toHaveCSS('background-color', 'rgb(238, 242, 246)');
+    const card = page.locator('#anb-grid .grid-stack-item-content').first();
+    const chartBody = page.locator('#anb-grid .widget-tile__body').first();
+    await expect(card).toHaveCSS('background-color', 'rgb(255, 255, 255)');
+    await expect(chartBody).toHaveCSS('background-color', 'rgb(255, 255, 255)');
+
+    await dark.locator('.plaque-field-seg__btn[data-value="true"]').click();
+    await expect(canvas).toHaveAttribute('data-anb-dark', 'true');
+    await expect(canvas).toHaveCSS('background-color', 'rgb(34, 34, 34)');
+    await expect(card).toHaveCSS('background-color', 'rgb(50, 50, 50)');
+    await expect(chartBody).toHaveCSS('background-color', 'rgb(50, 50, 50)');
 
     await enable.locator('.plaque-field-seg__btn[data-value="false"]').click();
     await expect(enable.locator('.plaque-field-seg__btn--on')).toHaveAttribute(

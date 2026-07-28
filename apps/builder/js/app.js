@@ -258,7 +258,8 @@ function applyCanvasMetrics() {
 }
 /**
  * Drive `--layer-*` + geometry ratios from `@pyramid` (SSOT over DS token pin).
- * Dark = `:root`, light = `html.theme-light` — header theme toggle stays untouched.
+ * Collage follows jar `base.darkMode` via `[data-anb-dark]`; page header theme
+ * stays independent (`html.theme-light` for chrome only).
  */
 function injectPyramidSsot() {
     const id = 'anb-pyramid-ssot';
@@ -271,6 +272,12 @@ function injectPyramidSsot() {
     const layerBlock = (colors) => Object.entries(colors)
         .map(([layer, hex]) => `  --layer-${layer}: ${hex};`)
         .join('\n');
+    const collageDark = '.anb-canvas[data-anb-dark="true"], ' +
+        '.anb-export-popover__viewport[data-anb-dark="true"], ' +
+        '.anb-export-popover__stage[data-anb-dark="true"]';
+    const collageLight = '.anb-canvas[data-anb-dark="false"], ' +
+        '.anb-export-popover__viewport[data-anb-dark="false"], ' +
+        '.anb-export-popover__stage[data-anb-dark="false"]';
     style.textContent = [
         ':root {',
         layerBlock(PYRAMID_COLORS_DARK),
@@ -279,6 +286,12 @@ function injectPyramidSsot() {
         `  --anb-pyramid-unit: ${STATUS_COLORS.passed};`,
         '}',
         'html.theme-light {',
+        layerBlock(PYRAMID_COLORS_LIGHT),
+        '}',
+        `${collageDark} {`,
+        layerBlock(PYRAMID_COLORS_DARK),
+        '}',
+        `${collageLight} {`,
         layerBlock(PYRAMID_COLORS_LIGHT),
         '}',
     ].join('\n');
@@ -801,15 +814,22 @@ function syncBoolSeg(root, value) {
     });
 }
 /**
- * Mirror jar flags onto the collage preview: `base.darkMode` → canvas theme,
- * `base.enableChart` → editor/chart chrome gated.
+ * Mirror jar flags onto the collage preview: `base.darkMode` → entire grid panel
+ * (outer + cards + chart inks / export stage), `base.enableChart` → chrome gated.
  */
 function applyChartFlags() {
     const enableChart = Boolean(getPath('base.enableChart'));
     const darkMode = Boolean(getPath('base.darkMode'));
-    const canvas = document.getElementById('anb-canvas');
-    if (canvas instanceof HTMLElement) {
-        canvas.dataset.anbDark = darkMode ? 'true' : 'false';
+    const anbDark = darkMode ? 'true' : 'false';
+    for (const id of [
+        'anb-canvas',
+        'anb-export-popover-viewport',
+        'anb-export-popover-stage',
+    ]) {
+        const el = document.getElementById(id);
+        if (el instanceof HTMLElement) {
+            el.dataset.anbDark = anbDark;
+        }
     }
     const shell = document.getElementById('anb-canvas-shell');
     if (shell instanceof HTMLElement) {
@@ -836,6 +856,9 @@ function applyChartFlags() {
         resetBtn.disabled = !enableChart;
     if (clearBtn instanceof HTMLButtonElement)
         clearBtn.disabled = !enableChart;
+    /* Pyramid/layer inks may bake getComputedStyle at fill — refresh on theme flip. */
+    fillEditorMocks();
+    refreshExportPopoverIfOpen();
     updateToolbar();
 }
 function hydrateControls() {
