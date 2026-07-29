@@ -77,7 +77,7 @@ Telegram is **top-level** `telegram: { token, chat, topic, replyTo, templatePath
 
 ## Resize L-brackets (editor chrome)
 
-NE/NW/SE/SW sit on the **card corners** (`top/bottom/left/right: var(--anb-half-gap)`), mirroring each other. Top brackets are **above** the title bar — never `half-gap + bar-h` (under header) and never `top: 0` (floating in the cell gutter). Stroke insets: top handles `0 2px 2px 2px`, bottom `2px 2px 0 2px`. Guard: smoke `resize L-brackets sit on card corners`.
+NE/NW/SE/SW parked at the **cell edge** (`top/bottom/left/right: 0`). The visible crop-mark (`::after`) is sized to `--anb-resize-mark ≈ half-gap − 1px` so the stroke stays in the cardGap gutter **outside** the rounded card — never under the title bar (`half-gap + bar-h`) and never digging into the chart. Card radius matches jar `CARD_ARC` (**18px**). Guard: smoke `resize L-brackets sit in gutter outside card`.
 
 ## Terminal bar (builder canon)
 

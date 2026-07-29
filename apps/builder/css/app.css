@@ -385,7 +385,7 @@ html.theme-light .anb-canvas--chart-off::after {
 
 .anb-palette {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: var(--space-2);
   width: 100%;
   min-width: 0;
@@ -438,11 +438,8 @@ html.theme-light .anb-canvas--chart-off::after {
   height: 100%;
 }
 
-.anb-palette__tile .widget-tile__title {
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  min-width: 0;
+.anb-palette__tile .widget-tile__bar:empty {
+  display: none;
 }
 
 .anb-palette__hint {
@@ -595,7 +592,8 @@ html.theme-light .anb-canvas--chart-off::after {
   inset: var(--anb-half-gap) !important;
   margin: 0 !important;
   overflow: hidden;
-  border-radius: 10px;
+  /* Jar CollageRenderer CARD_ARC */
+  border-radius: 18px;
   background: var(--color-surface, #323232);
   color: var(--color-text, #dcdcdc);
   box-shadow: inset 0 0 0 1px var(--color-border, rgba(96, 96, 96, 0.9));
@@ -732,12 +730,14 @@ html.theme-light .anb-canvas--chart-off::after {
   z-index: 100;
 }
 
-/* Resize: L-brackets on card corners (account for cardGap half-inset).
- * --anb-resize-outset: past the card edge into the gutter (away from chart center). */
+/* Resize: L-brackets as crop marks in the cardGap gutter (outside the card).
+ * Handle box stays large for hit-testing; ::after mark fits in half-gap so the
+ * stroke never digs into the rounded card / chart. Parked at cell edge (0) —
+ * never under title bar (half-gap + bar-h). */
 .anb-canvas {
   --anb-resize-size: 14px;
-  --anb-resize-outset: 6px;
-  --anb-resize-inset: calc(var(--anb-half-gap) - var(--anb-resize-outset));
+  --anb-resize-inset: 0px;
+  --anb-resize-mark: max(6px, calc(var(--anb-half-gap) - 1px));
   --anb-resize-ink: rgba(255, 255, 255, 0.48);
 }
 
@@ -758,6 +758,8 @@ html.theme-light .anb-canvas--chart-off::after {
   width: var(--anb-resize-size);
   height: var(--anb-resize-size);
   opacity: 0.7;
+  /* Above .anb-panel__bar so NE is not hidden under Copy / × */
+  z-index: 3;
 }
 
 .anb-canvas .grid-stack-item:hover > .ui-resizable-ne,
@@ -775,9 +777,7 @@ html.theme-light .anb-canvas--chart-off::after {
   opacity: 1;
 }
 
-/* !important — GridStack injects .gs-id-* { top: 0 } after our sheet.
- * Corners sit --anb-resize-outset past the card edge (half-gap − 6px).
- * Do NOT park under title bar (half-gap + bar-h). */
+/* !important — GridStack injects .gs-id-* { top: 0 } after our sheet. */
 .anb-canvas .grid-stack-item > .ui-resizable-ne,
 .anb-canvas .grid-stack-item > .ui-resizable-nw {
   top: var(--anb-resize-inset) !important;
@@ -830,43 +830,45 @@ html.theme-light .anb-canvas--chart-off::after {
   height: 8px;
 }
 
-/* Top brackets: stroke flush to handle top; bottom: flush to handle bottom. */
+/* Crop-mark stroke: only the outer gutter, anchored to the cell corner. */
 .anb-canvas .grid-stack-item > .ui-resizable-ne::after,
-.anb-canvas .grid-stack-item > .ui-resizable-nw::after {
-  content: "";
-  position: absolute;
-  inset: 0 2px 2px 2px;
-  pointer-events: none;
-  box-sizing: border-box;
-}
-
+.anb-canvas .grid-stack-item > .ui-resizable-nw::after,
 .anb-canvas .grid-stack-item > .ui-resizable-se::after,
 .anb-canvas .grid-stack-item > .ui-resizable-sw::after {
   content: "";
   position: absolute;
-  inset: 2px 2px 0 2px;
+  width: var(--anb-resize-mark);
+  height: var(--anb-resize-mark);
   pointer-events: none;
   box-sizing: border-box;
 }
 
-.anb-canvas .grid-stack-item > .ui-resizable-se::after {
-  border-right: 1.5px solid var(--anb-resize-ink);
-  border-bottom: 1.5px solid var(--anb-resize-ink);
-}
-
-.anb-canvas .grid-stack-item > .ui-resizable-sw::after {
+.anb-canvas .grid-stack-item > .ui-resizable-nw::after {
+  top: 0;
+  left: 0;
   border-left: 1.5px solid var(--anb-resize-ink);
-  border-bottom: 1.5px solid var(--anb-resize-ink);
+  border-top: 1.5px solid var(--anb-resize-ink);
 }
 
 .anb-canvas .grid-stack-item > .ui-resizable-ne::after {
+  top: 0;
+  right: 0;
   border-right: 1.5px solid var(--anb-resize-ink);
   border-top: 1.5px solid var(--anb-resize-ink);
 }
 
-.anb-canvas .grid-stack-item > .ui-resizable-nw::after {
+.anb-canvas .grid-stack-item > .ui-resizable-sw::after {
+  bottom: 0;
+  left: 0;
   border-left: 1.5px solid var(--anb-resize-ink);
-  border-top: 1.5px solid var(--anb-resize-ink);
+  border-bottom: 1.5px solid var(--anb-resize-ink);
+}
+
+.anb-canvas .grid-stack-item > .ui-resizable-se::after {
+  bottom: 0;
+  right: 0;
+  border-right: 1.5px solid var(--anb-resize-ink);
+  border-bottom: 1.5px solid var(--anb-resize-ink);
 }
 
 .anb-group + .anb-group {

@@ -1373,22 +1373,19 @@ function clearAll() {
  */
 function paletteItemHtml(item) {
     const chartType = item.type === 'pie' ? 'currentStatus' : item.type;
-    const hint = `${DEFAULT_TILE_W}×${DEFAULT_TILE_H}`;
     let attrs = `data-chart="${escapeHtml(chartType)}"`;
     if (item.groupBy)
         attrs += ` data-group-by="${escapeHtml(item.groupBy)}"`;
     if (item.by)
         attrs += ` data-by="${escapeHtml(item.by)}"`;
-    /* Palette thumbs are always 2×2 — grid footprints stay on canvas / DEFAULT_ITEMS. */
+    /* Palette thumbs are always 2×2 — caption = title; grid footprints stay on canvas / DEFAULT_ITEMS. */
     return (`<button type="button" class="anb-palette__item" data-anb-panel-id="${escapeHtml(item.id)}" ` +
         `data-testid="anb-palette-${escapeHtml(item.id)}" draggable="true" title="${escapeHtml(item.title)}">` +
         `<div class="widget-tile widget-tile--tier-micro widget-tile--span-2x2 anb-palette__tile" ${attrs}>` +
-        `<div class="widget-tile__bar">` +
-        `<span class="widget-tile__title">${escapeHtml(item.title)}</span>` +
-        `</div>` +
+        `<div class="widget-tile__bar"></div>` +
         `<div class="widget-tile__body"></div>` +
         `</div>` +
-        `<span class="anb-palette__hint">${hint}</span>` +
+        `<span class="anb-palette__hint">${escapeHtml(item.title)}</span>` +
         `</button>`);
 }
 function renderPalette() {

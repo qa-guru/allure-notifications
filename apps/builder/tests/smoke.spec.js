@@ -323,7 +323,35 @@ test.describe('allure-notifications-builder smoke', () => {
     await expect(actions.nth(2)).toHaveAttribute('data-testid', 'anb-term-copy');
   });
 
-  test('resize L-brackets sit on card corners (not under title bar)', async ({
+  test('palette: 4-up grid, caption = chart title (not 2×2)', async ({ page }) => {
+    await page.goto('/');
+    const palette = page.getByTestId('anb-palette');
+    await expect(palette).toBeVisible();
+    const items = palette.locator('.anb-palette__item');
+    await expect(items).toHaveCount(17);
+    const snap = await palette.evaluate((el) => {
+      const kids = [...el.querySelectorAll('.anb-palette__item')];
+      const y0 = kids[0]?.offsetTop ?? 0;
+      const cols = kids.filter((k) => k.offsetTop === y0).length;
+      const hints = kids.map((k) => k.querySelector('.anb-palette__hint')?.textContent?.trim() || '');
+      const barTitles = kids.flatMap((k) =>
+        [...k.querySelectorAll('.widget-tile__title')].map((t) => t.textContent.trim()),
+      );
+      return {
+        cols,
+        hints,
+        barTitles,
+        has2x2: hints.some((h) => /^2[×x]2$/i.test(h)),
+      };
+    });
+    expect(snap.cols).toBe(4);
+    expect(snap.has2x2).toBe(false);
+    expect(snap.barTitles).toEqual([]);
+    expect(snap.hints[0]).toBe('Current status');
+    expect(snap.hints[1]).toBe('Testing pyramid');
+  });
+
+  test('resize L-brackets sit in gutter outside card (not under title bar)', async ({
     page,
   }) => {
     await page.goto('/');
@@ -344,20 +372,38 @@ test.describe('allure-notifications-builder smoke', () => {
       const neR = ne.getBoundingClientRect();
       const swR = sw.getBoundingClientRect();
       const barBottom = bar ? bar.getBoundingClientRect().bottom : c.top + 22;
+      const cs = getComputedStyle(el.closest('.anb-canvas'));
+      const halfGap = parseFloat(cs.getPropertyValue('--anb-card-gap')) / 2;
+      // Custom props may stay as calc()/max(); read used ::after size instead.
+      const mark = parseFloat(getComputedStyle(nw, '::after').width);
+      const radius = parseFloat(getComputedStyle(card).borderRadius);
       return {
         ok: true,
+        halfGap,
+        mark,
+        radius,
+        // Handle box at cell edge → outside card by ~half-gap.
         dNwTop: nwR.top - c.top,
         dNeTop: neR.top - c.top,
         dNwLeft: nwR.left - c.left,
         dSwBottom: c.bottom - swR.bottom,
+        // Crop-mark (::after) must end before the card edge.
+        markEndsBeforeCard: Number.isFinite(mark) && mark <= halfGap - 0.5,
         nwBelowBar: nwR.top >= barBottom - 1,
       };
     });
     expect(pos.ok, JSON.stringify(pos)).toBe(true);
-    expect(Math.abs(pos.dNwTop)).toBeLessThan(2);
-    expect(Math.abs(pos.dNeTop)).toBeLessThan(2);
-    expect(Math.abs(pos.dNwLeft)).toBeLessThan(2);
-    expect(Math.abs(pos.dSwBottom)).toBeLessThan(2);
+    expect(pos.halfGap).toBeGreaterThan(0);
+    expect(pos.markEndsBeforeCard).toBe(true);
+    // Outside card (negative offset ≈ half-gap), not flush on the chart.
+    expect(pos.dNwTop).toBeLessThan(-2);
+    expect(pos.dNeTop).toBeLessThan(-2);
+    expect(pos.dNwLeft).toBeLessThan(-2);
+    expect(pos.dSwBottom).toBeLessThan(-2);
+    expect(Math.abs(pos.dNwTop + pos.halfGap)).toBeLessThan(2);
+    expect(Math.abs(pos.dNeTop + pos.halfGap)).toBeLessThan(2);
+    // Jar CARD_ARC parity.
+    expect(pos.radius).toBe(18);
     // Regression: merge once parked NE/NW under the title bar.
     expect(pos.nwBelowBar).toBe(false);
   });
