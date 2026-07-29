@@ -63,10 +63,10 @@ Terminal exports full `config.json`. Chart block for jar free-grid (CB-870 defau
   "gridCols": 10,
   "gridRows": 10,
   "items": [
-    {"type": "pie", "x": 0, "y": 0, "w": 4, "h": 5},
-    {"type": "durationDynamics", "x": 4, "y": 0, "w": 6, "h": 5},
-    {"type": "testingPyramid", "x": 0, "y": 5, "w": 4, "h": 5},
-    {"type": "durations", "x": 4, "y": 5, "w": 6, "h": 5, "groupBy": "layer"}
+    {"type": "pie", "x": 0, "y": 0, "w": 4, "h": 4},
+    {"type": "durationDynamics", "x": 4, "y": 0, "w": 6, "h": 4},
+    {"type": "testingPyramid", "x": 0, "y": 4, "w": 3, "h": 3},
+    {"type": "durations", "x": 3, "y": 4, "w": 4, "h": 3, "groupBy": "layer"}
   ],
   "pyramidFallback": "suites"
 }
