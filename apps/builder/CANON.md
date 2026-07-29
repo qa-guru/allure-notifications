@@ -75,6 +75,15 @@ Terminal exports full `config.json`. Chart block for jar free-grid (CB-870 defau
 Telegram is **top-level** `telegram: { token, chat, topic, replyTo, templatePath }` (jar Config shape).
 
 
+## Header tools (do not regress)
+
+| Slot | Link | Icon |
+|------|------|------|
+| GitHub | `github.com/qa-guru/allure-notifications` | template SVG `currentColor` |
+| Site | `allure-notifications.qa.guru` | `iconSrc` → `allure3-logo.svg` |
+
+**Forbidden:** full-color brand mark in the tool row. Raster/`iconSrc` marks are flattened by `.icon-btn .icon img { filter: brightness(0) … }` (`css/app.css`, DS `icon.css`). Smoke: `header tool links` asserts `brightness(0)` on the site img. Do not drop that CSS or the assertion.
+
 ## Resize L-brackets (editor chrome)
 
 NE/NW/SE/SW parked at the **cell edge** (`top/bottom/left/right: 0`). The visible crop-mark (`::after`) is sized to `--anb-resize-mark ≈ half-gap − 1px` so the stroke stays in the cardGap gutter **outside** the rounded card — never under the title bar (`half-gap + bar-h`) and never digging into the chart. Card radius matches jar `CARD_ARC` (**18px**). Guard: smoke `resize L-brackets sit in gutter outside card`.

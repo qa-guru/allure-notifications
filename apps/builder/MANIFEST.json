@@ -3,7 +3,7 @@
   "phase": 6,
   "vendor": {
     "source": "projects/design-system-home/design-system/",
-    "copied": "2026-07-28",
+    "copied": "2026-07-29",
     "policy": "copy-once pin; do not edit files under vendor/",
     "files": [
       {
@@ -40,7 +40,7 @@
       },
       {
         "path": "css/icon.css",
-        "sha256_16": "ec6b939c183f74af"
+        "sha256_16": "7b4edfe804c48e25"
       },
       {
         "path": "css/indicator.css",

@@ -8,8 +8,21 @@
   color: currentColor;
 }
 
-.icon svg {
+.icon svg,
+.icon img {
   display: block;
   width: 100%;
   height: 100%;
+}
+
+/*
+ * Brand marks loaded via <img> (e.g. header tools iconSrc) must match the
+ * monochrome tool row. Flatten to ink, then invert when the control is light.
+ */
+.icon-btn .icon img {
+  filter: brightness(0);
+}
+
+html:not(.theme-light) .icon-btn .icon img {
+  filter: brightness(0) invert(1);
 }
