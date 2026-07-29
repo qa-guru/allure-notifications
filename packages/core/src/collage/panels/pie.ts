@@ -16,8 +16,12 @@ import type { PanelContext } from "../context.js";
 
 const RING_STROKE_RATIO = 0.085;
 const RING_MARGIN_RATIO = 0.14;
+/** Target % of panel side; shrinks further if "100.00%" would hit the ring. */
 const PCT_FONT_RATIO = 0.15;
+const PCT_FONT_MIN_RATIO = 0.09;
 const SUB_FONT_RATIO = 0.06;
+/** Usable fraction of the donut hole diameter for the % label (breathing room). */
+const INNER_TEXT_WIDTH_RATIO = 0.68;
 const SEGMENT_GAP_DEGREES = 3.0;
 /** Skia/@napi-rs/canvas drops round-cap strokes below ~0.1° — paint a dot instead. */
 const MIN_RENDERABLE_SWEEP_DEGREES = 0.5;
@@ -57,11 +61,30 @@ function buildSegments(statistic: Statistic): Segment[] {
   return segments;
 }
 
+function fitPctFontSize(
+  ctx: SKRSContext2D,
+  text: string,
+  side: number,
+  maxWidth: number,
+): number {
+  let size = Math.round(side * PCT_FONT_RATIO);
+  const minSize = Math.max(8, Math.round(side * PCT_FONT_MIN_RATIO));
+  while (size > minSize) {
+    ctx.font = `bold ${size}px sans-serif`;
+    if (ctx.measureText(text).width <= maxWidth) {
+      return size;
+    }
+    size -= 1;
+  }
+  return minSize;
+}
+
 function drawCenterText(
   ctx: SKRSContext2D,
   centerX: number,
   centerY: number,
   side: number,
+  maxTextWidth: number,
   passed: number,
   total: number,
   theme: ChartTheme,
@@ -70,7 +93,7 @@ function drawCenterText(
   const percentageText = `${percentage.toFixed(2)}%`;
   const subText = `of ${total}`;
 
-  const pctSize = Math.round(side * PCT_FONT_RATIO);
+  const pctSize = fitPctFontSize(ctx, percentageText, side, maxTextWidth);
   const subSize = Math.round(side * SUB_FONT_RATIO);
 
   ctx.font = `bold ${pctSize}px sans-serif`;
@@ -183,7 +206,9 @@ function drawDonut(
     }
   }
 
-  drawCenterText(ctx, centerX, centerY, side, passed, total, theme);
+  const holeRadius = Math.max(0, radius - stroke / 2);
+  const maxTextWidth = holeRadius * 2 * INNER_TEXT_WIDTH_RATIO;
+  drawCenterText(ctx, centerX, centerY, side, maxTextWidth, passed, total, theme);
 }
 
 export function renderPiePanel(context: PanelContext): Buffer {

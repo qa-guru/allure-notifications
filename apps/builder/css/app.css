@@ -19,6 +19,8 @@ body {
   width: 100%;
   box-sizing: border-box;
   margin-inline: 0;
+  background: var(--color-surface-soft);
+  color: var(--color-text);
 }
 
 .anb-stub {
@@ -109,17 +111,14 @@ body {
 .anb-export-popover {
   position: fixed;
   z-index: 1200;
-  /* Room for WD-1410 (1410×1080) + pad/meta; JS scales stage to fit (keep in sync). */
+  /* Room for WD-1410 (1410×1080); JS scales stage to fit (keep in sync). */
   max-width: min(98vw, 1460px);
   max-height: min(96vh, 1160px);
-  padding: var(--space-2);
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-sm, 8px);
-  background: var(--color-surface);
-  box-shadow: 0 12px 40px rgba(26, 35, 48, 0.28);
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-2);
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
   overflow: hidden;
   pointer-events: auto;
 }
@@ -128,29 +127,16 @@ body {
   display: none !important;
 }
 
-.anb-export-popover__meta {
-  margin: 0;
-  font-size: var(--font-size-xs);
-  font-weight: 600;
-  letter-spacing: 0.02em;
-  color: var(--color-text-muted);
-  font-variant-numeric: tabular-nums;
-}
-
-.anb-export-popover__viewport {
-  overflow: hidden;
-  flex: 0 0 auto;
-  min-height: 0;
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-sm, 6px);
-  /* Jar CollageRenderer.outerBackground — overridden by data-anb-dark */
-  background: #222;
-}
-
 .anb-export-popover__stage {
   position: relative;
   transform-origin: top left;
+  /* Jar CollageRenderer.outerBackground dark */
   background: #222;
+}
+
+/* Export collage theme follows jar `base.darkMode`, not page header theme. */
+.anb-export-popover__stage[data-anb-dark="false"] {
+  background: #eef2f6;
 }
 
 .anb-export-popover__stage .anb-tg__widget.widget-tile {
@@ -183,14 +169,50 @@ body {
   aspect-ratio: 1 / 1;
 }
 
+.anb-messenger-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+
+.anb-messenger-tabs__btn {
+  padding: 4px 10px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm, 6px);
+  background: var(--color-surface);
+  color: var(--color-text-muted);
+  font: inherit;
+  font-size: var(--font-size-sm);
+  cursor: pointer;
+}
+
+.anb-messenger-tabs__btn.is-active {
+  border-color: var(--color-accent, #2563eb);
+  color: var(--color-text);
+  font-weight: 600;
+}
+
+.anb-messenger-tabs__btn--stub {
+  opacity: 0.55;
+  color: var(--color-text-muted);
+  border-style: dashed;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+.anb-messenger-tabs__btn--stub.is-active {
+  opacity: 0.85;
+  font-weight: 600;
+}
+
 /*
- * Jar `base.darkMode` → entire collage panel (outer grid + cards + chart inks).
- * Independent of page header theme. Palette SSOT: ChartTheme + outerBackground
- * (outer #222 · card #323232 · header #3c3c3c · light outer #eef2f6 · card #fff).
+ * Jar `base.darkMode` → page theme + collage / export / TG caption.
+ * Palette SSOT: ChartTheme + CollageRenderer (outer #222 · card #323232 · header #3c3c3c).
  */
 .anb-canvas[data-anb-dark="true"],
 .anb-export-popover__viewport[data-anb-dark="true"],
-.anb-export-popover__stage[data-anb-dark="true"] {
+.anb-export-popover__stage[data-anb-dark="true"],
+.anb-messenger-pane[data-anb-dark="true"] {
   --color-surface: #323232;
   --color-surface-soft: #3c3c3c;
   --color-text: #dcdcdc;
@@ -202,7 +224,8 @@ body {
 
 .anb-canvas[data-anb-dark="false"],
 .anb-export-popover__viewport[data-anb-dark="false"],
-.anb-export-popover__stage[data-anb-dark="false"] {
+.anb-export-popover__stage[data-anb-dark="false"],
+.anb-messenger-pane[data-anb-dark="false"] {
   --color-surface: #ffffff;
   --color-surface-soft: #f7f7f9;
   --color-text: #1a1a1a;
@@ -212,23 +235,13 @@ body {
   --color-status-passed-chart: #3bc95d;
 }
 
-.anb-canvas[data-anb-dark="true"],
-.anb-export-popover__viewport[data-anb-dark="true"],
-.anb-export-popover__stage[data-anb-dark="true"] {
-  background: #222;
-}
-
 .anb-canvas[data-anb-dark="true"] {
+  background: #222;
   --anb-resize-ink: rgba(255, 255, 255, 0.48);
 }
 
-.anb-canvas[data-anb-dark="false"],
-.anb-export-popover__viewport[data-anb-dark="false"],
-.anb-export-popover__stage[data-anb-dark="false"] {
-  background: #eef2f6;
-}
-
 .anb-canvas[data-anb-dark="false"] {
+  background: #eef2f6;
   --anb-resize-ink: rgba(26, 35, 48, 0.82);
 }
 
@@ -239,15 +252,15 @@ body {
 }
 
 .anb-canvas[data-anb-dark="false"] .grid-stack-item-content {
-  background: var(--color-surface, #fff);
-  color: var(--color-text, #1a1a1a);
-  box-shadow: inset 0 0 0 1px var(--color-border, rgba(210, 210, 214, 0.95));
+  background: #fff;
+  color: #1a1a1a;
+  box-shadow: inset 0 0 0 1px rgba(210, 210, 214, 0.95);
 }
 
 .anb-canvas[data-anb-dark="false"] .anb-panel__bar {
   border-bottom-color: rgba(26, 26, 26, 0.1);
-  background: var(--color-surface-soft, #f7f7f9);
-  color: var(--color-text, #1a1a1a);
+  background: #f7f7f9;
+  color: #1a1a1a;
 }
 
 .anb-canvas[data-anb-dark="false"] .anb-panel__action {
@@ -268,27 +281,14 @@ body {
   color: rgba(26, 26, 26, 0.4);
 }
 
-.anb-canvas[data-anb-dark="true"] .grid-stack-item-content {
-  background: var(--color-surface, #323232);
-  color: var(--color-text, #dcdcdc);
-  box-shadow: inset 0 0 0 1px var(--color-border, rgba(96, 96, 96, 0.9));
-}
-
-.anb-canvas[data-anb-dark="true"] .anb-panel__bar {
-  border-bottom-color: rgba(255, 255, 255, 0.1);
-  background: var(--color-surface-soft, #3c3c3c);
-  color: var(--color-text-muted, #b4b4b4);
-}
-
 /* Jar `base.enableChart: false` — gate collage editor chrome. */
-.anb-canvas-shell--chart-off {
-  position: relative;
+.anb-canvas--chart-off {
   opacity: 0.5;
   pointer-events: none;
   filter: grayscale(0.35);
 }
 
-.anb-canvas-shell--chart-off::after {
+.anb-canvas--chart-off::after {
   content: "enableChart: false";
   position: absolute;
   inset: 0;
@@ -303,7 +303,7 @@ body {
   pointer-events: none;
 }
 
-.anb-canvas-shell--chart-off:has(.anb-canvas[data-anb-dark="false"])::after {
+html.theme-light .anb-canvas--chart-off::after {
   color: rgba(26, 35, 48, 0.65);
   background: rgba(238, 242, 246, 0.55);
 }
@@ -328,10 +328,31 @@ body {
   display: none !important;
 }
 
-.anb-preview .anb-editor {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-3);
+.anb-messenger-pane--stub {
+  padding: var(--space-4);
+  border: 1px dashed var(--color-border);
+  border-radius: var(--radius-sm, 6px);
+  background: color-mix(in srgb, var(--color-surface) 92%, var(--color-text) 8%);
+}
+
+.anb-messenger-stub__title {
+  margin: 0 0 var(--space-2);
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+.anb-messenger-stub__hint {
+  margin: 0;
+  color: var(--color-text-muted);
+}
+
+/* Preview panel: canvas edge-to-edge; caption keeps its own inset. */
+.panel__body.anb-preview {
+  padding: 0;
+}
+
+.anb-preview > .anb-messenger-pane {
+  gap: 0;
 }
 
 .anb-editor__toolbar {
@@ -343,7 +364,7 @@ body {
 
 .anb-palette {
   display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: var(--space-2);
   width: 100%;
   min-width: 0;
@@ -396,6 +417,13 @@ body {
   height: 100%;
 }
 
+.anb-palette__tile .widget-tile__title {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  min-width: 0;
+}
+
 .anb-palette__hint {
   padding: 0 2px;
   font-size: 0.6875rem;
@@ -427,7 +455,7 @@ body {
   width: 100%;
   max-width: 480px;
   margin: 0;
-  padding: 0;
+  padding: var(--space-3) var(--space-4);
   background: transparent;
   color: var(--color-text, #f1f5f9);
   font-family: var(--font-sans, system-ui, sans-serif);
@@ -448,23 +476,12 @@ body {
   text-decoration: none;
 }
 
-html.theme-light .anb-editor__caption a {
+.anb-messenger-pane[data-anb-dark="false"] .anb-editor__caption a {
   color: #1c6fc2;
 }
 
 .anb-editor__caption a:hover {
   text-decoration: underline;
-}
-
-.anb-canvas-shell {
-  position: relative;
-  width: 100%;
-  overflow: auto;
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-sm, 6px);
-  background: color-mix(in srgb, var(--color-surface) 88%, var(--color-text) 12%);
-  padding: 4px;
-  box-sizing: border-box;
 }
 
 .anb-canvas {
@@ -474,7 +491,6 @@ html.theme-light .anb-editor__caption a {
   height: auto;
   overflow: hidden;
   aspect-ratio: var(--anb-canvas-w, 870) / var(--anb-canvas-h, 1080);
-  /* Default before data-anb-dark lands — jar outerBackground dark */
   background: #222;
   /* Jar free-grid chrome — synced from base.chart.* via JS */
   --anb-card-gap: 14px;
@@ -482,6 +498,7 @@ html.theme-light .anb-editor__caption a {
   --anb-bar-h: 22px;
   --anb-title-size: 0.75rem;
   --wt-pad: 6px;
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", sans-serif;
 }
 
 /*
@@ -496,8 +513,8 @@ html.theme-light .anb-editor__caption a {
   width: auto !important;
   height: auto !important;
   background-image:
-    linear-gradient(to right, rgba(255, 255, 255, 0.08) 1px, transparent 1px),
-    linear-gradient(to bottom, rgba(255, 255, 255, 0.08) 1px, transparent 1px);
+    linear-gradient(to right, rgba(255, 255, 255, 0.06) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(255, 255, 255, 0.06) 1px, transparent 1px);
   background-size: calc(100% / 10) calc(100% / 10);
 }
 
@@ -580,7 +597,6 @@ html.theme-light .anb-editor__caption a {
   padding: 0 6px 0 8px;
   border-bottom: 1px solid rgba(255, 255, 255, 0.1);
   background: var(--color-surface-soft, #3c3c3c);
-  color: var(--color-text-muted, #b4b4b4);
   flex-shrink: 0;
   position: relative;
   z-index: 2;
@@ -735,11 +751,10 @@ html.theme-light .anb-editor__caption a {
   opacity: 1;
 }
 
-/* !important — GridStack injects .gs-id-* { top: 0 } after our sheet.
- * Top corners on the cell edge (gutter), mirroring bottom brackets on card corner. */
+/* !important — GridStack injects .gs-id-* { top: 0 } after our sheet */
 .anb-canvas .grid-stack-item > .ui-resizable-ne,
 .anb-canvas .grid-stack-item > .ui-resizable-nw {
-  top: 0 !important;
+  top: calc(var(--anb-half-gap) + var(--anb-bar-h)) !important;
 }
 
 .anb-canvas .grid-stack-item > .ui-resizable-ne {
@@ -761,7 +776,7 @@ html.theme-light .anb-editor__caption a {
 }
 
 .anb-canvas .grid-stack-item > .ui-resizable-n {
-  top: 0 !important;
+  top: calc(var(--anb-half-gap) + var(--anb-bar-h)) !important;
   left: var(--anb-half-gap);
   right: var(--anb-half-gap);
   height: 8px;
@@ -770,7 +785,7 @@ html.theme-light .anb-editor__caption a {
 .anb-canvas .grid-stack-item > .ui-resizable-e,
 .anb-canvas .grid-stack-item > .ui-resizable-w {
   width: 8px;
-  top: var(--anb-resize-size) !important;
+  top: calc(var(--anb-half-gap) + var(--anb-bar-h) + 6px) !important;
   bottom: var(--anb-half-gap);
 }
 
@@ -790,19 +805,12 @@ html.theme-light .anb-editor__caption a {
 }
 
 .anb-canvas .grid-stack-item > .ui-resizable-ne::after,
-.anb-canvas .grid-stack-item > .ui-resizable-nw::after {
-  content: "";
-  position: absolute;
-  inset: 0 2px 2px 2px;
-  pointer-events: none;
-  box-sizing: border-box;
-}
-
+.anb-canvas .grid-stack-item > .ui-resizable-nw::after,
 .anb-canvas .grid-stack-item > .ui-resizable-se::after,
 .anb-canvas .grid-stack-item > .ui-resizable-sw::after {
   content: "";
   position: absolute;
-  inset: 2px 2px 0 2px;
+  inset: 2px;
   pointer-events: none;
   box-sizing: border-box;
 }
@@ -845,6 +853,22 @@ html.theme-light .anb-editor__caption a {
 .anb-group__hint {
   margin: 0;
   color: var(--color-text-muted);
+}
+
+.anb-group__hint--stubs {
+  margin-top: var(--space-3);
+}
+
+.anb-messenger-stub {
+  opacity: 0.55;
+  pointer-events: none;
+  cursor: not-allowed;
+  user-select: none;
+}
+
+.anb-messenger-stub .plaque-field__value {
+  color: var(--color-text-muted);
+  font-style: italic;
 }
 
 /* —— Telegram identity (preview bar) —— */
@@ -927,6 +951,37 @@ html.theme-light .anb-editor__caption a {
   font-size: var(--font-size-xs);
   line-height: 1.45;
 }
+
+/*
+ * Terminal chrome follows page theme (product override — DS tone is otherwise
+ * independent of html.theme-light). CSS SSOT so light theme works even if JS
+ * class toggle is stale/cached.
+ */
+html.theme-light .anb-zone--terminal .panel--terminal {
+  --panel-bg: #ffffff;
+  --panel-border: rgba(28, 25, 23, 0.12);
+  --panel-bar-bg: rgba(28, 25, 23, 0.03);
+  --panel-title-color: rgba(28, 25, 23, 0.55);
+  --panel-code-color: #1c1917;
+  --panel-action-color: rgba(28, 25, 23, 0.55);
+  --panel-action-hover-color: rgba(28, 25, 23, 0.92);
+  --panel-action-hover-bg: rgba(28, 25, 23, 0.06);
+  --panel-action-focus: rgba(28, 25, 23, 0.65);
+  --panel-tab-border: rgba(28, 25, 23, 0.12);
+  --panel-tab-color: rgba(28, 25, 23, 0.45);
+  --panel-tab-hover-border: rgba(28, 25, 23, 0.28);
+  --panel-tab-hover-color: rgba(28, 25, 23, 0.72);
+  --panel-tab-active-color: rgba(28, 25, 23, 0.92);
+}
+
+html.theme-light .anb-zone--terminal .ch-theme--vscode .ch-tok-key { color: #0451a5; }
+html.theme-light .anb-zone--terminal .ch-theme--vscode .ch-tok-str { color: #a31515; }
+html.theme-light .anb-zone--terminal .ch-theme--vscode .ch-tok-num { color: #098658; }
+html.theme-light .anb-zone--terminal .ch-theme--vscode .ch-tok-bool { color: #0000ff; }
+html.theme-light .anb-zone--terminal .ch-theme--vscode .ch-tok-null { color: #0000ff; }
+html.theme-light .anb-zone--terminal .ch-theme--vscode .ch-tok-punct { color: #393a34; opacity: 0.55; }
+html.theme-light .anb-zone--terminal .ch-theme--vscode .ch-tok-comment { color: #008000; }
+html.theme-light .anb-zone--terminal .ch-theme--vscode .ch-tok-cmd { color: #795e26; }
 
 @media (min-width: 769px) {
   .anb-layout {

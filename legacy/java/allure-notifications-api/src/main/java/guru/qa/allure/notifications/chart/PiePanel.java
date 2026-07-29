@@ -38,7 +38,10 @@ public class PiePanel implements ChartPanel {
     private static final double RING_STROKE_RATIO = 0.085;
     private static final double RING_MARGIN_RATIO = 0.14;
     private static final double PCT_FONT_RATIO = 0.15;
+    private static final double PCT_FONT_MIN_RATIO = 0.09;
     private static final double SUB_FONT_RATIO = 0.06;
+    /** Usable fraction of the donut hole diameter for the % label (breathing room). */
+    private static final double INNER_TEXT_WIDTH_RATIO = 0.68;
     // Visual gap between neighbouring segments, in degrees.
     private static final double SEGMENT_GAP_DEGREES = 3.0;
 
@@ -154,16 +157,33 @@ public class PiePanel implements ChartPanel {
             }
         }
 
-        drawCenterText(graphics, centerX, centerY, side, passed, total, theme);
+        double radius = diameter / 2.0;
+        double holeRadius = Math.max(0.0, radius - stroke / 2.0);
+        double maxTextWidth = holeRadius * 2.0 * INNER_TEXT_WIDTH_RATIO;
+        drawCenterText(graphics, centerX, centerY, side, maxTextWidth, passed, total, theme);
+    }
+
+    private Font fitPctFont(Graphics2D graphics, String text, double side, double maxWidth) {
+        int size = (int) Math.round(side * PCT_FONT_RATIO);
+        int minSize = Math.max(8, (int) Math.round(side * PCT_FONT_MIN_RATIO));
+        while (size > minSize) {
+            Font font = new Font(Font.SANS_SERIF, Font.BOLD, size);
+            graphics.setFont(font);
+            if (graphics.getFontMetrics().stringWidth(text) <= maxWidth) {
+                return font;
+            }
+            size -= 1;
+        }
+        return new Font(Font.SANS_SERIF, Font.BOLD, minSize);
     }
 
     private void drawCenterText(Graphics2D graphics, double centerX, double centerY, double side,
-                                int passed, int total, ChartTheme theme) {
+                                double maxTextWidth, int passed, int total, ChartTheme theme) {
         double percentage = total > 0 ? (double) passed / total * 100.0 : 0.0;
         String percentageText = String.format(Locale.US, "%.2f%%", percentage);
         String subText = "of " + total;
 
-        Font percentageFont = new Font(Font.SANS_SERIF, Font.BOLD, (int) Math.round(side * PCT_FONT_RATIO));
+        Font percentageFont = fitPctFont(graphics, percentageText, side, maxTextWidth);
         Font subFont = new Font(Font.SANS_SERIF, Font.PLAIN, (int) Math.round(side * SUB_FONT_RATIO));
 
         graphics.setFont(percentageFont);

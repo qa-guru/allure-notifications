@@ -3,10 +3,10 @@ const { test, expect } = require('@playwright/test');
 
 /** SQ-1080 canon 4-tile — must match @allure-notifications/config DEFAULT_ITEMS + CANON.md */
 const SQ1080_ITEMS = [
-  { type: 'pie', x: 0, y: 0, w: 4, h: 4 },
-  { type: 'durationDynamics', x: 4, y: 0, w: 6, h: 4 },
-  { type: 'testingPyramid', x: 0, y: 4, w: 3, h: 3 },
-  { type: 'durations', x: 3, y: 4, w: 4, h: 3, groupBy: 'layer' },
+  { type: 'pie', x: 0, y: 0, w: 4, h: 5 },
+  { type: 'durationDynamics', x: 4, y: 0, w: 6, h: 5 },
+  { type: 'testingPyramid', x: 0, y: 5, w: 4, h: 5 },
+  { type: 'durations', x: 4, y: 5, w: 6, h: 5, groupBy: 'layer' },
 ];
 
 test.describe('allure-notifications-builder smoke', () => {
@@ -129,10 +129,14 @@ test.describe('allure-notifications-builder smoke', () => {
     expect(await canvasRatio('1410x1080')).toBeCloseTo(1410 / 1080, 2);
   });
 
-  test('telegram messenger fields visible', async ({ page }) => {
+  test('telegram live; other messengers stubs', async ({ page }) => {
     await page.goto('/');
-    await expect(page.getByTestId('anb-messenger-telegram')).toBeVisible();
-    await expect(page.getByTestId('anb-group-messengers')).toBeVisible();
+    await expect(page.getByTestId('anb-tab-telegram')).toBeVisible();
+    await expect(page.getByTestId('anb-stub-slack')).toBeVisible();
+    await expect(page.getByTestId('anb-tab-slack')).toHaveAttribute(
+      'aria-disabled',
+      'true',
+    );
   });
 
   test('export preview links in preview bar; caption under canvas', async ({ page }) => {
@@ -170,14 +174,15 @@ test.describe('allure-notifications-builder smoke', () => {
     await page.getByTestId('anb-export-full').hover();
     const popover = page.getByTestId('anb-export-popover');
     await expect(popover).toBeVisible();
-    await expect(popover.locator('#anb-export-popover-meta')).toContainText('1410×1080');
+    await expect(popover.locator('#anb-export-popover-meta')).toHaveCount(0);
+    await expect(popover.locator('#anb-export-popover-viewport')).toHaveCount(0);
     const fit = await page.evaluate(() => {
-      const viewport = document.getElementById('anb-export-popover-viewport');
+      const pop = document.getElementById('anb-export-popover');
       const stage = document.getElementById('anb-export-popover-stage');
-      if (!(viewport instanceof HTMLElement) || !(stage instanceof HTMLElement)) {
+      if (!(pop instanceof HTMLElement) || !(stage instanceof HTMLElement)) {
         return { ok: false, reason: 'missing nodes' };
       }
-      const vw = viewport.getBoundingClientRect();
+      const box = pop.getBoundingClientRect();
       const scaleMatch = /scale\(([\d.]+)\)/.exec(stage.style.transform || '');
       const scale = scaleMatch ? Number(scaleMatch[1]) : 1;
       const logicalW = parseFloat(stage.style.width) || 0;
@@ -188,13 +193,13 @@ test.describe('allure-notifications-builder smoke', () => {
         ok:
           logicalW === 1410 &&
           logicalH === 1080 &&
-          Math.abs(vw.width - expectedW) <= 2 &&
-          Math.abs(vw.height - expectedH) <= 2,
+          Math.abs(box.width - expectedW) <= 2 &&
+          Math.abs(box.height - expectedH) <= 2,
         logicalW,
         logicalH,
         scale,
-        vwW: vw.width,
-        vwH: vw.height,
+        boxW: box.width,
+        boxH: box.height,
         expectedW,
         expectedH,
       };
@@ -231,11 +236,12 @@ test.describe('allure-notifications-builder smoke', () => {
     const enable = page.getByTestId('anb-bool-enableChart');
     const dark = page.getByTestId('anb-bool-darkMode');
     const terminal = page.getByTestId('anb-terminal');
+    const termPanel = page.getByTestId('anb-terminal-panel');
     const canvas = page.getByTestId('anb-canvas');
-    const shell = page.getByTestId('anb-canvas-shell');
 
     await expect(canvas).toHaveAttribute('data-anb-dark', 'true');
-    await expect(shell).not.toHaveClass(/anb-canvas-shell--chart-off/);
+    await expect(canvas).not.toHaveClass(/anb-canvas--chart-off/);
+    await expect(termPanel).not.toHaveClass(/panel--terminal-light/);
 
     await dark.locator('.plaque-field-seg__btn[data-value="false"]').click();
     await expect(dark.locator('.plaque-field-seg__btn--on')).toHaveAttribute(
@@ -244,18 +250,24 @@ test.describe('allure-notifications-builder smoke', () => {
     );
     await expect(terminal).toContainText('"darkMode": false');
     await expect(canvas).toHaveAttribute('data-anb-dark', 'false');
-    // Entire grid panel (outer + card + chart body), not just the grid lines.
-    await expect(canvas).toHaveCSS('background-color', 'rgb(238, 242, 246)');
-    const card = page.locator('#anb-grid .grid-stack-item-content').first();
-    const chartBody = page.locator('#anb-grid .widget-tile__body').first();
-    await expect(card).toHaveCSS('background-color', 'rgb(255, 255, 255)');
-    await expect(chartBody).toHaveCSS('background-color', 'rgb(255, 255, 255)');
+    await expect(page.locator('html')).toHaveClass(/theme-light/);
+    await expect(termPanel).toHaveClass(/panel--terminal-light/);
 
-    await dark.locator('.plaque-field-seg__btn[data-value="true"]').click();
+    // Header theme toggle ↔ base.darkMode (same SSOT).
+    await page.locator('[data-testid="header-theme-toggle"]').click();
+    await expect(page.locator('html')).not.toHaveClass(/theme-light/);
+    await expect(dark.locator('.plaque-field-seg__btn--on')).toHaveAttribute(
+      'data-value',
+      'true',
+    );
+    await expect(terminal).toContainText('"darkMode": true');
     await expect(canvas).toHaveAttribute('data-anb-dark', 'true');
-    await expect(canvas).toHaveCSS('background-color', 'rgb(34, 34, 34)');
-    await expect(card).toHaveCSS('background-color', 'rgb(50, 50, 50)');
-    await expect(chartBody).toHaveCSS('background-color', 'rgb(50, 50, 50)');
+    await expect(termPanel).not.toHaveClass(/panel--terminal-light/);
+
+    await dark.locator('.plaque-field-seg__btn[data-value="false"]').click();
+    await expect(page.locator('html')).toHaveClass(/theme-light/);
+    await expect(canvas).toHaveAttribute('data-anb-dark', 'false');
+    await expect(termPanel).toHaveClass(/panel--terminal-light/);
 
     await enable.locator('.plaque-field-seg__btn[data-value="false"]').click();
     await expect(enable.locator('.plaque-field-seg__btn--on')).toHaveAttribute(
@@ -263,10 +275,10 @@ test.describe('allure-notifications-builder smoke', () => {
       'false',
     );
     await expect(terminal).toContainText('"enableChart": false');
-    await expect(shell).toHaveClass(/anb-canvas-shell--chart-off/);
+    await expect(canvas).toHaveClass(/anb-canvas--chart-off/);
 
     await enable.locator('.plaque-field-seg__btn[data-value="true"]').click();
-    await expect(shell).not.toHaveClass(/anb-canvas-shell--chart-off/);
+    await expect(canvas).not.toHaveClass(/anb-canvas--chart-off/);
     await expect(terminal).toContainText('"enableChart": true');
   });
 

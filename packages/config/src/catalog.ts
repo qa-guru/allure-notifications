@@ -1,10 +1,6 @@
 /**
  * Panel catalog extracted from allure-notifications-builder `js/app.js`.
  * 17 slots ↔ awesome-charts / ChartType (+ groupBy / by variants).
- *
- * Palette add footprint is always 2×2 (`defaultW` / `defaultH`).
- * `hint` = panel title (palette caption under thumb).
- * Grid layout footprints live only in `DEFAULT_ITEMS` / vector `items` — never here.
  */
 
 export type PanelMeta = {
@@ -28,106 +24,147 @@ export type ChartItem = {
   by?: string;
 };
 
-/** Palette / add-from-catalog footprint — not grid preset sizes. */
-const PALETTE_W = 2;
-const PALETTE_H = 2;
-
-type PanelSeed = Omit<PanelMeta, "hint" | "defaultW" | "defaultH">;
-
-function panel(seed: PanelSeed): PanelMeta {
-  return {
-    ...seed,
-    hint: seed.title,
-    defaultW: PALETTE_W,
-    defaultH: PALETTE_H,
-  };
-}
-
+/**
+ * Palette / add-from-catalog footprint is always 2×2 (`hint` + defaultW/H).
+ * Grid preset sizes live in `DEFAULT_ITEMS` (presets.ts) — do not mix them here.
+ */
 /** @type {ReadonlyArray<PanelMeta>} */
 export const PANEL_CATALOG: ReadonlyArray<PanelMeta> = Object.freeze([
-  panel({ id: "pie", type: "pie", title: "Current status" }),
-  panel({
+  { id: "pie", type: "pie", title: "Current status", hint: "2×2", defaultW: 2, defaultH: 2 },
+  {
     id: "testingPyramid",
     type: "testingPyramid",
     title: "Testing pyramid",
-  }),
-  panel({
+    hint: "2×2",
+    defaultW: 2,
+    defaultH: 2,
+  },
+  {
     id: "durationsByLayer",
     type: "durations",
     groupBy: "layer",
     title: "Durations by layer",
-  }),
-  panel({
+    hint: "2×2",
+    defaultW: 2,
+    defaultH: 2,
+  },
+  {
     id: "durationDynamics",
     type: "durationDynamics",
     title: "Duration dynamics",
-  }),
-  panel({
+    hint: "2×2",
+    defaultW: 2,
+    defaultH: 2,
+  },
+  {
     id: "statusAgePyramid",
     type: "statusAgePyramid",
     title: "Status age pyramid",
-  }),
-  panel({ id: "durations", type: "durations", title: "Durations" }),
-  panel({
+    hint: "2×2",
+    defaultW: 2,
+    defaultH: 2,
+  },
+  {
+    id: "durations",
+    type: "durations",
+    title: "Durations",
+    hint: "2×2",
+    defaultW: 2,
+    defaultH: 2,
+  },
+  {
     id: "coverageDiff",
     type: "coverageDiff",
     title: "Coverage diff",
-  }),
-  panel({
+    hint: "2×2",
+    defaultW: 2,
+    defaultH: 2,
+  },
+  {
     id: "problemsDistribution",
     type: "problemsDistribution",
     by: "environment",
     title: "Problems by environment",
-  }),
-  panel({
+    hint: "2×2",
+    defaultW: 2,
+    defaultH: 2,
+  },
+  {
     id: "successRateDistribution",
     type: "successRateDistribution",
     title: "Success rate",
-  }),
-  panel({
+    hint: "2×2",
+    defaultW: 2,
+    defaultH: 2,
+  },
+  {
     id: "testResultSeverities",
     type: "testResultSeverities",
     title: "Results by severity",
-  }),
-  panel({
+    hint: "2×2",
+    defaultW: 2,
+    defaultH: 2,
+  },
+  {
     id: "statusTransitions",
     type: "statusTransitions",
     title: "Status transitions",
-  }),
-  panel({
+    hint: "2×2",
+    defaultW: 2,
+    defaultH: 2,
+  },
+  {
     id: "testBaseGrowthDynamics",
     type: "testBaseGrowthDynamics",
     title: "Test base growth",
-  }),
-  panel({
+    hint: "2×2",
+    defaultW: 2,
+    defaultH: 2,
+  },
+  {
     id: "statusDynamics",
     type: "statusDynamics",
     title: "Status dynamics",
-  }),
-  panel({
+    hint: "2×2",
+    defaultW: 2,
+    defaultH: 2,
+  },
+  {
     id: "stabilityByComponent",
     type: "stabilityDistribution",
     groupBy: "label-name:component",
     title: "Stability by component",
-  }),
-  panel({
+    hint: "2×2",
+    defaultW: 2,
+    defaultH: 2,
+  },
+  {
     id: "stabilityByFeature",
     type: "stabilityDistribution",
     groupBy: "feature",
     title: "Stability by feature",
-  }),
-  panel({
+    hint: "2×2",
+    defaultW: 2,
+    defaultH: 2,
+  },
+  {
     id: "stabilityByEpic",
     type: "stabilityDistribution",
     groupBy: "epic",
     title: "Stability by epic",
-  }),
-  panel({
+    hint: "2×2",
+    defaultW: 2,
+    defaultH: 2,
+  },
+  {
     id: "stabilityByStory",
     type: "stabilityDistribution",
     groupBy: "story",
     title: "Stability by story",
-  }),
+    hint: "2×2",
+    defaultW: 2,
+    defaultH: 2,
+  },
 ]);
 
 export const PANEL_META: Readonly<Record<string, PanelMeta>> = Object.freeze(

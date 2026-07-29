@@ -22,10 +22,12 @@ import {
   TIER_GAP_RATIO,
 } from '@allure-notifications/pyramid';
 import { mountHighlightedOutput } from '../vendor/design-system/js/code-highlight.js';
+import { syncThemeToggleIcon } from '../vendor/design-system/js/theme-icons.js';
 
 /**
  * apps/builder — TypeScript source (emit → `js/` for Pages / stand).
- * Theme: header.js toggles html.theme-light on the whole page.
+ * Theme SSOT: jar `base.darkMode` ↔ page `html.theme-light` (header toggle + bool seg).
+ * Collage / export preview: `[data-anb-dark]` from the same flag.
  *
  * Free layout on 10×10. Canvas presets: 870×1080 · 1080×1080 · 1410×1080.
  * Output shape matches jar Config (top-level telegram; layout free + items).
@@ -57,11 +59,15 @@ function createDefaultState(): BuilderState {
   return createDefaultConfig();
 }
 
+/** Stable alias — always resolves to code SSOT (`createDefaultConfig` / DEFAULT_ITEMS). */
+const DEFAULT_VECTOR_ID = 'vector#default';
+
 const state: BuilderState = createDefaultState();
 
 let grid: GridStack | null = null;
 let selectedEl: HTMLElement | null = null;
 let suppressSync = false;
+let activeMessenger = 'telegram';
 let vectorDraft: string | null = null;
 let vectorMiss = false;
 
@@ -147,12 +153,16 @@ function cloneSnap(snap: Record<string, unknown>) {
 function loadVectorRegistry(): Map<string, Record<string, unknown>> {
   const map = new Map();
   const defaults = createDefaultState();
-  map.set(fingerprintFromSnap(defaults), cloneSnap(defaults));
+  const defaultFp = fingerprintFromSnap(defaults);
+  map.set(defaultFp, cloneSnap(defaults));
+  map.set(DEFAULT_VECTOR_ID, cloneSnap(defaults));
   try {
     const raw = localStorage.getItem(VECTOR_REGISTRY_KEY);
     if (!raw) return map;
     const parsed = JSON.parse(raw);
     for (const [id, snap] of Object.entries(parsed)) {
+      /* Code SSOT wins over a stale localStorage `vector#default`. */
+      if (id === DEFAULT_VECTOR_ID) continue;
       if (snap && typeof snap === 'object' && 'base' in snap) {
         map.set(id, cloneSnap(/** @type {Record<string, unknown>} */ (snap)));
       }
@@ -179,9 +189,12 @@ const vectorRegistry = loadVectorRegistry();
 function rememberSnap(snap: Record<string, unknown>) {
   const id = fingerprintFromSnap(snap);
   vectorRegistry.set(id, cloneSnap(snap));
+  /* Keep alias pointed at code SSOT (not the live edited snap). */
+  vectorRegistry.set(DEFAULT_VECTOR_ID, cloneSnap(createDefaultState()));
   try {
     const obj: Record<string, Record<string, unknown>> = {};
     vectorRegistry.forEach((s, key) => {
+      if (key === DEFAULT_VECTOR_ID) return;
       obj[key] = s;
     });
     localStorage.setItem(VECTOR_REGISTRY_KEY, JSON.stringify(obj));
@@ -359,8 +372,7 @@ function syncEditorChrome() {
 
 /**
  * Drive `--layer-*` + geometry ratios from `@pyramid` (SSOT over DS token pin).
- * Collage follows jar `base.darkMode` via `[data-anb-dark]`; page header theme
- * stays independent (`html.theme-light` for chrome only).
+ * Page chrome + collage share the same dark/light palettes (`base.darkMode` sync).
  */
 function injectPyramidSsot() {
   const id = 'anb-pyramid-ssot';
@@ -377,11 +389,13 @@ function injectPyramidSsot() {
   const collageDark =
     '.anb-canvas[data-anb-dark="true"], ' +
     '.anb-export-popover__viewport[data-anb-dark="true"], ' +
-    '.anb-export-popover__stage[data-anb-dark="true"]';
+    '.anb-export-popover__stage[data-anb-dark="true"], ' +
+    '.anb-messenger-pane[data-anb-dark="true"]';
   const collageLight =
     '.anb-canvas[data-anb-dark="false"], ' +
     '.anb-export-popover__viewport[data-anb-dark="false"], ' +
-    '.anb-export-popover__stage[data-anb-dark="false"]';
+    '.anb-export-popover__stage[data-anb-dark="false"], ' +
+    '.anb-messenger-pane[data-anb-dark="false"]';
   style.textContent = [
     ':root {',
     layerBlock(PYRAMID_COLORS_DARK),
@@ -399,6 +413,51 @@ function injectPyramidSsot() {
     layerBlock(PYRAMID_COLORS_LIGHT),
     '}',
   ].join('\n');
+}
+
+function themeToggleButtons() {
+  return [
+    ...document.querySelectorAll<HTMLElement>(
+      '[data-testid="header-theme-toggle"], [data-testid="header-menu-theme-toggle"]',
+    ),
+  ];
+}
+
+/** Align page `html.theme-light` + header icon + terminal chrome with jar `base.darkMode`. */
+function syncPageThemeFromDarkMode(darkMode: boolean) {
+  document.documentElement.classList.toggle('theme-light', !darkMode);
+  for (const btn of themeToggleButtons()) {
+    syncThemeToggleIcon(btn);
+  }
+  /* Terminal paper follows page theme (DS: panel--terminal-light). */
+  const termPanel =
+    document.querySelector<HTMLElement>('[data-testid="anb-terminal-panel"]') ??
+    document.getElementById('anb-terminal')?.closest<HTMLElement>('.panel--terminal');
+  if (termPanel) {
+    termPanel.classList.toggle('panel--terminal-light', !darkMode);
+  }
+}
+
+/**
+ * Header sun/moon also writes `base.darkMode` (same SSOT as Options seg).
+ * Observe `html.theme-light` — do not rely on click/`closest` (Playwright may
+ * hit a detached SVG inside the icon after `setThemeIcon` rewrites the button).
+ * No loop: when jar already matches page theme, we skip writes.
+ */
+function wireHeaderThemeDarkModeSync() {
+  const syncFromPageTheme = () => {
+    const darkMode = !document.documentElement.classList.contains('theme-light');
+    if (Boolean(getPath('base.darkMode')) === darkMode) return;
+    setPath('base.darkMode', darkMode);
+    const field = document.querySelector('[data-anb-bool="base.darkMode"]');
+    if (field instanceof HTMLElement) syncBoolSeg(field, darkMode);
+    applyChartFlags();
+    renderTerminal();
+  };
+  new MutationObserver(syncFromPageTheme).observe(document.documentElement, {
+    attributes: true,
+    attributeFilter: ['class'],
+  });
 }
 
 /**
@@ -493,7 +552,7 @@ function renderVectorInput() {
   input.setAttribute('aria-invalid', vectorMiss ? 'true' : 'false');
   input.title = vectorMiss
     ? 'Не найден в localStorage — сначала получи этот vector, меняя опции'
-    : 'Отпечаток конфига · вставь известный vector# + Enter — подтянуть';
+    : 'Отпечаток конфига · Enter — подтянуть · vector#default — CB-870 layout';
 }
 
 function renderTerminal() {
@@ -504,6 +563,8 @@ function renderTerminal() {
 }
 
 /**
+ * Apply a caps snap to controls + grid. Grid footprints always come from
+ * `snap.base.chart.items` (vector state) — never from palette catalog defaults.
  * @param {Record<string, unknown>} snap
  */
 function applySnap(snap: Record<string, unknown>) {
@@ -517,10 +578,16 @@ function applySnap(snap: Record<string, unknown>) {
   applyCanvasMetrics();
   const chart = /** @type {{ items?: ChartItem[] }} */ (state.base.chart);
   loadItems(Array.isArray(chart.items) ? chart.items.map((p) => ({ ...p })) : []);
+  setActiveMessenger('telegram');
   scheduleFitEditorScale();
   renderTerminal();
   renderMessengerPreview();
   renderVectorInput();
+}
+
+/** First paint / Reset — default vector = `createDefaultConfig` (DEFAULT_ITEMS on CB-870). */
+function applyDefaultVector() {
+  applySnap(createDefaultState());
 }
 
 /**
@@ -533,6 +600,10 @@ function commitVector(raw: string) {
   if (!normalized || normalized === vectorId) {
     vectorMiss = false;
     renderVectorInput();
+    return;
+  }
+  if (normalized === DEFAULT_VECTOR_ID) {
+    applyDefaultVector();
     return;
   }
   const snap = vectorRegistry.get(normalized);
@@ -750,31 +821,23 @@ function renderCollageStage(stage: HTMLElement, mode: 'tg' | 'full') {
     window.WidgetTileMocks.fill(stage, { force: true });
   }
 
-  const viewport = document.getElementById('anb-export-popover-viewport');
-  const meta = document.getElementById('anb-export-popover-meta');
+  const popover = document.getElementById('anb-export-popover');
   let scale = 1;
   if (mode === 'tg') {
     scale = TG_FEED_PREVIEW_WIDTH / chart.width;
   } else {
-    // Keep in sync with .anb-export-popover max-width/max-height + pad/meta chrome.
-    const maxBoxW = Math.min(window.innerWidth * 0.98, 1460) - 20;
-    const maxBoxH = Math.min(window.innerHeight * 0.96, 1160) - 48;
+    // Keep in sync with .anb-export-popover max-width/max-height.
+    const maxBoxW = Math.min(window.innerWidth * 0.98, 1460);
+    const maxBoxH = Math.min(window.innerHeight * 0.96, 1160);
     scale = Math.min(1, maxBoxW / chart.width, maxBoxH / chart.height);
   }
   stage.style.transform = scale === 1 ? 'none' : `scale(${scale})`;
 
   const displayW = Math.round(chart.width * scale);
   const displayH = Math.round(chart.height * scale);
-  if (viewport instanceof HTMLElement) {
-    viewport.style.width = `${displayW}px`;
-    viewport.style.height = `${displayH}px`;
-  }
-  if (meta) {
-    if (mode === 'tg') {
-      meta.textContent = `${displayW}×${displayH} · TG feed preview (~${TG_FEED_PREVIEW_WIDTH}px wide)`;
-    } else {
-      meta.textContent = `${chart.width}×${chart.height} · full canvas export`;
-    }
+  if (popover instanceof HTMLElement) {
+    popover.style.width = `${displayW}px`;
+    popover.style.height = `${displayH}px`;
   }
 }
 
@@ -903,6 +966,43 @@ function renderMessengerPreview() {
 }
 
 /**
+ * @param {string} id
+ */
+function setActiveMessenger(id: string) {
+  activeMessenger = id;
+  document.querySelectorAll('[data-anb-messenger]').forEach((btn) => {
+    if (!(btn instanceof HTMLElement)) return;
+    const on = btn.getAttribute('data-anb-messenger') === id;
+    btn.classList.toggle('is-active', on);
+    btn.setAttribute('aria-selected', on ? 'true' : 'false');
+  });
+  document.querySelectorAll('[data-anb-messenger-pane]').forEach((pane) => {
+    if (!(pane instanceof HTMLElement)) return;
+    const on = pane.getAttribute('data-anb-messenger-pane') === id;
+    pane.hidden = !on;
+  });
+  if (id === 'telegram') {
+    scheduleFitEditorScale();
+  }
+}
+
+function wireMessengerTabs() {
+  const tabs = document.getElementById('anb-messenger-tabs');
+  if (!tabs) return;
+  tabs.addEventListener('click', (event) => {
+    const t = event.target;
+    if (!(t instanceof Element)) return;
+    const tab = t.closest('[data-anb-messenger]');
+    if (!(tab instanceof HTMLElement) || !tabs.contains(tab)) return;
+    if (tab.classList.contains('anb-messenger-tabs__btn--stub')) return;
+    if (tab.getAttribute('aria-disabled') === 'true') return;
+    const id = tab.getAttribute('data-anb-messenger');
+    if (!id) return;
+    setActiveMessenger(id);
+  });
+}
+
+/**
  * @param {HTMLElement} root
  * @param {boolean} value
  */
@@ -916,29 +1016,33 @@ function syncBoolSeg(root: HTMLElement, value: boolean) {
 }
 
 /**
- * Mirror jar flags onto the collage preview: `base.darkMode` → entire grid panel
- * (outer + cards + chart inks / export stage), `base.enableChart` → chrome gated.
+ * Mirror jar flags onto UI: `base.darkMode` → page theme + collage / export / TG pane,
+ * `base.enableChart` → editor/chart chrome gated.
  */
 function applyChartFlags() {
   const enableChart = Boolean(getPath('base.enableChart'));
   const darkMode = Boolean(getPath('base.darkMode'));
   const anbDark = darkMode ? 'true' : 'false';
 
+  syncPageThemeFromDarkMode(darkMode);
+
   for (const id of [
     'anb-canvas',
     'anb-export-popover-viewport',
     'anb-export-popover-stage',
+    'anb-messenger-telegram',
   ]) {
     const el = document.getElementById(id);
     if (el instanceof HTMLElement) {
       el.dataset.anbDark = anbDark;
     }
   }
+  syncEditorChrome();
 
-  const shell = document.getElementById('anb-canvas-shell');
-  if (shell instanceof HTMLElement) {
-    shell.classList.toggle('anb-canvas-shell--chart-off', !enableChart);
-    shell.setAttribute('aria-disabled', enableChart ? 'false' : 'true');
+  const canvas = document.getElementById('anb-canvas');
+  if (canvas instanceof HTMLElement) {
+    canvas.classList.toggle('anb-canvas--chart-off', !enableChart);
+    canvas.setAttribute('aria-disabled', enableChart ? 'false' : 'true');
   }
 
   const chartGroup = document.querySelector('[data-testid="anb-group-chart"]');
@@ -961,10 +1065,6 @@ function applyChartFlags() {
   const clearBtn = document.getElementById('anb-btn-clear');
   if (resetBtn instanceof HTMLButtonElement) resetBtn.disabled = !enableChart;
   if (clearBtn instanceof HTMLButtonElement) clearBtn.disabled = !enableChart;
-  syncEditorChrome();
-  /* Pyramid/layer inks may bake getComputedStyle at fill — refresh on theme flip. */
-  fillEditorMocks();
-  refreshExportPopoverIfOpen();
   updateToolbar();
 }
 
@@ -1373,9 +1473,9 @@ function loadItems(items: ChartItem[]) {
   syncItemsToState();
 }
 
-/** Full reset → CB-870 default (canvas 870×1080 + DEFAULT_ITEMS + empty fields). */
+/** Full reset → default vector (CB-870 + DEFAULT_ITEMS). */
 function resetToDefault() {
-  applySnap(createDefaultState());
+  applyDefaultVector();
 }
 
 function clearAll() {
@@ -1393,6 +1493,7 @@ function clearAll() {
  */
 function paletteItemHtml(item: PanelMeta): string {
   const chartType = item.type === 'pie' ? 'currentStatus' : item.type;
+  const hint = `${DEFAULT_TILE_W}×${DEFAULT_TILE_H}`;
   let attrs = `data-chart="${escapeHtml(chartType)}"`;
   if (item.groupBy) attrs += ` data-group-by="${escapeHtml(item.groupBy)}"`;
   if (item.by) attrs += ` data-by="${escapeHtml(item.by)}"`;
@@ -1401,10 +1502,12 @@ function paletteItemHtml(item: PanelMeta): string {
     `<button type="button" class="anb-palette__item" data-anb-panel-id="${escapeHtml(item.id)}" ` +
     `data-testid="anb-palette-${escapeHtml(item.id)}" draggable="true" title="${escapeHtml(item.title)}">` +
     `<div class="widget-tile widget-tile--tier-micro widget-tile--span-2x2 anb-palette__tile" ${attrs}>` +
-    `<div class="widget-tile__bar"></div>` +
+    `<div class="widget-tile__bar">` +
+    `<span class="widget-tile__title">${escapeHtml(item.title)}</span>` +
+    `</div>` +
     `<div class="widget-tile__body"></div>` +
     `</div>` +
-    `<span class="anb-palette__hint">${escapeHtml(item.title)}</span>` +
+    `<span class="anb-palette__hint">${hint}</span>` +
     `</button>`
   );
 }
@@ -1628,26 +1731,20 @@ function initGrid() {
 
 function init() {
   injectPyramidSsot();
-  hydrateControls();
   bindControls();
+  wireHeaderThemeDarkModeSync();
+  wireMessengerTabs();
   wireExportPreviews();
   wireVectorInput();
-  applyCanvasMetrics();
   renderPalette();
   wireCanvasDrop();
   wireEditorChrome();
   initGrid();
-  loadItems(
-    /** @type {ChartItem[]} */ (
-      /** @type {{ items: ChartItem[] }} */ (state.base.chart).items
-    ),
-  );
-  scheduleFitEditorScale();
+  /* Grid layout SSOT = vector state; boot applies the default vector. */
+  applyDefaultVector();
   window.addEventListener('resize', () => {
     scheduleFitEditorScale();
   });
-  renderTerminal();
-  renderMessengerPreview();
 }
 
 init();

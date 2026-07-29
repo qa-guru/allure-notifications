@@ -18,15 +18,15 @@ export const DEFAULT_CARD_GAP = 14;
 /** Preview-only — maps to `--wt-pad`; jar parses but does not apply yet. */
 export const DEFAULT_TILE_PAD = 6;
 /**
- * Default layout — 4-tile on full 10×10 substrate.
- * pie 4×4 · durationDynamics 6×4 · pyramid 3×3 | durations-by-layer 4×3 · empty cols 7–9 + rows 7–9.
+ * Default layout — 4-tile packed on full 10×10 (Allure dashboard gutters).
+ * pie 4×5 · durationDynamics 6×5 · pyramid 4×5 | durations-by-layer 6×5.
  * See builder CANON.md.
  */
 export const DEFAULT_ITEMS = Object.freeze([
-    { type: "pie", x: 0, y: 0, w: 4, h: 4 },
-    { type: "durationDynamics", x: 4, y: 0, w: 6, h: 4 },
-    { type: "testingPyramid", x: 0, y: 4, w: 3, h: 3 },
-    { type: "durations", x: 3, y: 4, w: 4, h: 3, groupBy: "layer" },
+    { type: "pie", x: 0, y: 0, w: 4, h: 5 },
+    { type: "durationDynamics", x: 4, y: 0, w: 6, h: 5 },
+    { type: "testingPyramid", x: 0, y: 5, w: 4, h: 5 },
+    { type: "durations", x: 4, y: 5, w: 6, h: 5, groupBy: "layer" },
 ]);
 /**
  * Builder-shaped default `config.json` (CB-870 free + chrome knobs).

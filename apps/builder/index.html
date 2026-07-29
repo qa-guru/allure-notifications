@@ -28,7 +28,7 @@
   <link rel="stylesheet" href="vendor/design-system/css/indicator.css" />
   <link rel="stylesheet" href="vendor/design-system/css/widget-tile.css" />
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gridstack@11.3.0/dist/gridstack.min.css" />
-  <link rel="stylesheet" href="css/app.css" />
+  <link rel="stylesheet" href="css/app.css?v=20260726-term-light1" />
   <!-- Phase 4: bare specifier → vendor copies of @config/browser + @pyramid/browser. -->
   <script type="importmap">
   {
@@ -57,9 +57,8 @@
           label: 'allure-notifications-builder',
         },
         githubPages: {
-          href: 'https://allure-notifications.qa.guru',
-          label: 'allure-notifications',
-          iconSrc: 'vendor/design-system/assets/allure3-logo.svg',
+          href: 'https://qa-guru.github.io/allure-notifications/',
+          label: 'GitHub Pages',
         },
       },
     };
@@ -358,30 +357,26 @@
           </div>
           <div class="panel__body anb-preview">
             <div class="anb-messenger-pane" id="anb-messenger-telegram" data-anb-messenger-pane="telegram" data-testid="anb-messenger-telegram">
-              <div class="anb-editor" data-testid="anb-zone-editor">
-                <div class="anb-canvas-shell" id="anb-canvas-shell" data-testid="anb-canvas-shell">
-                  <div class="anb-canvas" id="anb-canvas" data-testid="anb-canvas">
-                    <div class="grid-stack" id="anb-grid" data-testid="anb-grid"></div>
-                    <div class="anb-empty" id="anb-empty" data-testid="anb-empty" hidden>
-                      <p class="anb-empty__title">Canvas empty</p>
-                      <p class="anb-empty__hint">Click or drag a panel from the palette</p>
-                    </div>
-                  </div>
+              <div class="anb-canvas" id="anb-canvas" data-testid="anb-canvas">
+                <div class="grid-stack" id="anb-grid" data-testid="anb-grid"></div>
+                <div class="anb-empty" id="anb-empty" data-testid="anb-empty" hidden>
+                  <p class="anb-empty__title">Canvas empty</p>
+                  <p class="anb-empty__hint">Click or drag a panel from the palette</p>
                 </div>
-                <div
-                  class="text text--sm anb-editor__caption"
-                  id="anb-tg-text"
-                  data-testid="anb-tg-text"
-                  aria-label="Telegram caption preview"
-                ></div>
               </div>
+              <div
+                class="text text--sm anb-editor__caption"
+                id="anb-tg-text"
+                data-testid="anb-tg-text"
+                aria-label="Telegram caption preview"
+              ></div>
             </div>
           </div>
         </div>
       </section>
 
       <section class="anb-zone anb-zone--terminal" aria-label="Config terminal" data-testid="anb-zone-terminal">
-        <div class="panel panel--terminal panel--sticky ch-theme--vscode">
+        <div class="panel panel--terminal panel--sticky ch-theme--vscode" data-testid="anb-terminal-panel">
           <div class="panel__bar">
             <div class="panel__dots" aria-hidden="true">
               <span class="panel__dot"></span>
@@ -445,16 +440,13 @@
     aria-modal="false"
     hidden
   >
-    <p class="anb-export-popover__meta" id="anb-export-popover-meta"></p>
-    <div class="anb-export-popover__viewport" id="anb-export-popover-viewport">
-      <div class="anb-export-popover__stage" id="anb-export-popover-stage"></div>
-    </div>
+    <div class="anb-export-popover__stage" id="anb-export-popover-stage"></div>
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/gridstack@11.3.0/dist/gridstack-all.js"></script>
   <script src="vendor/design-system/js/widget-tile-mocks.js"></script>
   <script type="module" src="vendor/design-system/js/plaque-number.js"></script>
   <script type="module" src="vendor/design-system/js/header.js"></script>
-  <script type="module" src="js/app.js"></script>
+  <script type="module" src="js/app.js?v=20260726-term-light1"></script>
 </body>
 </html>
