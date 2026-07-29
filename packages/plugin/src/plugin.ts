@@ -17,6 +17,7 @@ import {
 import type { AllureStore, Plugin, PluginContext } from "@allurereport/plugin-api";
 import {
   deliver,
+  formatConfigValidationError,
   resolveConfigPaths,
   type DeliveryResult,
 } from "allure-notifications";
@@ -92,31 +93,6 @@ function effectiveMode(mode: NotificationsPluginMode | undefined): {
     mock: resolved === "mock",
     live: resolved === "live",
   };
-}
-
-type ZodLikeIssue = { path: PropertyKey[]; message: string };
-
-function isZodLikeError(err: unknown): err is { issues: ZodLikeIssue[] } {
-  return (
-    !!err &&
-    typeof err === "object" &&
-    "issues" in err &&
-    Array.isArray((err as { issues: unknown }).issues)
-  );
-}
-
-function formatConfigValidationError(err: unknown, label: string): Error {
-  if (isZodLikeError(err)) {
-    const lines = err.issues.map((issue) => {
-      const path = issue.path.length > 0 ? issue.path.join(".") : "(root)";
-      return `  - ${path}: ${issue.message}`;
-    });
-    return new Error(`invalid config ${label}:\n${lines.join("\n")}`);
-  }
-  if (err instanceof Error) {
-    return err;
-  }
-  return new Error(String(err));
 }
 
 async function loadPluginConfig(

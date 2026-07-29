@@ -80,6 +80,7 @@ function fillTopRounded(
     return;
   }
   const r = Math.max(0, Math.min(maxArc, Math.min(width / 2, height / 2)));
+  /* c8 ignore next 4 — render path always passes maxArc ≥ 2 and positive bar size */
   if (r === 0) {
     ctx.fillRect(x, y, width, height);
     return;
@@ -103,6 +104,7 @@ function fillPill(
   width: number,
   height: number,
 ): void {
+  /* c8 ignore next 3 — callers clamp bar width/height to ≥ 2 */
   if (width <= 0 || height <= 0) {
     return;
   }

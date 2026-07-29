@@ -75,6 +75,18 @@ describe("@allure-notifications/cli telegram credentials", () => {
       /TELEGRAM_BOT_TOKEN/,
     );
   });
+
+  it("requires chat when ADR defaults disabled", () => {
+    assert.throws(
+      () =>
+        resolveTelegramCredentials({
+          config: { base: {}, telegram: { token: "t" } },
+          env: {},
+          applyAdrDefaults: false,
+        }),
+      /TELEGRAM_CHAT_ID/,
+    );
+  });
 });
 
 describe("@allure-notifications/cli telegram caption + sendPhoto", () => {
@@ -173,10 +185,14 @@ describe("@allure-notifications/cli telegram caption + sendPhoto", () => {
   });
 
   it("sendTelegramPhoto posts multipart and returns message id (mocked fetch)", async () => {
-    const calls: { url: string; method?: string }[] = [];
+    const calls: { url: string; method?: string; form?: FormData }[] = [];
     const fetchImpl: typeof fetch = async (input, init) => {
       const url = String(input);
-      calls.push({ url: url.replace(/bot[^/]+/, "bot<redacted>"), method: init?.method });
+      calls.push({
+        url: url.replace(/bot[^/]+/, "bot<redacted>"),
+        method: init?.method,
+        form: init?.body instanceof FormData ? init.body : undefined,
+      });
       assert.ok(url.includes("/sendPhoto"));
       assert.equal(init?.method, "POST");
       assert.ok(init?.body instanceof FormData);
@@ -208,6 +224,34 @@ describe("@allure-notifications/cli telegram caption + sendPhoto", () => {
     assert.equal(result.chatId, -1004381150566);
     assert.equal(result.messageThreadId, 34);
     assert.equal(calls.length, 1);
+  });
+
+  it("sendTelegramPhoto includes reply_to_message_id when replyTo set", async () => {
+    let capturedForm: FormData | undefined;
+    const fetchImpl: typeof fetch = async (_input, init) => {
+      capturedForm = init?.body as FormData;
+      return new Response(
+        JSON.stringify({
+          ok: true,
+          result: { message_id: 1, chat: { id: Number(ADR008_CHAT_ID) } },
+        }),
+        { status: 200 },
+      );
+    };
+
+    await sendTelegramPhoto({
+      credentials: {
+        token: "1:t",
+        chat: ADR008_CHAT_ID,
+        replyTo: "555",
+      },
+      png: Buffer.from([1, 2, 3]),
+      caption: "x",
+      fetchImpl,
+    });
+
+    assert.ok(capturedForm);
+    assert.equal(capturedForm!.get("reply_to_message_id"), "555");
   });
 
   it("sendTelegramPhoto surfaces Bot API errors", async () => {

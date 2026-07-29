@@ -70,7 +70,7 @@ This repo’s **own** test run writes Allure results for the quality contour. Se
 
 ```bash
 pnpm test                 # sets ALLURE_RESULTS_DIR=<repo>/allure-results, runs workspace tests
-pnpm coverage             # c8 → coverage/lcov.info; fails if lines <70% or statements <65%
+pnpm coverage             # c8 → coverage/lcov.info; fails if lines <100% or statements <100%
 pnpm allure:generate      # allure generate allure-results --output allure-report
 ```
 
@@ -78,7 +78,7 @@ Notes:
 
 - Node before 26.1: reporter-only mode (pass/fail/skip) — no `allure-js-commons` runtime API preload required. CI uses Node 24 (`actions/setup-node@v6`).
 - `ALLURE_RESULTS_DIR` must point at the **repo root** `allure-results/` (root `scripts/run-tests.mjs`); do not write into package cwd.
-- Coverage excludes: `dist` test emit noise, `node_modules`, `vendor`, `test/fixtures`, `apps/builder/js`, `**/*.test.*`. Hard floors in [`c8.config.json`](../c8.config.json) (Q5). Collage/visual pixel gate stays in `pnpm test` — not mixed with % floor.
+- Coverage excludes: `dist` test emit noise, `node_modules`, `vendor`, `test/fixtures`, `apps/builder/js`, `**/*.test.*`. Hard floors in [`c8.config.json`](../c8.config.json): lines/statements **100%** on `packages/*/src` (builder emit вне gate). Collage/visual pixel gate stays in `pnpm test` — not mixed with % floor.
 - Forks/PR: no live secrets needed for this path (tests + Allure generate + coverage artifact).
 
 ## Sonar (Q2 soft → Q5 hard)

@@ -14,6 +14,7 @@ import {
   PANEL_CATALOG,
   createDefaultConfig,
   createSq1080Config,
+  isValidConfig,
   parseConfig,
   resolvePanelMeta,
   safeParseConfig,
@@ -96,6 +97,13 @@ describe("@allure-notifications/config presets", () => {
     assert.equal(parsed.base.chart?.width, 1080);
     assert.equal(parsed.base.chart?.height, 1080);
   });
+
+  it("createDefaultConfig rejects unknown canvas preset", () => {
+    assert.throws(
+      () => createDefaultConfig({ canvas: "999x999" as "870x1080" }),
+      /Unknown canvas preset/,
+    );
+  });
 });
 
 describe("@allure-notifications/config schema vs repo fixtures", () => {
@@ -152,5 +160,15 @@ describe("@allure-notifications/config schema vs repo fixtures", () => {
     };
     const result = safeParseConfig(bad);
     assert.equal(result.success, false);
+  });
+
+  it("isValidConfig narrows valid config and rejects invalid", () => {
+    const valid = createDefaultConfig();
+    assert.equal(isValidConfig(valid), true);
+    if (isValidConfig(valid)) {
+      assert.equal(valid.base.chart?.width, 870);
+    }
+
+    assert.equal(isValidConfig({ base: { project: 123 } }), false);
   });
 });

@@ -408,7 +408,7 @@ function buildStatusAgePyramid(
 
   const latest = runMaps[runMaps.length - 1]!;
   for (const [id, latestStatus] of latest) {
-    if (latestStatus === "passed") continue;
+    // normalizeStatus → STATUS_KEYS only; age pyramid tracks non-passed.
     if (
       latestStatus !== "failed" &&
       latestStatus !== "broken" &&
@@ -502,6 +502,7 @@ export function historyFromRuns(runs: HistoryRun[] | null | undefined): HistoryA
 
   const buckets = new Array<number>(SUCCESS_BUCKETS).fill(0);
   for (const [passed, total] of perCase.values()) {
+    /* c8 ignore next 3 — perCase entries always tally at least one run */
     if (total === 0) {
       continue;
     }

@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
-import { mkdtemp, readFile, rm } from "node:fs/promises";
+import { mkdtemp, readFile, rm, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
-import { dirname, join } from "node:path";
+import { dirname, isAbsolute, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import { describe, it } from "node:test";
 
@@ -12,6 +12,8 @@ import NotificationsPlugin, {
   PHASE,
   runNotificationsPlugin,
 } from "../src/index.js";
+
+const ADR008_CHAT_ID = "-1004381150566";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 /** Compiled at packages/plugin/dist/test → fixtures at packages/plugin/test/fixtures */
@@ -146,5 +148,165 @@ describe("@allure-notifications/plugin done dry-run", () => {
     });
     const { context } = mockContext();
     await plugin.done!(context, emptyStore);
+  });
+
+  it("throws when options.config is missing", async () => {
+    const { context } = mockContext();
+    await assert.rejects(
+      () =>
+        runNotificationsPlugin(context, {
+          config: undefined as unknown as string,
+        }),
+      /options\.config is required/,
+    );
+  });
+
+  it("loads config from absolute path", async () => {
+    const absConfig = resolve(FIXTURE_CONFIG);
+    const { context } = mockContext();
+    const result = await runNotificationsPlugin(context, {
+      config: absConfig,
+      reportFile: false,
+    });
+    assert.ok(isPng(result.png));
+    assert.equal(result.mode, "dry-run");
+  });
+
+  it("rejects invalid JSON config file", async () => {
+    const dir = await mkdtemp(join(tmpdir(), "an-plugin-json-"));
+    const cfg = join(dir, "bad.json");
+    try {
+      await writeFile(cfg, "{");
+      const { context } = mockContext();
+      await assert.rejects(
+        () =>
+          runNotificationsPlugin(context, {
+            config: cfg,
+            reportFile: false,
+          }),
+        /invalid JSON/,
+      );
+    } finally {
+      await rm(dir, { recursive: true, force: true });
+    }
+  });
+
+  it("rejects zod-invalid config file with path-scoped errors", async () => {
+    const dir = await mkdtemp(join(tmpdir(), "an-plugin-zod-"));
+    const cfg = join(dir, "bad.json");
+    try {
+      await writeFile(
+        cfg,
+        JSON.stringify({
+          base: {
+            chart: {
+              mode: "collage",
+              layout: "free",
+              width: 870,
+              height: 1080,
+              items: [{ type: "pie", x: 0, y: 0, w: 0, h: 0 }],
+            },
+          },
+        }),
+      );
+      const { context } = mockContext();
+      await assert.rejects(
+        () =>
+          runNotificationsPlugin(context, {
+            config: cfg,
+            reportFile: false,
+          }),
+        /invalid config.*base\.chart\.items\.0\.w/s,
+      );
+    } finally {
+      await rm(dir, { recursive: true, force: true });
+    }
+  });
+
+  it("rejects zod-invalid inline config", async () => {
+    const { context } = mockContext();
+    await assert.rejects(
+      () =>
+        runNotificationsPlugin(context, {
+          config: { base: { project: 123 } },
+          reportFile: false,
+        }),
+      /invalid config \(inline options\.config\)/,
+    );
+  });
+
+  it("applies relative and absolute folder overrides", async () => {
+    const raw = JSON.parse(await readFile(FIXTURE_CONFIG, "utf8")) as Record<
+      string,
+      unknown
+    >;
+    const base = raw.base as Record<string, unknown>;
+    delete base.allureFolder;
+    delete base.allureResultsFolder;
+
+    const cwd = dirname(FIXTURE_CONFIG);
+    const relFolder = "../../../core/test/fixtures/dogfood-report";
+    const absResults = join(cwd, "../../../core/test/fixtures/dogfood-results");
+
+    const { context } = mockContext();
+    const result = await runNotificationsPlugin(context, {
+      config: { ...raw, base },
+      cwd,
+      allureFolder: relFolder,
+      allureResultsFolder: absResults,
+      reportFile: false,
+    });
+
+    assert.ok(isPng(result.png));
+    assert.equal(result.config.base.allureFolder, resolve(cwd, relFolder));
+    assert.equal(result.config.base.allureResultsFolder, absResults);
+    assert.ok(isAbsolute(result.config.base.allureResultsFolder!));
+  });
+
+  it("writes PNG to absolute out path in live mode with mocked fetch", async () => {
+    const dir = await mkdtemp(join(tmpdir(), "an-plugin-live-"));
+    const out = join(dir, "collage.png");
+    const fetchImpl: typeof fetch = async () =>
+      new Response(
+        JSON.stringify({
+          ok: true,
+          result: {
+            message_id: 11,
+            chat: { id: Number(ADR008_CHAT_ID) },
+          },
+        }),
+        { status: 200 },
+      );
+    try {
+      const { context } = mockContext();
+      const result = await runNotificationsPlugin(context, {
+        config: FIXTURE_CONFIG,
+        mode: "live",
+        out,
+        reportFile: false,
+        env: {
+          TELEGRAM_BOT_TOKEN: "1:test-token",
+          TELEGRAM_CHAT_ID: ADR008_CHAT_ID,
+        },
+        fetchImpl,
+      });
+      assert.equal(result.mode, "live");
+      assert.equal(result.pngPath, out);
+      assert.equal(result.deliveries[0]!.status, "sent");
+      const onDisk = await readFile(out);
+      assert.equal(onDisk.byteLength, result.png.byteLength);
+    } finally {
+      await rm(dir, { recursive: true, force: true });
+    }
+  });
+
+  it("attaches collage under custom reportFile name", async () => {
+    const { context, files } = mockContext();
+    await runNotificationsPlugin(context, {
+      config: FIXTURE_CONFIG,
+      reportFile: "custom-collage.png",
+    });
+    assert.ok(files.has("custom-collage.png"));
+    assert.ok(isPng(files.get("custom-collage.png")!));
   });
 });

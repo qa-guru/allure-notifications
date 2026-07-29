@@ -17,6 +17,6 @@
   "all": false,
   "skip-full": false,
   "check-coverage": true,
-  "lines": 70,
-  "statements": 65
+  "lines": 100,
+  "statements": 100
 }
