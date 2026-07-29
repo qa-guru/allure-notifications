@@ -45,6 +45,8 @@ const packagesStatus = run(
     "allure-notifications",
     "--filter",
     "@allure-notifications/plugin",
+    "--filter",
+    "@allure-notifications/test-meta",
     "run",
     "test",
   ],

@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 /**
- * SSOT node:test runner with allure-node-test/setup preload (Node >= 26.1).
+ * SSOT node:test runner with allure-node-test reporter (Node 24 reporter-only).
+ * Suite labels applied post-run via scripts/merge-allure-suite-meta.mjs.
  * Usage: node scripts/node-test-allure.mjs [test files/globs...]
  */
 import { spawnSync } from "node:child_process";
@@ -14,8 +15,6 @@ if (testArgs.length === 0) {
 const result = spawnSync(
   process.execPath,
   [
-    "--import",
-    "allure-node-test/setup",
     "--test",
     "--test-reporter=spec",
     "--test-reporter-destination=stdout",

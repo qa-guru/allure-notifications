@@ -5,7 +5,7 @@
   "description": "Allure report → messenger notifications. 6.0.* = TypeScript monorepo (CLI + builder). 5.0.* = Java jar under legacy/java (freeze 5.0.8); there is no 5.1 line.",
   "packageManager": "pnpm@9.15.0",
   "engines": {
-    "node": ">=26.1.0"
+    "node": ">=20"
   },
   "scripts": {
     "build": "pnpm -r run build",

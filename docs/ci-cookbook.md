@@ -76,9 +76,9 @@ pnpm allure:generate      # allure generate allure-results --output allure-repor
 
 Notes:
 
-- Node **≥ 26.1** with `allure-node-test/setup` preload (`scripts/node-test-allure.mjs`) — runtime labels via `@allure-notifications/test-meta`. See [`test-metadata.md`](test-metadata.md).
+- Node **24** (CI pin) with **reporter-only** `allure-node-test` — suite labels via `declareSuite` registry + `scripts/merge-allure-suite-meta.mjs`. See [`test-metadata.md`](test-metadata.md).
 - `ALLURE_RESULTS_DIR` must point at the **repo root** `allure-results/` (root `scripts/run-tests.mjs`); do not write into package cwd.
-- After tests: `node scripts/check-allure-labels.mjs` (hooked in `run-tests.mjs`) — every result must carry `epic`, `feature`, `story`, `layer`, `severity` (+ `component` for `e2e`/`component` layers).
+- After tests: `node scripts/merge-allure-suite-meta.mjs` then `node scripts/check-allure-labels.mjs` (hooked in `run-tests.mjs`) — every result must carry `epic`, `feature`, `story`, `layer`, `severity` (+ `component` for `e2e`/`component` layers).
 - Coverage gate (`scripts/run-coverage.mjs`):
   1. **Packages** — c8 on `packages/*/src` ([`c8.config.json`](../c8.config.json)): lines / statements / branches / functions = **100%**. Excludes `dist` test emit, `node_modules`, `vendor`, `test/fixtures`, `**/*.test.*`, and raw `apps/builder/js/**` (builder uses its own instrumented path).
   2. **Builder** — [`scripts/builder-coverage.mjs`](../scripts/builder-coverage.mjs): istanbul on `apps/builder/js/{app,phrases}.js` (SSOT `src/app.ts` + `src/phrases.ts`) via Playwright + `ANB_COVERAGE=1`; same four metrics = **100%**. Excludes sync-scripts, playwright.config, vendor, tests.

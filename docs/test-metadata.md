@@ -31,31 +31,33 @@ Default epic: **`allure-notifications`** (`packages/test-meta/src/defaults.ts`).
 | **feature** | `config` · `pyramid` · `core-collage` · `cli-send` · `plugin-hook` · `builder-ui` · `test-meta` |
 | **story** | Scenario / primary describe name for the file |
 | **layer** | `unit` — `packages/*/test/*.test.ts` · `component` — `apps/builder/tests/*.test.mjs` · `e2e` — `apps/builder/tests/*.spec.js` |
-| **component** | TMS stability id: `@allure-notifications/core`, `allure-notifications`, `builder`, … — **required** for `layer=component\|e2e` (gate) |
+| **component** | TMS stability component label — **required** for `layer=component\|e2e` (gate) |
 | **severity** | `normal` (unit) · `critical` (cli) · `blocker` (builder e2e) |
 
 **Do not confuse:** `layer=component` (pyramid tier) ≠ label `component` (TMS stability).
 
-## Runner
+## Runner (Node 24)
 
-Node **≥ 26.1** with runtime API preload:
+Reporter-only `node:test` — no `allure-node-test/setup` preload:
 
 ```bash
 node scripts/node-test-allure.mjs dist/test/*.test.js
-# ≡ node --import allure-node-test/setup --test --test-reporter=allure-node-test/reporter …
+# ≡ node --test --test-reporter=allure-node-test/reporter …
 ```
 
-No Node 24 reporter-only fallback in SSOT path.
+`declareSuite()` registers metadata at module load into `ALLURE_RESULTS_DIR/.suite-meta-registry.d/` (one shard per test file). After `pnpm test`, `scripts/merge-allure-suite-meta.mjs` merges labels into `*-result.json` before the gate.
+
+Playwright specs keep `bindSuiteMeta()` + runtime `allure-js-commons` (allure-playwright on Node 24).
 
 ## Gate
 
-After `pnpm test`:
+After `pnpm test` (+ merge):
 
 ```bash
 node scripts/check-allure-labels.mjs
 ```
 
-Every `*-result.json` must include `epic`, `feature`, `story`, `layer`, `severity`; `component` when `layer` is `e2e` or `component`. Exit 1 on miss. Hooked from `scripts/run-tests.mjs`.
+Every `*-result.json` must include `epic`, `feature`, `story`, `layer`, `severity`; `component` when `layer` is `e2e` or `component`. Exit 1 on miss. Pipeline: `run-tests.mjs` → merge → gate.
 
 ## Deprecated
 
@@ -66,3 +68,4 @@ Every `*-result.json` must include `epic`, `feature`, `story`, `layer`, `severit
 - `@allure.label.epic=…` in test title strings
 - `beforeEach` copy-paste in every `it()`
 - Post-hoc enrich as primary metadata source
+- `allure-node-test/setup` on Node 24 (requires Node ≥ 26.1)
