@@ -1,5 +1,5 @@
 // @ts-check
-const { test, expect } = require('@playwright/test');
+const { test, expect } = require('./coverage.fixture.js');
 
 /** SQ-1080 canon 4-tile — must match @allure-notifications/config DEFAULT_ITEMS + CANON.md */
 const SQ1080_ITEMS = [

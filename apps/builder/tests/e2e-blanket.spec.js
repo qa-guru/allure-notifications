@@ -4,7 +4,7 @@
  * Formats · panel bar · export · resize/layout · empty/negative states.
  * allure-playwright via playwright.config.js (same as smoke).
  */
-const { test, expect } = require('@playwright/test');
+const { test, expect } = require('./coverage.fixture.js');
 
 /** @param {import('@playwright/test').Page} page */
 async function terminalChart(page) {

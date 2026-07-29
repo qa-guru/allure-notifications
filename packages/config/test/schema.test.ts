@@ -49,6 +49,27 @@ describe("@allure-notifications/config catalog", () => {
       resolvePanelMeta({ type: "problemsDistribution", by: "environment" })?.id,
       "problemsDistribution",
     );
+    assert.equal(resolvePanelMeta({ id: "pie" })?.type, "pie");
+    assert.equal(resolvePanelMeta({ id: "missing-id", type: "pie" })?.id, "pie");
+    // Unknown groupBy on a type that also has a bare row → fall through to bare.
+    assert.equal(
+      resolvePanelMeta({ type: "durations", groupBy: "not-a-real-group" })?.id,
+      "durations",
+    );
+    // Unknown groupBy when every catalog row for the type has groupBy → undefined.
+    assert.equal(
+      resolvePanelMeta({
+        type: "stabilityDistribution",
+        groupBy: "not-a-real-group",
+      }),
+      undefined,
+    );
+    // Type with `by` only: wrong by skips exact and bare-find (`!p.by` false).
+    assert.equal(
+      resolvePanelMeta({ type: "problemsDistribution", by: "host" }),
+      undefined,
+    );
+    assert.equal(resolvePanelMeta({}), undefined);
   });
 });
 

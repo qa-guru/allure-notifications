@@ -87,10 +87,8 @@ function layerFill(layer: string, theme: ChartTheme): Rgb {
       : PYRAMID_COLORS_LIGHT.other;
     return hexToRgb(hex);
   }
-  const hex =
-    colorForLayer(layer, theme.dark ? "dark" : "light") ??
-    (theme.dark ? "#3b82f6" : "#2563eb");
-  return hexToRgb(hex);
+  // Known LAYER_ORDER keys always have palette entries; OTHER handled above.
+  return hexToRgb(colorForLayer(layer, theme.dark ? "dark" : "light")!);
 }
 
 function roundRectPath(

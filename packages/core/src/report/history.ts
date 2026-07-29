@@ -242,7 +242,7 @@ export function stabilityBarsFromCases(
   }
   const bars: StabilityBar[] = [];
   for (const [name, tally] of buckets) {
-    if (tally.total <= 0) continue;
+    // Buckets only accept rows with total > 0 above — tally.total is always > 0.
     bars.push({
       name,
       rate: Math.round((tally.passed / tally.total) * 1000) / 10,
@@ -424,9 +424,9 @@ function buildStatusAgePyramid(
       if (status !== latestStatus) break;
       age++;
     }
-    if (age <= 0) continue;
-    const band = STATUS_AGE_BANDS.find((b) => age >= b.min && age <= b.max);
-    if (!band) continue;
+    // age >= 1 here: latest non-passed status always increments once before break.
+    // STATUS_AGE_BANDS covers 1…∞ so find always matches.
+    const band = STATUS_AGE_BANDS.find((b) => age >= b.min && age <= b.max)!;
     const bucket = buckets.find((b) => b.label === band.label)!;
     bucket[latestStatus] += 1;
   }
@@ -459,7 +459,7 @@ export function historyFromRuns(runs: HistoryRun[] | null | undefined): HistoryA
           continue;
         }
         const status = normalizeStatus(result.status);
-        counts[status] = (counts[status] ?? 0) + 1;
+        counts[status]! += 1;
 
         const caseId = caseIdOf(entryKey, result);
         statusMap.set(caseId, status);
@@ -502,15 +502,11 @@ export function historyFromRuns(runs: HistoryRun[] | null | undefined): HistoryA
 
   const buckets = new Array<number>(SUCCESS_BUCKETS).fill(0);
   for (const [passed, total] of perCase.values()) {
-    /* c8 ignore next 3 — perCase entries always tally at least one run */
-    if (total === 0) {
-      continue;
-    }
+    // perCase only records cases seen in at least one run → total >= 1; rate ∈ [0, 1].
     const rate = passed / total;
     let index = Math.floor(rate * SUCCESS_BUCKETS);
     if (index >= SUCCESS_BUCKETS) index = SUCCESS_BUCKETS - 1;
-    if (index < 0) index = 0;
-    buckets[index] = (buckets[index] ?? 0) + 1;
+    buckets[index]! += 1;
   }
 
   const stabilityCases: StabilityCase[] = [];

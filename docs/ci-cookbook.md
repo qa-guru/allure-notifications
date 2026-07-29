@@ -56,7 +56,7 @@ Fixture config already points at `packages/core/test/fixtures/dogfood-report` + 
 
 ## GitHub Actions — product CI (this repo)
 
-TS tests live in [`.github/workflows/ci-6.0.yml`](../.github/workflows/ci-6.0.yml) (`pnpm i` + `pnpm typecheck` + `pnpm test` + hard `pnpm coverage` + `pnpm allure:generate` on `master` + `feature/6.0*` + `feature/quality-*`). Artifacts: `allure-results/` · `allure-report/` · `coverage/` (retain ≥7d). Job **Sonar (hard / Q5)** needs coverage → `scripts/ci-sonar.sh` + vendored `scripts/sonar-gate-wait.py` (`projectKey=allure-notifications`; `SONAR_REQUIRED=true`; forks / no token soft-skip). Job **TestOps (informational)** needs `allure-results` → `setup-allurectl@v1` + `allurectl upload` + close (soft-skip without `ALLURE_*`; forks never upload). Job **Telegram (Q4)** needs `allure-report` → `scripts/ci-telegram.sh` + `config/ci-telegram.json` (`npx allure-notifications@6.0.8`; PR dry-run / master live → topic 34). Builder Pages: [`pages-builder.yml`](../.github/workflows/pages-builder.yml) (static `apps/builder/` on `master` + `feature/6.0*`; see [`pages-cutover.md`](pages-cutover.md)). Java jar CI stays in [`build.yml`](../.github/workflows/build.yml) (**master** only; cwd `legacy/java`).
+TS tests live in [`.github/workflows/ci-6.0.yml`](../.github/workflows/ci-6.0.yml) (`pnpm i` + `pnpm typecheck` + `pnpm test` + hard `pnpm coverage` = packages c8 + builder istanbul at **100% × 4** + `pnpm allure:generate` on `master` + `feature/6.0*` + `feature/quality-*`). Artifacts: `allure-results/` · `allure-report/` · `coverage/` (retain ≥7d). Job **Sonar (hard / Q5)** needs coverage → `scripts/ci-sonar.sh` + vendored `scripts/sonar-gate-wait.py` (`projectKey=allure-notifications`; `SONAR_REQUIRED=true`; forks / no token soft-skip). Job **TestOps (informational)** needs `allure-results` → `setup-allurectl@v1` + `allurectl upload` + close (soft-skip without `ALLURE_*`; forks never upload). Job **Telegram (Q4)** needs `allure-report` → `scripts/ci-telegram.sh` + `config/ci-telegram.json` (`npx allure-notifications@6.0.8`; PR dry-run / master live → topic 34). Builder Pages: [`pages-builder.yml`](../.github/workflows/pages-builder.yml) (static `apps/builder/` on `master` + `feature/6.0*`; see [`pages-cutover.md`](pages-cutover.md)). Java jar CI stays in [`build.yml`](../.github/workflows/build.yml) (**master** only; cwd `legacy/java`).
 
 ## Own tests → Allure results (Q1)
 
@@ -70,7 +70,7 @@ This repo’s **own** test run writes Allure results for the quality contour. Se
 
 ```bash
 pnpm test                 # sets ALLURE_RESULTS_DIR=<repo>/allure-results, runs workspace tests
-pnpm coverage             # c8 → coverage/lcov.info; fails if lines <100% or statements <100%
+pnpm coverage             # packages c8 + builder istanbul; fails unless all four metrics = 100%
 pnpm allure:generate      # allure generate allure-results --output allure-report
 ```
 
@@ -78,7 +78,10 @@ Notes:
 
 - Node before 26.1: reporter-only mode (pass/fail/skip) — no `allure-js-commons` runtime API preload required. CI uses Node 24 (`actions/setup-node@v6`).
 - `ALLURE_RESULTS_DIR` must point at the **repo root** `allure-results/` (root `scripts/run-tests.mjs`); do not write into package cwd.
-- Coverage excludes: `dist` test emit noise, `node_modules`, `vendor`, `test/fixtures`, `apps/builder/js`, `**/*.test.*`. Hard floors in [`c8.config.json`](../c8.config.json): lines/statements **100%** on `packages/*/src` (builder emit вне gate). Collage/visual pixel gate stays in `pnpm test` — not mixed with % floor.
+- Coverage gate (`scripts/run-coverage.mjs`):
+  1. **Packages** — c8 on `packages/*/src` ([`c8.config.json`](../c8.config.json)): lines / statements / branches / functions = **100%**. Excludes `dist` test emit, `node_modules`, `vendor`, `test/fixtures`, `**/*.test.*`, and raw `apps/builder/js/**` (builder uses its own instrumented path).
+  2. **Builder** — [`scripts/builder-coverage.mjs`](../scripts/builder-coverage.mjs): istanbul on `apps/builder/js/{app,phrases}.js` (SSOT `src/app.ts` + `src/phrases.ts`) via Playwright + `ANB_COVERAGE=1`; same four metrics = **100%**. Excludes sync-scripts, playwright.config, vendor, tests.
+- Collage/visual pixel gate stays in `pnpm test` — not mixed with % floor.
 - Forks/PR: no live secrets needed for this path (tests + Allure generate + coverage artifact).
 
 ## Sonar (Q2 soft → Q5 hard)
@@ -107,7 +110,7 @@ Quality contour close-out for this repo:
 
 | Gate | Policy |
 |------|--------|
-| Coverage | **blocker** — `c8` `check-coverage`: lines ≥ **70%**, statements ≥ **65%** on `packages/{config,pyramid,core,cli,plugin}/src` |
+| Coverage | **blocker** — packages c8 + builder istanbul: lines / statements / branches / functions = **100%** (`pnpm coverage`) |
 | Sonar | **blocker** when `SONAR_TOKEN` present + `SONAR_REQUIRED=true` and quality gate ≠ PASSED |
 | Forks / no token | Sonar **soft-skip** (exit 0); coverage still runs (no secrets needed) |
 | Visual / collage | Unchanged pixel/ahash gate in `pnpm test` — **not** part of coverage % floor |

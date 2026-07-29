@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import { mkdtemp, readFile, rm, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
-import { dirname, join } from "node:path";
+import { dirname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import { describe, it } from "node:test";
 
@@ -11,6 +11,7 @@ import {
   deliver,
   deliverLive,
   deliverMock,
+  formatCliError,
   formatConfigValidationError,
   loadConfigFile,
   resolveConfigPaths,
@@ -311,6 +312,65 @@ describe("@allure-notifications/cli send path resolution", () => {
       formatConfigValidationError("plain string", "/x.json").message,
       "plain string",
     );
+    const rootIssue = formatConfigValidationError(
+      { issues: [{ path: [], message: "required" }] },
+      "/x.json",
+    );
+    assert.match(rootIssue.message, /\(root\): required/);
+  });
+
+  it("loadConfigFile surfaces non-Error JSON parse throw", async () => {
+    const dir = await mkdtemp(join(tmpdir(), "an-cli-json-ne-"));
+    const cfg = join(dir, "x.json");
+    await writeFile(cfg, "{}");
+    const original = JSON.parse;
+    JSON.parse = () => {
+      throw "parse-failed";
+    };
+    try {
+      await assert.rejects(() => loadConfigFile(cfg), /parse-failed/);
+    } finally {
+      JSON.parse = original;
+      await rm(dir, { recursive: true, force: true });
+    }
+  });
+
+  it("send resolves relative configPath and relative out via cwd", async () => {
+    const dir = await mkdtemp(join(tmpdir(), "an-cli-rel-"));
+    const cfgName = "cfg.json";
+    const fixture = JSON.parse(await readFile(FIXTURE_CONFIG, "utf8")) as {
+      base: {
+        allureFolder?: string;
+        allureResultsFolder?: string;
+      };
+    };
+    // Keep folders absolute so cwd only affects configPath/out resolution.
+    const fixtureDir = dirname(FIXTURE_CONFIG);
+    fixture.base.allureFolder = resolve(
+      fixtureDir,
+      fixture.base.allureFolder ?? ".",
+    );
+    fixture.base.allureResultsFolder = resolve(
+      fixtureDir,
+      fixture.base.allureResultsFolder ?? ".",
+    );
+    await writeFile(join(dir, cfgName), JSON.stringify(fixture));
+    await import("node:fs/promises").then(({ mkdir }) =>
+      mkdir(join(dir, "out"), { recursive: true }),
+    );
+    try {
+      const result = await send({
+        configPath: cfgName,
+        cwd: dir,
+        dryRun: true,
+        out: "out/collage.png",
+      });
+      assert.equal(result.pngPath, join(dir, "out", "collage.png"));
+      const onDisk = await readFile(result.pngPath!);
+      assert.ok(isPng(onDisk));
+    } finally {
+      await rm(dir, { recursive: true, force: true });
+    }
   });
 });
 
@@ -328,6 +388,31 @@ describe("@allure-notifications/cli runCli integration", () => {
     assert.match(result.stdout, /mode: dry-run/);
     assert.match(result.stdout, /ok/);
     assert.equal(result.stderr, "");
+  });
+
+  it("formatCliError covers Error and non-Error", () => {
+    assert.equal(formatCliError(new Error("e")), "e");
+    assert.equal(formatCliError("raw"), "raw");
+  });
+
+  it("send --out prints png path arrow in stdout", async () => {
+    const dir = await mkdtemp(join(tmpdir(), "an-cli-out-"));
+    const out = join(dir, "c.png");
+    try {
+      const result = await runCli([
+        "send",
+        "--config",
+        FIXTURE_CONFIG,
+        "--dry-run",
+        "--out",
+        out,
+      ]);
+      assert.equal(result.exitCode, 0, result.stderr);
+      assert.match(result.stdout, /→/);
+      assert.match(result.stdout, /c\.png/);
+    } finally {
+      await rm(dir, { recursive: true, force: true });
+    }
   });
 
   it("send --mock reports mock mode label", async () => {

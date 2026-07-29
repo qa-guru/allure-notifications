@@ -309,4 +309,65 @@ describe("@allure-notifications/plugin done dry-run", () => {
     assert.ok(files.has("custom-collage.png"));
     assert.ok(isPng(files.get("custom-collage.png")!));
   });
+
+  it("loads relative config path and relative out; falls back to context.output", async () => {
+    const cwd = dirname(FIXTURE_CONFIG);
+    const relConfig = "config.dry-run.json";
+    const dogfoodReport = resolve(
+      cwd,
+      "../../../core/test/fixtures/dogfood-report",
+    );
+    const outDir = await mkdtemp(join(tmpdir(), "an-plugin-rel-"));
+    try {
+      const { context } = mockContext({ output: dogfoodReport });
+      const raw = JSON.parse(await readFile(FIXTURE_CONFIG, "utf8")) as {
+        base: Record<string, unknown>;
+      };
+      delete raw.base.allureFolder;
+      delete raw.base.allureResultsFolder;
+
+      const result = await runNotificationsPlugin(context, {
+        config: raw,
+        cwd: outDir,
+        out: "relative-out.png",
+        reportFile: false,
+      });
+      assert.equal(result.config.base.allureFolder, dogfoodReport);
+      assert.equal(result.pngPath, join(outDir, "relative-out.png"));
+      assert.ok(isPng(await readFile(result.pngPath!)));
+
+      const viaRel = await runNotificationsPlugin(context, {
+        config: relConfig,
+        cwd,
+        reportFile: false,
+      });
+      assert.ok(isPng(viaRel.png));
+    } finally {
+      await rm(outDir, { recursive: true, force: true });
+    }
+  });
+
+  it("rejects non-Error JSON parse failures from config file", async () => {
+    const dir = await mkdtemp(join(tmpdir(), "an-plugin-parse-"));
+    const cfg = join(dir, "x.json");
+    await writeFile(cfg, "{}");
+    const original = JSON.parse;
+    JSON.parse = () => {
+      throw "plugin-parse-failed";
+    };
+    try {
+      const { context } = mockContext();
+      await assert.rejects(
+        () =>
+          runNotificationsPlugin(context, {
+            config: cfg,
+            reportFile: false,
+          }),
+        /plugin-parse-failed/,
+      );
+    } finally {
+      JSON.parse = original;
+      await rm(dir, { recursive: true, force: true });
+    }
+  });
 });

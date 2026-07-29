@@ -104,4 +104,9 @@ describe("@allure-notifications/pyramid palette vs SSOT", () => {
     assert.equal(isKnownLayer("OTHER"), false);
     assert.equal(isKnownLayer("other"), false);
   });
+
+  it("colorForLayer returns null for unknown keys", () => {
+    assert.equal(colorForLayer("not-a-layer"), null);
+    assert.equal(colorForLayer("  "), null);
+  });
 });

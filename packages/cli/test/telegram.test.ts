@@ -271,4 +271,108 @@ describe("@allure-notifications/cli telegram caption + sendPhoto", () => {
       /chat not found/,
     );
   });
+
+  it("credentials use empty telegram object; caption edges + HTTP fallback", async () => {
+    const creds = resolveTelegramCredentials({
+      config: { base: {} },
+      env: {
+        TELEGRAM_BOT_TOKEN: "env-only",
+        TELEGRAM_CHAT_ID: ADR008_CHAT_ID,
+      },
+    });
+    assert.equal(creds.token, "env-only");
+
+    // Inconsistent totals: count > 0 with total <= 0 → printPercentage "(0 %)".
+    const zeroTotal = buildTelegramCaption(
+      {
+        base: {
+          language: "en",
+          durationFormat: "   ",
+        },
+      },
+      {
+        statistic: {
+          passed: 2,
+          failed: 0,
+          broken: 0,
+          skipped: 0,
+          unknown: 0,
+          total: 0,
+        },
+        durationMs: 0,
+        layers: {},
+        suites: [],
+        durationsMs: [1000, 2000],
+        durationsMsByLayer: {},
+        severities: {},
+        hasLayerLabels: false,
+        hasKnownLayerLabels: false,
+        resultCount: 0,
+        history: null,
+        stabilityCases: [],
+      },
+    );
+    assert.match(zeroTotal, /\(0 %\)/);
+    assert.match(zeroTotal, /00:00:03/);
+
+    // Hit `config.base ?? {}` when base is missing (cast past Config).
+    const noBase = buildTelegramCaption({} as never, undefined);
+    assert.match(noBase, /Results:/);
+
+    const integerPct = buildTelegramCaption(
+      { base: { project: "p" } },
+      {
+        statistic: {
+          passed: 1,
+          failed: 0,
+          broken: 0,
+          skipped: 0,
+          unknown: 0,
+          total: 2,
+        },
+        durationMs: 500,
+        layers: {},
+        suites: [],
+        durationsMs: [],
+        durationsMsByLayer: {},
+        severities: {},
+        hasLayerLabels: false,
+        hasKnownLayerLabels: false,
+        resultCount: 2,
+        history: null,
+        stabilityCases: [],
+      },
+    );
+    assert.match(integerPct, /1 \(50 %\)/);
+
+    const fetchImpl: typeof fetch = async () =>
+      new Response(JSON.stringify({ ok: false }), { status: 502 });
+    await assert.rejects(
+      () =>
+        sendTelegramPhoto({
+          credentials: { token: "1:t", chat: ADR008_CHAT_ID },
+          png: Buffer.from([1]),
+          caption: "x",
+          fetchImpl,
+        }),
+      /HTTP 502/,
+    );
+
+    const noChatFetch: typeof fetch = async () =>
+      new Response(
+        JSON.stringify({
+          ok: true,
+          result: { message_id: 7 },
+        }),
+        { status: 200 },
+      );
+    const sent = await sendTelegramPhoto({
+      credentials: { token: "1:t", chat: ADR008_CHAT_ID },
+      png: Buffer.from([1]),
+      caption: "x",
+      fetchImpl: noChatFetch,
+    });
+    assert.equal(sent.chatId, ADR008_CHAT_ID);
+    assert.equal(sent.messageId, 7);
+  });
 });

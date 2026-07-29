@@ -48,12 +48,9 @@ function averageSecondsByLayer(
 }
 
 function histogram(values: number[], bins: number): number[] {
-  let min = values[0] ?? 0;
-  let max = values[0] ?? 1;
-  for (const v of values) {
-    if (v < min) min = v;
-    if (v > max) max = v;
-  }
+  // Caller only invokes with non-empty values (analytics sorts durations ascending).
+  let min = Math.min(...values);
+  let max = Math.max(...values);
   if (max <= min) {
     max = min + 1;
   }
@@ -61,9 +58,9 @@ function histogram(values: number[], bins: number): number[] {
   const binWidth = (max - min) / bins;
   for (const value of values) {
     let index = Math.floor((value - min) / binWidth);
+    // value === max → index === bins (float-stable clamp).
     if (index >= bins) index = bins - 1;
-    if (index < 0) index = 0;
-    counts[index] = (counts[index] ?? 0) + 1;
+    counts[index]! += 1;
   }
   return counts;
 }
@@ -148,7 +145,7 @@ function drawHistogram(
 
   ctx.fillStyle = rgbCss(theme.accent);
   for (let index = 0; index < bins; index++) {
-    const count = counts[index] ?? 0;
+    const count = counts[index]!;
     const barHeight =
       count <= 0
         ? 0
