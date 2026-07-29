@@ -29,6 +29,8 @@ import { renderSuitesPanel } from "./suites.js";
 
 const MARGIN = 16;
 const TITLE_HEIGHT = 24;
+/** Cap tier height in tall collage tiles — geometry SSOT still governs gaps/radius. */
+const PREFERRED_BAND_HEIGHT = 52;
 
 export type LayerBreakdown = {
   knownCounts: Map<string, number>;
@@ -157,6 +159,7 @@ export function renderPyramidPanel(context: PanelContext): Buffer {
 
   const heightSlots = Math.max(layerCount, MIN_TIERS_FOR_HEIGHT);
   const bandHeight = Math.min(
+    PREFERRED_BAND_HEIGHT,
     Math.floor(chartHeight / heightSlots),
     MAX_TIER_HEIGHT,
   );

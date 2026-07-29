@@ -15,6 +15,8 @@ const MARGIN = 16;
 const TITLE_HEIGHT = 24;
 const DEFAULT_BINS = 10;
 const DEFAULT_ARC = 10;
+/** Compact row height for by-layer bars — do not stretch to fill tall collage tiles. */
+const PREFERRED_LAYER_ROW_H = 36;
 
 function isLayerGroupBy(groupBy: string | undefined): boolean {
   return groupBy != null && groupBy.trim().toLowerCase() === "layer";
@@ -176,19 +178,23 @@ function drawLayerAverages(
   const n = avgSeconds.size;
   const top = chartTop(showTitle);
   const plotH = chartHeight(height, showTitle);
-  const rowH = Math.max(14, Math.floor(plotH / Math.max(n, 1)));
+  const rowH = Math.min(
+    PREFERRED_LAYER_ROW_H,
+    Math.max(14, Math.floor(plotH / Math.max(n, 1))),
+  );
+  const blockTop = top + Math.floor((plotH - n * rowH) / 2);
   const barH = Math.max(8, Math.floor(rowH * 0.55));
   const fontSize = Math.min(12, Math.max(9, Math.floor(barH)));
 
   ctx.font = `${fontSize}px sans-serif`;
   let index = 0;
   for (const [key, avg] of avgSeconds) {
-    const baseline = top + index * rowH + Math.floor(rowH * 0.7);
+    const baseline = blockTop + index * rowH + Math.floor(rowH * 0.7);
     ctx.fillStyle = rgbCss(theme.text);
     ctx.fillText(key, MARGIN, baseline);
     const barWidth = Math.floor((avg / maxAvg) * barAreaWidth);
     const barX = MARGIN + labelWidth;
-    const barY = top + index * rowH + Math.floor((rowH - barH) / 2);
+    const barY = blockTop + index * rowH + Math.floor((rowH - barH) / 2);
     const hex = colorForLayer(key, theme.dark ? "dark" : "light");
     ctx.fillStyle = hex ? rgbCss(hexToRgb(hex)) : rgbCss(theme.accent);
     fillPill(ctx, barX, barY, Math.max(barWidth, 2), barH);
