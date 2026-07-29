@@ -565,8 +565,7 @@ html.theme-light .anb-canvas--chart-off::after {
   inset: var(--anb-half-gap) !important;
   margin: 0 !important;
   overflow: hidden;
-  /* Jar CollageRenderer CARD_ARC */
-  border-radius: 18px;
+  border-radius: 10px;
   background: var(--color-surface, #323232);
   color: var(--color-text, #dcdcdc);
   box-shadow: inset 0 0 0 1px var(--color-border, rgba(96, 96, 96, 0.9));

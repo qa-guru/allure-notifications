@@ -405,8 +405,7 @@ test.describe('allure-notifications-builder smoke', () => {
     expect(pos.dSwBottom).toBeLessThan(-2);
     expect(Math.abs(pos.dNwTop + pos.halfGap)).toBeLessThan(2);
     expect(Math.abs(pos.dNeTop + pos.halfGap)).toBeLessThan(2);
-    // Jar CARD_ARC parity.
-    expect(pos.radius).toBe(18);
+    expect(pos.radius).toBe(10);
     // Regression: merge once parked NE/NW under the title bar.
     expect(pos.nwBelowBar).toBe(false);
   });
