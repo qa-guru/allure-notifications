@@ -132,7 +132,7 @@ Launch name: `allure-notifications · <ref_name> · <sha>`. Job summary prints t
 
 ## Telegram (Q4)
 
-Collage of **this run’s** Allure report into ADR 008 Monitoring topic **34** (`allure-notifications`). Wrapper: [`scripts/ci-telegram.sh`](../scripts/ci-telegram.sh). Template config: [`config/ci-telegram.json`](../config/ci-telegram.json) (points at `../allure-report` + `../allure-results`; runtime file gitignored). Missing `allure-report/summary.json` → **fail** (no dogfood fixture fallback; empty history/severity tiles stay empty-state).
+Collage of **this run’s** Allure report into ADR 008 Monitoring topic **34** (`allure-notifications`). Wrapper: [`scripts/ci-telegram.sh`](../scripts/ci-telegram.sh). Template config: [`config/ci-telegram.json`](../config/ci-telegram.json) (CB-870 **4-tile** layout: pie · suites · testing pyramid · durations-by-suite — no history/severity panels that need `history.jsonl`). Before send, [`scripts/enrich-allure-layers.mjs`](../scripts/enrich-allure-layers.mjs) tags `allure-results` with `layer` labels (unit / component / e2e) so the pyramid renders instead of an empty fallback. Points at `../allure-report` + `../allure-results`; runtime file gitignored. Missing `allure-report/summary.json` → **fail** (no dogfood fixture fallback).
 
 | Event | Mode |
 |-------|------|

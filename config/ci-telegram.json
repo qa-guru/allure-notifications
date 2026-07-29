@@ -28,7 +28,7 @@
           "h": 4
         },
         {
-          "type": "statusDynamics",
+          "type": "suites",
           "x": 4,
           "y": 0,
           "w": 6,
@@ -47,24 +47,10 @@
           "y": 4,
           "w": 6,
           "h": 3,
-          "groupBy": "layer"
-        },
-        {
-          "type": "successRateDistribution",
-          "x": 0,
-          "y": 7,
-          "w": 7,
-          "h": 3
-        },
-        {
-          "type": "testResultSeverities",
-          "x": 7,
-          "y": 7,
-          "w": 3,
-          "h": 3
+          "groupBy": "suite"
         }
       ],
-      "pyramidFallback": "suites"
+      "pyramidFallback": "none"
     },
     "links": {
       "report": "https://allure.qa.guru/project/5297",

@@ -42,6 +42,8 @@ fi
 
 echo "==> using this run's allure-report (+ allure-results)"
 
+node scripts/enrich-allure-layers.mjs allure-results
+
 REF_NAME="${REF_NAME:-local}"
 SHORT_SHA="${SHORT_SHA:-0000000}"
 SHORT_SHA="${SHORT_SHA:0:7}"

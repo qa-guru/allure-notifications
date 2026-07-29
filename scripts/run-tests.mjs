@@ -16,4 +16,12 @@ const result = spawnSync("pnpm", ["-r", "run", "test"], {
 
 if (result.error) throw result.error;
 console.log(`allure-results → ${ALLURE_RESULTS_DIR}`);
+
+const enrich = spawnSync("node", ["scripts/enrich-allure-layers.mjs", ALLURE_RESULTS_DIR], {
+  cwd: REPO_ROOT,
+  stdio: "inherit",
+});
+if (enrich.error) throw enrich.error;
+if ((enrich.status ?? 1) !== 0) process.exit(enrich.status ?? 1);
+
 process.exit(result.status ?? 1);
