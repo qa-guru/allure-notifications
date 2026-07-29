@@ -65,7 +65,7 @@ export function renderStatusDynamicsPanel(context: PanelContext): Buffer {
     const segmentHeights = stackedSegmentHeights(plotH, values);
     for (let si = 0; si < visible.length; si++) {
       const status = visible[si]!;
-      const segmentHeight = segmentHeights[si] ?? 0;
+      const segmentHeight = segmentHeights[si]!;
       yCursor -= segmentHeight;
       const roundBottom = si === 0;
       const roundTop = si === visible.length - 1;

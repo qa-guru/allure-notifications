@@ -74,7 +74,7 @@ let vectorMiss = false;
 
 const TG_BOT_NAME = 'Test Notifications Bot';
 /** Dogfood preview stats — mirrors telegram.ftl when no local summary.json. */
-const TG_PREVIEW_STATS: Readonly<{
+type TgPreviewStats = {
   total: number;
   passed: number;
   failed: number;
@@ -82,15 +82,19 @@ const TG_PREVIEW_STATS: Readonly<{
   unknown: number;
   skipped: number;
   durationMs: number;
-}> = Object.freeze({
-  total: 8,
-  passed: 8,
-  failed: 0,
-  broken: 0,
-  unknown: 0,
-  skipped: 0,
+};
+const TG_PREVIEW_STATS: Readonly<TgPreviewStats> = Object.freeze({
+  // Mixed statuses so telegram.ftl-parity caption lines stay exercised in preview.
+  total: 9,
+  passed: 5,
+  failed: 1,
+  broken: 1,
+  unknown: 1,
+  skipped: 1,
   durationMs: 56205,
 });
+/** Test override — null uses TG_PREVIEW_STATS. */
+let tgPreviewStatsOverride: TgPreviewStats | null = null;
 /** Fallback links when Options → links are empty (reference-app dogfood). */
 const TG_PREVIEW_LINKS: Readonly<Record<string, string>> = Object.freeze({
   report: 'https://autotests-ai.github.io/reference-app/reports/latest/awesome/index.html',
@@ -223,15 +227,12 @@ function resolvePath(path: string): { parent: Record<string, unknown>; key: stri
   if (parts.length < 2) return null;
   let cur: Record<string, unknown> = state as unknown as Record<string, unknown>;
   for (let i = 0; i < parts.length - 1; i += 1) {
-    const key = parts[i];
-    if (key == null) return null;
+    const key = parts[i]!;
     const next = cur[key];
     if (next == null || typeof next !== 'object') return null;
     cur = next as Record<string, unknown>;
   }
-  const last = parts[parts.length - 1];
-  if (last == null) return null;
-  return { parent: cur, key: last };
+  return { parent: cur, key: parts[parts.length - 1]! };
 }
 
 /**
@@ -714,7 +715,7 @@ function buildTgCaptionHtml() {
   const phrases = phrasesFor(base.language || 'en');
   const env = base.environment ?? '';
   const comment = base.comment ?? '';
-  const stats = TG_PREVIEW_STATS;
+  const stats = tgPreviewStatsOverride ?? TG_PREVIEW_STATS;
   const time = formatDurationMs(stats.durationMs);
   const links = base.links || {};
 
@@ -748,8 +749,8 @@ function buildTgCaptionHtml() {
   }
 
   TG_LINK_KEYS.forEach((key) => {
+    // TG_PREVIEW_LINKS always supplies a non-empty fallback for every key.
     const url = links[key] || TG_PREVIEW_LINKS[key];
-    if (!url) return;
     const label = phrases.links[key];
     lines.push(
       `<b>${escapeHtml(label)}:</b> <a href="${escapeHtml(url)}">${escapeHtml(url)}</a>`,
@@ -933,8 +934,9 @@ function open(mode: 'tg' | 'full', trigger: HTMLElement) {
   }
 
   document.addEventListener('pointerdown', (e) => {
-    if (!(e.target instanceof Node)) return;
-    if (group.contains(e.target) || popover?.contains(e.target)) return;
+    // Listener is on `document`; dispatched events always have a Node target.
+    const target = e.target as Node;
+    if (group.contains(target) || popover?.contains(target)) return;
     hideExportPopover();
   });
 
@@ -997,10 +999,9 @@ function applyChartFlags() {
   const chartGroup = document.querySelector('[data-testid="anb-group-chart"]');
   if (chartGroup instanceof HTMLElement) {
     chartGroup.classList.toggle('is-disabled', !enableChart);
+    // querySelectorAll('input, select') already narrows to form controls.
     chartGroup.querySelectorAll('input, select').forEach((el) => {
-      if (el instanceof HTMLInputElement || el instanceof HTMLSelectElement) {
-        el.disabled = !enableChart;
-      }
+      (el as HTMLInputElement | HTMLSelectElement).disabled = !enableChart;
     });
   }
 
@@ -1335,6 +1336,7 @@ function addItem(panelId: string, opts: { w?: number; h?: number; x?: number; y?
     window.alert(`No space for ${meta.id} (${w}×${h})`);
     return;
   }
+  // meta already resolved — clampItem cannot return null for a catalog type.
   const item = clampItem({
     type: meta.type,
     groupBy: meta.groupBy,
@@ -1343,8 +1345,7 @@ function addItem(panelId: string, opts: { w?: number; h?: number; x?: number; y?
     y: spot.y,
     w,
     h,
-  });
-  if (!item) return;
+  })!;
   const el = makeWidgetEl(item);
   grid.makeWidget(el);
   if (el.gridstackNode) {
@@ -1528,7 +1529,7 @@ function onPanelAction(e: Event) {
       if (!(actionBtn instanceof HTMLElement)) return;
       e.preventDefault();
       e.stopPropagation();
-      if (typeof e.stopImmediatePropagation === 'function') e.stopImmediatePropagation();
+      e.stopImmediatePropagation();
       const item = actionBtn.closest('.grid-stack-item');
       if (!(item instanceof HTMLElement)) return;
       const action = actionBtn.getAttribute('data-anb-action');
@@ -1593,6 +1594,54 @@ function onPanelAction(e: Event) {
   });
 }
 
+/** Live plotBox while dragging resize handles (pixel-level, not only cell snap). */
+let resizeMockRo: ResizeObserver | null = null;
+let resizeMockRaf = 0;
+let resizeMockEl: HTMLElement | null = null;
+
+function stopLiveResizeMocks() {
+  if (resizeMockRo) {
+    resizeMockRo.disconnect();
+    resizeMockRo = null;
+  }
+  if (resizeMockRaf) {
+    cancelAnimationFrame(resizeMockRaf);
+    resizeMockRaf = 0;
+  }
+  resizeMockEl = null;
+}
+
+function scheduleLiveResizeMock() {
+  if (resizeMockRaf || !resizeMockEl) return;
+  resizeMockRaf = requestAnimationFrame(() => {
+    resizeMockRaf = 0;
+    if (resizeMockEl) fillEditorMocks(resizeMockEl);
+  });
+}
+
+function onGridResizeStart(_ev: unknown, el: unknown) {
+  stopLiveResizeMocks();
+  if (!(el instanceof HTMLElement)) return;
+  resizeMockEl = el;
+  if (typeof ResizeObserver === 'undefined') return;
+  resizeMockRo = new ResizeObserver(() => scheduleLiveResizeMock());
+  resizeMockRo.observe(el);
+}
+
+function onGridResizeStop(_ev: unknown, el: unknown) {
+  stopLiveResizeMocks();
+  if (!(el instanceof HTMLElement) || !el.gridstackNode) return;
+  const n = el.gridstackNode;
+  if ((n.w ?? 1) < 1 || (n.h ?? 1) < 1) {
+    grid!.update(el, { w: Math.max(1, n.w ?? 1), h: Math.max(1, n.h ?? 1) });
+  }
+  fillEditorMocks(el);
+}
+
+function onGridChange() {
+  syncItemsToState();
+}
+
 function initGrid() {
   const GridStackCtor = globalThis.GridStack;
   if (!GridStackCtor) {
@@ -1627,54 +1676,11 @@ function initGrid() {
     },
     '#anb-grid',
   );
+  if (!grid) return;
 
-  grid.on('change', () => {
-    syncItemsToState();
-  });
-
-  /** Live plotBox while dragging resize handles (pixel-level, not only cell snap). */
-  let resizeMockRo: ResizeObserver | null = null;
-  let resizeMockRaf = 0;
-  let resizeMockEl: HTMLElement | null = null;
-
-  function stopLiveResizeMocks() {
-    if (resizeMockRo) {
-      resizeMockRo.disconnect();
-      resizeMockRo = null;
-    }
-    if (resizeMockRaf) {
-      cancelAnimationFrame(resizeMockRaf);
-      resizeMockRaf = 0;
-    }
-    resizeMockEl = null;
-  }
-
-  function scheduleLiveResizeMock() {
-    if (resizeMockRaf || !resizeMockEl) return;
-    resizeMockRaf = requestAnimationFrame(() => {
-      resizeMockRaf = 0;
-      if (resizeMockEl) fillEditorMocks(resizeMockEl);
-    });
-  }
-
-  grid.on('resizestart', (_ev, el) => {
-    stopLiveResizeMocks();
-    if (!(el instanceof HTMLElement)) return;
-    resizeMockEl = el;
-    if (typeof ResizeObserver === 'undefined') return;
-    resizeMockRo = new ResizeObserver(() => scheduleLiveResizeMock());
-    resizeMockRo.observe(el);
-  });
-
-  grid.on('resizestop', (_ev, el) => {
-    stopLiveResizeMocks();
-    if (!(el instanceof HTMLElement) || !el.gridstackNode) return;
-    const n = el.gridstackNode;
-    if ((n.w ?? 1) < 1 || (n.h ?? 1) < 1) {
-      grid!.update(el, { w: Math.max(1, n.w ?? 1), h: Math.max(1, n.h ?? 1) });
-    }
-    fillEditorMocks(el);
-  });
+  grid.on('change', onGridChange);
+  grid.on('resizestart', onGridResizeStart);
+  grid.on('resizestop', onGridResizeStop);
 }
 
 function init() {
@@ -1695,3 +1701,103 @@ function init() {
 }
 
 init();
+
+/**
+ * Coverage / e2e seam — same SSOT, callable from Playwright `page.evaluate`.
+ * Not a second product surface; used to hit pure helpers + awkward branches.
+ */
+(globalThis as unknown as { __ANB__?: Record<string, unknown> }).__ANB__ = {
+  vectorHash,
+  normalizeVectorId,
+  cloneSnap,
+  fingerprintFromSnap,
+  escapeHtml,
+  phrasesFor,
+  formatDurationMs,
+  formatPercentage,
+  rectsOverlap,
+  clampItem,
+  freeCellRect,
+  chromeCssVars,
+  canvasKeyFromState,
+  controlValue,
+  resolvePath,
+  getPath,
+  setPath,
+  commitVector,
+  findFreeSpot: (
+    w: number,
+    h: number,
+    preferX?: number | null,
+    preferY?: number | null,
+  ) => findFreeSpot(w, h, preferX, preferY),
+  addItem,
+  copyItem,
+  deleteItem,
+  clearAll,
+  resetToDefault,
+  applyCanvasPreset,
+  applySnap,
+  loadVectorRegistry,
+  initGrid,
+  showExportPopover,
+  hideExportPopover,
+  refreshExportPopoverIfOpen,
+  renderCollageStage,
+  renderMessengerPreview,
+  renderTerminal,
+  renderVectorInput,
+  applyChartFlags,
+  updateToolbar,
+  buildTgCaptionHtml,
+  readItemsFromGrid,
+  loadItems,
+  setGridAnimate,
+  fitEditorScale,
+  canvasDisplayHeight,
+  panelInnerHtml,
+  previewItemHtml,
+  makeWidgetEl,
+  getGrid: () => grid,
+  wireVectorInput,
+  bindControls,
+  hydrateControls,
+  syncEditorChrome,
+  wireHeaderThemeDarkModeSync,
+  wireCanvasDrop,
+  wireEditorChrome,
+  wireExportPreviews,
+  renderPalette,
+  rememberSnap,
+  fingerprint,
+  onGridChange,
+  onGridResizeStart,
+  onGridResizeStop,
+  stopLiveResizeMocks,
+  scheduleLiveResizeMock,
+  fillEditorMocks,
+  /** Test-only: null grid to hit `if (!grid)` guards. */
+  setGridForTest: (g: GridStack | null) => {
+    grid = g;
+  },
+  setSuppressSyncForTest: (v: boolean) => {
+    suppressSync = v;
+  },
+  setTgPreviewStatsForTest: (stats: TgPreviewStats | null) => {
+    tgPreviewStatsOverride = stats;
+  },
+  /** Clear live-resize target without canceling a pending rAF. */
+  clearResizeMockElForTest: () => {
+    resizeMockEl = null;
+  },
+  clearSelection,
+  applyCanvasMetrics,
+  updateEmptyState,
+  fitAndFillEditor,
+  injectPyramidSsot,
+  VECTOR_REGISTRY_KEY,
+  VECTOR_REGISTRY_KEY_LEGACY,
+  DEFAULT_VECTOR_ID,
+  GRID_ROWS,
+  GRID_COLS,
+};

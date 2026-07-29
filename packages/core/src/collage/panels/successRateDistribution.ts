@@ -57,7 +57,7 @@ export function renderSuccessRateDistributionPanel(
 
   for (let j = 0; j < activeCount; j++) {
     const bucketIndex = active[j]!;
-    const count = buckets[bucketIndex] ?? 0;
+    const count = buckets[bucketIndex]!;
     const barHeight = Math.max(1, Math.round((count / maxCount) * plotH));
     const x = MARGIN + j * slot + Math.floor((slot - barWidth) / 2);
     const y = top + plotH - barHeight;

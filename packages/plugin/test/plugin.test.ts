@@ -1,9 +1,18 @@
 import assert from "node:assert/strict";
-import { mkdtemp, readFile, rm } from "node:fs/promises";
+import { mkdtemp, readFile, rm, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
-import { dirname, join } from "node:path";
+import { dirname, isAbsolute, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import { describe, it } from "node:test";
+import { declareSuite } from "@allure-notifications/test-meta";
+
+declareSuite({
+  feature: "plugin-hook",
+  story: "Plugin done hook",
+  layer: "unit",
+  component: "@allure-notifications/plugin",
+  severity: "normal",
+});
 
 import type { AllureStore, PluginContext } from "@allurereport/plugin-api";
 
@@ -12,6 +21,8 @@ import NotificationsPlugin, {
   PHASE,
   runNotificationsPlugin,
 } from "../src/index.js";
+
+const ADR008_CHAT_ID = "-1004381150566";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 /** Compiled at packages/plugin/dist/test → fixtures at packages/plugin/test/fixtures */
@@ -146,5 +157,226 @@ describe("@allure-notifications/plugin done dry-run", () => {
     });
     const { context } = mockContext();
     await plugin.done!(context, emptyStore);
+  });
+
+  it("throws when options.config is missing", async () => {
+    const { context } = mockContext();
+    await assert.rejects(
+      () =>
+        runNotificationsPlugin(context, {
+          config: undefined as unknown as string,
+        }),
+      /options\.config is required/,
+    );
+  });
+
+  it("loads config from absolute path", async () => {
+    const absConfig = resolve(FIXTURE_CONFIG);
+    const { context } = mockContext();
+    const result = await runNotificationsPlugin(context, {
+      config: absConfig,
+      reportFile: false,
+    });
+    assert.ok(isPng(result.png));
+    assert.equal(result.mode, "dry-run");
+  });
+
+  it("rejects invalid JSON config file", async () => {
+    const dir = await mkdtemp(join(tmpdir(), "an-plugin-json-"));
+    const cfg = join(dir, "bad.json");
+    try {
+      await writeFile(cfg, "{");
+      const { context } = mockContext();
+      await assert.rejects(
+        () =>
+          runNotificationsPlugin(context, {
+            config: cfg,
+            reportFile: false,
+          }),
+        /invalid JSON/,
+      );
+    } finally {
+      await rm(dir, { recursive: true, force: true });
+    }
+  });
+
+  it("rejects zod-invalid config file with path-scoped errors", async () => {
+    const dir = await mkdtemp(join(tmpdir(), "an-plugin-zod-"));
+    const cfg = join(dir, "bad.json");
+    try {
+      await writeFile(
+        cfg,
+        JSON.stringify({
+          base: {
+            chart: {
+              mode: "collage",
+              layout: "free",
+              width: 870,
+              height: 1080,
+              items: [{ type: "pie", x: 0, y: 0, w: 0, h: 0 }],
+            },
+          },
+        }),
+      );
+      const { context } = mockContext();
+      await assert.rejects(
+        () =>
+          runNotificationsPlugin(context, {
+            config: cfg,
+            reportFile: false,
+          }),
+        /invalid config.*base\.chart\.items\.0\.w/s,
+      );
+    } finally {
+      await rm(dir, { recursive: true, force: true });
+    }
+  });
+
+  it("rejects zod-invalid inline config", async () => {
+    const { context } = mockContext();
+    await assert.rejects(
+      () =>
+        runNotificationsPlugin(context, {
+          config: { base: { project: 123 } },
+          reportFile: false,
+        }),
+      /invalid config \(inline options\.config\)/,
+    );
+  });
+
+  it("applies relative and absolute folder overrides", async () => {
+    const raw = JSON.parse(await readFile(FIXTURE_CONFIG, "utf8")) as Record<
+      string,
+      unknown
+    >;
+    const base = raw.base as Record<string, unknown>;
+    delete base.allureFolder;
+    delete base.allureResultsFolder;
+
+    const cwd = dirname(FIXTURE_CONFIG);
+    const relFolder = "../../../core/test/fixtures/dogfood-report";
+    const absResults = join(cwd, "../../../core/test/fixtures/dogfood-results");
+
+    const { context } = mockContext();
+    const result = await runNotificationsPlugin(context, {
+      config: { ...raw, base },
+      cwd,
+      allureFolder: relFolder,
+      allureResultsFolder: absResults,
+      reportFile: false,
+    });
+
+    assert.ok(isPng(result.png));
+    assert.equal(result.config.base.allureFolder, resolve(cwd, relFolder));
+    assert.equal(result.config.base.allureResultsFolder, absResults);
+    assert.ok(isAbsolute(result.config.base.allureResultsFolder!));
+  });
+
+  it("writes PNG to absolute out path in live mode with mocked fetch", async () => {
+    const dir = await mkdtemp(join(tmpdir(), "an-plugin-live-"));
+    const out = join(dir, "collage.png");
+    const fetchImpl: typeof fetch = async () =>
+      new Response(
+        JSON.stringify({
+          ok: true,
+          result: {
+            message_id: 11,
+            chat: { id: Number(ADR008_CHAT_ID) },
+          },
+        }),
+        { status: 200 },
+      );
+    try {
+      const { context } = mockContext();
+      const result = await runNotificationsPlugin(context, {
+        config: FIXTURE_CONFIG,
+        mode: "live",
+        out,
+        reportFile: false,
+        env: {
+          TELEGRAM_BOT_TOKEN: "1:test-token",
+          TELEGRAM_CHAT_ID: ADR008_CHAT_ID,
+        },
+        fetchImpl,
+      });
+      assert.equal(result.mode, "live");
+      assert.equal(result.pngPath, out);
+      assert.equal(result.deliveries[0]!.status, "sent");
+      const onDisk = await readFile(out);
+      assert.equal(onDisk.byteLength, result.png.byteLength);
+    } finally {
+      await rm(dir, { recursive: true, force: true });
+    }
+  });
+
+  it("attaches collage under custom reportFile name", async () => {
+    const { context, files } = mockContext();
+    await runNotificationsPlugin(context, {
+      config: FIXTURE_CONFIG,
+      reportFile: "custom-collage.png",
+    });
+    assert.ok(files.has("custom-collage.png"));
+    assert.ok(isPng(files.get("custom-collage.png")!));
+  });
+
+  it("loads relative config path and relative out; falls back to context.output", async () => {
+    const cwd = dirname(FIXTURE_CONFIG);
+    const relConfig = "config.dry-run.json";
+    const dogfoodReport = resolve(
+      cwd,
+      "../../../core/test/fixtures/dogfood-report",
+    );
+    const outDir = await mkdtemp(join(tmpdir(), "an-plugin-rel-"));
+    try {
+      const { context } = mockContext({ output: dogfoodReport });
+      const raw = JSON.parse(await readFile(FIXTURE_CONFIG, "utf8")) as {
+        base: Record<string, unknown>;
+      };
+      delete raw.base.allureFolder;
+      delete raw.base.allureResultsFolder;
+
+      const result = await runNotificationsPlugin(context, {
+        config: raw,
+        cwd: outDir,
+        out: "relative-out.png",
+        reportFile: false,
+      });
+      assert.equal(result.config.base.allureFolder, dogfoodReport);
+      assert.equal(result.pngPath, join(outDir, "relative-out.png"));
+      assert.ok(isPng(await readFile(result.pngPath!)));
+
+      const viaRel = await runNotificationsPlugin(context, {
+        config: relConfig,
+        cwd,
+        reportFile: false,
+      });
+      assert.ok(isPng(viaRel.png));
+    } finally {
+      await rm(outDir, { recursive: true, force: true });
+    }
+  });
+
+  it("rejects non-Error JSON parse failures from config file", async () => {
+    const dir = await mkdtemp(join(tmpdir(), "an-plugin-parse-"));
+    const cfg = join(dir, "x.json");
+    await writeFile(cfg, "{}");
+    const original = JSON.parse;
+    JSON.parse = () => {
+      throw "plugin-parse-failed";
+    };
+    try {
+      const { context } = mockContext();
+      await assert.rejects(
+        () =>
+          runNotificationsPlugin(context, {
+            config: cfg,
+            reportFile: false,
+          }),
+        /plugin-parse-failed/,
+      );
+    } finally {
+      JSON.parse = original;
+      await rm(dir, { recursive: true, force: true });
+    }
   });
 });

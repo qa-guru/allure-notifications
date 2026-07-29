@@ -17,6 +17,8 @@
   "all": false,
   "skip-full": false,
   "check-coverage": true,
-  "lines": 70,
-  "statements": 65
+  "lines": 100,
+  "statements": 100,
+  "branches": 100,
+  "functions": 100
 }

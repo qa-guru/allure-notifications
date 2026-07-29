@@ -1,0 +1,48 @@
+{
+  "name": "@allure-notifications/test-meta",
+  "version": "6.0.8",
+  "description": "Explicit Allure suite labels for allure-notifications tests (Epic/Feature/Story/layer SSOT).",
+  "type": "module",
+  "exports": {
+    ".": {
+      "types": "./dist/src/index.d.ts",
+      "import": "./dist/src/index.js"
+    },
+    "./playwright": {
+      "types": "./dist/src/playwright.d.ts",
+      "import": "./dist/src/playwright.js",
+      "require": "./playwright.cjs"
+    }
+  },
+  "files": [
+    "dist/src",
+    "playwright.cjs",
+    "README.md"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/qa-guru/allure-notifications.git",
+    "directory": "packages/test-meta"
+  },
+  "license": "Apache-2.0",
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "test": "pnpm run build && node ../../scripts/node-test-allure.mjs dist/test/*.test.js",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "prepublishOnly": "pnpm run build"
+  },
+  "dependencies": {
+    "allure-js-commons": "3.10.2"
+  },
+  "devDependencies": {
+    "@types/node": "^22.13.10",
+    "allure-node-test": "3.10.2",
+    "typescript": "^7.0.2"
+  },
+  "publishConfig": {
+    "access": "public"
+  }
+}

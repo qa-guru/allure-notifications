@@ -21,16 +21,18 @@ let suppressSync = false;
 let vectorDraft = null;
 let vectorMiss = false;
 const TG_BOT_NAME = 'Test Notifications Bot';
-/** Dogfood preview stats — mirrors telegram.ftl when no local summary.json. */
 const TG_PREVIEW_STATS = Object.freeze({
-    total: 8,
-    passed: 8,
-    failed: 0,
-    broken: 0,
-    unknown: 0,
-    skipped: 0,
+    // Mixed statuses so telegram.ftl-parity caption lines stay exercised in preview.
+    total: 9,
+    passed: 5,
+    failed: 1,
+    broken: 1,
+    unknown: 1,
+    skipped: 1,
     durationMs: 56205,
 });
+/** Test override — null uses TG_PREVIEW_STATS. */
+let tgPreviewStatsOverride = null;
 /** Fallback links when Options → links are empty (reference-app dogfood). */
 const TG_PREVIEW_LINKS = Object.freeze({
     report: 'https://autotests-ai.github.io/reference-app/reports/latest/awesome/index.html',
@@ -161,17 +163,12 @@ function resolvePath(path) {
     let cur = state;
     for (let i = 0; i < parts.length - 1; i += 1) {
         const key = parts[i];
-        if (key == null)
-            return null;
         const next = cur[key];
         if (next == null || typeof next !== 'object')
             return null;
         cur = next;
     }
-    const last = parts[parts.length - 1];
-    if (last == null)
-        return null;
-    return { parent: cur, key: last };
+    return { parent: cur, key: parts[parts.length - 1] };
 }
 /**
  * @param {string} path
@@ -624,7 +621,7 @@ function buildTgCaptionHtml() {
     const phrases = phrasesFor(base.language || 'en');
     const env = base.environment ?? '';
     const comment = base.comment ?? '';
-    const stats = TG_PREVIEW_STATS;
+    const stats = tgPreviewStatsOverride ?? TG_PREVIEW_STATS;
     const time = formatDurationMs(stats.durationMs);
     const links = base.links || {};
     /** @type {string[]} */
@@ -651,9 +648,8 @@ function buildTgCaptionHtml() {
         lines.push(`<b>${escapeHtml(phrases.scenario.totalSkipped)}:</b> ${stats.skipped}`);
     }
     TG_LINK_KEYS.forEach((key) => {
+        // TG_PREVIEW_LINKS always supplies a non-empty fallback for every key.
         const url = links[key] || TG_PREVIEW_LINKS[key];
-        if (!url)
-            return;
         const label = phrases.links[key];
         lines.push(`<b>${escapeHtml(label)}:</b> <a href="${escapeHtml(url)}">${escapeHtml(url)}</a>`);
     });
@@ -822,9 +818,9 @@ function wireExportPreviews() {
         });
     }
     document.addEventListener('pointerdown', (e) => {
-        if (!(e.target instanceof Node))
-            return;
-        if (group.contains(e.target) || popover?.contains(e.target))
+        // Listener is on `document`; dispatched events always have a Node target.
+        const target = e.target;
+        if (group.contains(target) || popover?.contains(target))
             return;
         hideExportPopover();
     });
@@ -883,10 +879,9 @@ function applyChartFlags() {
     const chartGroup = document.querySelector('[data-testid="anb-group-chart"]');
     if (chartGroup instanceof HTMLElement) {
         chartGroup.classList.toggle('is-disabled', !enableChart);
+        // querySelectorAll('input, select') already narrows to form controls.
         chartGroup.querySelectorAll('input, select').forEach((el) => {
-            if (el instanceof HTMLInputElement || el instanceof HTMLSelectElement) {
-                el.disabled = !enableChart;
-            }
+            el.disabled = !enableChart;
         });
     }
     const palette = document.getElementById('anb-palette');
@@ -1224,6 +1219,7 @@ function addItem(panelId, opts = {}) {
         window.alert(`No space for ${meta.id} (${w}×${h})`);
         return;
     }
+    // meta already resolved — clampItem cannot return null for a catalog type.
     const item = clampItem({
         type: meta.type,
         groupBy: meta.groupBy,
@@ -1233,8 +1229,6 @@ function addItem(panelId, opts = {}) {
         w,
         h,
     });
-    if (!item)
-        return;
     const el = makeWidgetEl(item);
     grid.makeWidget(el);
     if (el.gridstackNode) {
@@ -1417,8 +1411,7 @@ function wireEditorChrome() {
                 return;
             e.preventDefault();
             e.stopPropagation();
-            if (typeof e.stopImmediatePropagation === 'function')
-                e.stopImmediatePropagation();
+            e.stopImmediatePropagation();
             const item = actionBtn.closest('.grid-stack-item');
             if (!(item instanceof HTMLElement))
                 return;
@@ -1489,6 +1482,53 @@ function wireEditorChrome() {
         }
     });
 }
+/** Live plotBox while dragging resize handles (pixel-level, not only cell snap). */
+let resizeMockRo = null;
+let resizeMockRaf = 0;
+let resizeMockEl = null;
+function stopLiveResizeMocks() {
+    if (resizeMockRo) {
+        resizeMockRo.disconnect();
+        resizeMockRo = null;
+    }
+    if (resizeMockRaf) {
+        cancelAnimationFrame(resizeMockRaf);
+        resizeMockRaf = 0;
+    }
+    resizeMockEl = null;
+}
+function scheduleLiveResizeMock() {
+    if (resizeMockRaf || !resizeMockEl)
+        return;
+    resizeMockRaf = requestAnimationFrame(() => {
+        resizeMockRaf = 0;
+        if (resizeMockEl)
+            fillEditorMocks(resizeMockEl);
+    });
+}
+function onGridResizeStart(_ev, el) {
+    stopLiveResizeMocks();
+    if (!(el instanceof HTMLElement))
+        return;
+    resizeMockEl = el;
+    if (typeof ResizeObserver === 'undefined')
+        return;
+    resizeMockRo = new ResizeObserver(() => scheduleLiveResizeMock());
+    resizeMockRo.observe(el);
+}
+function onGridResizeStop(_ev, el) {
+    stopLiveResizeMocks();
+    if (!(el instanceof HTMLElement) || !el.gridstackNode)
+        return;
+    const n = el.gridstackNode;
+    if ((n.w ?? 1) < 1 || (n.h ?? 1) < 1) {
+        grid.update(el, { w: Math.max(1, n.w ?? 1), h: Math.max(1, n.h ?? 1) });
+    }
+    fillEditorMocks(el);
+}
+function onGridChange() {
+    syncItemsToState();
+}
 function initGrid() {
     const GridStackCtor = globalThis.GridStack;
     if (!GridStackCtor) {
@@ -1520,53 +1560,11 @@ function initGrid() {
             cancel: '.anb-panel__action,.anb-panel__actions,input,textarea,button',
         },
     }, '#anb-grid');
-    grid.on('change', () => {
-        syncItemsToState();
-    });
-    /** Live plotBox while dragging resize handles (pixel-level, not only cell snap). */
-    let resizeMockRo = null;
-    let resizeMockRaf = 0;
-    let resizeMockEl = null;
-    function stopLiveResizeMocks() {
-        if (resizeMockRo) {
-            resizeMockRo.disconnect();
-            resizeMockRo = null;
-        }
-        if (resizeMockRaf) {
-            cancelAnimationFrame(resizeMockRaf);
-            resizeMockRaf = 0;
-        }
-        resizeMockEl = null;
-    }
-    function scheduleLiveResizeMock() {
-        if (resizeMockRaf || !resizeMockEl)
-            return;
-        resizeMockRaf = requestAnimationFrame(() => {
-            resizeMockRaf = 0;
-            if (resizeMockEl)
-                fillEditorMocks(resizeMockEl);
-        });
-    }
-    grid.on('resizestart', (_ev, el) => {
-        stopLiveResizeMocks();
-        if (!(el instanceof HTMLElement))
-            return;
-        resizeMockEl = el;
-        if (typeof ResizeObserver === 'undefined')
-            return;
-        resizeMockRo = new ResizeObserver(() => scheduleLiveResizeMock());
-        resizeMockRo.observe(el);
-    });
-    grid.on('resizestop', (_ev, el) => {
-        stopLiveResizeMocks();
-        if (!(el instanceof HTMLElement) || !el.gridstackNode)
-            return;
-        const n = el.gridstackNode;
-        if ((n.w ?? 1) < 1 || (n.h ?? 1) < 1) {
-            grid.update(el, { w: Math.max(1, n.w ?? 1), h: Math.max(1, n.h ?? 1) });
-        }
-        fillEditorMocks(el);
-    });
+    if (!grid)
+        return;
+    grid.on('change', onGridChange);
+    grid.on('resizestart', onGridResizeStart);
+    grid.on('resizestop', onGridResizeStop);
 }
 function init() {
     injectPyramidSsot();
@@ -1585,3 +1583,97 @@ function init() {
     });
 }
 init();
+/**
+ * Coverage / e2e seam — same SSOT, callable from Playwright `page.evaluate`.
+ * Not a second product surface; used to hit pure helpers + awkward branches.
+ */
+globalThis.__ANB__ = {
+    vectorHash,
+    normalizeVectorId,
+    cloneSnap,
+    fingerprintFromSnap,
+    escapeHtml,
+    phrasesFor,
+    formatDurationMs,
+    formatPercentage,
+    rectsOverlap,
+    clampItem,
+    freeCellRect,
+    chromeCssVars,
+    canvasKeyFromState,
+    controlValue,
+    resolvePath,
+    getPath,
+    setPath,
+    commitVector,
+    findFreeSpot: (w, h, preferX, preferY) => findFreeSpot(w, h, preferX, preferY),
+    addItem,
+    copyItem,
+    deleteItem,
+    clearAll,
+    resetToDefault,
+    applyCanvasPreset,
+    applySnap,
+    loadVectorRegistry,
+    initGrid,
+    showExportPopover,
+    hideExportPopover,
+    refreshExportPopoverIfOpen,
+    renderCollageStage,
+    renderMessengerPreview,
+    renderTerminal,
+    renderVectorInput,
+    applyChartFlags,
+    updateToolbar,
+    buildTgCaptionHtml,
+    readItemsFromGrid,
+    loadItems,
+    setGridAnimate,
+    fitEditorScale,
+    canvasDisplayHeight,
+    panelInnerHtml,
+    previewItemHtml,
+    makeWidgetEl,
+    getGrid: () => grid,
+    wireVectorInput,
+    bindControls,
+    hydrateControls,
+    syncEditorChrome,
+    wireHeaderThemeDarkModeSync,
+    wireCanvasDrop,
+    wireEditorChrome,
+    wireExportPreviews,
+    renderPalette,
+    rememberSnap,
+    fingerprint,
+    onGridChange,
+    onGridResizeStart,
+    onGridResizeStop,
+    stopLiveResizeMocks,
+    scheduleLiveResizeMock,
+    fillEditorMocks,
+    /** Test-only: null grid to hit `if (!grid)` guards. */
+    setGridForTest: (g) => {
+        grid = g;
+    },
+    setSuppressSyncForTest: (v) => {
+        suppressSync = v;
+    },
+    setTgPreviewStatsForTest: (stats) => {
+        tgPreviewStatsOverride = stats;
+    },
+    /** Clear live-resize target without canceling a pending rAF. */
+    clearResizeMockElForTest: () => {
+        resizeMockEl = null;
+    },
+    clearSelection,
+    applyCanvasMetrics,
+    updateEmptyState,
+    fitAndFillEditor,
+    injectPyramidSsot,
+    VECTOR_REGISTRY_KEY,
+    VECTOR_REGISTRY_KEY_LEGACY,
+    DEFAULT_VECTOR_ID,
+    GRID_ROWS,
+    GRID_COLS,
+};

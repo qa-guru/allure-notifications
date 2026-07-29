@@ -3,6 +3,15 @@ import { readFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { describe, it } from "node:test";
+import { declareSuite } from "@allure-notifications/test-meta";
+
+declareSuite({
+  feature: "config",
+  story: "Config schema and catalog",
+  layer: "unit",
+  component: "@allure-notifications/config",
+  severity: "normal",
+});
 
 import {
   CANVAS_PRESETS,
@@ -14,6 +23,7 @@ import {
   PANEL_CATALOG,
   createDefaultConfig,
   createSq1080Config,
+  isValidConfig,
   parseConfig,
   resolvePanelMeta,
   safeParseConfig,
@@ -48,6 +58,27 @@ describe("@allure-notifications/config catalog", () => {
       resolvePanelMeta({ type: "problemsDistribution", by: "environment" })?.id,
       "problemsDistribution",
     );
+    assert.equal(resolvePanelMeta({ id: "pie" })?.type, "pie");
+    assert.equal(resolvePanelMeta({ id: "missing-id", type: "pie" })?.id, "pie");
+    // Unknown groupBy on a type that also has a bare row → fall through to bare.
+    assert.equal(
+      resolvePanelMeta({ type: "durations", groupBy: "not-a-real-group" })?.id,
+      "durations",
+    );
+    // Unknown groupBy when every catalog row for the type has groupBy → undefined.
+    assert.equal(
+      resolvePanelMeta({
+        type: "stabilityDistribution",
+        groupBy: "not-a-real-group",
+      }),
+      undefined,
+    );
+    // Type with `by` only: wrong by skips exact and bare-find (`!p.by` false).
+    assert.equal(
+      resolvePanelMeta({ type: "problemsDistribution", by: "host" }),
+      undefined,
+    );
+    assert.equal(resolvePanelMeta({}), undefined);
   });
 });
 
@@ -95,6 +126,13 @@ describe("@allure-notifications/config presets", () => {
     const parsed = parseConfig(cfg);
     assert.equal(parsed.base.chart?.width, 1080);
     assert.equal(parsed.base.chart?.height, 1080);
+  });
+
+  it("createDefaultConfig rejects unknown canvas preset", () => {
+    assert.throws(
+      () => createDefaultConfig({ canvas: "999x999" as "870x1080" }),
+      /Unknown canvas preset/,
+    );
   });
 });
 
@@ -152,5 +190,15 @@ describe("@allure-notifications/config schema vs repo fixtures", () => {
     };
     const result = safeParseConfig(bad);
     assert.equal(result.success, false);
+  });
+
+  it("isValidConfig narrows valid config and rejects invalid", () => {
+    const valid = createDefaultConfig();
+    assert.equal(isValidConfig(valid), true);
+    if (isValidConfig(valid)) {
+      assert.equal(valid.base.chart?.width, 870);
+    }
+
+    assert.equal(isValidConfig({ base: { project: 123 } }), false);
   });
 });

@@ -4,6 +4,16 @@
  */
 import assert from "node:assert/strict";
 import test from "node:test";
+import { declareSuite } from "@allure-notifications/test-meta";
+
+declareSuite({
+  feature: "pyramid",
+  story: "Pyramid browser parity",
+  layer: "component",
+  component: "builder",
+  severity: "normal",
+});
+
 import {
   CORNER_RATIO,
   LAYER_ORDER,
@@ -16,7 +26,9 @@ import {
   tierGapPx,
 } from "@allure-notifications/pyramid";
 import * as browserPkg from "@allure-notifications/pyramid/browser";
-import * as vendorBrowser from "../vendor/allure-notifications-pyramid/browser.js";
+import { loadPyramidVendorBrowser } from "./vendor-browser.js";
+
+const vendorBrowser = loadPyramidVendorBrowser();
 
 test("@allure-notifications/pyramid locks CORNER_RATIO / TIER_GAP_RATIO", () => {
   assert.equal(CORNER_RATIO, 0.18);

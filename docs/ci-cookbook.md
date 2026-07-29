@@ -56,7 +56,7 @@ Fixture config already points at `packages/core/test/fixtures/dogfood-report` + 
 
 ## GitHub Actions — product CI (this repo)
 
-TS tests live in [`.github/workflows/ci-6.0.yml`](../.github/workflows/ci-6.0.yml) (`pnpm i` + `pnpm typecheck` + `pnpm test` + hard `pnpm coverage` + `pnpm allure:generate` on `master` + `feature/6.0*` + `feature/quality-*`). Artifacts: `allure-results/` · `allure-report/` · `coverage/` (retain ≥7d). Job **Sonar (hard / Q5)** needs coverage → `scripts/ci-sonar.sh` + vendored `scripts/sonar-gate-wait.py` (`projectKey=allure-notifications`; `SONAR_REQUIRED=true`; forks / no token soft-skip). Job **TestOps (informational)** needs `allure-results` → `setup-allurectl@v1` + `allurectl upload` + close (soft-skip without `ALLURE_*`; forks never upload). Job **Telegram (Q4)** needs `allure-report` → `scripts/ci-telegram.sh` + `config/ci-telegram.json` (`npx allure-notifications@6.0.8`; PR dry-run / master live → topic 34). Builder Pages: [`pages-builder.yml`](../.github/workflows/pages-builder.yml) (static `apps/builder/` on `master` + `feature/6.0*`; see [`pages-cutover.md`](pages-cutover.md)). Java jar CI stays in [`build.yml`](../.github/workflows/build.yml) (**master** only; cwd `legacy/java`).
+TS tests live in [`.github/workflows/ci-6.0.yml`](../.github/workflows/ci-6.0.yml) (`pnpm i` + `pnpm typecheck` + `pnpm test` + hard `pnpm coverage` = packages c8 + builder istanbul at **100% × 4** + `pnpm allure:generate` on `master` + `feature/6.0*` + `feature/quality-*`). Artifacts: `allure-results/` · `allure-report/` · `coverage/` (retain ≥7d). Job **Sonar (hard / Q5)** needs coverage → `scripts/ci-sonar.sh` + vendored `scripts/sonar-gate-wait.py` (`projectKey=allure-notifications`; `SONAR_REQUIRED=true`; forks / no token soft-skip). Job **TestOps (informational)** needs `allure-results` → `setup-allurectl@v1` + `allurectl upload` + close (soft-skip without `ALLURE_*`; forks never upload). Job **Telegram (Q4)** needs `allure-report` → `scripts/ci-telegram.sh` + `config/ci-telegram.json` (`npx allure-notifications@6.0.8`; PR dry-run / master live → topic 34). Builder Pages: [`pages-builder.yml`](../.github/workflows/pages-builder.yml) (static `apps/builder/` on `master` + `feature/6.0*`; see [`pages-cutover.md`](pages-cutover.md)). Java jar CI stays in [`build.yml`](../.github/workflows/build.yml) (**master** only; cwd `legacy/java`).
 
 ## Own tests → Allure results (Q1)
 
@@ -70,15 +70,19 @@ This repo’s **own** test run writes Allure results for the quality contour. Se
 
 ```bash
 pnpm test                 # sets ALLURE_RESULTS_DIR=<repo>/allure-results, runs workspace tests
-pnpm coverage             # c8 → coverage/lcov.info; fails if lines <70% or statements <65%
+pnpm coverage             # packages c8 + builder istanbul; fails unless all four metrics = 100%
 pnpm allure:generate      # allure generate allure-results --output allure-report
 ```
 
 Notes:
 
-- Node before 26.1: reporter-only mode (pass/fail/skip) — no `allure-js-commons` runtime API preload required. CI uses Node 24 (`actions/setup-node@v6`).
+- Node **24** (CI pin) with **reporter-only** `allure-node-test` — suite labels via `declareSuite` registry + `scripts/merge-allure-suite-meta.mjs`. See [`test-metadata.md`](test-metadata.md).
 - `ALLURE_RESULTS_DIR` must point at the **repo root** `allure-results/` (root `scripts/run-tests.mjs`); do not write into package cwd.
-- Coverage excludes: `dist` test emit noise, `node_modules`, `vendor`, `test/fixtures`, `apps/builder/js`, `**/*.test.*`. Hard floors in [`c8.config.json`](../c8.config.json) (Q5). Collage/visual pixel gate stays in `pnpm test` — not mixed with % floor.
+- After tests: `node scripts/merge-allure-suite-meta.mjs` then `node scripts/check-allure-labels.mjs` (hooked in `run-tests.mjs`) — every result must carry `epic`, `feature`, `story`, `layer`, `severity` (+ `component` for `e2e`/`component` layers).
+- Coverage gate (`scripts/run-coverage.mjs`):
+  1. **Packages** — c8 on `packages/*/src` ([`c8.config.json`](../c8.config.json)): lines / statements / branches / functions = **100%**. Excludes `dist` test emit, `node_modules`, `vendor`, `test/fixtures`, `**/*.test.*`, and raw `apps/builder/js/**` (builder uses its own instrumented path).
+  2. **Builder** — [`scripts/builder-coverage.mjs`](../scripts/builder-coverage.mjs): istanbul on `apps/builder/js/{app,phrases}.js` (SSOT `src/app.ts` + `src/phrases.ts`) via Playwright + `ANB_COVERAGE=1`; same four metrics = **100%**. Excludes sync-scripts, playwright.config, vendor, tests.
+- Collage/visual pixel gate stays in `pnpm test` — not mixed with % floor.
 - Forks/PR: no live secrets needed for this path (tests + Allure generate + coverage artifact).
 
 ## Sonar (Q2 soft → Q5 hard)
@@ -107,7 +111,7 @@ Quality contour close-out for this repo:
 
 | Gate | Policy |
 |------|--------|
-| Coverage | **blocker** — `c8` `check-coverage`: lines ≥ **70%**, statements ≥ **65%** on `packages/{config,pyramid,core,cli,plugin}/src` |
+| Coverage | **blocker** — packages c8 + builder istanbul: lines / statements / branches / functions = **100%** (`pnpm coverage`) |
 | Sonar | **blocker** when `SONAR_TOKEN` present + `SONAR_REQUIRED=true` and quality gate ≠ PASSED |
 | Forks / no token | Sonar **soft-skip** (exit 0); coverage still runs (no secrets needed) |
 | Visual / collage | Unchanged pixel/ahash gate in `pnpm test` — **not** part of coverage % floor |
@@ -129,7 +133,7 @@ Launch name: `allure-notifications · <ref_name> · <sha>`. Job summary prints t
 
 ## Telegram (Q4)
 
-Dogfood collage of **this run’s** Allure report into ADR 008 Monitoring topic **34** (`allure-notifications`). Wrapper: [`scripts/ci-telegram.sh`](../scripts/ci-telegram.sh). Template config: [`config/ci-telegram.json`](../config/ci-telegram.json) (points at `../allure-report` + `../allure-results`; runtime file gitignored). If `allure-report/summary.json` is missing → fallback dogfood CB-870 fixtures under `packages/core/test/fixtures/`.
+Collage of **this run’s** Allure report into ADR 008 Monitoring topic **34** (`allure-notifications`). Wrapper: [`scripts/ci-telegram.sh`](../scripts/ci-telegram.sh). Template config: [`config/ci-telegram.json`](../config/ci-telegram.json) (CB-870 layout aligned with `DEFAULT_ITEMS`: pie · suites · testing pyramid **↔** durations-by-layer on row 2; no history/severity panels). Before send, [`scripts/enrich-allure-layers.mjs`](../scripts/enrich-allure-layers.mjs) tags `allure-results` with `layer` labels (unit / component / e2e) so the pyramid renders instead of an empty fallback. Points at `../allure-report` + `../allure-results`; runtime file gitignored. Missing `allure-report/summary.json` → **fail** (no dogfood fixture fallback).
 
 | Event | Mode |
 |-------|------|
@@ -150,7 +154,6 @@ Local rehearsal:
 ```bash
 # with this-run report already generated:
 MODE=dry-run bash scripts/ci-telegram.sh
-# force dogfood fallback: move/rename allure-report/summary.json first
 ```
 
 ## GitHub Actions — consumer notify (dry-run)

@@ -70,8 +70,7 @@ node packages/cli/dist/src/bin.js send \
 - Unit tests mock `fetch` — **no** live network in default `pnpm test`.
 - Optional real send in tests: `ALLURE_NOTIFICATIONS_LIVE_TEST=1` + token env (off in CI).
 - Quality contour **Q4**: job **`telegram`** in [`.github/workflows/ci-6.0.yml`](../.github/workflows/ci-6.0.yml) via [`scripts/ci-telegram.sh`](../scripts/ci-telegram.sh).
-  - Config prefers this run’s `allure-report/` / `allure-results/` **when history + severity are present**; else **dogfood-full** (`dogfood-report` + `history-dogfood-full.jsonl`) so collage tiles are never empty.
-  - Showcase: [`config/config.dogfood-telegram-full.json`](../config/config.dogfood-telegram-full.json).
+  - Config always uses this run’s `allure-report/` / `allure-results/` (no dogfood fixture fallback). Showcase fixtures remain for local CLI demos: [`config/config.dogfood-telegram-full.json`](../config/config.dogfood-telegram-full.json).
   - PR / feature: `npx allure-notifications@6.0.8 send --config … --dry-run` (+ optional collage artifact).
   - `master` + `workflow_dispatch`: `--live` when `TELEGRAM_*` present → topic **34**; else soft-skip.
   - Forks: never `--live`.

@@ -44,4 +44,4 @@ export {
   type SendResult,
 } from "./send.js";
 
-export { runCli, type RunCliResult } from "./cli.js";
+export { formatCliError, runCli, type RunCliResult } from "./cli.js";

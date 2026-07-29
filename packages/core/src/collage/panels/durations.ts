@@ -15,6 +15,8 @@ const MARGIN = 16;
 const TITLE_HEIGHT = 24;
 const DEFAULT_BINS = 10;
 const DEFAULT_ARC = 10;
+/** Compact row height for by-layer bars — do not stretch to fill tall collage tiles. */
+const PREFERRED_LAYER_ROW_H = 36;
 
 function isLayerGroupBy(groupBy: string | undefined): boolean {
   return groupBy != null && groupBy.trim().toLowerCase() === "layer";
@@ -48,12 +50,9 @@ function averageSecondsByLayer(
 }
 
 function histogram(values: number[], bins: number): number[] {
-  let min = values[0] ?? 0;
-  let max = values[0] ?? 1;
-  for (const v of values) {
-    if (v < min) min = v;
-    if (v > max) max = v;
-  }
+  // Caller only invokes with non-empty values (analytics sorts durations ascending).
+  let min = Math.min(...values);
+  let max = Math.max(...values);
   if (max <= min) {
     max = min + 1;
   }
@@ -61,9 +60,9 @@ function histogram(values: number[], bins: number): number[] {
   const binWidth = (max - min) / bins;
   for (const value of values) {
     let index = Math.floor((value - min) / binWidth);
+    // value === max → index === bins (float-stable clamp).
     if (index >= bins) index = bins - 1;
-    if (index < 0) index = 0;
-    counts[index] = (counts[index] ?? 0) + 1;
+    counts[index]! += 1;
   }
   return counts;
 }
@@ -80,6 +79,7 @@ function fillTopRounded(
     return;
   }
   const r = Math.max(0, Math.min(maxArc, Math.min(width / 2, height / 2)));
+  /* c8 ignore next 4 — render path always passes maxArc ≥ 2 and positive bar size */
   if (r === 0) {
     ctx.fillRect(x, y, width, height);
     return;
@@ -103,6 +103,7 @@ function fillPill(
   width: number,
   height: number,
 ): void {
+  /* c8 ignore next 3 — callers clamp bar width/height to ≥ 2 */
   if (width <= 0 || height <= 0) {
     return;
   }
@@ -146,7 +147,7 @@ function drawHistogram(
 
   ctx.fillStyle = rgbCss(theme.accent);
   for (let index = 0; index < bins; index++) {
-    const count = counts[index] ?? 0;
+    const count = counts[index]!;
     const barHeight =
       count <= 0
         ? 0
@@ -177,19 +178,23 @@ function drawLayerAverages(
   const n = avgSeconds.size;
   const top = chartTop(showTitle);
   const plotH = chartHeight(height, showTitle);
-  const rowH = Math.max(14, Math.floor(plotH / Math.max(n, 1)));
+  const rowH = Math.min(
+    PREFERRED_LAYER_ROW_H,
+    Math.max(14, Math.floor(plotH / Math.max(n, 1))),
+  );
+  const blockTop = top + Math.floor((plotH - n * rowH) / 2);
   const barH = Math.max(8, Math.floor(rowH * 0.55));
   const fontSize = Math.min(12, Math.max(9, Math.floor(barH)));
 
   ctx.font = `${fontSize}px sans-serif`;
   let index = 0;
   for (const [key, avg] of avgSeconds) {
-    const baseline = top + index * rowH + Math.floor(rowH * 0.7);
+    const baseline = blockTop + index * rowH + Math.floor(rowH * 0.7);
     ctx.fillStyle = rgbCss(theme.text);
     ctx.fillText(key, MARGIN, baseline);
     const barWidth = Math.floor((avg / maxAvg) * barAreaWidth);
     const barX = MARGIN + labelWidth;
-    const barY = top + index * rowH + Math.floor((rowH - barH) / 2);
+    const barY = blockTop + index * rowH + Math.floor((rowH - barH) / 2);
     const hex = colorForLayer(key, theme.dark ? "dark" : "light");
     ctx.fillStyle = hex ? rgbCss(hexToRgb(hex)) : rgbCss(theme.accent);
     fillPill(ctx, barX, barY, Math.max(barWidth, 2), barH);

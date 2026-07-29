@@ -1,5 +1,14 @@
 import assert from "node:assert/strict";
 import { describe, it } from "node:test";
+import { declareSuite } from "@allure-notifications/test-meta";
+
+declareSuite({
+  feature: "cli-send",
+  story: "Telegram credentials",
+  layer: "unit",
+  component: "allure-notifications",
+  severity: "critical",
+});
 
 import {
   ADR008_CHAT_ID,
@@ -73,6 +82,18 @@ describe("@allure-notifications/cli telegram credentials", () => {
           env: {},
         }),
       /TELEGRAM_BOT_TOKEN/,
+    );
+  });
+
+  it("requires chat when ADR defaults disabled", () => {
+    assert.throws(
+      () =>
+        resolveTelegramCredentials({
+          config: { base: {}, telegram: { token: "t" } },
+          env: {},
+          applyAdrDefaults: false,
+        }),
+      /TELEGRAM_CHAT_ID/,
     );
   });
 });
@@ -173,10 +194,14 @@ describe("@allure-notifications/cli telegram caption + sendPhoto", () => {
   });
 
   it("sendTelegramPhoto posts multipart and returns message id (mocked fetch)", async () => {
-    const calls: { url: string; method?: string }[] = [];
+    const calls: { url: string; method?: string; form?: FormData }[] = [];
     const fetchImpl: typeof fetch = async (input, init) => {
       const url = String(input);
-      calls.push({ url: url.replace(/bot[^/]+/, "bot<redacted>"), method: init?.method });
+      calls.push({
+        url: url.replace(/bot[^/]+/, "bot<redacted>"),
+        method: init?.method,
+        form: init?.body instanceof FormData ? init.body : undefined,
+      });
       assert.ok(url.includes("/sendPhoto"));
       assert.equal(init?.method, "POST");
       assert.ok(init?.body instanceof FormData);
@@ -210,6 +235,34 @@ describe("@allure-notifications/cli telegram caption + sendPhoto", () => {
     assert.equal(calls.length, 1);
   });
 
+  it("sendTelegramPhoto includes reply_to_message_id when replyTo set", async () => {
+    let capturedForm: FormData | undefined;
+    const fetchImpl: typeof fetch = async (_input, init) => {
+      capturedForm = init?.body as FormData;
+      return new Response(
+        JSON.stringify({
+          ok: true,
+          result: { message_id: 1, chat: { id: Number(ADR008_CHAT_ID) } },
+        }),
+        { status: 200 },
+      );
+    };
+
+    await sendTelegramPhoto({
+      credentials: {
+        token: "1:t",
+        chat: ADR008_CHAT_ID,
+        replyTo: "555",
+      },
+      png: Buffer.from([1, 2, 3]),
+      caption: "x",
+      fetchImpl,
+    });
+
+    assert.ok(capturedForm);
+    assert.equal(capturedForm!.get("reply_to_message_id"), "555");
+  });
+
   it("sendTelegramPhoto surfaces Bot API errors", async () => {
     const fetchImpl: typeof fetch = async () =>
       new Response(JSON.stringify({ ok: false, description: "chat not found" }), {
@@ -226,5 +279,109 @@ describe("@allure-notifications/cli telegram caption + sendPhoto", () => {
         }),
       /chat not found/,
     );
+  });
+
+  it("credentials use empty telegram object; caption edges + HTTP fallback", async () => {
+    const creds = resolveTelegramCredentials({
+      config: { base: {} },
+      env: {
+        TELEGRAM_BOT_TOKEN: "env-only",
+        TELEGRAM_CHAT_ID: ADR008_CHAT_ID,
+      },
+    });
+    assert.equal(creds.token, "env-only");
+
+    // Inconsistent totals: count > 0 with total <= 0 → printPercentage "(0 %)".
+    const zeroTotal = buildTelegramCaption(
+      {
+        base: {
+          language: "en",
+          durationFormat: "   ",
+        },
+      },
+      {
+        statistic: {
+          passed: 2,
+          failed: 0,
+          broken: 0,
+          skipped: 0,
+          unknown: 0,
+          total: 0,
+        },
+        durationMs: 0,
+        layers: {},
+        suites: [],
+        durationsMs: [1000, 2000],
+        durationsMsByLayer: {},
+        severities: {},
+        hasLayerLabels: false,
+        hasKnownLayerLabels: false,
+        resultCount: 0,
+        history: null,
+        stabilityCases: [],
+      },
+    );
+    assert.match(zeroTotal, /\(0 %\)/);
+    assert.match(zeroTotal, /00:00:03/);
+
+    // Hit `config.base ?? {}` when base is missing (cast past Config).
+    const noBase = buildTelegramCaption({} as never, undefined);
+    assert.match(noBase, /Results:/);
+
+    const integerPct = buildTelegramCaption(
+      { base: { project: "p" } },
+      {
+        statistic: {
+          passed: 1,
+          failed: 0,
+          broken: 0,
+          skipped: 0,
+          unknown: 0,
+          total: 2,
+        },
+        durationMs: 500,
+        layers: {},
+        suites: [],
+        durationsMs: [],
+        durationsMsByLayer: {},
+        severities: {},
+        hasLayerLabels: false,
+        hasKnownLayerLabels: false,
+        resultCount: 2,
+        history: null,
+        stabilityCases: [],
+      },
+    );
+    assert.match(integerPct, /1 \(50 %\)/);
+
+    const fetchImpl: typeof fetch = async () =>
+      new Response(JSON.stringify({ ok: false }), { status: 502 });
+    await assert.rejects(
+      () =>
+        sendTelegramPhoto({
+          credentials: { token: "1:t", chat: ADR008_CHAT_ID },
+          png: Buffer.from([1]),
+          caption: "x",
+          fetchImpl,
+        }),
+      /HTTP 502/,
+    );
+
+    const noChatFetch: typeof fetch = async () =>
+      new Response(
+        JSON.stringify({
+          ok: true,
+          result: { message_id: 7 },
+        }),
+        { status: 200 },
+      );
+    const sent = await sendTelegramPhoto({
+      credentials: { token: "1:t", chat: ADR008_CHAT_ID },
+      png: Buffer.from([1]),
+      caption: "x",
+      fetchImpl: noChatFetch,
+    });
+    assert.equal(sent.chatId, ADR008_CHAT_ID);
+    assert.equal(sent.messageId, 7);
   });
 });

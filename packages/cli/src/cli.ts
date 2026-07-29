@@ -85,7 +85,11 @@ export async function runCli(argv: string[]): Promise<RunCliResult> {
 
     return { exitCode: 0, stdout: lines.join("\n") + "\n", stderr: "" };
   } catch (err) {
-    const msg = err instanceof Error ? err.message : String(err);
-    return { exitCode: 1, stdout: "", stderr: `error: ${msg}\n` };
+    return { exitCode: 1, stdout: "", stderr: `error: ${formatCliError(err)}\n` };
   }
+}
+
+/** Exported for unit coverage of non-Error throw formatting. */
+export function formatCliError(err: unknown): string {
+  return err instanceof Error ? err.message : String(err);
 }

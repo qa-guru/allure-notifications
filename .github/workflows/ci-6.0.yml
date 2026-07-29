@@ -4,7 +4,7 @@
 # Q2: Sonar upload + sonar-gate-wait.
 # Q3: TestOps upload+close via allurectl (informational; skip without ALLURE_*).
 # Q4: Telegram collage dry-run (PR) / live (master + workflow_dispatch; never forks).
-# Q5: Coverage % gate (lines≥70 / statements≥65) + SONAR_REQUIRED=true (forks/no token soft-skip).
+# Q5: Coverage % gate (lines/statements/branches/functions = 100% on packages + builder runtime) + SONAR_REQUIRED=true (forks/no token soft-skip).
 
 name: CI 6.0 (TypeScript)
 
@@ -84,9 +84,10 @@ jobs:
           ALLURE_RESULTS_DIR: ${{ github.workspace }}/allure-results
         run: pnpm test
 
-      - name: Coverage (packages, hard — lines≥70 / statements≥65)
+      - name: Coverage (packages + builder, hard — 100% × 4 metrics)
         env:
           CI: true
+          PLAYWRIGHT_HEADLESS: '1'
           ALLURE_RESULTS_DIR: ${{ github.workspace }}/allure-results
         run: pnpm coverage
 

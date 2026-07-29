@@ -86,7 +86,7 @@ Smoke: `header tool links` — site has `.icon svg`, zero `.icon img`.
 
 ## Resize L-brackets (editor chrome)
 
-NE/NW/SE/SW parked at the **cell edge** (`top/bottom/left/right: 0`). The visible crop-mark (`::after`) is sized to `--anb-resize-mark ≈ half-gap − 1px` so the stroke stays in the cardGap gutter **outside** the rounded card — never under the title bar (`half-gap + bar-h`) and never digging into the chart. Card radius matches jar `CARD_ARC` (**18px**). Guard: smoke `resize L-brackets sit in gutter outside card`.
+NE/NW/SE/SW parked at the **cell edge** (`top/bottom/left/right: 0`). The visible crop-mark (`::after`) is sized to `--anb-resize-mark ≈ half-gap − 1px` so the stroke stays in the cardGap gutter **outside** the rounded card — never under the title bar (`half-gap + bar-h`) and never digging into the chart. Editor card radius is **10px** — **do not** mirror core collage `CARD_ARC` (18px in `packages/core`, export-only). Guard: smoke `resize L-brackets sit in gutter outside card`.
 
 ## Terminal bar (builder canon)
 

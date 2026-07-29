@@ -4,6 +4,15 @@ import { existsSync, readFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { describe, it } from "node:test";
+import { declareSuite } from "@allure-notifications/test-meta";
+
+declareSuite({
+  feature: "core-collage",
+  story: "Collage render",
+  layer: "unit",
+  component: "@allure-notifications/core",
+  severity: "normal",
+});
 
 import { createCanvas, loadImage } from "@napi-rs/canvas";
 import {

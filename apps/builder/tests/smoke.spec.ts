@@ -1,5 +1,13 @@
-// @ts-check
-const { test, expect } = require('@playwright/test');
+import fs from 'node:fs';
+import { test, expect, bindSuiteMeta } from './coverage.fixture.js';
+
+bindSuiteMeta(test, {
+  feature: 'builder-ui',
+  story: 'Builder smoke',
+  layer: 'e2e',
+  component: 'builder',
+  severity: 'blocker',
+});
 
 /** SQ-1080 canon 4-tile — must match @allure-notifications/config DEFAULT_ITEMS + CANON.md */
 const SQ1080_ITEMS = [
@@ -212,7 +220,6 @@ test.describe('allure-notifications-builder smoke', () => {
     expect(download.suggestedFilename()).toBe('config.json');
     const path = await download.path();
     expect(path).toBeTruthy();
-    const fs = require('fs');
     const cfg = JSON.parse(fs.readFileSync(path, 'utf8'));
     expect(cfg.telegram).toBeTruthy();
     expect(cfg.base.chart.layout).toBe('free');
@@ -398,8 +405,7 @@ test.describe('allure-notifications-builder smoke', () => {
     expect(pos.dSwBottom).toBeLessThan(-2);
     expect(Math.abs(pos.dNwTop + pos.halfGap)).toBeLessThan(2);
     expect(Math.abs(pos.dNeTop + pos.halfGap)).toBeLessThan(2);
-    // Jar CARD_ARC parity.
-    expect(pos.radius).toBe(18);
+    expect(pos.radius).toBe(10);
     // Regression: merge once parked NE/NW under the title bar.
     expect(pos.nwBelowBar).toBe(false);
   });

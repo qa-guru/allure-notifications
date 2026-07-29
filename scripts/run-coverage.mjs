@@ -1,9 +1,11 @@
 #!/usr/bin/env node
 /**
- * Package coverage via c8 (Q5 harden).
- * Thresholds in c8.config.json: lines ≥70%, statements ≥65% on
- * packages/{config,pyramid,core,cli,plugin}/src (excludes dist/fixtures/vendor/tests).
- * Collage/visual pixel gate stays in `pnpm test` — not mixed with % floor.
+ * Coverage gate (hard 100% × 4 metrics):
+ * 1. Packages — c8 on packages/{config,pyramid,core,cli,plugin}/src
+ * 2. Builder — istanbul via Playwright (`scripts/builder-coverage.mjs`)
+ *    on apps/builder/js/{app,phrases}.js (SSOT: src/app.ts + src/phrases.ts).
+ *
+ * Visual/collage pixel gate stays in `pnpm test` — not mixed with % floor.
  * Writes Allure sidecar to .coverage-allure-tmp so it does not pollute
  * the primary allure-results/ from `pnpm test`.
  */
@@ -15,7 +17,17 @@ import fs from "node:fs";
 const scratch = path.join(REPO_ROOT, ".coverage-allure-tmp");
 fs.mkdirSync(scratch, { recursive: true });
 
-const result = spawnSync(
+function run(cmd, args, env = {}) {
+  const result = spawnSync(cmd, args, {
+    cwd: REPO_ROOT,
+    env: { ...process.env, ...env },
+    stdio: "inherit",
+  });
+  if (result.error) throw result.error;
+  return result.status ?? 1;
+}
+
+const packagesStatus = run(
   "pnpm",
   [
     "exec",
@@ -33,18 +45,17 @@ const result = spawnSync(
     "allure-notifications",
     "--filter",
     "@allure-notifications/plugin",
+    "--filter",
+    "@allure-notifications/test-meta",
     "run",
     "test",
   ],
-  {
-    cwd: REPO_ROOT,
-    env: {
-      ...process.env,
-      ALLURE_RESULTS_DIR: scratch,
-    },
-    stdio: "inherit",
-  },
+  { ALLURE_RESULTS_DIR: scratch },
 );
 
-if (result.error) throw result.error;
-process.exit(result.status ?? 1);
+if (packagesStatus !== 0) process.exit(packagesStatus);
+
+const builderStatus = run("node", [
+  path.join(REPO_ROOT, "scripts/builder-coverage.mjs"),
+]);
+process.exit(builderStatus);

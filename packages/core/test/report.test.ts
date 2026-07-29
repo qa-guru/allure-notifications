@@ -2,12 +2,26 @@ import assert from "node:assert/strict";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { describe, it } from "node:test";
+import { declareSuite } from "@allure-notifications/test-meta";
+
+declareSuite({
+  feature: "core-collage",
+  story: "Report helpers",
+  layer: "unit",
+  component: "@allure-notifications/core",
+  severity: "normal",
+});
 
 import {
   adaptSummaryJson,
   buildAnalytics,
+  durationMsOf,
+  labelOf,
+  parseTestResult,
   readAllureResults,
   readSummary,
+  resolveResultsFolder,
+  suiteNameOf,
 } from "../src/index.js";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
@@ -51,5 +65,34 @@ describe("@allure-notifications/core report", () => {
     assert.equal(analytics.hasKnownLayerLabels, true);
     assert.equal(analytics.durationsMs.length, 3);
     assert.ok(analytics.durationsMsByLayer.unit?.length === 1);
+  });
+
+  it("suiteNameOf falls back to fullName then name", () => {
+    assert.equal(
+      suiteNameOf({ labels: [], fullName: "pkg.Test", name: "Test" }),
+      "pkg.Test",
+    );
+    assert.equal(suiteNameOf({ labels: [], name: "OnlyName" }), "OnlyName");
+    assert.equal(suiteNameOf({ labels: [] }), null);
+  });
+
+  it("durationMsOf requires start and stop", () => {
+    assert.equal(durationMsOf({ labels: [], start: 1, stop: 4 }), 3);
+    assert.equal(durationMsOf({ labels: [] }), null);
+  });
+
+  it("labelOf returns matching label value", () => {
+    const r = {
+      labels: [{ name: "feature", value: "Auth" }],
+    };
+    assert.equal(labelOf(r, "feature"), "Auth");
+    assert.equal(labelOf(r, "missing"), null);
+  });
+
+  it("resolveResultsFolder prefers explicit trimmed path", async () => {
+    assert.equal(
+      await resolveResultsFolder("  /tmp/results  ", undefined),
+      "/tmp/results",
+    );
   });
 });

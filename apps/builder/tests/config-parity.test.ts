@@ -3,6 +3,16 @@
  */
 import assert from "node:assert/strict";
 import test from "node:test";
+import { declareSuite } from "@allure-notifications/test-meta";
+
+declareSuite({
+  feature: "config",
+  story: "Config browser parity",
+  layer: "component",
+  component: "builder",
+  severity: "normal",
+});
+
 import {
   CANVAS_PRESETS,
   DEFAULT_CARD_GAP,
@@ -13,7 +23,9 @@ import {
   createDefaultConfig,
 } from "@allure-notifications/config";
 import * as browserPkg from "@allure-notifications/config/browser";
-import * as vendorBrowser from "../vendor/allure-notifications-config/browser.js";
+import { loadConfigVendorBrowser } from "./vendor-browser.js";
+
+const vendorBrowser = loadConfigVendorBrowser();
 
 const SQ1080_ITEMS = [
   { type: "pie", x: 0, y: 0, w: 4, h: 4 },
