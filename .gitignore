@@ -57,3 +57,6 @@ coverage/
 
 # CI telegram runtime (generated)
 config/ci-telegram.runtime.json
+
+# Sonar local scanner workdir
+.scannerwork/
