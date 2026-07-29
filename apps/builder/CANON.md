@@ -75,6 +75,10 @@ Terminal exports full `config.json`. Chart block for jar free-grid (CB-870 defau
 Telegram is **top-level** `telegram: { token, chat, topic, replyTo, templatePath }` (jar Config shape).
 
 
+## Resize L-brackets (editor chrome)
+
+NE/NW/SE/SW sit on the **card corners** (`top/bottom/left/right: var(--anb-half-gap)`), mirroring each other. Top brackets are **above** the title bar — never `half-gap + bar-h` (under header) and never `top: 0` (floating in the cell gutter). Stroke insets: top handles `0 2px 2px 2px`, bottom `2px 2px 0 2px`. Guard: smoke `resize L-brackets sit on card corners`.
+
 ## Terminal bar (builder canon)
 
 | | |

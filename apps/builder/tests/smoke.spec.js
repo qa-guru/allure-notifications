@@ -322,4 +322,43 @@ test.describe('allure-notifications-builder smoke', () => {
     await expect(actions.nth(1)).toHaveAttribute('data-testid', 'anb-term-download');
     await expect(actions.nth(2)).toHaveAttribute('data-testid', 'anb-term-copy');
   });
+
+  test('resize L-brackets sit on card corners (not under title bar)', async ({
+    page,
+  }) => {
+    await page.goto('/');
+    await page.getByTestId('anb-btn-reset').click();
+    const item = page.locator('#anb-grid .grid-stack-item').first();
+    await expect(item).toBeVisible();
+    const pos = await item.evaluate((el) => {
+      const card = el.querySelector('.grid-stack-item-content');
+      const bar = el.querySelector('.widget-tile__header, .anb-panel__bar');
+      const nw = el.querySelector('.ui-resizable-nw');
+      const ne = el.querySelector('.ui-resizable-ne');
+      const sw = el.querySelector('.ui-resizable-sw');
+      if (!card || !nw || !ne || !sw) {
+        return { ok: false, reason: 'missing handles' };
+      }
+      const c = card.getBoundingClientRect();
+      const nwR = nw.getBoundingClientRect();
+      const neR = ne.getBoundingClientRect();
+      const swR = sw.getBoundingClientRect();
+      const barBottom = bar ? bar.getBoundingClientRect().bottom : c.top + 22;
+      return {
+        ok: true,
+        dNwTop: nwR.top - c.top,
+        dNeTop: neR.top - c.top,
+        dNwLeft: nwR.left - c.left,
+        dSwBottom: c.bottom - swR.bottom,
+        nwBelowBar: nwR.top >= barBottom - 1,
+      };
+    });
+    expect(pos.ok, JSON.stringify(pos)).toBe(true);
+    expect(Math.abs(pos.dNwTop)).toBeLessThan(2);
+    expect(Math.abs(pos.dNeTop)).toBeLessThan(2);
+    expect(Math.abs(pos.dNwLeft)).toBeLessThan(2);
+    expect(Math.abs(pos.dSwBottom)).toBeLessThan(2);
+    // Regression: merge once parked NE/NW under the title bar.
+    expect(pos.nwBelowBar).toBe(false);
+  });
 });
