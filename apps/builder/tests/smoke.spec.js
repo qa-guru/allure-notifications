@@ -35,12 +35,9 @@ test.describe('allure-notifications-builder smoke', () => {
       'https://allure-notifications.qa.guru',
     );
     await expect(site).toHaveAttribute('aria-label', 'allure-notifications');
-    const mark = site.locator('.icon img[src*="allure3-logo"]');
-    await expect(mark).toBeVisible();
-    // Guard: brand <img> must stay monochrome in the tool row (never full-color logo).
-    // CSS: .icon-btn .icon img → brightness(0) [+ invert(1) on dark].
-    const filter = await mark.evaluate((el) => getComputedStyle(el).filter);
-    expect(filter).toMatch(/brightness\(\s*0\s*\)/);
+    // Template github.io icon (SVG currentColor) — never allure3-logo img override.
+    await expect(site.locator('.icon svg')).toBeVisible();
+    await expect(site.locator('.icon img')).toHaveCount(0);
   });
 
   test('Reset → CB-870 free chart + chrome defaults in terminal', async ({

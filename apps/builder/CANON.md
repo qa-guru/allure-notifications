@@ -79,10 +79,10 @@ Telegram is **top-level** `telegram: { token, chat, topic, replyTo, templatePath
 
 | Slot | Link | Icon |
 |------|------|------|
-| GitHub | `github.com/qa-guru/allure-notifications` | template SVG `currentColor` |
-| Site | `allure-notifications.qa.guru` | `iconSrc` → `allure3-logo.svg` |
+| GitHub | `github.com/qa-guru/allure-notifications` | template SVG |
+| Site | `allure-notifications.qa.guru` | template **github.io** SVG — **no** `iconSrc`, **no** `allure3-logo` |
 
-**Forbidden:** full-color brand mark in the tool row. Raster/`iconSrc` marks are flattened by `.icon-btn .icon img { filter: brightness(0) … }` (`css/app.css`, DS `icon.css`). Smoke: `header tool links` asserts `brightness(0)` on the site img. Do not drop that CSS or the assertion.
+Smoke: `header tool links` — site has `.icon svg`, zero `.icon img`.
 
 ## Resize L-brackets (editor chrome)
 
