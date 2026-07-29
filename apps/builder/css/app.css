@@ -473,17 +473,32 @@ html.theme-light .anb-editor__caption a {
 
 .anb-canvas {
   position: relative;
+  box-sizing: border-box;
   width: 100%;
   height: auto;
   overflow: hidden;
   aspect-ratio: var(--anb-canvas-w, 870) / var(--anb-canvas-h, 1080);
   /* Default before data-anb-dark lands — jar outerBackground dark */
   background: #222;
+  /* Jar free-grid chrome — synced from base.chart.* via JS */
+  --anb-card-gap: 14px;
+  --anb-half-gap: calc(var(--anb-card-gap) / 2);
+  --anb-bar-h: 22px;
+  --anb-title-size: 0.75rem;
+  --wt-pad: 6px;
 }
 
+/*
+ * Equal gutters (Allure / widget-mosaic--post / jar freeCellRect):
+ *   edge = half (grid inset) + half (content inset) = cardGap
+ *   between = half + half = cardGap
+ */
 .anb-canvas .grid-stack {
-  width: 100%;
-  height: 100%;
+  position: absolute;
+  inset: var(--anb-half-gap);
+  /* Beat GridStack inline width/height so edge gutters stay equal */
+  width: auto !important;
+  height: auto !important;
   background-image:
     linear-gradient(to right, rgba(255, 255, 255, 0.08) 1px, transparent 1px),
     linear-gradient(to bottom, rgba(255, 255, 255, 0.08) 1px, transparent 1px);
@@ -542,10 +557,11 @@ html.theme-light .anb-editor__caption a {
 .gs-10 > .grid-stack-item[gs-x="9"] { left: 90%; }
 
 .anb-canvas .grid-stack-item-content {
-  inset: 0 !important;
+  /* Match jar cardGap half-inset (export / Telegram collage) */
+  inset: var(--anb-half-gap) !important;
   margin: 0 !important;
   overflow: hidden;
-  border-radius: 6px;
+  border-radius: 10px;
   background: var(--color-surface, #323232);
   color: var(--color-text, #dcdcdc);
   box-shadow: inset 0 0 0 1px var(--color-border, rgba(96, 96, 96, 0.9));
@@ -561,12 +577,12 @@ html.theme-light .anb-editor__caption a {
 .anb-panel__bar {
   display: flex;
   align-items: center;
-  gap: 4px;
+  gap: 6px;
   box-sizing: border-box;
-  height: 22px;
-  min-height: 22px;
-  padding: 0 3px 0 5px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  height: var(--anb-bar-h, 22px);
+  min-height: var(--anb-bar-h, 22px);
+  padding: 0 6px 0 8px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
   background: var(--color-surface-soft, #3c3c3c);
   color: var(--color-text-muted, #b4b4b4);
   flex-shrink: 0;
@@ -577,9 +593,11 @@ html.theme-light .anb-editor__caption a {
 .anb-panel__title {
   flex: 1;
   min-width: 0;
-  font-size: 0.6875rem;
+  font-size: var(--anb-title-size, 0.75rem);
   font-weight: 600;
-  line-height: 1;
+  line-height: 1.15;
+  letter-spacing: 0.01em;
+  color: var(--color-text-muted, #b4b4b4);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -628,7 +646,7 @@ html.theme-light .anb-editor__caption a {
   display: flex;
   flex-direction: column;
   min-height: 0;
-  padding: 4px;
+  padding: var(--wt-pad, 6px);
   position: relative;
 }
 
@@ -645,7 +663,7 @@ html.theme-light .anb-editor__caption a {
   pointer-events: none;
   display: flex;
   flex-direction: column;
-  --wt-pad: 4px;
+  --wt-pad: 0; /* body already applies tilePad */
 }
 
 .anb-panel__tile .widget-tile__bar {
@@ -681,9 +699,8 @@ html.theme-light .anb-editor__caption a {
   z-index: 100;
 }
 
-/* Resize: L-brackets on corners. NE/NW below title bar so they never cover × / Copy. */
+/* Resize: L-brackets on card corners (account for cardGap half-inset). */
 .anb-canvas {
-  --anb-bar-h: 22px;
   --anb-resize-size: 14px;
   --anb-resize-ink: rgba(255, 255, 255, 0.48);
 }
@@ -725,21 +742,53 @@ html.theme-light .anb-editor__caption a {
 /* !important — GridStack injects .gs-id-* { top: 0 } after our sheet */
 .anb-canvas .grid-stack-item > .ui-resizable-ne,
 .anb-canvas .grid-stack-item > .ui-resizable-nw {
-  top: var(--anb-bar-h) !important;
+  top: calc(var(--anb-half-gap) + var(--anb-bar-h)) !important;
+}
+
+.anb-canvas .grid-stack-item > .ui-resizable-ne {
+  right: var(--anb-half-gap);
+}
+
+.anb-canvas .grid-stack-item > .ui-resizable-nw {
+  left: var(--anb-half-gap);
+}
+
+.anb-canvas .grid-stack-item > .ui-resizable-se {
+  right: var(--anb-half-gap);
+  bottom: var(--anb-half-gap);
+}
+
+.anb-canvas .grid-stack-item > .ui-resizable-sw {
+  left: var(--anb-half-gap);
+  bottom: var(--anb-half-gap);
 }
 
 .anb-canvas .grid-stack-item > .ui-resizable-n {
-  top: var(--anb-bar-h) !important;
+  top: calc(var(--anb-half-gap) + var(--anb-bar-h)) !important;
+  left: var(--anb-half-gap);
+  right: var(--anb-half-gap);
   height: 8px;
 }
 
 .anb-canvas .grid-stack-item > .ui-resizable-e,
 .anb-canvas .grid-stack-item > .ui-resizable-w {
   width: 8px;
-  top: calc(var(--anb-bar-h) + 6px) !important;
+  top: calc(var(--anb-half-gap) + var(--anb-bar-h) + 6px) !important;
+  bottom: var(--anb-half-gap);
+}
+
+.anb-canvas .grid-stack-item > .ui-resizable-e {
+  right: var(--anb-half-gap);
+}
+
+.anb-canvas .grid-stack-item > .ui-resizable-w {
+  left: var(--anb-half-gap);
 }
 
 .anb-canvas .grid-stack-item > .ui-resizable-s {
+  left: var(--anb-half-gap);
+  right: var(--anb-half-gap);
+  bottom: var(--anb-half-gap);
   height: 8px;
 }
 
