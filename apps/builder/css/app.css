@@ -6,6 +6,15 @@
   height: 100%;
 }
 
+/* Match DS icon.css: brand <img> in tool row → monochrome currentColor */
+.icon-btn .icon img {
+  filter: brightness(0);
+}
+
+html:not(.theme-light) .icon-btn .icon img {
+  filter: brightness(0) invert(1);
+}
+
 html,
 body {
   min-height: 100%;
