@@ -18,7 +18,6 @@ const state = createDefaultState();
 let grid = null;
 let selectedEl = null;
 let suppressSync = false;
-let activeMessenger = 'telegram';
 let vectorDraft = null;
 let vectorMiss = false;
 const TG_BOT_NAME = 'Test Notifications Bot';
@@ -40,7 +39,9 @@ const TG_PREVIEW_LINKS = Object.freeze({
     build: 'https://github.com/autotests-ai/reference-app/actions/runs/29798732034',
 });
 const TG_LINK_KEYS = Object.freeze(['report', 'dashboard', 'testops', 'build']);
-const VECTOR_REGISTRY_KEY = 'allure-notifications-builder-vector-registry';
+const VECTOR_REGISTRY_KEY = 'anb-apps-builder-vector-registry';
+/** Pre-rename key — migrate once into `VECTOR_REGISTRY_KEY`. */
+const VECTOR_REGISTRY_KEY_LEGACY = 'allure-notifications-builder-vector-registry';
 /** TG feed bubble width (CSS px) — not export SSOT. */
 const TG_FEED_PREVIEW_WIDTH = 480;
 let openExportMode = null;
@@ -94,7 +95,14 @@ function loadVectorRegistry() {
     map.set(defaultFp, cloneSnap(defaults));
     map.set(DEFAULT_VECTOR_ID, cloneSnap(defaults));
     try {
-        const raw = localStorage.getItem(VECTOR_REGISTRY_KEY);
+        let raw = localStorage.getItem(VECTOR_REGISTRY_KEY);
+        if (!raw) {
+            raw = localStorage.getItem(VECTOR_REGISTRY_KEY_LEGACY);
+            if (raw) {
+                localStorage.setItem(VECTOR_REGISTRY_KEY, raw);
+                localStorage.removeItem(VECTOR_REGISTRY_KEY_LEGACY);
+            }
+        }
         if (!raw)
             return map;
         const parsed = JSON.parse(raw);
@@ -476,7 +484,6 @@ function applySnap(snap) {
     applyCanvasMetrics();
     const chart = /** @type {{ items?: ChartItem[] }} */ (state.base.chart);
     loadItems(Array.isArray(chart.items) ? chart.items.map((p) => ({ ...p })) : []);
-    setActiveMessenger('telegram');
     scheduleFitEditorScale();
     renderTerminal();
     renderMessengerPreview();
@@ -833,49 +840,6 @@ function renderMessengerPreview() {
     if (textEl)
         textEl.innerHTML = buildTgCaptionHtml();
     refreshExportPopoverIfOpen();
-}
-/**
- * @param {string} id
- */
-function setActiveMessenger(id) {
-    activeMessenger = id;
-    document.querySelectorAll('[data-anb-messenger]').forEach((btn) => {
-        if (!(btn instanceof HTMLElement))
-            return;
-        const on = btn.getAttribute('data-anb-messenger') === id;
-        btn.classList.toggle('is-active', on);
-        btn.setAttribute('aria-selected', on ? 'true' : 'false');
-    });
-    document.querySelectorAll('[data-anb-messenger-pane]').forEach((pane) => {
-        if (!(pane instanceof HTMLElement))
-            return;
-        const on = pane.getAttribute('data-anb-messenger-pane') === id;
-        pane.hidden = !on;
-    });
-    if (id === 'telegram') {
-        scheduleFitEditorScale();
-    }
-}
-function wireMessengerTabs() {
-    const tabs = document.getElementById('anb-messenger-tabs');
-    if (!tabs)
-        return;
-    tabs.addEventListener('click', (event) => {
-        const t = event.target;
-        if (!(t instanceof Element))
-            return;
-        const tab = t.closest('[data-anb-messenger]');
-        if (!(tab instanceof HTMLElement) || !tabs.contains(tab))
-            return;
-        if (tab.classList.contains('anb-messenger-tabs__btn--stub'))
-            return;
-        if (tab.getAttribute('aria-disabled') === 'true')
-            return;
-        const id = tab.getAttribute('data-anb-messenger');
-        if (!id)
-            return;
-        setActiveMessenger(id);
-    });
 }
 /**
  * @param {HTMLElement} root
@@ -1608,7 +1572,6 @@ function init() {
     injectPyramidSsot();
     bindControls();
     wireHeaderThemeDarkModeSync();
-    wireMessengerTabs();
     wireExportPreviews();
     wireVectorInput();
     renderPalette();

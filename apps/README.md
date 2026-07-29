@@ -9,7 +9,7 @@ Application packages for line **6.0.\***.
 Stand `:3011`:
 
 ```bash
-python scripts/stands/ensure.py allure-notifications-builder
+python scripts/stands/ensure.py anb-apps-builder
 ```
 
 cwd → `projects/allure-notifications-home/allure-notifications/apps/builder`.

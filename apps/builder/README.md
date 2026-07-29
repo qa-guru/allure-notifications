@@ -38,7 +38,7 @@ Stand/`http.server` cannot follow pnpm symlinks outside `apps/builder`, so sync 
 
 ```bash
 # from monorepo root (zero-design-system)
-python scripts/stands/ensure.py allure-notifications-builder
+python scripts/stands/ensure.py anb-apps-builder
 # → http://localhost:3011/
 ```
 

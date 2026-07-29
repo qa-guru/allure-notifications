@@ -48,7 +48,7 @@ Until step B, leave custom domain on the **old** builder repo so prod hostname s
 7. **Verify** (row 5 → `[x]` only when all pass):
    - `curl -sfI https://allure-notifications.qa.guru/` → **2xx**
    - Browser: builder loads; static `css` / `js` / `vendor` 200
-   - Optional: compare smoke vs local stand `:3011` (`python scripts/stands/ensure.py allure-notifications-builder`)
+   - Optional: compare smoke vs local stand `:3011` (`python scripts/stands/ensure.py anb-apps-builder`)
 
 **Do not** change DNS/SSL in GitHub UI from automation without explicit HQ OK. This doc is the runbook only.
 

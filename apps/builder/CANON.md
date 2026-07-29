@@ -83,7 +83,7 @@ NE/NW/SE/SW parked at the **cell edge** (`top/bottom/left/right: 0`). The visibl
 
 | | |
 |--|--|
-| `vector#` | Editable fingerprint in `.panel__bar-end` · localStorage key `allure-notifications-builder-vector-registry` · Enter restores · Esc cancels · miss → `aria-invalid` · alias **`vector#default`** = code SSOT (CB-870 layout) |
+| `vector#` | Editable fingerprint in `.panel__bar-end` · localStorage key `anb-apps-builder-vector-registry` · Enter restores · Esc cancels · miss → `aria-invalid` · alias **`vector#default`** = code SSOT (CB-870 layout) |
 | Actions | Icon-only **Reset → Download → Copy** (`.icon-btn.panel__action`, SVG 16×16 stroke 1.5) |
 | JSON | Top-level `vector: "vector#…"` metadata; hash payload is `{base, telegram}` without `vector` |
 | Body | Direct `.panel__code.ch-code` (no `__body` pad) · **always** `mountHighlightedOutput` / VS Code Dark+ · no blank rows before `{` / after `}` |

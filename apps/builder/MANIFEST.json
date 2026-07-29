@@ -151,7 +151,7 @@
   ],
   "stand": {
     "port": 3011,
-    "id": "allure-notifications-builder",
-    "command": "python scripts/stands/ensure.py allure-notifications-builder --open"
+    "id": "anb-apps-builder",
+    "command": "python scripts/stands/ensure.py anb-apps-builder --open"
   }
 }

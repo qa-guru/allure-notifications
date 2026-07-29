@@ -20,20 +20,15 @@ test.describe('allure-notifications-builder smoke', () => {
     await expect(page.locator('#app-header')).not.toBeEmpty();
   });
 
-  test('header tool links: builder repo + allure-notifications site', async ({
-    page,
-  }) => {
+  test('header tool links: monorepo + prod builder site', async ({ page }) => {
     await page.goto('/');
     await expect(page.getByTestId('anb-page')).toBeVisible();
     const github = page.getByTestId('header-github');
     await expect(github).toHaveAttribute(
       'href',
-      'https://github.com/qa-guru/allure-notifications-builder',
+      'https://github.com/qa-guru/allure-notifications',
     );
-    await expect(github).toHaveAttribute(
-      'aria-label',
-      'allure-notifications-builder',
-    );
+    await expect(github).toHaveAttribute('aria-label', 'allure-notifications');
     const site = page.getByTestId('header-github-pages');
     await expect(site).toHaveAttribute(
       'href',
@@ -129,14 +124,13 @@ test.describe('allure-notifications-builder smoke', () => {
     expect(await canvasRatio('1410x1080')).toBeCloseTo(1410 / 1080, 2);
   });
 
-  test('telegram live; other messengers stubs', async ({ page }) => {
+  test('telegram messenger pane is live (no stub tabs)', async ({ page }) => {
     await page.goto('/');
-    await expect(page.getByTestId('anb-tab-telegram')).toBeVisible();
-    await expect(page.getByTestId('anb-stub-slack')).toBeVisible();
-    await expect(page.getByTestId('anb-tab-slack')).toHaveAttribute(
-      'aria-disabled',
-      'true',
-    );
+    await expect(page.getByTestId('anb-group-messengers')).toBeVisible();
+    await expect(page.getByText('Telegram · live')).toBeVisible();
+    await expect(page.getByTestId('anb-messenger-telegram')).toBeVisible();
+    await expect(page.getByTestId('anb-tab-telegram')).toHaveCount(0);
+    await expect(page.getByTestId('anb-stub-slack')).toHaveCount(0);
   });
 
   test('export preview links in preview bar; caption under canvas', async ({ page }) => {

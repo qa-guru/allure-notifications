@@ -18,7 +18,7 @@ Do **not** execute big moves until this checklist is explicitly OK'd. Phase 0 = 
 
 Current (`scripts/stands/registry.json`) — **Stage E**:
 
-- id: `allure-notifications-builder`
+- id: `anb-apps-builder`
 - port: `3011`
 - cwd: `projects/allure-notifications-home/allure-notifications/apps/builder`
 - cmd: `python -m http.server 3011`
@@ -30,7 +30,7 @@ Current (`scripts/stands/registry.json`) — **Stage E**:
 Validate only via:
 
 ```bash
-python scripts/stands/ensure.py allure-notifications-builder
+python scripts/stands/ensure.py anb-apps-builder
 curl -sf -o /dev/null -w "%{http_code}\n" http://127.0.0.1:3011/
 ```
 

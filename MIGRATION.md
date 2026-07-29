@@ -159,7 +159,7 @@ See [docs/ci-cookbook.md](docs/ci-cookbook.md): **primary** = `allure generate` 
 `@allure-notifications/builder` (`apps/builder/`):
 
 - Merged from hub clone `allure-notifications-builder/` (Playwright + index/js/css/vendor)
-- Stand registry cwd → `…/allure-notifications/apps/builder` (`ensure.py allure-notifications-builder`)
+- Stand registry cwd → `…/allure-notifications/apps/builder` (`ensure.py anb-apps-builder`)
 - Playwright e2e: CB-870 / SQ-1080 / WD-1410, export, panel bar (`tests/smoke.spec.js`)
 - Started `@allure-notifications/config` import via `tests/config-parity.test.mjs` (browser `js/app.js` still local — Phase 4)
 - Verify: `pnpm --filter @allure-notifications/builder test` / root `pnpm test`

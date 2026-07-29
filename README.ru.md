@@ -224,7 +224,7 @@ npx allure-notifications@6.0.8 send --config <exported>.json
 ### Локальный стенд (monorepo)
 
 ```bash
-python scripts/stands/ensure.py allure-notifications-builder
+python scripts/stands/ensure.py anb-apps-builder
 ```
 
 Статический builder: [http://localhost:3011/](http://localhost:3011/).
