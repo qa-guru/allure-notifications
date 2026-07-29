@@ -25,8 +25,11 @@ import { mountHighlightedOutput } from '../vendor/design-system/js/code-highligh
 
 /**
  * apps/builder — TypeScript source (emit → `js/` for Pages / stand).
- * Page chrome: header.js toggles `html.theme-light` (Options · terminal · shell).
- * Jar `base.darkMode`: collage / export only via `[data-anb-dark]` — not page theme.
+ * Theme:
+ *   - Header moon (`html.theme-light`) → entire page; syncs jar `base.darkMode`
+ *     so collage is not an exception.
+ *   - Options `base.darkMode` → preview grid panel only (`[data-anb-dark]` on
+ *     panel header + canvas + caption / export) — does not repaint page chrome.
  *
  * Free layout on 10×10. Canvas presets: 870×1080 · 1080×1080 · 1410×1080.
  * Output shape matches jar Config (top-level telegram; layout free + items).
@@ -371,7 +374,8 @@ function syncEditorChrome() {
 
 /**
  * Drive `--layer-*` + geometry ratios from `@pyramid` (SSOT over DS token pin).
- * Collage palettes follow `[data-anb-dark]`; page chrome follows `html.theme-light`.
+ * Collage / preview panel follow `[data-anb-dark]`; page chrome follows
+ * `html.theme-light` (Options · terminal · shell).
  */
 function injectPyramidSsot() {
   const id = 'anb-pyramid-ssot';
@@ -412,6 +416,27 @@ function injectPyramidSsot() {
     layerBlock(PYRAMID_COLORS_LIGHT),
     '}',
   ].join('\n');
+}
+
+/**
+ * Header moon toggles `html.theme-light` (header.js) and also writes
+ * `base.darkMode` so the collage/preview panel follows — whole page, no exceptions.
+ * Options seg is one-way the other direction: jar flag → `[data-anb-dark]` only.
+ */
+function wireHeaderThemeDarkModeSync() {
+  const syncFromPageTheme = () => {
+    const darkMode = !document.documentElement.classList.contains('theme-light');
+    if (Boolean(getPath('base.darkMode')) === darkMode) return;
+    setPath('base.darkMode', darkMode);
+    const field = document.querySelector('[data-anb-bool="base.darkMode"]');
+    if (field instanceof HTMLElement) syncBoolSeg(field, darkMode);
+    applyChartFlags();
+    renderTerminal();
+  };
+  new MutationObserver(syncFromPageTheme).observe(document.documentElement, {
+    attributes: true,
+    attributeFilter: ['class'],
+  });
 }
 
 /**
@@ -970,8 +995,9 @@ function syncBoolSeg(root: HTMLElement, value: boolean) {
 }
 
 /**
- * Mirror jar flags onto collage UI: `base.darkMode` → `[data-anb-dark]` on canvas /
- * export / messenger pane; `base.enableChart` → editor/chart chrome gated.
+ * Mirror jar flags onto the preview grid panel only: `base.darkMode` →
+ * `[data-anb-dark]` on panel header + canvas + caption / export stage.
+ * Does not touch page `html.theme-light` (Options / terminal / shell).
  */
 function applyChartFlags() {
   const enableChart = Boolean(getPath('base.enableChart'));
@@ -979,6 +1005,7 @@ function applyChartFlags() {
   const anbDark = darkMode ? 'true' : 'false';
 
   for (const id of [
+    'anb-preview-panel',
     'anb-canvas',
     'anb-export-popover-viewport',
     'anb-export-popover-stage',
@@ -1017,6 +1044,8 @@ function applyChartFlags() {
   const clearBtn = document.getElementById('anb-btn-clear');
   if (resetBtn instanceof HTMLButtonElement) resetBtn.disabled = !enableChart;
   if (clearBtn instanceof HTMLButtonElement) clearBtn.disabled = !enableChart;
+  fillEditorMocks();
+  refreshExportPopoverIfOpen();
   updateToolbar();
 }
 
@@ -1684,6 +1713,7 @@ function initGrid() {
 function init() {
   injectPyramidSsot();
   bindControls();
+  wireHeaderThemeDarkModeSync();
   wireMessengerTabs();
   wireExportPreviews();
   wireVectorInput();

@@ -206,9 +206,12 @@ body {
 }
 
 /*
- * Jar `base.darkMode` → page theme + collage / export / TG caption.
+ * Jar `base.darkMode` → entire preview grid panel (header + canvas + caption)
+ * and export stage via `[data-anb-dark]`. Page shell (Options / terminal /
+ * site header) follows `html.theme-light` only — config seg does not repaint it.
  * Palette SSOT: ChartTheme + CollageRenderer (outer #222 · card #323232 · header #3c3c3c).
  */
+#anb-preview-panel[data-anb-dark="true"],
 .anb-canvas[data-anb-dark="true"],
 .anb-export-popover__viewport[data-anb-dark="true"],
 .anb-export-popover__stage[data-anb-dark="true"],
@@ -222,6 +225,7 @@ body {
   --color-status-passed-chart: #94ca66;
 }
 
+#anb-preview-panel[data-anb-dark="false"],
 .anb-canvas[data-anb-dark="false"],
 .anb-export-popover__viewport[data-anb-dark="false"],
 .anb-export-popover__stage[data-anb-dark="false"],
@@ -233,6 +237,23 @@ body {
   --color-border: rgba(210, 210, 214, 0.95);
   --hover-bg: rgba(26, 26, 26, 0.06);
   --color-status-passed-chart: #3bc95d;
+}
+
+/* Preview panel chrome (TG header bar) follows jar darkMode, not page theme. */
+#anb-preview-panel[data-anb-dark="true"] {
+  --panel-bg: #323232;
+  --panel-border: rgba(96, 96, 96, 0.9);
+  --panel-bar-bg: #3c3c3c;
+}
+
+#anb-preview-panel[data-anb-dark="false"] {
+  --panel-bg: #f7f7f9;
+  --panel-border: rgba(210, 210, 214, 0.95);
+  --panel-bar-bg: #ffffff;
+}
+
+#anb-preview-panel[data-anb-dark="false"] .anb-tg__bot-sub {
+  color: rgba(90, 90, 90, 0.95);
 }
 
 .anb-canvas[data-anb-dark="true"] {

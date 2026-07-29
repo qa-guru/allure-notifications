@@ -294,7 +294,8 @@ function syncEditorChrome() {
 }
 /**
  * Drive `--layer-*` + geometry ratios from `@pyramid` (SSOT over DS token pin).
- * Collage palettes follow `[data-anb-dark]`; page chrome follows `html.theme-light`.
+ * Collage / preview panel follow `[data-anb-dark]`; page chrome follows
+ * `html.theme-light` (Options · terminal · shell).
  */
 function injectPyramidSsot() {
     const id = 'anb-pyramid-ssot';
@@ -332,6 +333,28 @@ function injectPyramidSsot() {
         layerBlock(PYRAMID_COLORS_LIGHT),
         '}',
     ].join('\n');
+}
+/**
+ * Header moon toggles `html.theme-light` (header.js) and also writes
+ * `base.darkMode` so the collage/preview panel follows — whole page, no exceptions.
+ * Options seg is one-way the other direction: jar flag → `[data-anb-dark]` only.
+ */
+function wireHeaderThemeDarkModeSync() {
+    const syncFromPageTheme = () => {
+        const darkMode = !document.documentElement.classList.contains('theme-light');
+        if (Boolean(getPath('base.darkMode')) === darkMode)
+            return;
+        setPath('base.darkMode', darkMode);
+        const field = document.querySelector('[data-anb-bool="base.darkMode"]');
+        if (field instanceof HTMLElement)
+            syncBoolSeg(field, darkMode);
+        applyChartFlags();
+        renderTerminal();
+    };
+    new MutationObserver(syncFromPageTheme).observe(document.documentElement, {
+        attributes: true,
+        attributeFilter: ['class'],
+    });
 }
 /**
  * Logical canvas px → displayed height from shell width (GridStack must not pin old height).
@@ -867,14 +890,16 @@ function syncBoolSeg(root, value) {
     });
 }
 /**
- * Mirror jar flags onto collage UI: `base.darkMode` → `[data-anb-dark]` on canvas /
- * export / messenger pane; `base.enableChart` → editor/chart chrome gated.
+ * Mirror jar flags onto the preview grid panel only: `base.darkMode` →
+ * `[data-anb-dark]` on panel header + canvas + caption / export stage.
+ * Does not touch page `html.theme-light` (Options / terminal / shell).
  */
 function applyChartFlags() {
     const enableChart = Boolean(getPath('base.enableChart'));
     const darkMode = Boolean(getPath('base.darkMode'));
     const anbDark = darkMode ? 'true' : 'false';
     for (const id of [
+        'anb-preview-panel',
         'anb-canvas',
         'anb-export-popover-viewport',
         'anb-export-popover-stage',
@@ -911,6 +936,8 @@ function applyChartFlags() {
         resetBtn.disabled = !enableChart;
     if (clearBtn instanceof HTMLButtonElement)
         clearBtn.disabled = !enableChart;
+    fillEditorMocks();
+    refreshExportPopoverIfOpen();
     updateToolbar();
 }
 function hydrateControls() {
@@ -1583,6 +1610,7 @@ function initGrid() {
 function init() {
     injectPyramidSsot();
     bindControls();
+    wireHeaderThemeDarkModeSync();
     wireMessengerTabs();
     wireExportPreviews();
     wireVectorInput();

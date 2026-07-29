@@ -237,12 +237,20 @@ test.describe('allure-notifications-builder smoke', () => {
     const dark = page.getByTestId('anb-bool-darkMode');
     const terminal = page.getByTestId('anb-terminal');
     const canvas = page.getByTestId('anb-canvas');
+    const previewPanel = page.getByTestId('anb-preview-panel');
     const optionsPanel = page.getByTestId('anb-options');
+    const termPanel = page.getByTestId('anb-terminal-panel');
 
     await expect(canvas).toHaveAttribute('data-anb-dark', 'true');
+    await expect(previewPanel).toHaveAttribute('data-anb-dark', 'true');
     await expect(canvas).not.toHaveClass(/anb-canvas--chart-off/);
 
-    const pageBgBefore = await optionsPanel.evaluate((el) => getComputedStyle(el).backgroundColor);
+    const optionsBgBefore = await optionsPanel.evaluate(
+      (el) => getComputedStyle(el).backgroundColor,
+    );
+    const termBgBefore = await termPanel.evaluate(
+      (el) => getComputedStyle(el).backgroundColor,
+    );
 
     await dark.locator('.plaque-field-seg__btn[data-value="false"]').click();
     await expect(dark.locator('.plaque-field-seg__btn--on')).toHaveAttribute(
@@ -251,21 +259,42 @@ test.describe('allure-notifications-builder smoke', () => {
     );
     await expect(terminal).toContainText('"darkMode": false');
     await expect(canvas).toHaveAttribute('data-anb-dark', 'false');
-    // darkMode is jar collage output — must not repaint Options / page chrome.
-    await expect(optionsPanel).toHaveCSS('background-color', pageBgBefore);
-    // Entire grid panel (outer + card + chart body), not just the grid lines.
+    await expect(previewPanel).toHaveAttribute('data-anb-dark', 'false');
+    // Config darkMode → preview panel only; Options / terminal stay put.
+    await expect(optionsPanel).toHaveCSS('background-color', optionsBgBefore);
+    await expect(termPanel).toHaveCSS('background-color', termBgBefore);
+    await expect(page.locator('html')).not.toHaveClass(/theme-light/);
+    // Entire grid panel (header + outer + card + chart body + caption).
+    await expect(previewPanel).toHaveCSS('background-color', 'rgb(247, 247, 249)');
     await expect(canvas).toHaveCSS('background-color', 'rgb(238, 242, 246)');
     const card = page.locator('#anb-grid .grid-stack-item-content').first();
     const chartBody = page.locator('#anb-grid .widget-tile__body').first();
+    const caption = page.getByTestId('anb-tg-text');
     await expect(card).toHaveCSS('background-color', 'rgb(255, 255, 255)');
     await expect(chartBody).toHaveCSS('background-color', 'rgb(255, 255, 255)');
+    await expect(caption).toHaveCSS('color', 'rgb(26, 26, 26)');
 
     await dark.locator('.plaque-field-seg__btn[data-value="true"]').click();
     await expect(canvas).toHaveAttribute('data-anb-dark', 'true');
+    await expect(previewPanel).toHaveAttribute('data-anb-dark', 'true');
     await expect(canvas).toHaveCSS('background-color', 'rgb(34, 34, 34)');
     await expect(card).toHaveCSS('background-color', 'rgb(50, 50, 50)');
     await expect(chartBody).toHaveCSS('background-color', 'rgb(50, 50, 50)');
-    await expect(optionsPanel).toHaveCSS('background-color', pageBgBefore);
+    await expect(caption).toHaveCSS('color', 'rgb(220, 220, 220)');
+    await expect(optionsPanel).toHaveCSS('background-color', optionsBgBefore);
+    await expect(termPanel).toHaveCSS('background-color', termBgBefore);
+
+    // Header moon → entire page including collage (syncs base.darkMode).
+    await page.locator('[data-testid="header-theme-toggle"]').click();
+    await expect(page.locator('html')).toHaveClass(/theme-light/);
+    await expect(dark.locator('.plaque-field-seg__btn--on')).toHaveAttribute(
+      'data-value',
+      'false',
+    );
+    await expect(terminal).toContainText('"darkMode": false');
+    await expect(canvas).toHaveAttribute('data-anb-dark', 'false');
+    await expect(canvas).toHaveCSS('background-color', 'rgb(238, 242, 246)');
+    await expect(termPanel).toHaveCSS('background-color', 'rgb(255, 255, 255)');
 
     await enable.locator('.plaque-field-seg__btn[data-value="false"]').click();
     await expect(enable.locator('.plaque-field-seg__btn--on')).toHaveAttribute(
