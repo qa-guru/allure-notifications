@@ -2,7 +2,7 @@
   "base": {
     "project": "allure-notifications",
     "environment": "CI",
-    "comment": "Q4 quality contour · this-run Allure (fallback dogfood-full when history/severity missing)",
+    "comment": "Q4 quality contour · this-run Allure",
     "language": "ru",
     "allureFolder": "../allure-report",
     "allureResultsFolder": "../allure-results",

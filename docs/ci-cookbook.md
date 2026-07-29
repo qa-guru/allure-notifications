@@ -129,7 +129,7 @@ Launch name: `allure-notifications · <ref_name> · <sha>`. Job summary prints t
 
 ## Telegram (Q4)
 
-Dogfood collage of **this run’s** Allure report into ADR 008 Monitoring topic **34** (`allure-notifications`). Wrapper: [`scripts/ci-telegram.sh`](../scripts/ci-telegram.sh). Template config: [`config/ci-telegram.json`](../config/ci-telegram.json) (points at `../allure-report` + `../allure-results`; runtime file gitignored). If `allure-report/summary.json` is missing → fallback dogfood CB-870 fixtures under `packages/core/test/fixtures/`.
+Collage of **this run’s** Allure report into ADR 008 Monitoring topic **34** (`allure-notifications`). Wrapper: [`scripts/ci-telegram.sh`](../scripts/ci-telegram.sh). Template config: [`config/ci-telegram.json`](../config/ci-telegram.json) (points at `../allure-report` + `../allure-results`; runtime file gitignored). Missing `allure-report/summary.json` → **fail** (no dogfood fixture fallback; empty history/severity tiles stay empty-state).
 
 | Event | Mode |
 |-------|------|
@@ -150,7 +150,6 @@ Local rehearsal:
 ```bash
 # with this-run report already generated:
 MODE=dry-run bash scripts/ci-telegram.sh
-# force dogfood fallback: move/rename allure-report/summary.json first
 ```
 
 ## GitHub Actions — consumer notify (dry-run)
