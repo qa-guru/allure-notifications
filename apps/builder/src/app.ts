@@ -22,12 +22,11 @@ import {
   TIER_GAP_RATIO,
 } from '@allure-notifications/pyramid';
 import { mountHighlightedOutput } from '../vendor/design-system/js/code-highlight.js';
-import { syncThemeToggleIcon } from '../vendor/design-system/js/theme-icons.js';
 
 /**
  * apps/builder — TypeScript source (emit → `js/` for Pages / stand).
- * Theme SSOT: jar `base.darkMode` ↔ page `html.theme-light` (header toggle + bool seg).
- * Collage / export preview: `[data-anb-dark]` from the same flag.
+ * Page chrome: header.js toggles `html.theme-light` (Options · terminal · shell).
+ * Jar `base.darkMode`: collage / export only via `[data-anb-dark]` — not page theme.
  *
  * Free layout on 10×10. Canvas presets: 870×1080 · 1080×1080 · 1410×1080.
  * Output shape matches jar Config (top-level telegram; layout free + items).
@@ -372,7 +371,7 @@ function syncEditorChrome() {
 
 /**
  * Drive `--layer-*` + geometry ratios from `@pyramid` (SSOT over DS token pin).
- * Page chrome + collage share the same dark/light palettes (`base.darkMode` sync).
+ * Collage palettes follow `[data-anb-dark]`; page chrome follows `html.theme-light`.
  */
 function injectPyramidSsot() {
   const id = 'anb-pyramid-ssot';
@@ -413,51 +412,6 @@ function injectPyramidSsot() {
     layerBlock(PYRAMID_COLORS_LIGHT),
     '}',
   ].join('\n');
-}
-
-function themeToggleButtons() {
-  return [
-    ...document.querySelectorAll<HTMLElement>(
-      '[data-testid="header-theme-toggle"], [data-testid="header-menu-theme-toggle"]',
-    ),
-  ];
-}
-
-/** Align page `html.theme-light` + header icon + terminal chrome with jar `base.darkMode`. */
-function syncPageThemeFromDarkMode(darkMode: boolean) {
-  document.documentElement.classList.toggle('theme-light', !darkMode);
-  for (const btn of themeToggleButtons()) {
-    syncThemeToggleIcon(btn);
-  }
-  /* Terminal paper follows page theme (DS: panel--terminal-light). */
-  const termPanel =
-    document.querySelector<HTMLElement>('[data-testid="anb-terminal-panel"]') ??
-    document.getElementById('anb-terminal')?.closest<HTMLElement>('.panel--terminal');
-  if (termPanel) {
-    termPanel.classList.toggle('panel--terminal-light', !darkMode);
-  }
-}
-
-/**
- * Header sun/moon also writes `base.darkMode` (same SSOT as Options seg).
- * Observe `html.theme-light` — do not rely on click/`closest` (Playwright may
- * hit a detached SVG inside the icon after `setThemeIcon` rewrites the button).
- * No loop: when jar already matches page theme, we skip writes.
- */
-function wireHeaderThemeDarkModeSync() {
-  const syncFromPageTheme = () => {
-    const darkMode = !document.documentElement.classList.contains('theme-light');
-    if (Boolean(getPath('base.darkMode')) === darkMode) return;
-    setPath('base.darkMode', darkMode);
-    const field = document.querySelector('[data-anb-bool="base.darkMode"]');
-    if (field instanceof HTMLElement) syncBoolSeg(field, darkMode);
-    applyChartFlags();
-    renderTerminal();
-  };
-  new MutationObserver(syncFromPageTheme).observe(document.documentElement, {
-    attributes: true,
-    attributeFilter: ['class'],
-  });
 }
 
 /**
@@ -1016,15 +970,13 @@ function syncBoolSeg(root: HTMLElement, value: boolean) {
 }
 
 /**
- * Mirror jar flags onto UI: `base.darkMode` → page theme + collage / export / TG pane,
- * `base.enableChart` → editor/chart chrome gated.
+ * Mirror jar flags onto collage UI: `base.darkMode` → `[data-anb-dark]` on canvas /
+ * export / messenger pane; `base.enableChart` → editor/chart chrome gated.
  */
 function applyChartFlags() {
   const enableChart = Boolean(getPath('base.enableChart'));
   const darkMode = Boolean(getPath('base.darkMode'));
   const anbDark = darkMode ? 'true' : 'false';
-
-  syncPageThemeFromDarkMode(darkMode);
 
   for (const id of [
     'anb-canvas',
@@ -1732,7 +1684,6 @@ function initGrid() {
 function init() {
   injectPyramidSsot();
   bindControls();
-  wireHeaderThemeDarkModeSync();
   wireMessengerTabs();
   wireExportPreviews();
   wireVectorInput();

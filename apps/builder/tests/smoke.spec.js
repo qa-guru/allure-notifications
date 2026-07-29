@@ -236,12 +236,13 @@ test.describe('allure-notifications-builder smoke', () => {
     const enable = page.getByTestId('anb-bool-enableChart');
     const dark = page.getByTestId('anb-bool-darkMode');
     const terminal = page.getByTestId('anb-terminal');
-    const termPanel = page.getByTestId('anb-terminal-panel');
     const canvas = page.getByTestId('anb-canvas');
+    const optionsPanel = page.getByTestId('anb-options');
 
     await expect(canvas).toHaveAttribute('data-anb-dark', 'true');
     await expect(canvas).not.toHaveClass(/anb-canvas--chart-off/);
-    await expect(termPanel).not.toHaveClass(/panel--terminal-light/);
+
+    const pageBgBefore = await optionsPanel.evaluate((el) => getComputedStyle(el).backgroundColor);
 
     await dark.locator('.plaque-field-seg__btn[data-value="false"]').click();
     await expect(dark.locator('.plaque-field-seg__btn--on')).toHaveAttribute(
@@ -250,24 +251,21 @@ test.describe('allure-notifications-builder smoke', () => {
     );
     await expect(terminal).toContainText('"darkMode": false');
     await expect(canvas).toHaveAttribute('data-anb-dark', 'false');
-    await expect(page.locator('html')).toHaveClass(/theme-light/);
-    await expect(termPanel).toHaveClass(/panel--terminal-light/);
+    // darkMode is jar collage output — must not repaint Options / page chrome.
+    await expect(optionsPanel).toHaveCSS('background-color', pageBgBefore);
+    // Entire grid panel (outer + card + chart body), not just the grid lines.
+    await expect(canvas).toHaveCSS('background-color', 'rgb(238, 242, 246)');
+    const card = page.locator('#anb-grid .grid-stack-item-content').first();
+    const chartBody = page.locator('#anb-grid .widget-tile__body').first();
+    await expect(card).toHaveCSS('background-color', 'rgb(255, 255, 255)');
+    await expect(chartBody).toHaveCSS('background-color', 'rgb(255, 255, 255)');
 
-    // Header theme toggle ↔ base.darkMode (same SSOT).
-    await page.locator('[data-testid="header-theme-toggle"]').click();
-    await expect(page.locator('html')).not.toHaveClass(/theme-light/);
-    await expect(dark.locator('.plaque-field-seg__btn--on')).toHaveAttribute(
-      'data-value',
-      'true',
-    );
-    await expect(terminal).toContainText('"darkMode": true');
+    await dark.locator('.plaque-field-seg__btn[data-value="true"]').click();
     await expect(canvas).toHaveAttribute('data-anb-dark', 'true');
-    await expect(termPanel).not.toHaveClass(/panel--terminal-light/);
-
-    await dark.locator('.plaque-field-seg__btn[data-value="false"]').click();
-    await expect(page.locator('html')).toHaveClass(/theme-light/);
-    await expect(canvas).toHaveAttribute('data-anb-dark', 'false');
-    await expect(termPanel).toHaveClass(/panel--terminal-light/);
+    await expect(canvas).toHaveCSS('background-color', 'rgb(34, 34, 34)');
+    await expect(card).toHaveCSS('background-color', 'rgb(50, 50, 50)');
+    await expect(chartBody).toHaveCSS('background-color', 'rgb(50, 50, 50)');
+    await expect(optionsPanel).toHaveCSS('background-color', pageBgBefore);
 
     await enable.locator('.plaque-field-seg__btn[data-value="false"]').click();
     await expect(enable.locator('.plaque-field-seg__btn--on')).toHaveAttribute(

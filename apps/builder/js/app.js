@@ -2,7 +2,6 @@ import { PHRASES } from './phrases.js';
 import { CANVAS_PRESETS, DEFAULT_CANVAS, DEFAULT_CARD_GAP, DEFAULT_HEADER_HEIGHT, DEFAULT_TILE_PAD, GRID_COLS, GRID_ROWS, PANEL_CATALOG, PANEL_META, createDefaultConfig, resolvePanelMeta, } from '@allure-notifications/config';
 import { CORNER_RATIO, PYRAMID_COLORS_DARK, PYRAMID_COLORS_LIGHT, STATUS_COLORS, TIER_GAP_RATIO, } from '@allure-notifications/pyramid';
 import { mountHighlightedOutput } from '../vendor/design-system/js/code-highlight.js';
-import { syncThemeToggleIcon } from '../vendor/design-system/js/theme-icons.js';
 /** Default tile footprint + flush 5-up packing on 10-col grid (2×2, no gutters). */
 const DEFAULT_TILE_W = 2;
 const DEFAULT_TILE_H = 2;
@@ -295,7 +294,7 @@ function syncEditorChrome() {
 }
 /**
  * Drive `--layer-*` + geometry ratios from `@pyramid` (SSOT over DS token pin).
- * Page chrome + collage share the same dark/light palettes (`base.darkMode` sync).
+ * Collage palettes follow `[data-anb-dark]`; page chrome follows `html.theme-light`.
  */
 function injectPyramidSsot() {
     const id = 'anb-pyramid-ssot';
@@ -333,47 +332,6 @@ function injectPyramidSsot() {
         layerBlock(PYRAMID_COLORS_LIGHT),
         '}',
     ].join('\n');
-}
-function themeToggleButtons() {
-    return [
-        ...document.querySelectorAll('[data-testid="header-theme-toggle"], [data-testid="header-menu-theme-toggle"]'),
-    ];
-}
-/** Align page `html.theme-light` + header icon + terminal chrome with jar `base.darkMode`. */
-function syncPageThemeFromDarkMode(darkMode) {
-    document.documentElement.classList.toggle('theme-light', !darkMode);
-    for (const btn of themeToggleButtons()) {
-        syncThemeToggleIcon(btn);
-    }
-    /* Terminal paper follows page theme (DS: panel--terminal-light). */
-    const termPanel = document.querySelector('[data-testid="anb-terminal-panel"]') ??
-        document.getElementById('anb-terminal')?.closest('.panel--terminal');
-    if (termPanel) {
-        termPanel.classList.toggle('panel--terminal-light', !darkMode);
-    }
-}
-/**
- * Header sun/moon also writes `base.darkMode` (same SSOT as Options seg).
- * Observe `html.theme-light` — do not rely on click/`closest` (Playwright may
- * hit a detached SVG inside the icon after `setThemeIcon` rewrites the button).
- * No loop: when jar already matches page theme, we skip writes.
- */
-function wireHeaderThemeDarkModeSync() {
-    const syncFromPageTheme = () => {
-        const darkMode = !document.documentElement.classList.contains('theme-light');
-        if (Boolean(getPath('base.darkMode')) === darkMode)
-            return;
-        setPath('base.darkMode', darkMode);
-        const field = document.querySelector('[data-anb-bool="base.darkMode"]');
-        if (field instanceof HTMLElement)
-            syncBoolSeg(field, darkMode);
-        applyChartFlags();
-        renderTerminal();
-    };
-    new MutationObserver(syncFromPageTheme).observe(document.documentElement, {
-        attributes: true,
-        attributeFilter: ['class'],
-    });
 }
 /**
  * Logical canvas px → displayed height from shell width (GridStack must not pin old height).
@@ -909,14 +867,13 @@ function syncBoolSeg(root, value) {
     });
 }
 /**
- * Mirror jar flags onto UI: `base.darkMode` → page theme + collage / export / TG pane,
- * `base.enableChart` → editor/chart chrome gated.
+ * Mirror jar flags onto collage UI: `base.darkMode` → `[data-anb-dark]` on canvas /
+ * export / messenger pane; `base.enableChart` → editor/chart chrome gated.
  */
 function applyChartFlags() {
     const enableChart = Boolean(getPath('base.enableChart'));
     const darkMode = Boolean(getPath('base.darkMode'));
     const anbDark = darkMode ? 'true' : 'false';
-    syncPageThemeFromDarkMode(darkMode);
     for (const id of [
         'anb-canvas',
         'anb-export-popover-viewport',
@@ -1626,7 +1583,6 @@ function initGrid() {
 function init() {
     injectPyramidSsot();
     bindControls();
-    wireHeaderThemeDarkModeSync();
     wireMessengerTabs();
     wireExportPreviews();
     wireVectorInput();
