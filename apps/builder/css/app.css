@@ -733,10 +733,10 @@ html.theme-light .anb-canvas--chart-off::after {
 }
 
 /* Resize: L-brackets on card corners (account for cardGap half-inset).
- * --anb-resize-outset: 2px past the card edge into the gutter (away from chart center). */
+ * --anb-resize-outset: past the card edge into the gutter (away from chart center). */
 .anb-canvas {
   --anb-resize-size: 14px;
-  --anb-resize-outset: 2px;
+  --anb-resize-outset: 6px;
   --anb-resize-inset: calc(var(--anb-half-gap) - var(--anb-resize-outset));
   --anb-resize-ink: rgba(255, 255, 255, 0.48);
 }
@@ -776,7 +776,7 @@ html.theme-light .anb-canvas--chart-off::after {
 }
 
 /* !important — GridStack injects .gs-id-* { top: 0 } after our sheet.
- * Corners sit --anb-resize-outset past the card edge (half-gap − 2px).
+ * Corners sit --anb-resize-outset past the card edge (half-gap − 6px).
  * Do NOT park under title bar (half-gap + bar-h). */
 .anb-canvas .grid-stack-item > .ui-resizable-ne,
 .anb-canvas .grid-stack-item > .ui-resizable-nw {
