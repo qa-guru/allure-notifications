@@ -1526,8 +1526,7 @@
     { type: "testBaseGrowthDynamics", title: "Test base growth", dots: ["red", "green"] },
     { type: "coverageDiff", title: "Coverage diff", dots: ["red", "green", "gray"] },
     { type: "successRateDistribution", title: "Success rate", dots: ["red", "yellow", "green"] },
-    // Heatmap/grid — colour scale + cells carry the signal; no status-family bar dots.
-    { type: "problemsDistribution", by: "environment", title: "Problems by environment", dots: [] },
+    { type: "problemsDistribution", by: "environment", title: "Problems by environment", dots: ["red", "orange", "gray"] },
     {
       type: "stabilityDistribution",
       groupBy: "label-name:component",
@@ -1595,7 +1594,7 @@
     return null;
   }
 
-  /** Sync bar status-family dots from CATALOG (grid/heatmap → empty). */
+  /** Sync bar status-family dots from CATALOG. */
   function syncIndicators(tile, kind, variant) {
     if (!tile || !tile.querySelector) return;
     var bar = tile.querySelector(".widget-tile__bar");
@@ -1603,10 +1602,6 @@
     var slot = catalogSlot(kind, variant);
     var names = slot && Array.isArray(slot.dots) ? slot.dots : [];
     var row = bar.querySelector(":scope > .indicator-row");
-    if (!names.length) {
-      if (row) row.remove();
-      return;
-    }
     if (!row) {
       row = document.createElement("div");
       row.className = "indicator-row";

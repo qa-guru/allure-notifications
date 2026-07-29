@@ -396,10 +396,6 @@ body {
   height: 100%;
 }
 
-.anb-palette__tile .widget-tile__bar:empty {
-  display: none;
-}
-
 .anb-palette__hint {
   padding: 0 2px;
   font-size: 0.6875rem;
