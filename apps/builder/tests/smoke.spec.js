@@ -317,7 +317,7 @@ test.describe('allure-notifications-builder smoke', () => {
     await expect(actions.nth(2)).toHaveAttribute('data-testid', 'anb-term-copy');
   });
 
-  test('palette: 4-up grid, caption = chart title (not 2×2)', async ({ page }) => {
+  test('palette: 5-up grid, caption = chart title (not 2×2)', async ({ page }) => {
     await page.goto('/');
     const palette = page.getByTestId('anb-palette');
     await expect(palette).toBeVisible();
@@ -338,7 +338,7 @@ test.describe('allure-notifications-builder smoke', () => {
         has2x2: hints.some((h) => /^2[×x]2$/i.test(h)),
       };
     });
-    expect(snap.cols).toBe(4);
+    expect(snap.cols).toBe(5);
     expect(snap.has2x2).toBe(false);
     expect(snap.barTitles).toEqual([]);
     expect(snap.hints[0]).toBe('Current status');
