@@ -1,10 +1,5 @@
-// @ts-check
-/**
- * TS test blanket — Playwright e2e beyond smoke.
- * Formats · panel bar · export · resize/layout · empty/negative states.
- * allure-playwright via playwright.config.js (same as smoke).
- */
-const { test, expect, bindSuiteMeta } = require('./coverage.fixture.js');
+import fs from 'node:fs';
+import { test, expect, bindSuiteMeta } from './coverage.fixture.js';
 
 bindSuiteMeta(test, {
   feature: 'builder-ui',

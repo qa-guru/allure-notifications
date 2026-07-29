@@ -20,7 +20,7 @@ const allureResultsDir =
 
 module.exports = defineConfig({
   testDir: './tests',
-  testMatch: /.*\.spec\.js/,
+  testMatch: /.*\.spec\.ts/,
   timeout: 30_000,
   fullyParallel: false,
   workers: 1,

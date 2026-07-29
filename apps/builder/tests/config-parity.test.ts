@@ -23,7 +23,9 @@ import {
   createDefaultConfig,
 } from "@allure-notifications/config";
 import * as browserPkg from "@allure-notifications/config/browser";
-import * as vendorBrowser from "../vendor/allure-notifications-config/browser.js";
+import { loadConfigVendorBrowser } from "./vendor-browser.js";
+
+const vendorBrowser = loadConfigVendorBrowser();
 
 const SQ1080_ITEMS = [
   { type: "pie", x: 0, y: 0, w: 4, h: 4 },

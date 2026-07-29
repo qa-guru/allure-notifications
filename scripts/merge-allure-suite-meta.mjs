@@ -33,7 +33,7 @@ const PACKAGE_SCOPE_DIRS = {
 /** @param {string} dotted e.g. dist.test.report.test.js */
 function dottedPathToRelPath(dotted) {
   const parts = dotted.split(".");
-  const suffixes = ["test.js", "test.ts", "test.mjs", "spec.js"];
+  const suffixes = ["test.js", "test.ts", "test.mjs", "spec.js", "spec.ts"];
   for (const suffix of suffixes) {
     const suffixParts = suffix.split(".");
     if (parts.length < suffixParts.length + 1) continue;
@@ -60,8 +60,14 @@ function scopeAndDottedToKeys(scope, dotted) {
   /** @type {string[]} */
   const keys = [];
   let filePath = `${dir}/${relPath}`;
-  if (dir === "apps/builder" && !relPath.startsWith("tests/")) {
-    if (relPath.endsWith(".spec.js") || relPath.endsWith(".test.mjs")) {
+  if (dir === "apps/builder") {
+    if (
+      !relPath.startsWith("tests/") &&
+      !relPath.startsWith("dist/test/") &&
+      (relPath.endsWith(".spec.ts") ||
+        relPath.endsWith(".spec.js") ||
+        relPath.endsWith(".test.mjs"))
+    ) {
       filePath = `${dir}/tests/${relPath}`;
     }
   }
@@ -115,7 +121,9 @@ function titlePathToKeys(raw, scopeHint) {
   const fileSegment = titlePath.find(
     (part) =>
       typeof part === "string" &&
-      (part.includes(".test.") || part.endsWith(".spec.js")),
+      (part.includes(".test.") ||
+        part.endsWith(".spec.js") ||
+        part.endsWith(".spec.ts")),
   );
   if (typeof fileSegment !== "string") return [];
 
@@ -131,7 +139,10 @@ function titlePathToKeys(raw, scopeHint) {
         `${dir}/${fileSegment.replace(/^dist\/test\//, "test/").replace(/\.js$/, ".ts")}`,
       );
     }
-  } else if (dir === "apps/builder") {
+  } else if (
+    dir === "apps/builder" &&
+    (fileSegment.endsWith(".spec.ts") || fileSegment.endsWith(".spec.js"))
+  ) {
     keys.push(`${dir}/tests/${fileSegment}`);
   }
   return keys;

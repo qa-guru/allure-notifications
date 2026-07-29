@@ -1,6 +1,7 @@
 {
   "name": "@allure-notifications/builder",
   "private": true,
+  "type": "module",
   "version": "6.0.0",
   "description": "Full config.json configurator for allure-notifications (apps/builder).",
   "scripts": {
@@ -8,9 +9,10 @@
     "sync-pyramid": "node scripts/sync-pyramid.mjs",
     "build": "tsc -p tsconfig.json",
     "typecheck": "tsc -p tsconfig.json --noEmit",
-    "pretest": "pnpm run build && pnpm run sync-config && pnpm run sync-pyramid",
+    "build:test": "tsc -p tsconfig.test.json",
+    "pretest": "pnpm run build && pnpm run sync-config && pnpm run sync-pyramid && pnpm run build:test",
     "test": "pnpm run test:unit && pnpm run test:e2e",
-    "test:unit": "node ../../scripts/node-test-allure.mjs tests/config-parity.test.mjs tests/pyramid-parity.test.mjs",
+    "test:unit": "node ../../scripts/node-test-allure.mjs dist/test/*.test.js",
     "test:e2e": "PLAYWRIGHT_HEADLESS=1 playwright test",
     "test:headed": "PW_HEADED=1 playwright test --headed",
     "test:ui": "playwright test --ui",

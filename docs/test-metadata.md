@@ -30,7 +30,7 @@ Default epic: **`allure-notifications`** (`packages/test-meta/src/defaults.ts`).
 | **epic** | `allure-notifications` (default) |
 | **feature** | `config` · `pyramid` · `core-collage` · `cli-send` · `plugin-hook` · `builder-ui` · `test-meta` |
 | **story** | Scenario / primary describe name for the file |
-| **layer** | `unit` — `packages/*/test/*.test.ts` · `component` — `apps/builder/tests/*.test.mjs` · `e2e` — `apps/builder/tests/*.spec.js` |
+| **layer** | `unit` — `packages/*/test/*.test.ts` · `component` — `apps/builder/tests/*.test.ts` · `e2e` — `apps/builder/tests/*.spec.ts` |
 | **component** | TMS stability component label — **required** for `layer=component\|e2e` (gate) |
 | **severity** | `normal` (unit) · `critical` (cli) · `blocker` (builder e2e) |
 

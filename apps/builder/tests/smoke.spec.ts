@@ -1,5 +1,5 @@
-// @ts-check
-const { test, expect, bindSuiteMeta } = require('./coverage.fixture.js');
+import fs from 'node:fs';
+import { test, expect, bindSuiteMeta } from './coverage.fixture.js';
 
 bindSuiteMeta(test, {
   feature: 'builder-ui',
@@ -220,7 +220,6 @@ test.describe('allure-notifications-builder smoke', () => {
     expect(download.suggestedFilename()).toBe('config.json');
     const path = await download.path();
     expect(path).toBeTruthy();
-    const fs = require('fs');
     const cfg = JSON.parse(fs.readFileSync(path, 'utf8'));
     expect(cfg.telegram).toBeTruthy();
     expect(cfg.base.chart.layout).toBe('free');

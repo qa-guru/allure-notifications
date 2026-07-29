@@ -1,9 +1,5 @@
-// @ts-check
-/**
- * Coverage-focused e2e by zone — fills gaps left by smoke + blanket.
- * Uses UI flows + `window.__ANB__` seam for pure helpers / awkward branches.
- */
-const { test, expect, bindSuiteMeta } = require('./coverage.fixture.js');
+import fs from 'node:fs';
+import { test, expect, bindSuiteMeta } from './coverage.fixture.js';
 
 bindSuiteMeta(test, {
   feature: 'builder-ui',

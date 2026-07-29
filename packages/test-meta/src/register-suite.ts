@@ -55,9 +55,16 @@ export function normalizeTestFileKeys(sourceFile: string): string[] {
     keys.add(rel);
     if (rel.includes("/dist/test/")) {
       keys.add(rel.replace("/dist/test/", "/test/").replace(/\.js$/, ".ts"));
+      if (rel.startsWith("apps/builder/")) {
+        keys.add(rel.replace("/dist/test/", "/tests/").replace(/\.js$/, ".ts"));
+      }
     } else if (rel.includes("/test/") && rel.endsWith(".ts")) {
       keys.add(
         rel.replace("/test/", "/dist/test/").replace(/\.ts$/, ".js"),
+      );
+    } else if (rel.includes("/tests/") && rel.endsWith(".ts")) {
+      keys.add(
+        rel.replace("/tests/", "/dist/test/").replace(/\.ts$/, ".js"),
       );
     }
     break;

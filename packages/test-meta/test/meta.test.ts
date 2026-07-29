@@ -94,8 +94,15 @@ describe("@allure-notifications/test-meta", () => {
   });
 
   it("normalizeTestFileKeys maps apps builder tests", () => {
-    const keys = normalizeTestFileKeys("/repo/apps/builder/tests/smoke.spec.js");
-    assert.ok(keys.includes("apps/builder/tests/smoke.spec.js"));
+    const keys = normalizeTestFileKeys("/repo/apps/builder/tests/smoke.spec.ts");
+    assert.ok(keys.includes("apps/builder/tests/smoke.spec.ts"));
+  });
+
+  it("normalizeTestFileKeys maps builder dist/test to tests source", () => {
+    const keys = normalizeTestFileKeys(
+      "/repo/apps/builder/dist/test/config-parity.test.js",
+    );
+    assert.ok(keys.includes("apps/builder/tests/config-parity.test.ts"));
   });
 
   it("parseCallerFromStack parses paren and file URI stack frames", () => {
