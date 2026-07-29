@@ -1,5 +1,14 @@
 import assert from "node:assert/strict";
 import { describe, it } from "node:test";
+import { declareSuite } from "@allure-notifications/test-meta";
+
+declareSuite({
+  feature: "cli-send",
+  story: "Telegram credentials",
+  layer: "unit",
+  component: "allure-notifications",
+  severity: "critical",
+});
 
 import {
   ADR008_CHAT_ID,

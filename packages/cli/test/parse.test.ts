@@ -1,6 +1,15 @@
 import assert from "node:assert/strict";
 import { createRequire } from "node:module";
 import { describe, it } from "node:test";
+import { declareSuite } from "@allure-notifications/test-meta";
+
+declareSuite({
+  feature: "cli-send",
+  story: "CLI parseArgs",
+  layer: "unit",
+  component: "allure-notifications",
+  severity: "critical",
+});
 
 import { VERSION, runCli } from "../src/cli.js";
 import { helpText, parseArgs } from "../src/parse.js";

@@ -76,8 +76,9 @@ pnpm allure:generate      # allure generate allure-results --output allure-repor
 
 Notes:
 
-- Node before 26.1: reporter-only mode (pass/fail/skip) — no `allure-js-commons` runtime API preload required. CI uses Node 24 (`actions/setup-node@v6`).
+- Node **≥ 26.1** with `allure-node-test/setup` preload (`scripts/node-test-allure.mjs`) — runtime labels via `@allure-notifications/test-meta`. See [`test-metadata.md`](test-metadata.md).
 - `ALLURE_RESULTS_DIR` must point at the **repo root** `allure-results/` (root `scripts/run-tests.mjs`); do not write into package cwd.
+- After tests: `node scripts/check-allure-labels.mjs` (hooked in `run-tests.mjs`) — every result must carry `epic`, `feature`, `story`, `layer`, `severity` (+ `component` for `e2e`/`component` layers).
 - Coverage gate (`scripts/run-coverage.mjs`):
   1. **Packages** — c8 on `packages/*/src` ([`c8.config.json`](../c8.config.json)): lines / statements / branches / functions = **100%**. Excludes `dist` test emit, `node_modules`, `vendor`, `test/fixtures`, `**/*.test.*`, and raw `apps/builder/js/**` (builder uses its own instrumented path).
   2. **Builder** — [`scripts/builder-coverage.mjs`](../scripts/builder-coverage.mjs): istanbul on `apps/builder/js/{app,phrases}.js` (SSOT `src/app.ts` + `src/phrases.ts`) via Playwright + `ANB_COVERAGE=1`; same four metrics = **100%**. Excludes sync-scripts, playwright.config, vendor, tests.
@@ -132,7 +133,7 @@ Launch name: `allure-notifications · <ref_name> · <sha>`. Job summary prints t
 
 ## Telegram (Q4)
 
-Collage of **this run’s** Allure report into ADR 008 Monitoring topic **34** (`allure-notifications`). Wrapper: [`scripts/ci-telegram.sh`](../scripts/ci-telegram.sh). Template config: [`config/ci-telegram.json`](../config/ci-telegram.json) (CB-870 **4-tile** layout: pie · suites · testing pyramid · durations-by-suite — no history/severity panels that need `history.jsonl`). Before send, [`scripts/enrich-allure-layers.mjs`](../scripts/enrich-allure-layers.mjs) tags `allure-results` with `layer` labels (unit / component / e2e) so the pyramid renders instead of an empty fallback. Points at `../allure-report` + `../allure-results`; runtime file gitignored. Missing `allure-report/summary.json` → **fail** (no dogfood fixture fallback).
+Collage of **this run’s** Allure report into ADR 008 Monitoring topic **34** (`allure-notifications`). Wrapper: [`scripts/ci-telegram.sh`](../scripts/ci-telegram.sh). Template config: [`config/ci-telegram.json`](../config/ci-telegram.json) (CB-870 layout aligned with `DEFAULT_ITEMS`: pie · suites · testing pyramid **↔** durations-by-layer on row 2; no history/severity panels). Before send, [`scripts/enrich-allure-layers.mjs`](../scripts/enrich-allure-layers.mjs) tags `allure-results` with `layer` labels (unit / component / e2e) so the pyramid renders instead of an empty fallback. Points at `../allure-report` + `../allure-results`; runtime file gitignored. Missing `allure-report/summary.json` → **fail** (no dogfood fixture fallback).
 
 | Event | Mode |
 |-------|------|

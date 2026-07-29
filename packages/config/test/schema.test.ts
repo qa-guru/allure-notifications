@@ -3,6 +3,15 @@ import { readFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { describe, it } from "node:test";
+import { declareSuite } from "@allure-notifications/test-meta";
+
+declareSuite({
+  feature: "config",
+  story: "Config schema and catalog",
+  layer: "unit",
+  component: "@allure-notifications/config",
+  severity: "normal",
+});
 
 import {
   CANVAS_PRESETS,

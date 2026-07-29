@@ -3,6 +3,15 @@ import { existsSync, readFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { describe, it } from "node:test";
+import { declareSuite } from "@allure-notifications/test-meta";
+
+declareSuite({
+  feature: "pyramid",
+  story: "Pyramid palette and geometry",
+  layer: "unit",
+  component: "@allure-notifications/pyramid",
+  severity: "normal",
+});
 
 import {
   CORNER_RATIO,

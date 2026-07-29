@@ -4,6 +4,15 @@ import { tmpdir } from "node:os";
 import { dirname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import { describe, it } from "node:test";
+import { declareSuite } from "@allure-notifications/test-meta";
+
+declareSuite({
+  feature: "cli-send",
+  story: "Send path resolution",
+  layer: "unit",
+  component: "allure-notifications",
+  severity: "critical",
+});
 
 import {
   ADR008_CHAT_ID,

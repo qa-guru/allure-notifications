@@ -9,6 +9,15 @@ import { join } from "node:path";
 import { dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 import { describe, it } from "node:test";
+import { declareSuite } from "@allure-notifications/test-meta";
+
+declareSuite({
+  feature: "core-collage",
+  story: "Coverage branch paths",
+  layer: "unit",
+  component: "@allure-notifications/core",
+  severity: "normal",
+});
 
 import { parseConfig } from "@allure-notifications/config";
 

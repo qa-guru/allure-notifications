@@ -2,6 +2,15 @@ import assert from "node:assert/strict";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { describe, it } from "node:test";
+import { declareSuite } from "@allure-notifications/test-meta";
+
+declareSuite({
+  feature: "core-collage",
+  story: "Report helpers",
+  layer: "unit",
+  component: "@allure-notifications/core",
+  severity: "normal",
+});
 
 import {
   adaptSummaryJson,

@@ -82,4 +82,4 @@ const test = base.extend({
   },
 });
 
-module.exports = { test, expect };
+module.exports = { test, expect, bindSuiteMeta: require('@allure-notifications/test-meta/playwright').bindSuiteMeta };

@@ -3,7 +3,15 @@
  * Coverage-focused e2e by zone — fills gaps left by smoke + blanket.
  * Uses UI flows + `window.__ANB__` seam for pure helpers / awkward branches.
  */
-const { test, expect } = require('./coverage.fixture.js');
+const { test, expect, bindSuiteMeta } = require('./coverage.fixture.js');
+
+bindSuiteMeta(test, {
+  feature: 'builder-ui',
+  story: 'Builder formats e2e',
+  layer: 'e2e',
+  component: 'builder',
+  severity: 'blocker',
+});
 
 /** @param {import('@playwright/test').Page} page */
 async function anb(page) {

@@ -1,26 +1,32 @@
 {
-  "name": "@allure-notifications/core",
+  "name": "@allure-notifications/test-meta",
   "version": "6.0.8",
-  "description": "Allure 3 summary/results \u2192 native collage PNG (Phase 3 / Stage C).",
+  "description": "Explicit Allure suite labels for allure-notifications tests (Epic/Feature/Story/layer SSOT).",
   "type": "module",
   "exports": {
     ".": {
       "types": "./dist/src/index.d.ts",
       "import": "./dist/src/index.js"
+    },
+    "./playwright": {
+      "types": "./dist/src/playwright.d.ts",
+      "import": "./dist/src/playwright.js",
+      "require": "./playwright.cjs"
     }
   },
   "files": [
     "dist/src",
+    "playwright.cjs",
     "README.md"
   ],
   "repository": {
     "type": "git",
     "url": "git+https://github.com/qa-guru/allure-notifications.git",
-    "directory": "packages/core"
+    "directory": "packages/test-meta"
   },
   "license": "Apache-2.0",
   "engines": {
-    "node": ">=20"
+    "node": ">=26.1.0"
   },
   "scripts": {
     "build": "tsc -p tsconfig.json",
@@ -29,12 +35,9 @@
     "prepublishOnly": "pnpm run build"
   },
   "dependencies": {
-    "@allure-notifications/config": "workspace:*",
-    "@allure-notifications/pyramid": "workspace:*",
-    "@napi-rs/canvas": "^0.1.70"
+    "allure-js-commons": "3.10.2"
   },
   "devDependencies": {
-    "@allure-notifications/test-meta": "workspace:*",
     "@types/node": "^22.13.10",
     "allure-node-test": "3.10.2",
     "typescript": "^7.0.2"

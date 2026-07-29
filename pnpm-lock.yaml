@@ -60,6 +60,9 @@ importers:
         specifier: workspace:*
         version: link:../../packages/pyramid
     devDependencies:
+      '@allure-notifications/test-meta':
+        specifier: workspace:*
+        version: link:../../packages/test-meta
       '@playwright/test':
         specifier: ^1.61.1
         version: 1.62.0
@@ -85,6 +88,9 @@ importers:
         specifier: workspace:*
         version: link:../core
     devDependencies:
+      '@allure-notifications/test-meta':
+        specifier: workspace:*
+        version: link:../test-meta
       '@types/node':
         specifier: ^22.13.10
         version: 22.20.1
@@ -101,6 +107,9 @@ importers:
         specifier: ^3.24.2
         version: 3.25.76
     devDependencies:
+      '@allure-notifications/test-meta':
+        specifier: workspace:*
+        version: link:../test-meta
       '@types/node':
         specifier: ^22.13.10
         version: 22.20.1
@@ -123,6 +132,9 @@ importers:
         specifier: ^0.1.70
         version: 0.1.100
     devDependencies:
+      '@allure-notifications/test-meta':
+        specifier: workspace:*
+        version: link:../test-meta
       '@types/node':
         specifier: ^22.13.10
         version: 22.20.1
@@ -148,6 +160,9 @@ importers:
         specifier: workspace:*
         version: link:../cli
     devDependencies:
+      '@allure-notifications/test-meta':
+        specifier: workspace:*
+        version: link:../test-meta
       '@types/node':
         specifier: ^22.13.10
         version: 22.20.1
@@ -159,6 +174,25 @@ importers:
         version: 7.0.2
 
   packages/pyramid:
+    devDependencies:
+      '@allure-notifications/test-meta':
+        specifier: workspace:*
+        version: link:../test-meta
+      '@types/node':
+        specifier: ^22.13.10
+        version: 22.20.1
+      allure-node-test:
+        specifier: 3.10.2
+        version: 3.10.2(allure-playwright@3.10.2(@playwright/test@1.62.0))
+      typescript:
+        specifier: ^7.0.2
+        version: 7.0.2
+
+  packages/test-meta:
+    dependencies:
+      allure-js-commons:
+        specifier: 3.10.2
+        version: 3.10.2(allure-playwright@3.10.2(@playwright/test@1.62.0))
     devDependencies:
       '@types/node':
         specifier: ^22.13.10

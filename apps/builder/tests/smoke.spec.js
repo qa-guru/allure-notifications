@@ -1,5 +1,13 @@
 // @ts-check
-const { test, expect } = require('./coverage.fixture.js');
+const { test, expect, bindSuiteMeta } = require('./coverage.fixture.js');
+
+bindSuiteMeta(test, {
+  feature: 'builder-ui',
+  story: 'Builder smoke',
+  layer: 'e2e',
+  component: 'builder',
+  severity: 'blocker',
+});
 
 /** SQ-1080 canon 4-tile — must match @allure-notifications/config DEFAULT_ITEMS + CANON.md */
 const SQ1080_ITEMS = [

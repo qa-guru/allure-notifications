@@ -4,6 +4,15 @@ import { tmpdir } from "node:os";
 import { dirname, isAbsolute, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import { describe, it } from "node:test";
+import { declareSuite } from "@allure-notifications/test-meta";
+
+declareSuite({
+  feature: "plugin-hook",
+  story: "Plugin done hook",
+  layer: "unit",
+  component: "@allure-notifications/plugin",
+  severity: "normal",
+});
 
 import type { AllureStore, PluginContext } from "@allurereport/plugin-api";
 

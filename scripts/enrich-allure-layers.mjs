@@ -1,12 +1,10 @@
 #!/usr/bin/env node
 /**
- * Tag Allure results with `layer` labels so CI collage renders Testing pyramid
- * (not suites fallback). SSOT tiers: @allure-notifications/pyramid LAYER_ORDER.
+ * @deprecated SSOT path uses explicit labels via @allure-notifications/test-meta
+ * (declareSuite / bindSuiteMeta). Dev-only fallback — not invoked from run-tests.mjs
+ * or ci-telegram.sh.
  *
- * Heuristics (path / suite labels):
- *   apps/builder Playwright *.spec.js -> e2e
- *   apps/builder unit parity          -> component
- *   packages/*                        -> unit
+ * Tag Allure results with `layer` labels (post-hoc heuristics).
  */
 import { readdir, readFile, writeFile } from "node:fs/promises";
 import { join } from "node:path";

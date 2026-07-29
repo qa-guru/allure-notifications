@@ -4,6 +4,16 @@
  */
 import assert from "node:assert/strict";
 import test from "node:test";
+import { declareSuite } from "@allure-notifications/test-meta";
+
+declareSuite({
+  feature: "pyramid",
+  story: "Pyramid browser parity",
+  layer: "component",
+  component: "builder",
+  severity: "normal",
+});
+
 import {
   CORNER_RATIO,
   LAYER_ORDER,
