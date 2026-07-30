@@ -21,8 +21,8 @@ Do **not** mix monochrome + color in one strip. Do **not** hotlink random PNGs.
 docs/preview/icons/
   messengers/   telegram slack email mattermost discord loop rocketdotchat zoho microsoftteams
   ci/           local githubactions gitlab jenkins teamcity bamboo circleci azuredevops bitbucket buildkite amazonaws
-  languages/    openjdk kotlin apachegroovy javascript typescript python csharp php ruby go rust dart
-  locales/      en ru fr ua by cn cnt
+  languages/    java kotlin groovy javascript typescript python csharp php ruby go rust dart
+  locales/      en de fr ru by ua cn cnt
 ```
 
 File names = slug (see mapping below). Zoho Cliq uses `zoho.svg` (no Cliq-specific Simple Icon).
@@ -33,6 +33,8 @@ File names = slug (see mapping below). Zoho Cliq uses `zoho.svg` (no Cliq-specif
 |-----|--------|---------|--------|
 | Brands (most) | [Simple Icons](https://simpleicons.org) `@v13` via jsDelivr | [CC0-1.0](https://github.com/simple-icons/simple-icons/blob/develop/LICENSE.md) | Colored with official brand `hex` |
 | Brands (removed later) | Simple Icons `@v11` | CC0-1.0 | `microsoftteams`, `azuredevops`, `csharp`, `amazonaws` (dropped from SI ≥ v13) |
+| Java, Python | [Devicon](https://github.com/devicons/devicon) `@2.16.0` `*-original.svg` | MIT | Multicolor: classic Java coffee cup, Python blue+yellow |
+| Groovy | Devicon `groovy-original` **star paths only** (wordmark stripped) | MIT | Full logo’s script is illegible at 20–24px; keep cyan star + outline |
 | Email, Local, Loop | Custom SVG in this folder | same as repo (Apache-2.0) | SI `loop` is Frontiers Loop — **wrong** product; do not use |
 | Locales | [circle-flags](https://github.com/HatScripts/circle-flags) `@2.7.0` | MIT | Round flags; `cnt` → `tw` (zh-Hant) |
 
@@ -72,12 +74,12 @@ File names = slug (see mapping below). Zoho Cliq uses `zoho.svg` (no Cliq-specif
 
 | File | Label |
 |------|--------|
-| `openjdk.svg` | Java |
+| `java.svg` | Java (Devicon original — coffee cup) |
 | `kotlin.svg` | Kotlin |
-| `apachegroovy.svg` | Groovy |
+| `groovy.svg` | Groovy (Devicon original — star, not SI wordmark) |
 | `javascript.svg` | JavaScript |
 | `typescript.svg` | TypeScript |
-| `python.svg` | Python |
+| `python.svg` | Python (Devicon original — blue + yellow) |
 | `csharp.svg` | C# |
 | `php.svg` | PHP |
 | `ruby.svg` | Ruby |
@@ -90,14 +92,13 @@ File names = slug (see mapping below). Zoho Cliq uses `zoho.svg` (no Cliq-specif
 | File | Code | Flag |
 |------|------|------|
 | `en.svg` | `en` | GB |
-| `ru.svg` | `ru` | RU |
+| `de.svg` | `de` | DE |
 | `fr.svg` | `fr` | FR |
-| `ua.svg` | `ua` | UA |
+| `ru.svg` | `ru` | RU |
 | `by.svg` | `by` | BY |
+| `ua.svg` | `ua` | UA |
 | `cn.svg` | `cn` | CN (zh-Hans) |
 | `cnt.svg` | `cnt` | TW (zh-Hant) |
-
-No `de` — product does not ship German.
 
 ## README embed (later)
 
