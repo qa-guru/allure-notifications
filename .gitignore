@@ -45,9 +45,13 @@ packages/*/coverage/
 *.tsbuildinfo
 dist-pack/
 *.tgz
+apps/*/dist/
 apps/*/test-results/
 apps/*/playwright-report/
 apps/*/playwright/.cache/
+
+# CI telegram runtime PNG (scripts/ci-telegram.sh OUT_PNG)
+/collage-telegram.png
 
 # Own-test quality artifacts (Q1) — not product dogfood fixtures
 allure-results/
