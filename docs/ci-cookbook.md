@@ -22,7 +22,7 @@ npx allure-notifications send --config config.json --dry-run
 | `--mock` | Render PNG; mock deliveries; **no network** |
 | `--out <png>` | Write PNG buffer to disk |
 
-Default without `--mock` / `--live` is safe **dry-run**. Live Telegram = explicit `--live` + env credentials ([`telegram-dogfood.md`](telegram-dogfood.md)). Product CI job **`telegram`** in `ci-6.0.yml` (Q4): PR `--dry-run`; `master` / `workflow_dispatch` `--live` when secrets present. CLI pin SSOT: monorepo `docs/allure-notifications/VERSION` (**6.0.8**).
+Default without `--mock` / `--live` is safe **dry-run**. Live Telegram = explicit `--live` + env credentials ([`telegram-dogfood.md`](telegram-dogfood.md)). Product CI job **`telegram`** in `ci-6.0.yml` (Q4): PR `--dry-run`; `master` / `workflow_dispatch` `--live` when secrets present. CLI pin SSOT: monorepo `docs/allure-notifications/VERSION` (**6.0.9**).
 
 ### Alternate — Allure 3 plugin (`allurerc`)
 
@@ -39,7 +39,7 @@ npx allure generate ./allure-results --config ./examples/allurerc.notifications.
 | Live | `--live` + `TELEGRAM_*` | `mode: "live"` + same env |
 | Config | `config.json` | `options.config` → same schema |
 
-npm `@allure-notifications/plugin` — needs **`main`** for Allure `require.resolve` (**≥6.0.8**; skip 6.0.6; workspace dogfood OK). **Separate GitHub Actions example (plugin, not CLI):** [`examples/github-actions/`](../examples/github-actions/) · runnable workflow [`.github/workflows/example-plugin-notify.yml`](../.github/workflows/example-plugin-notify.yml) (`workflow_dispatch`, default dry-run).
+npm `@allure-notifications/plugin` — needs **`main`** for Allure `require.resolve` (**≥6.0.9**; skip 6.0.6; workspace dogfood OK). **Separate GitHub Actions example (plugin, not CLI):** [`examples/github-actions/`](../examples/github-actions/) · runnable workflow [`.github/workflows/example-plugin-notify.yml`](../.github/workflows/example-plugin-notify.yml) (`workflow_dispatch`, default dry-run).
 
 ## Workspace (local / before `npx`)
 
@@ -56,7 +56,7 @@ Fixture config already points at `packages/core/test/fixtures/dogfood-report` + 
 
 ## GitHub Actions — product CI (this repo)
 
-TS tests live in [`.github/workflows/ci-6.0.yml`](../.github/workflows/ci-6.0.yml) (`pnpm i` + `pnpm typecheck` + `pnpm test` + hard `pnpm coverage` = packages c8 + builder istanbul at **100% × 4** + `pnpm allure:generate` on `master` + `feature/6.0*` + `feature/quality-*`). Artifacts: `allure-results/` · `allure-report/` · `coverage/` (retain ≥7d). Job **Sonar (hard / Q5)** needs coverage → `scripts/ci-sonar.sh` + vendored `scripts/sonar-gate-wait.py` (`projectKey=allure-notifications`; `SONAR_REQUIRED=true`; forks / no token soft-skip). Job **TestOps (informational)** needs `allure-results` → `setup-allurectl@v1` + `allurectl upload` + close (soft-skip without `ALLURE_*`; forks never upload). Job **Telegram (Q4)** needs `allure-report` → `scripts/ci-telegram.sh` + `config/ci-telegram.json` (`npx allure-notifications@6.0.8`; PR dry-run / master live → topic 34). Builder Pages: [`pages-builder.yml`](../.github/workflows/pages-builder.yml) (static `apps/builder/` on `master` + `feature/6.0*`; see [`pages-cutover.md`](pages-cutover.md)). Java jar CI stays in [`build.yml`](../.github/workflows/build.yml) (**master** only; cwd `legacy/java`).
+TS tests live in [`.github/workflows/ci-6.0.yml`](../.github/workflows/ci-6.0.yml) (`pnpm i` + `pnpm typecheck` + `pnpm test` + hard `pnpm coverage` = packages c8 + builder istanbul at **100% × 4** + `pnpm allure:generate` on `master` + `feature/6.0*` + `feature/quality-*`). Artifacts: `allure-results/` · `allure-report/` · `coverage/` (retain ≥7d). Job **Sonar (hard / Q5)** needs coverage → `scripts/ci-sonar.sh` + vendored `scripts/sonar-gate-wait.py` (`projectKey=allure-notifications`; `SONAR_REQUIRED=true`; forks / no token soft-skip). Job **TestOps (informational)** needs `allure-results` → `setup-allurectl@v1` + `allurectl upload` + close (soft-skip without `ALLURE_*`; forks never upload). Job **Telegram (Q4)** needs `allure-report` → `scripts/ci-telegram.sh` + `config/ci-telegram.json` (`npx allure-notifications@6.0.9`; PR dry-run / master live → topic 34). Builder Pages: [`pages-builder.yml`](../.github/workflows/pages-builder.yml) (static `apps/builder/` on `master` + `feature/6.0*`; see [`pages-cutover.md`](pages-cutover.md)). Java jar CI stays in [`build.yml`](../.github/workflows/build.yml) (**master** only; cwd `legacy/java`).
 
 ## Own tests → Allure results (Q1)
 
@@ -117,7 +117,7 @@ Quality contour close-out for this repo:
 | Visual / collage | Unchanged pixel/ahash gate in `pnpm test` — **not** part of coverage % floor |
 | TestOps / Telegram | Still informational / dry-run-on-PR as Q3–Q4 |
 
-Contour complete. Phase 5 plugin **done** (GH example #492/#493…; plugin pin **`@6.0.8`**, CLI **`@6.0.8`**). Next product: **AI** only (separate HQ OK).
+Contour complete. Phase 5 plugin **done** (GH example #492/#493…; plugin pin **`@6.0.9`**, CLI **`@6.0.9`**). Next product: **AI** only (separate HQ OK).
 
 ## TestOps (Q3, informational)
 
@@ -147,7 +147,7 @@ Collage of **this run’s** Allure report into ADR 008 Monitoring topic **34** (
 | `TELEGRAM_CHAT_ID` | secret | `-1004381150566` |
 | `TELEGRAM_TOPIC_ID` | var | **34** (alias `TELEGRAM_ALLURE_NOTIFICATIONS_TOPIC_ID`) |
 
-CLI pin: `npx allure-notifications@6.0.8`. Optional artifact: `collage-telegram.png`. Job summary prints `message_id` on live success. Missing secrets on live path → soft-skip (not a merge blocker).
+CLI pin: `npx allure-notifications@6.0.9`. Optional artifact: `collage-telegram.png`. Job summary prints `message_id` on live success. Missing secrets on live path → soft-skip (not a merge blocker).
 
 Local rehearsal:
 
@@ -207,7 +207,7 @@ Same job shape as the CLI consumer example, but notifications run in `allurerc` 
 
 ```yaml
 - name: Install Allure 3 + plugin
-  run: npm install allure@^3.14.3 @allure-notifications/plugin@6.0.8
+  run: npm install allure@^3.14.3 @allure-notifications/plugin@6.0.9
 
 - name: Generate report (files on disk)
   run: npx allure generate ./allure-results -o ./allure-report

@@ -2,13 +2,25 @@
 
 ## Unreleased
 
+## v 6.0.9
+
 ### English
 
+- **TS test blanket** ([PR #496](https://github.com/qa-guru/allure-notifications/pull/496)) — c8 hard floors lines/statements **100%** on `packages/{config,pyramid,core,cli,plugin}/src`; builder e2e blanket + Playwright tests migrated to TypeScript; `@allure-notifications/test-meta` for explicit Allure suite labels
+- **Collage** — cap pyramid/durations tile height in tall free-layout cells; Telegram CI layout pyramid w3 + durations by layer w4; pie paints 1-test slices as dots when Skia drops tiny arcs
+- **Telegram** — FTL-parity caption (RU labels, real links); CI sends this-run report (no dogfood fallback); single-run collage with testing pyramid
+- **Builder** — theme/terminal/darkMode sync; L-bracket gutter chrome; palette 4-up/5-up; monochrome Allure header mark; `@allure-notifications/config` phrase SSOT in browser bundle
 - **feat: German locale (`de`)** — schema, jar phrases/legend, builder select, CLI Telegram caption, preview omni-tool flag; shared `PHRASES` in `@allure-notifications/config`
+- **Quality** — Sonar gate clean on `allure-notifications` projectKey; panel gallery dev script + marketing collage configs
 
 ### Russian
 
+- **TS test blanket** ([PR #496](https://github.com/qa-guru/allure-notifications/pull/496)) — c8 hard floors lines/statements **100%** на `packages/{config,pyramid,core,cli,plugin}/src`; builder e2e blanket + Playwright-тесты на TypeScript; `@allure-notifications/test-meta` для явных Allure suite labels
+- **Collage** — cap высоты pyramid/durations в tall free-layout; Telegram CI layout pyramid w3 + durations by layer w4; pie рисует 1-test slices точками, когда Skia теряет tiny arcs
+- **Telegram** — caption FTL-parity (RU labels, реальные links); CI шлёт this-run report (без dogfood fallback); single-run collage с testing pyramid
+- **Builder** — sync theme/terminal/darkMode; L-bracket gutter chrome; palette 4-up/5-up; monochrome Allure mark в header; phrase SSOT из `@allure-notifications/config` в browser bundle
 - **feat: немецкая локаль (`de`)** — schema, jar phrases/legend, select в builder, caption CLI Telegram, флаг в preview omni-tool; общий `PHRASES` в `@allure-notifications/config`
+- **Quality** — Sonar gate clean на projectKey `allure-notifications`; dev-скрипт panel gallery + marketing collage configs
 
 ## v 6.0.8
 

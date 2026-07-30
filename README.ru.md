@@ -27,13 +27,13 @@ CLI: отчёт Allure → уведомление в мессенджер (те�
 |--------|------|--------|--------|
 | **4.\*** | Java | Allure 2 | Историческая |
 | **5.\*** | Java | Allure 3 | Legacy freeze на **5.0.8** (`legacy/java/`); версии **5.1 нет** |
-| **6.\*** | TypeScript | Allure 3 | **Продукт** — pin **6.0.8** (CLI + builder + plugin) |
+| **6.\*** | TypeScript | Allure 3 | **Продукт** — pin **6.0.9** (CLI + builder + plugin) |
 
 Патч-ноты → [GitHub Releases](https://github.com/qa-guru/allure-notifications/releases) · миграция → [`MIGRATION.md`](MIGRATION.md).
 
 | Часть | Роль |
 |-------|------|
-| **CLI** | `npx allure-notifications@6.0.8 send --config …` — основной runtime |
+| **CLI** | `npx allure-notifications@6.0.9 send --config …` — основной runtime |
 | **Collage PNG** | `@napi-rs/canvas` в `@allure-notifications/core` (Playwright — только тесты) |
 | **Config builder** | Web UI → полный `config.json` + free-layout collage — [`apps/builder/`](apps/builder/) |
 | **Пакеты** | `@allure-notifications/config` · `pyramid` · `core` · bin `allure-notifications` · plugin `@allure-notifications/plugin` |
@@ -65,7 +65,7 @@ flowchart LR
 
 ```bash
 npx allure generate allure-results --clean -o allure-report
-npx allure-notifications@6.0.8 send --config config.json --live
+npx allure-notifications@6.0.9 send --config config.json --live
 ```
 
 | Флаг | Поведение |
@@ -218,7 +218,7 @@ Web UI: полный `config.json` (`base` · `chart` · `links` · messengers) 
 4. Отправка:
 
 ```bash
-npx allure-notifications@6.0.8 send --config <exported>.json
+npx allure-notifications@6.0.9 send --config <exported>.json
 ```
 
 ### Локальный стенд (monorepo)
@@ -243,7 +243,7 @@ python scripts/stands/ensure.py anb-apps-builder
 Плагин Allure 3 — тонкая обёртка над тем же core. Основной путь — CLI.
 
 ```bash
-npm add allure @allure-notifications/plugin@6.0.8
+npm add allure @allure-notifications/plugin@6.0.9
 ```
 
 - Документация: [`packages/plugin/README.md`](packages/plugin/README.md)

@@ -27,13 +27,13 @@ Build `config.json` in the [Config builder](#config-builder), then send with the
 |---------|-------|--------|--------|
 | **4.\*** | Java | Allure 2 | Historical |
 | **5.\*** | Java | Allure 3 | Legacy freeze at **5.0.8** (`legacy/java/`); there is **no 5.1** |
-| **6.\*** | TypeScript | Allure 3 | **Product** — pin **6.0.8** (CLI + builder + plugin) |
+| **6.\*** | TypeScript | Allure 3 | **Product** — pin **6.0.9** (CLI + builder + plugin) |
 
 Older patch notes → [GitHub Releases](https://github.com/qa-guru/allure-notifications/releases) · migration → [`MIGRATION.md`](MIGRATION.md).
 
 | Piece | Role |
 |-------|------|
-| **CLI** | `npx allure-notifications@6.0.8 send --config …` — primary runtime |
+| **CLI** | `npx allure-notifications@6.0.9 send --config …` — primary runtime |
 | **Collage PNG** | `@napi-rs/canvas` in `@allure-notifications/core` (Playwright = tests only) |
 | **Config builder** | Web UI → full `config.json` + free-layout collage — [`apps/builder/`](apps/builder/) |
 | **Packages** | `@allure-notifications/config` · `pyramid` · `core` · bin `allure-notifications` · plugin `@allure-notifications/plugin` |
@@ -65,7 +65,7 @@ Example notification (Telegram):
 
 ```bash
 npx allure generate allure-results --clean -o allure-report
-npx allure-notifications@6.0.8 send --config config.json --live
+npx allure-notifications@6.0.9 send --config config.json --live
 ```
 
 | Flag | Behavior |
@@ -218,7 +218,7 @@ Web UI that exports a full `config.json` (`base` · `chart` · `links` · messen
 4. Send:
 
 ```bash
-npx allure-notifications@6.0.8 send --config <exported>.json
+npx allure-notifications@6.0.9 send --config <exported>.json
 ```
 
 ### Local stand (monorepo)
@@ -243,7 +243,7 @@ Locked collage rules and reference PNG: [`docs/canon/CANON.md`](docs/canon/CANON
 Allure 3 plugin — thin wrapper over the same core pipeline. CLI remains primary.
 
 ```bash
-npm add allure @allure-notifications/plugin@6.0.8
+npm add allure @allure-notifications/plugin@6.0.9
 ```
 
 - Docs: [`packages/plugin/README.md`](packages/plugin/README.md)
