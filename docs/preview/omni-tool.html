@@ -85,38 +85,43 @@
     }
     .cta { color: var(--text); }
 
-    /* Invisible equal-column grid (icons + labels align across rows) */
+    /* Compact 3-col grid (locked density — messengers = neat 3×3) */
     .icon-row {
-      --cols: 6;
+      --cols: 3;
+      --cell: 108px;
       display: grid;
-      grid-template-columns: repeat(var(--cols), minmax(0, 1fr));
-      gap: 2px 0;
+      grid-template-columns: repeat(var(--cols), var(--cell));
+      gap: 4px 2px;
       justify-items: stretch;
       align-items: start;
+      width: max-content;
+      max-width: 100%;
       margin: 0 0 8px;
-      padding: 8px 6px;
+      padding: 10px 8px;
       border: 1px solid var(--border);
       border-radius: 8px;
       background: #fff;
     }
-    .icon-row[aria-label="Locales"] { --cols: 7; }
-    @media (max-width: 720px) {
-      .icon-row { --cols: 4; }
-      .icon-row[aria-label="Locales"] { --cols: 4; }
+    .icon-row[aria-label="Locales"] {
+      --cols: 4;
+      --cell: 88px;
     }
-    @media (max-width: 480px) {
-      .icon-row,
-      .icon-row[aria-label="Locales"] { --cols: 3; }
+    @media (max-width: 360px) {
+      .icon-row {
+        --cols: 2;
+        --cell: min(108px, calc(50vw - 28px));
+      }
+      .icon-row[aria-label="Locales"] { --cols: 2; }
     }
     .icon-item {
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: flex-start;
-      gap: 3px;
+      gap: 4px;
       width: 100%;
       min-width: 0;
-      padding: 2px 0;
+      padding: 4px 2px;
       border-radius: 6px;
       text-align: center;
     }
@@ -242,13 +247,17 @@
         <span class="icon-chip"><img src="icons/ci/jenkins.svg" width="24" height="24" alt=""></span>
         <span class="label">Jenkins</span>
       </div>
-      <div class="icon-item" role="listitem" title="TeamCity">
-        <span class="icon-chip"><img src="icons/ci/teamcity.svg" width="24" height="24" alt=""></span>
-        <span class="label">TeamCity</span>
-      </div>
       <div class="icon-item" role="listitem" title="Bamboo">
         <span class="icon-chip"><img src="icons/ci/bamboo.svg" width="24" height="24" alt=""></span>
         <span class="label">Bamboo</span>
+      </div>
+      <div class="icon-item" role="listitem" title="Bitbucket Pipelines">
+        <span class="icon-chip"><img src="icons/ci/bitbucket.svg" width="24" height="24" alt=""></span>
+        <span class="label">Bitbucket Pipelines</span>
+      </div>
+      <div class="icon-item" role="listitem" title="TeamCity">
+        <span class="icon-chip"><img src="icons/ci/teamcity.svg" width="24" height="24" alt=""></span>
+        <span class="label">TeamCity</span>
       </div>
       <div class="icon-item" role="listitem" title="CircleCI">
         <span class="icon-chip"><img src="icons/ci/circleci.svg" width="24" height="24" alt=""></span>
@@ -257,10 +266,6 @@
       <div class="icon-item" role="listitem" title="Azure DevOps">
         <span class="icon-chip"><img src="icons/ci/azuredevops.svg" width="24" height="24" alt=""></span>
         <span class="label">Azure DevOps</span>
-      </div>
-      <div class="icon-item" role="listitem" title="Bitbucket Pipelines">
-        <span class="icon-chip"><img src="icons/ci/bitbucket.svg" width="24" height="24" alt=""></span>
-        <span class="label">Bitbucket Pipelines</span>
       </div>
       <div class="icon-item" role="listitem" title="Buildkite">
         <span class="icon-chip"><img src="icons/ci/buildkite.svg" width="24" height="24" alt=""></span>

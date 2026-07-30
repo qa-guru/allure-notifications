@@ -11,7 +11,7 @@ Preview-only. When promoting to prod README, reuse these assets or the same rule
 | Source size | 24×24 logical; ship as SVG (no raster) |
 | Display (README target) | **20×20** (`width="20" height="20"`) |
 | Display (this preview) | **24×24** |
-| Layout | **Invisible CSS grid** — equal columns (6; locales 7), icon above label; not flex-wrap crumbs |
+| Layout | **Compact 3-col grid** (cell ~108px, `width: max-content`) — messengers = 3×3; locales 4-col; not full-bleed stretch |
 
 Do **not** mix monochrome + color in one strip. Do **not** hotlink random PNGs.
 
@@ -20,7 +20,7 @@ Do **not** mix monochrome + color in one strip. Do **not** hotlink random PNGs.
 ```
 docs/preview/icons/
   messengers/   telegram slack email mattermost discord loop rocketdotchat zoho microsoftteams
-  ci/           local githubactions gitlab jenkins teamcity bamboo circleci azuredevops bitbucket buildkite amazonaws
+  ci/           local githubactions gitlab jenkins bamboo bitbucket teamcity circleci azuredevops buildkite amazonaws
   languages/    java kotlin groovy javascript typescript python csharp php ruby go rust dart
   locales/      en de fr ru by ua cn cnt
 ```
@@ -63,11 +63,11 @@ File names = slug (see mapping below). Zoho Cliq uses `zoho.svg` (no Cliq-specif
 | `githubactions.svg` | GitHub Actions (Devicon original) |
 | `gitlab.svg` | GitLab CI |
 | `jenkins.svg` | Jenkins (Devicon original — full-color butler) |
-| `teamcity.svg` | TeamCity |
 | `bamboo.svg` | Bamboo |
+| `bitbucket.svg` | Bitbucket Pipelines |
+| `teamcity.svg` | TeamCity |
 | `circleci.svg` | CircleCI |
 | `azuredevops.svg` | Azure DevOps |
-| `bitbucket.svg` | Bitbucket Pipelines |
 | `buildkite.svg` | Buildkite |
 | `amazonaws.svg` | AWS CI |
 
