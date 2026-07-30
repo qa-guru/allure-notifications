@@ -85,17 +85,15 @@
     }
     .cta { color: var(--text); }
 
-    /* Compact 3-col grid (locked density — messengers = neat 3×3) */
+    /* Adaptive grid — columns from container width, no fixed row count */
     .icon-row {
-      --cols: 3;
-      --cell: 108px;
+      --cell-min: 96px;
       display: grid;
-      grid-template-columns: repeat(var(--cols), var(--cell));
+      grid-template-columns: repeat(auto-fill, minmax(var(--cell-min), 1fr));
       gap: 4px 2px;
       justify-items: stretch;
       align-items: start;
-      width: max-content;
-      max-width: 100%;
+      width: 100%;
       margin: 0 0 8px;
       padding: 10px 8px;
       border: 1px solid var(--border);
@@ -103,15 +101,7 @@
       background: #fff;
     }
     .icon-row[aria-label="Locales"] {
-      --cols: 4;
-      --cell: 88px;
-    }
-    @media (max-width: 360px) {
-      .icon-row {
-        --cols: 2;
-        --cell: min(108px, calc(50vw - 28px));
-      }
-      .icon-row[aria-label="Locales"] { --cols: 2; }
+      --cell-min: 72px;
     }
     .icon-item {
       display: flex;
@@ -243,6 +233,14 @@
         <span class="icon-chip"><img src="icons/ci/gitlab.svg" width="24" height="24" alt=""></span>
         <span class="label">GitLab CI</span>
       </div>
+      <div class="icon-item" role="listitem" title="AWS CI">
+        <span class="icon-chip"><img src="icons/ci/amazonaws.svg" width="24" height="24" alt=""></span>
+        <span class="label">AWS CI</span>
+      </div>
+      <div class="icon-item" role="listitem" title="Azure DevOps">
+        <span class="icon-chip"><img src="icons/ci/azuredevops.svg" width="24" height="24" alt=""></span>
+        <span class="label">Azure DevOps</span>
+      </div>
       <div class="icon-item" role="listitem" title="Jenkins">
         <span class="icon-chip"><img src="icons/ci/jenkins.svg" width="24" height="24" alt=""></span>
         <span class="label">Jenkins</span>
@@ -263,17 +261,9 @@
         <span class="icon-chip"><img src="icons/ci/circleci.svg" width="24" height="24" alt=""></span>
         <span class="label">CircleCI</span>
       </div>
-      <div class="icon-item" role="listitem" title="Azure DevOps">
-        <span class="icon-chip"><img src="icons/ci/azuredevops.svg" width="24" height="24" alt=""></span>
-        <span class="label">Azure DevOps</span>
-      </div>
       <div class="icon-item" role="listitem" title="Buildkite">
         <span class="icon-chip"><img src="icons/ci/buildkite.svg" width="24" height="24" alt=""></span>
         <span class="label">Buildkite</span>
-      </div>
-      <div class="icon-item" role="listitem" title="AWS CI">
-        <span class="icon-chip"><img src="icons/ci/amazonaws.svg" width="24" height="24" alt=""></span>
-        <span class="label">AWS CI</span>
       </div>
     </div>
     <p class="lead">…and any other runner that can execute the CLI.</p>
@@ -373,6 +363,10 @@
       <div class="icon-item" role="listitem" title="cnt — Chinese Traditional">
         <span class="icon-chip"><img src="icons/locales/cnt.svg" width="24" height="24" alt=""></span>
         <span class="label"><code>cnt</code></span>
+      </div>
+      <div class="icon-item" role="listitem" title="morse — Morse code (easter egg)">
+        <span class="icon-chip"><img src="icons/locales/morse.svg" width="24" height="24" alt=""></span>
+        <span class="label"><code>morse</code></span>
       </div>
     </div>
 

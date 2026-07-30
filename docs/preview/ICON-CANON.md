@@ -11,7 +11,7 @@ Preview-only. When promoting to prod README, reuse these assets or the same rule
 | Source size | 24×24 logical; ship as SVG (no raster) |
 | Display (README target) | **20×20** (`width="20" height="20"`) |
 | Display (this preview) | **24×24** |
-| Layout | **Compact 3-col grid** (cell ~108px, `width: max-content`) — messengers = 3×3; locales 4-col; not full-bleed stretch |
+| Layout | **Adaptive grid** (`auto-fill`, cell min ~96px) — wraps by viewport width; no fixed row count |
 
 Do **not** mix monochrome + color in one strip. Do **not** hotlink random PNGs.
 
@@ -20,9 +20,9 @@ Do **not** mix monochrome + color in one strip. Do **not** hotlink random PNGs.
 ```
 docs/preview/icons/
   messengers/   telegram slack email mattermost discord loop rocketdotchat zoho microsoftteams
-  ci/           local githubactions gitlab jenkins bamboo bitbucket teamcity circleci azuredevops buildkite amazonaws
+  ci/           local githubactions gitlab amazonaws azuredevops jenkins bamboo bitbucket teamcity circleci buildkite
   languages/    java kotlin groovy javascript typescript python csharp php ruby go rust dart
-  locales/      en de fr ru by ua cn cnt
+  locales/      en de fr ru by ua cn cnt morse
 ```
 
 File names = slug (see mapping below). Zoho Cliq uses `zoho.svg` (no Cliq-specific Simple Icon).
@@ -62,14 +62,14 @@ File names = slug (see mapping below). Zoho Cliq uses `zoho.svg` (no Cliq-specif
 | `local.svg` | local |
 | `githubactions.svg` | GitHub Actions (Devicon original) |
 | `gitlab.svg` | GitLab CI |
+| `amazonaws.svg` | AWS CI |
+| `azuredevops.svg` | Azure DevOps |
 | `jenkins.svg` | Jenkins (Devicon original — full-color butler) |
 | `bamboo.svg` | Bamboo |
 | `bitbucket.svg` | Bitbucket Pipelines |
 | `teamcity.svg` | TeamCity |
 | `circleci.svg` | CircleCI |
-| `azuredevops.svg` | Azure DevOps |
 | `buildkite.svg` | Buildkite |
-| `amazonaws.svg` | AWS CI |
 
 ### Languages
 
@@ -100,6 +100,7 @@ File names = slug (see mapping below). Zoho Cliq uses `zoho.svg` (no Cliq-specif
 | `ua.svg` | `ua` | UA |
 | `cn.svg` | `cn` | CN (zh-Hans) |
 | `cnt.svg` | `cnt` | TW (zh-Hant) |
+| `morse.svg` | `morse` | Custom — dot-dash on dark circle (not a flag) |
 
 ## README embed (later)
 
