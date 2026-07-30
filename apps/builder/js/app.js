@@ -1364,8 +1364,17 @@ function renderPalette() {
         const btn = /** @type {HTMLElement | null} */ (e.target instanceof Element ? e.target.closest('[data-anb-panel-id]') : null);
         if (!btn || !e.dataTransfer)
             return;
+        const tile = btn.querySelector('.anb-palette__tile');
+        if (tile instanceof HTMLElement) {
+            e.dataTransfer.setDragImage(tile, Math.round(tile.offsetWidth / 2), Math.round(tile.offsetHeight / 2));
+        }
+        btn.classList.add('is-dragging');
         e.dataTransfer.setData('text/anb-panel-id', btn.getAttribute('data-anb-panel-id') || '');
         e.dataTransfer.effectAllowed = 'copy';
+    });
+    palette.addEventListener('dragend', (e) => {
+        const btn = /** @type {HTMLElement | null} */ (e.target instanceof Element ? e.target.closest('[data-anb-panel-id]') : null);
+        btn?.classList.remove('is-dragging');
     });
 }
 function wireCanvasDrop() {

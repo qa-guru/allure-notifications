@@ -423,6 +423,11 @@ html.theme-light .anb-canvas--chart-off::after {
   color: var(--color-text-muted);
 }
 
+/* Drag ghost = tile only (setDragImage in app.ts); caption stays visible in the slot. */
+.anb-palette__item.is-dragging .anb-palette__tile {
+  opacity: 0.35;
+}
+
 .anb-editor__actions {
   display: flex;
   flex-wrap: wrap;
