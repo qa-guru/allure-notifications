@@ -4,6 +4,16 @@
  */
 
 export {
+  PHRASES,
+  captionPhrasesFor,
+  phrasesFor,
+  resolvePhraseLanguage,
+  type CaptionPhrases,
+  type PhraseLanguage,
+  type PhrasePack,
+} from "./phrases.js";
+
+export {
   PANEL_CATALOG,
   PANEL_META,
   CHART_TYPES,

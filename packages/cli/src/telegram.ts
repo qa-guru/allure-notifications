@@ -3,7 +3,11 @@
  * Credentials from env / config — never commit tokens.
  */
 
-import type { Config } from "@allure-notifications/config";
+import {
+  captionPhrasesFor,
+  type CaptionPhrases,
+  type Config,
+} from "@allure-notifications/config";
 import type { ReportAnalytics } from "@allure-notifications/core";
 
 /** ADR 008 monitoring forum chat. */
@@ -83,67 +87,6 @@ export function resolveTelegramCredentials(
   }
 
   return { token, chat, topic, replyTo };
-}
-
-type CaptionPhrases = {
-  results: string;
-  environment: string;
-  comment: string;
-  duration: string;
-  totalScenarios: string;
-  totalPassed: string;
-  totalFailed: string;
-  totalBroken: string;
-  totalUnknown: string;
-  totalSkipped: string;
-  links: {
-    report: string;
-    dashboard: string;
-    testops: string;
-    build: string;
-  };
-};
-
-const PHRASES_EN: CaptionPhrases = {
-  results: "Results",
-  environment: "Environment",
-  comment: "Comment",
-  duration: "Duration",
-  totalScenarios: "Total scenarios",
-  totalPassed: "Total passed",
-  totalFailed: "Total failed",
-  totalBroken: "Total broken",
-  totalUnknown: "Total unknown",
-  totalSkipped: "Total skipped",
-  links: {
-    report: "Report",
-    dashboard: "Dashboard",
-    testops: "TestOps",
-    build: "Build",
-  },
-};
-
-const PHRASES_RU: CaptionPhrases = {
-  results: "Результаты",
-  environment: "Рабочее окружение",
-  comment: "Комментарий",
-  duration: "Продолжительность",
-  totalScenarios: "Всего сценариев",
-  totalPassed: "Всего успешных тестов",
-  totalFailed: "Всего упавших тестов",
-  totalBroken: "Всего сломанных тестов",
-  totalUnknown: "Всего неизвестных тестов",
-  totalSkipped: "Всего пропущенных тестов",
-  links: {
-    report: "Отчёт",
-    dashboard: "Дашборд",
-    testops: "TestOps",
-    build: "Сборка",
-  },
-};
-
-function phrasesFor(language: string | undefined): CaptionPhrases {
-  return language?.toLowerCase() === "ru" ? PHRASES_RU : PHRASES_EN;
 }
 
 /** Format ms as HH:mm:ss.SSS (Java DurationFormatUtils parity). */
@@ -232,7 +175,7 @@ export function buildTelegramCaption(
   analytics?: ReportAnalytics,
 ): string {
   const base = config.base ?? {};
-  const phrases = phrasesFor(base.language);
+  const phrases = captionPhrasesFor(base.language);
   const environment = base.environment?.trim() || "";
   const comment = base.comment?.trim() || "";
   const durationFormat = base.durationFormat?.trim() || "HH:mm:ss.SSS";

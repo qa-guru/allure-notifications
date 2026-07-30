@@ -33,6 +33,16 @@ export {
 } from "./presets.js";
 
 export {
+  PHRASES,
+  captionPhrasesFor,
+  phrasesFor,
+  resolvePhraseLanguage,
+  type CaptionPhrases,
+  type PhraseLanguage,
+  type PhrasePack,
+} from "./phrases.js";
+
+export {
   ChartItemSchema,
   PanelsSchema,
   ChartConfigSchema,

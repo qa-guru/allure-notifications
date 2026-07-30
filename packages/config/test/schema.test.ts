@@ -201,4 +201,14 @@ describe("@allure-notifications/config schema vs repo fixtures", () => {
 
     assert.equal(isValidConfig({ base: { project: 123 } }), false);
   });
+
+  it('accepts base.language "de"', () => {
+    const result = safeParseConfig({
+      base: { language: "de", chart: { layout: "free", width: 870, height: 1080, items: [{ type: "pie", x: 0, y: 0, w: 2, h: 2 }] } },
+    });
+    assert.equal(result.success, true, result.success ? "" : JSON.stringify(result.error.format()));
+    if (result.success) {
+      assert.equal(result.data.base.language, "de");
+    }
+  });
 });

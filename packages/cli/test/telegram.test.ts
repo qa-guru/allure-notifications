@@ -193,6 +193,56 @@ describe("@allure-notifications/cli telegram caption + sendPhoto", () => {
     assert.doesNotMatch(caption, /SECRET/);
   });
 
+  it("caption includes DE phrases and HTML links", () => {
+    const caption = buildTelegramCaption(
+      {
+        base: {
+          project: "allure-notifications",
+          language: "de",
+          environment: "staging",
+          comment: "Nightly run",
+          links: {
+            report: "https://allure.qa.guru/project/5297",
+            dashboard: "https://sonar.qa.guru/dashboard?id=allure-notifications",
+            testops: "https://allure.qa.guru/project/5297",
+            build: "https://github.com/qa-guru/allure-notifications/actions/runs/1",
+          },
+        },
+        telegram: { token: "SECRET" },
+      },
+      {
+        statistic: {
+          passed: 10,
+          failed: 1,
+          broken: 0,
+          skipped: 0,
+          unknown: 0,
+          total: 11,
+        },
+        durationMs: 12000,
+        layers: {},
+        suites: [],
+        durationsMs: [],
+        durationsMsByLayer: {},
+        severities: {},
+        hasLayerLabels: false,
+        hasKnownLayerLabels: false,
+        resultCount: 11,
+        history: null,
+        stabilityCases: [],
+      },
+    );
+    assert.match(caption, /Ergebnisse:/);
+    assert.match(caption, /Umgebung:/);
+    assert.match(caption, /Kommentar:/);
+    assert.match(caption, /Szenarien gesamt:/);
+    assert.match(caption, /Gesamt bestanden:/);
+    assert.match(caption, /Bericht:/);
+    assert.match(caption, /Dashboard:/);
+    assert.doesNotMatch(caption, /Results:/);
+    assert.doesNotMatch(caption, /SECRET/);
+  });
+
   it("sendTelegramPhoto posts multipart and returns message id (mocked fetch)", async () => {
     const calls: { url: string; method?: string; form?: FormData }[] = [];
     const fetchImpl: typeof fetch = async (input, init) => {

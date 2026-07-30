@@ -438,10 +438,11 @@ test.describe('messengers', () => {
         hash: A.normalizeVectorId('#cafebabe'),
         esc: A.escapeHtml('<b>&"'),
         en: A.phrasesFor('en').results,
-        ru: A.phrasesFor('ru').results,
+        de: A.phrasesFor('de').results,
         fr: A.phrasesFor('fr').results,
-        ua: A.phrasesFor('ua').results,
+        ru: A.phrasesFor('ru').results,
         by: A.phrasesFor('by').results,
+        ua: A.phrasesFor('ua').results,
         cn: A.phrasesFor('cn').results,
         cnt: A.phrasesFor('cnt').results,
         fallback: A.phrasesFor('nope').results,
@@ -483,6 +484,7 @@ test.describe('messengers', () => {
     const lang = page.locator('[data-anb-path="base.language"]');
     if (await lang.count()) {
       await lang.selectOption('ru');
+      await lang.selectOption('de');
       await lang.selectOption('fr');
       await lang.selectOption('en');
     }

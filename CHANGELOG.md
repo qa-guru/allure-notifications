@@ -1,5 +1,15 @@
 # Changelog
 
+## Unreleased
+
+### English
+
+- **feat: German locale (`de`)** — schema, jar phrases/legend, builder select, CLI Telegram caption, preview omni-tool flag; shared `PHRASES` in `@allure-notifications/config`
+
+### Russian
+
+- **feat: немецкая локаль (`de`)** — schema, jar phrases/legend, select в builder, caption CLI Telegram, флаг в preview omni-tool; общий `PHRASES` в `@allure-notifications/config`
+
 ## v 6.0.8
 
 ### English
