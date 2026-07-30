@@ -11,7 +11,7 @@ Preview-only. When promoting to prod README, reuse these assets or the same rule
 | Source size | 24×24 logical; ship as SVG (no raster) |
 | Display (README target) | **20×20** (`width="20" height="20"`) |
 | Display (this preview) | **24×24** |
-| Layout | **Horizontal strip** — icon above label, items in one wrapping row (not a vertical table) |
+| Layout | **Invisible CSS grid** — equal columns (6; locales 7), icon above label; not flex-wrap crumbs |
 
 Do **not** mix monochrome + color in one strip. Do **not** hotlink random PNGs.
 

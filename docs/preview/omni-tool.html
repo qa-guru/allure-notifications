@@ -85,27 +85,38 @@
     }
     .cta { color: var(--text); }
 
-    /* Horizontal icon strip — README target shape */
+    /* Invisible equal-column grid (icons + labels align across rows) */
     .icon-row {
-      display: flex;
-      flex-wrap: wrap;
-      align-items: stretch;
-      gap: 8px;
+      --cols: 6;
+      display: grid;
+      grid-template-columns: repeat(var(--cols), minmax(0, 1fr));
+      gap: 12px 8px;
+      justify-items: stretch;
+      align-items: start;
       margin: 0 0 8px;
-      padding: 12px;
+      padding: 14px 12px;
       border: 1px solid var(--border);
       border-radius: 8px;
       background: #fff;
     }
+    .icon-row[aria-label="Locales"] { --cols: 7; }
+    @media (max-width: 720px) {
+      .icon-row { --cols: 4; }
+      .icon-row[aria-label="Locales"] { --cols: 4; }
+    }
+    @media (max-width: 480px) {
+      .icon-row,
+      .icon-row[aria-label="Locales"] { --cols: 3; }
+    }
     .icon-item {
-      display: inline-flex;
+      display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: flex-start;
       gap: 6px;
-      min-width: 72px;
-      max-width: 96px;
-      padding: 8px 6px;
+      width: 100%;
+      min-width: 0;
+      padding: 8px 4px;
       border-radius: 6px;
       text-align: center;
     }
@@ -124,14 +135,22 @@
     .icon-chip img {
       width: 24px;
       height: 24px;
+      object-fit: contain;
       display: block;
     }
     .icon-item .label {
+      display: flex;
+      align-items: flex-start;
+      justify-content: center;
+      width: 100%;
+      min-height: calc(1.25em * 2); /* reserve 2 lines — Teams / Bitbucket */
+      margin: 0;
       font-size: 12px;
       font-weight: 600;
       line-height: 1.25;
       color: var(--text);
-      word-break: break-word;
+      overflow-wrap: anywhere;
+      hyphens: auto;
     }
     .icon-item .label code {
       font-size: 12px;
