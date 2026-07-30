@@ -14,7 +14,6 @@
       --code-bg: #f6f8fa;
       --banner-bg: #fff8c5;
       --banner-border: #d4a72c66;
-      --row-hover: #f6f8fa;
       --icon-chip: #f6f8fa;
     }
     * { box-sizing: border-box; }
@@ -33,7 +32,7 @@
     }
     .banner strong { color: var(--text); }
     .wrap {
-      max-width: 820px;
+      max-width: 920px;
       margin: 0 auto;
       padding: 32px 24px 64px;
     }
@@ -79,64 +78,66 @@
       font-size: 14px;
       margin-bottom: 8px;
     }
-    .lead {
-      margin: 0 0 8px;
+    .lead, .cta {
+      margin: 0 0 10px;
       color: var(--muted);
       font-size: 14px;
     }
-    .cta {
-      margin: 0 0 16px;
-      font-size: 14px;
-    }
-    table.icon-table {
-      width: 100%;
-      border-collapse: collapse;
+    .cta { color: var(--text); }
+
+    /* Horizontal icon strip — README target shape */
+    .icon-row {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: stretch;
+      gap: 8px;
       margin: 0 0 8px;
-      font-size: 14px;
-    }
-    table.icon-table th,
-    table.icon-table td {
+      padding: 12px;
       border: 1px solid var(--border);
-      padding: 8px 10px;
-      text-align: left;
-      vertical-align: middle;
+      border-radius: 8px;
+      background: #fff;
     }
-    table.icon-table th {
-      background: var(--code-bg);
-      font-weight: 600;
-      font-size: 12px;
-      text-transform: uppercase;
-      letter-spacing: 0.02em;
-      color: var(--muted);
-    }
-    table.icon-table tr:hover td { background: var(--row-hover); }
-    table.icon-table td.icon {
-      width: 44px;
+    .icon-item {
+      display: inline-flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      gap: 6px;
+      min-width: 72px;
+      max-width: 96px;
+      padding: 8px 6px;
+      border-radius: 6px;
       text-align: center;
     }
-    table.icon-table td.name {
-      font-weight: 600;
-      white-space: nowrap;
-    }
-    table.icon-table td.notes {
-      color: var(--muted);
-      width: 45%;
-    }
+    .icon-item:hover { background: var(--code-bg); }
     .icon-chip {
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      width: 32px;
-      height: 32px;
-      border-radius: 6px;
+      width: 36px;
+      height: 36px;
+      border-radius: 8px;
       background: var(--icon-chip);
       border: 1px solid var(--border);
+      flex-shrink: 0;
     }
     .icon-chip img {
       width: 24px;
       height: 24px;
       display: block;
     }
+    .icon-item .label {
+      font-size: 12px;
+      font-weight: 600;
+      line-height: 1.25;
+      color: var(--text);
+      word-break: break-word;
+    }
+    .icon-item .label code {
+      font-size: 12px;
+      padding: 0.1em 0.3em;
+    }
+
     .canon {
       margin-top: 40px;
       padding-top: 16px;
@@ -144,7 +145,6 @@
       font-size: 13px;
       color: var(--muted);
     }
-    .canon code { font-size: 12px; }
   </style>
 </head>
 <body>
@@ -154,7 +154,7 @@
   </div>
   <div class="wrap">
     <h1>Allure notifications</h1>
-    <p class="meta">Fragment under review · place after intro / before TOC</p>
+    <p class="meta">Fragment under review · place after intro / before TOC · layout: horizontal strips</p>
 
     <h2>Omni-tool</h2>
 
@@ -165,123 +165,93 @@
       or
       <a href="https://github.com/qa-guru/allure-notifications/compare">send a PR</a>.
     </p>
-    <table class="icon-table">
-      <thead>
-        <tr><th></th><th>Messenger</th><th>Notes</th></tr>
-      </thead>
-      <tbody>
-        <tr>
-          <td class="icon"><span class="icon-chip"><img src="icons/messengers/telegram.svg" width="24" height="24" alt=""></span></td>
-          <td class="name">Telegram</td>
-          <td class="notes">Primary live messenger in 6.0</td>
-        </tr>
-        <tr>
-          <td class="icon"><span class="icon-chip"><img src="icons/messengers/slack.svg" width="24" height="24" alt=""></span></td>
-          <td class="name">Slack</td>
-          <td class="notes"></td>
-        </tr>
-        <tr>
-          <td class="icon"><span class="icon-chip"><img src="icons/messengers/email.svg" width="24" height="24" alt=""></span></td>
-          <td class="name">Email</td>
-          <td class="notes">SMTP</td>
-        </tr>
-        <tr>
-          <td class="icon"><span class="icon-chip"><img src="icons/messengers/mattermost.svg" width="24" height="24" alt=""></span></td>
-          <td class="name">Mattermost</td>
-          <td class="notes"></td>
-        </tr>
-        <tr>
-          <td class="icon"><span class="icon-chip"><img src="icons/messengers/discord.svg" width="24" height="24" alt=""></span></td>
-          <td class="name">Discord</td>
-          <td class="notes"></td>
-        </tr>
-        <tr>
-          <td class="icon"><span class="icon-chip"><img src="icons/messengers/loop.svg" width="24" height="24" alt=""></span></td>
-          <td class="name">Loop</td>
-          <td class="notes">Incoming webhook</td>
-        </tr>
-        <tr>
-          <td class="icon"><span class="icon-chip"><img src="icons/messengers/rocketdotchat.svg" width="24" height="24" alt=""></span></td>
-          <td class="name">Rocket.Chat</td>
-          <td class="notes"></td>
-        </tr>
-        <tr>
-          <td class="icon"><span class="icon-chip"><img src="icons/messengers/zoho.svg" width="24" height="24" alt=""></span></td>
-          <td class="name">Zoho Cliq</td>
-          <td class="notes">Icon: Zoho (no Cliq-specific SI glyph)</td>
-        </tr>
-        <tr>
-          <td class="icon"><span class="icon-chip"><img src="icons/messengers/microsoftteams.svg" width="24" height="24" alt=""></span></td>
-          <td class="name">Microsoft Teams</td>
-          <td class="notes">Workflows webhook</td>
-        </tr>
-      </tbody>
-    </table>
+    <div class="icon-row" role="list" aria-label="Messengers">
+      <div class="icon-item" role="listitem" title="Telegram">
+        <span class="icon-chip"><img src="icons/messengers/telegram.svg" width="24" height="24" alt=""></span>
+        <span class="label">Telegram</span>
+      </div>
+      <div class="icon-item" role="listitem" title="Slack">
+        <span class="icon-chip"><img src="icons/messengers/slack.svg" width="24" height="24" alt=""></span>
+        <span class="label">Slack</span>
+      </div>
+      <div class="icon-item" role="listitem" title="Email">
+        <span class="icon-chip"><img src="icons/messengers/email.svg" width="24" height="24" alt=""></span>
+        <span class="label">Email</span>
+      </div>
+      <div class="icon-item" role="listitem" title="Mattermost">
+        <span class="icon-chip"><img src="icons/messengers/mattermost.svg" width="24" height="24" alt=""></span>
+        <span class="label">Mattermost</span>
+      </div>
+      <div class="icon-item" role="listitem" title="Discord">
+        <span class="icon-chip"><img src="icons/messengers/discord.svg" width="24" height="24" alt=""></span>
+        <span class="label">Discord</span>
+      </div>
+      <div class="icon-item" role="listitem" title="Loop">
+        <span class="icon-chip"><img src="icons/messengers/loop.svg" width="24" height="24" alt=""></span>
+        <span class="label">Loop</span>
+      </div>
+      <div class="icon-item" role="listitem" title="Rocket.Chat">
+        <span class="icon-chip"><img src="icons/messengers/rocketdotchat.svg" width="24" height="24" alt=""></span>
+        <span class="label">Rocket.Chat</span>
+      </div>
+      <div class="icon-item" role="listitem" title="Zoho Cliq">
+        <span class="icon-chip"><img src="icons/messengers/zoho.svg" width="24" height="24" alt=""></span>
+        <span class="label">Zoho Cliq</span>
+      </div>
+      <div class="icon-item" role="listitem" title="Microsoft Teams">
+        <span class="icon-chip"><img src="icons/messengers/microsoftteams.svg" width="24" height="24" alt=""></span>
+        <span class="label">Microsoft Teams</span>
+      </div>
+    </div>
 
     <h3>2. Any CI</h3>
     <p class="lead">Runs anywhere Allure results exist — local laptop to hosted CI.</p>
-    <table class="icon-table">
-      <thead>
-        <tr><th></th><th>CI / runner</th><th>Notes</th></tr>
-      </thead>
-      <tbody>
-        <tr>
-          <td class="icon"><span class="icon-chip"><img src="icons/ci/local.svg" width="24" height="24" alt=""></span></td>
-          <td class="name">local</td>
-          <td class="notes">CLI on a workstation</td>
-        </tr>
-        <tr>
-          <td class="icon"><span class="icon-chip"><img src="icons/ci/githubactions.svg" width="24" height="24" alt=""></span></td>
-          <td class="name">GitHub Actions</td>
-          <td class="notes"></td>
-        </tr>
-        <tr>
-          <td class="icon"><span class="icon-chip"><img src="icons/ci/gitlab.svg" width="24" height="24" alt=""></span></td>
-          <td class="name">GitLab CI</td>
-          <td class="notes"></td>
-        </tr>
-        <tr>
-          <td class="icon"><span class="icon-chip"><img src="icons/ci/jenkins.svg" width="24" height="24" alt=""></span></td>
-          <td class="name">Jenkins</td>
-          <td class="notes"></td>
-        </tr>
-        <tr>
-          <td class="icon"><span class="icon-chip"><img src="icons/ci/teamcity.svg" width="24" height="24" alt=""></span></td>
-          <td class="name">TeamCity</td>
-          <td class="notes"></td>
-        </tr>
-        <tr>
-          <td class="icon"><span class="icon-chip"><img src="icons/ci/bamboo.svg" width="24" height="24" alt=""></span></td>
-          <td class="name">Bamboo</td>
-          <td class="notes"></td>
-        </tr>
-        <tr>
-          <td class="icon"><span class="icon-chip"><img src="icons/ci/circleci.svg" width="24" height="24" alt=""></span></td>
-          <td class="name">CircleCI</td>
-          <td class="notes"></td>
-        </tr>
-        <tr>
-          <td class="icon"><span class="icon-chip"><img src="icons/ci/azuredevops.svg" width="24" height="24" alt=""></span></td>
-          <td class="name">Azure DevOps</td>
-          <td class="notes"></td>
-        </tr>
-        <tr>
-          <td class="icon"><span class="icon-chip"><img src="icons/ci/bitbucket.svg" width="24" height="24" alt=""></span></td>
-          <td class="name">Bitbucket Pipelines</td>
-          <td class="notes"></td>
-        </tr>
-        <tr>
-          <td class="icon"><span class="icon-chip"><img src="icons/ci/buildkite.svg" width="24" height="24" alt=""></span></td>
-          <td class="name">Buildkite</td>
-          <td class="notes"></td>
-        </tr>
-        <tr>
-          <td class="icon"><span class="icon-chip"><img src="icons/ci/amazonaws.svg" width="24" height="24" alt=""></span></td>
-          <td class="name">AWS CI</td>
-          <td class="notes">CodeBuild / custom runners</td>
-        </tr>
-      </tbody>
-    </table>
+    <div class="icon-row" role="list" aria-label="CI">
+      <div class="icon-item" role="listitem" title="local">
+        <span class="icon-chip"><img src="icons/ci/local.svg" width="24" height="24" alt=""></span>
+        <span class="label">local</span>
+      </div>
+      <div class="icon-item" role="listitem" title="GitHub Actions">
+        <span class="icon-chip"><img src="icons/ci/githubactions.svg" width="24" height="24" alt=""></span>
+        <span class="label">GitHub Actions</span>
+      </div>
+      <div class="icon-item" role="listitem" title="GitLab CI">
+        <span class="icon-chip"><img src="icons/ci/gitlab.svg" width="24" height="24" alt=""></span>
+        <span class="label">GitLab CI</span>
+      </div>
+      <div class="icon-item" role="listitem" title="Jenkins">
+        <span class="icon-chip"><img src="icons/ci/jenkins.svg" width="24" height="24" alt=""></span>
+        <span class="label">Jenkins</span>
+      </div>
+      <div class="icon-item" role="listitem" title="TeamCity">
+        <span class="icon-chip"><img src="icons/ci/teamcity.svg" width="24" height="24" alt=""></span>
+        <span class="label">TeamCity</span>
+      </div>
+      <div class="icon-item" role="listitem" title="Bamboo">
+        <span class="icon-chip"><img src="icons/ci/bamboo.svg" width="24" height="24" alt=""></span>
+        <span class="label">Bamboo</span>
+      </div>
+      <div class="icon-item" role="listitem" title="CircleCI">
+        <span class="icon-chip"><img src="icons/ci/circleci.svg" width="24" height="24" alt=""></span>
+        <span class="label">CircleCI</span>
+      </div>
+      <div class="icon-item" role="listitem" title="Azure DevOps">
+        <span class="icon-chip"><img src="icons/ci/azuredevops.svg" width="24" height="24" alt=""></span>
+        <span class="label">Azure DevOps</span>
+      </div>
+      <div class="icon-item" role="listitem" title="Bitbucket Pipelines">
+        <span class="icon-chip"><img src="icons/ci/bitbucket.svg" width="24" height="24" alt=""></span>
+        <span class="label">Bitbucket Pipelines</span>
+      </div>
+      <div class="icon-item" role="listitem" title="Buildkite">
+        <span class="icon-chip"><img src="icons/ci/buildkite.svg" width="24" height="24" alt=""></span>
+        <span class="label">Buildkite</span>
+      </div>
+      <div class="icon-item" role="listitem" title="AWS CI">
+        <span class="icon-chip"><img src="icons/ci/amazonaws.svg" width="24" height="24" alt=""></span>
+        <span class="label">AWS CI</span>
+      </div>
+    </div>
     <p class="lead">…and any other runner that can execute the CLI.</p>
 
     <h3>3. Any language with Allure</h3>
@@ -289,73 +259,56 @@
       Framework adapters →
       <a href="https://allurereport.org/docs/frameworks/">frameworks list</a>.
     </p>
-    <table class="icon-table">
-      <thead>
-        <tr><th></th><th>Language</th><th>Notes</th></tr>
-      </thead>
-      <tbody>
-        <tr>
-          <td class="icon"><span class="icon-chip"><img src="icons/languages/openjdk.svg" width="24" height="24" alt=""></span></td>
-          <td class="name">Java</td>
-          <td class="notes">Icon: OpenJDK (no “Java” SI glyph)</td>
-        </tr>
-        <tr>
-          <td class="icon"><span class="icon-chip"><img src="icons/languages/kotlin.svg" width="24" height="24" alt=""></span></td>
-          <td class="name">Kotlin</td>
-          <td class="notes"></td>
-        </tr>
-        <tr>
-          <td class="icon"><span class="icon-chip"><img src="icons/languages/apachegroovy.svg" width="24" height="24" alt=""></span></td>
-          <td class="name">Groovy</td>
-          <td class="notes"></td>
-        </tr>
-        <tr>
-          <td class="icon"><span class="icon-chip"><img src="icons/languages/javascript.svg" width="24" height="24" alt=""></span></td>
-          <td class="name">JavaScript</td>
-          <td class="notes"></td>
-        </tr>
-        <tr>
-          <td class="icon"><span class="icon-chip"><img src="icons/languages/typescript.svg" width="24" height="24" alt=""></span></td>
-          <td class="name">TypeScript</td>
-          <td class="notes"></td>
-        </tr>
-        <tr>
-          <td class="icon"><span class="icon-chip"><img src="icons/languages/python.svg" width="24" height="24" alt=""></span></td>
-          <td class="name">Python</td>
-          <td class="notes"></td>
-        </tr>
-        <tr>
-          <td class="icon"><span class="icon-chip"><img src="icons/languages/csharp.svg" width="24" height="24" alt=""></span></td>
-          <td class="name">C#</td>
-          <td class="notes"></td>
-        </tr>
-        <tr>
-          <td class="icon"><span class="icon-chip"><img src="icons/languages/php.svg" width="24" height="24" alt=""></span></td>
-          <td class="name">PHP</td>
-          <td class="notes"></td>
-        </tr>
-        <tr>
-          <td class="icon"><span class="icon-chip"><img src="icons/languages/ruby.svg" width="24" height="24" alt=""></span></td>
-          <td class="name">Ruby</td>
-          <td class="notes"></td>
-        </tr>
-        <tr>
-          <td class="icon"><span class="icon-chip"><img src="icons/languages/go.svg" width="24" height="24" alt=""></span></td>
-          <td class="name">Go</td>
-          <td class="notes"></td>
-        </tr>
-        <tr>
-          <td class="icon"><span class="icon-chip"><img src="icons/languages/rust.svg" width="24" height="24" alt=""></span></td>
-          <td class="name">Rust</td>
-          <td class="notes"></td>
-        </tr>
-        <tr>
-          <td class="icon"><span class="icon-chip"><img src="icons/languages/dart.svg" width="24" height="24" alt=""></span></td>
-          <td class="name">Dart</td>
-          <td class="notes"></td>
-        </tr>
-      </tbody>
-    </table>
+    <div class="icon-row" role="list" aria-label="Languages">
+      <div class="icon-item" role="listitem" title="Java">
+        <span class="icon-chip"><img src="icons/languages/openjdk.svg" width="24" height="24" alt=""></span>
+        <span class="label">Java</span>
+      </div>
+      <div class="icon-item" role="listitem" title="Kotlin">
+        <span class="icon-chip"><img src="icons/languages/kotlin.svg" width="24" height="24" alt=""></span>
+        <span class="label">Kotlin</span>
+      </div>
+      <div class="icon-item" role="listitem" title="Groovy">
+        <span class="icon-chip"><img src="icons/languages/apachegroovy.svg" width="24" height="24" alt=""></span>
+        <span class="label">Groovy</span>
+      </div>
+      <div class="icon-item" role="listitem" title="JavaScript">
+        <span class="icon-chip"><img src="icons/languages/javascript.svg" width="24" height="24" alt=""></span>
+        <span class="label">JavaScript</span>
+      </div>
+      <div class="icon-item" role="listitem" title="TypeScript">
+        <span class="icon-chip"><img src="icons/languages/typescript.svg" width="24" height="24" alt=""></span>
+        <span class="label">TypeScript</span>
+      </div>
+      <div class="icon-item" role="listitem" title="Python">
+        <span class="icon-chip"><img src="icons/languages/python.svg" width="24" height="24" alt=""></span>
+        <span class="label">Python</span>
+      </div>
+      <div class="icon-item" role="listitem" title="C#">
+        <span class="icon-chip"><img src="icons/languages/csharp.svg" width="24" height="24" alt=""></span>
+        <span class="label">C#</span>
+      </div>
+      <div class="icon-item" role="listitem" title="PHP">
+        <span class="icon-chip"><img src="icons/languages/php.svg" width="24" height="24" alt=""></span>
+        <span class="label">PHP</span>
+      </div>
+      <div class="icon-item" role="listitem" title="Ruby">
+        <span class="icon-chip"><img src="icons/languages/ruby.svg" width="24" height="24" alt=""></span>
+        <span class="label">Ruby</span>
+      </div>
+      <div class="icon-item" role="listitem" title="Go">
+        <span class="icon-chip"><img src="icons/languages/go.svg" width="24" height="24" alt=""></span>
+        <span class="label">Go</span>
+      </div>
+      <div class="icon-item" role="listitem" title="Rust">
+        <span class="icon-chip"><img src="icons/languages/rust.svg" width="24" height="24" alt=""></span>
+        <span class="label">Rust</span>
+      </div>
+      <div class="icon-item" role="listitem" title="Dart">
+        <span class="icon-chip"><img src="icons/languages/dart.svg" width="24" height="24" alt=""></span>
+        <span class="label">Dart</span>
+      </div>
+    </div>
 
     <h3>4. Notification locales</h3>
     <p class="cta">
@@ -365,48 +318,36 @@
       <a href="https://github.com/qa-guru/allure-notifications/compare">send a PR</a>.
       No German (<code>de</code>).
     </p>
-    <table class="icon-table">
-      <thead>
-        <tr><th></th><th>Code</th><th>Notes</th></tr>
-      </thead>
-      <tbody>
-        <tr>
-          <td class="icon"><span class="icon-chip"><img src="icons/locales/en.svg" width="24" height="24" alt=""></span></td>
-          <td class="name"><code>en</code></td>
-          <td class="notes">English</td>
-        </tr>
-        <tr>
-          <td class="icon"><span class="icon-chip"><img src="icons/locales/ru.svg" width="24" height="24" alt=""></span></td>
-          <td class="name"><code>ru</code></td>
-          <td class="notes">Russian</td>
-        </tr>
-        <tr>
-          <td class="icon"><span class="icon-chip"><img src="icons/locales/fr.svg" width="24" height="24" alt=""></span></td>
-          <td class="name"><code>fr</code></td>
-          <td class="notes">French</td>
-        </tr>
-        <tr>
-          <td class="icon"><span class="icon-chip"><img src="icons/locales/ua.svg" width="24" height="24" alt=""></span></td>
-          <td class="name"><code>ua</code></td>
-          <td class="notes">Ukrainian</td>
-        </tr>
-        <tr>
-          <td class="icon"><span class="icon-chip"><img src="icons/locales/by.svg" width="24" height="24" alt=""></span></td>
-          <td class="name"><code>by</code></td>
-          <td class="notes">Belarusian</td>
-        </tr>
-        <tr>
-          <td class="icon"><span class="icon-chip"><img src="icons/locales/cn.svg" width="24" height="24" alt=""></span></td>
-          <td class="name"><code>cn</code></td>
-          <td class="notes">Chinese (Simplified)</td>
-        </tr>
-        <tr>
-          <td class="icon"><span class="icon-chip"><img src="icons/locales/cnt.svg" width="24" height="24" alt=""></span></td>
-          <td class="name"><code>cnt</code></td>
-          <td class="notes">Chinese (Traditional) · flag TW</td>
-        </tr>
-      </tbody>
-    </table>
+    <div class="icon-row" role="list" aria-label="Locales">
+      <div class="icon-item" role="listitem" title="en — English">
+        <span class="icon-chip"><img src="icons/locales/en.svg" width="24" height="24" alt=""></span>
+        <span class="label"><code>en</code></span>
+      </div>
+      <div class="icon-item" role="listitem" title="ru — Russian">
+        <span class="icon-chip"><img src="icons/locales/ru.svg" width="24" height="24" alt=""></span>
+        <span class="label"><code>ru</code></span>
+      </div>
+      <div class="icon-item" role="listitem" title="fr — French">
+        <span class="icon-chip"><img src="icons/locales/fr.svg" width="24" height="24" alt=""></span>
+        <span class="label"><code>fr</code></span>
+      </div>
+      <div class="icon-item" role="listitem" title="ua — Ukrainian">
+        <span class="icon-chip"><img src="icons/locales/ua.svg" width="24" height="24" alt=""></span>
+        <span class="label"><code>ua</code></span>
+      </div>
+      <div class="icon-item" role="listitem" title="by — Belarusian">
+        <span class="icon-chip"><img src="icons/locales/by.svg" width="24" height="24" alt=""></span>
+        <span class="label"><code>by</code></span>
+      </div>
+      <div class="icon-item" role="listitem" title="cn — Chinese Simplified">
+        <span class="icon-chip"><img src="icons/locales/cn.svg" width="24" height="24" alt=""></span>
+        <span class="label"><code>cn</code></span>
+      </div>
+      <div class="icon-item" role="listitem" title="cnt — Chinese Traditional">
+        <span class="icon-chip"><img src="icons/locales/cnt.svg" width="24" height="24" alt=""></span>
+        <span class="label"><code>cnt</code></span>
+      </div>
+    </div>
 
     <h2>Links <span style="color:var(--muted);font-size:14px;font-weight:400">(separate from Omni-tool)</span></h2>
     <p>
@@ -427,9 +368,9 @@
     <div class="canon">
       <strong>Icon canon (preview)</strong> —
       SVG · brand-color · 24×24 here / 20×20 for README ·
+      layout: <strong>horizontal strips</strong> (wrap) ·
       Simple Icons (+ custom email/local/loop) · locales = circle-flags ·
       details in <a href="ICON-CANON.md">ICON-CANON.md</a>.
-      Prod README untouched until explicit “в README”.
     </div>
   </div>
 </body>

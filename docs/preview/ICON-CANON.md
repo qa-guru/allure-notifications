@@ -11,9 +11,9 @@ Preview-only. When promoting to prod README, reuse these assets or the same rule
 | Source size | 24×24 logical; ship as SVG (no raster) |
 | Display (README target) | **20×20** (`width="20" height="20"`) |
 | Display (this preview) | **24×24** |
-| Alignment | Table columns: `icon` \| `name` \| `notes` |
+| Layout | **Horizontal strip** — icon above label, items in one wrapping row (not a vertical table) |
 
-Do **not** mix monochrome + color in one table. Do **not** hotlink random PNGs.
+Do **not** mix monochrome + color in one strip. Do **not** hotlink random PNGs.
 
 ## Paths
 
@@ -101,19 +101,17 @@ No `de` — product does not ship German.
 
 ## README embed (later)
 
-Prefer relative SVG (or raw.githubusercontent.com after merge):
+Prefer relative SVG (or raw.githubusercontent.com after merge). Target shape = **one horizontal line** (wraps on narrow viewports):
 
 ```html
-<img src="docs/preview/icons/messengers/telegram.svg" width="20" height="20" alt=""> Telegram
+<p>
+  <img src="…" width="20" height="20" alt=""> Telegram
+  · <img src="…" width="20" height="20" alt=""> Slack
+  · …
+</p>
 ```
 
-GitHub markdown table:
-
-```md
-| | Messenger | |
-|--|--|--|
-| <img src="…" width="20" height="20" alt=""> | Telegram | |
-```
+Or HTML flex/grid strip (preview uses `.icon-row` / `.icon-item`). Avoid tall vertical markdown tables for Omni-tool lists.
 
 Shields / emoji flags from the current intro are **not** the Omni-tool canon — replace with these SVGs when promoting.
 
