@@ -35,6 +35,7 @@ File names = slug (see mapping below). Zoho Cliq uses `zoho.svg` (no Cliq-specif
 | Brands (removed later) | Simple Icons `@v11` | CC0-1.0 | `microsoftteams`, `azuredevops`, `csharp`, `amazonaws` (dropped from SI ≥ v13) |
 | Java, Python | [Devicon](https://github.com/devicons/devicon) `@2.16.0` `*-original.svg` | MIT | Multicolor: classic Java coffee cup, Python blue+yellow |
 | Groovy | Devicon `groovy-original` **star paths only** (wordmark stripped) | MIT | Full logo’s script is illegible at 20–24px; keep cyan star + outline |
+| GitHub Actions, Jenkins | Devicon `@2.16.0` `*-original.svg` | MIT | SI mono fill flattens workflow diagram / butler; use multicolor originals |
 | Email, Local, Loop | Custom SVG in this folder | same as repo (Apache-2.0) | SI `loop` is Frontiers Loop — **wrong** product; do not use |
 | Locales | [circle-flags](https://github.com/HatScripts/circle-flags) `@2.7.0` | MIT | Round flags; `cnt` → `tw` (zh-Hant) |
 
@@ -59,9 +60,9 @@ File names = slug (see mapping below). Zoho Cliq uses `zoho.svg` (no Cliq-specif
 | File | Label |
 |------|--------|
 | `local.svg` | local |
-| `githubactions.svg` | GitHub Actions |
+| `githubactions.svg` | GitHub Actions (Devicon original) |
 | `gitlab.svg` | GitLab CI |
-| `jenkins.svg` | Jenkins |
+| `jenkins.svg` | Jenkins (Devicon original — full-color butler) |
 | `teamcity.svg` | TeamCity |
 | `bamboo.svg` | Bamboo |
 | `circleci.svg` | CircleCI |
