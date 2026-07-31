@@ -2,6 +2,8 @@
 <html lang="ru">
 <head>
   <link rel="icon" type="image/svg+xml" href="vendor/design-system/assets/qa-guru-logo.svg" />
+  <link rel="manifest" href="manifest.webmanifest" />
+  <meta name="theme-color" content="#2c2a26" />
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>allure-notifications-builder</title>
@@ -138,6 +140,7 @@
                     <option value="ua">ua</option>
                     <option value="cn">cn</option>
                     <option value="cnt">cnt</option>
+                    <option value="morse">morse</option>
                   </select>
                 </label>
                 <label class="plaque-field plaque-field--divided plaque-field--stretch">
@@ -328,15 +331,11 @@
               <img
                 class="anb-tg__avatar"
                 src="vendor/design-system/assets/allure3-logo.svg"
-                width="28"
-                height="28"
-                alt=""
-                aria-hidden="true"
+                width="23"
+                height="23"
+                alt="Allure"
               >
-              <div>
-                <div class="anb-tg__bot-name" id="anb-tg-bot-name">Test Notifications Bot</div>
-                <div class="anb-tg__bot-sub">bot · channel</div>
-              </div>
+              <div class="anb-tg__bot-name" id="anb-tg-bot-name">Test Notifications Bot</div>
             </div>
             <div
               class="anb-preview-bar__exports"
@@ -350,14 +349,14 @@
                 data-anb-export="tg"
                 data-testid="anb-export-tg"
                 aria-haspopup="dialog"
-              >TG preview</button>
+              >Preview</button>
               <button
                 type="button"
                 class="anb-export-trigger"
                 data-anb-export="full"
                 data-testid="anb-export-full"
                 aria-haspopup="dialog"
-              >Full size</button>
+              >Full</button>
             </div>
           </div>
           <div class="panel__body anb-preview">
@@ -453,5 +452,10 @@
   <script type="module" src="vendor/design-system/js/plaque-number.js"></script>
   <script type="module" src="vendor/design-system/js/header.js"></script>
   <script type="module" src="js/app.js"></script>
+  <!-- PWA: design-system js/pwa-register.js (vendor pin) — autoUpdate reload -->
+  <script type="module">
+    import { registerServiceWorker } from './vendor/design-system/js/pwa-register.js';
+    registerServiceWorker({ immediate: true });
+  </script>
 </body>
 </html>

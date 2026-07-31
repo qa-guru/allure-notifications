@@ -17,11 +17,15 @@ on:
       - 'apps/builder/css/**'
       - 'apps/builder/js/**'
       - 'apps/builder/src/**'
+      - 'apps/builder/icons/**'
+      - 'apps/builder/manifest.webmanifest'
+      - 'apps/builder/sw.js'
       - 'apps/builder/tsconfig.json'
       - 'apps/builder/package.json'
       - 'apps/builder/vendor/**'
       - 'apps/builder/scripts/sync-config.mjs'
       - 'apps/builder/scripts/sync-pyramid.mjs'
+      - 'apps/builder/scripts/generate-sw.mjs'
       - 'packages/config/**'
       - 'packages/pyramid/**'
       - '.github/workflows/pages-builder.yml'
@@ -66,19 +70,21 @@ jobs:
 
       # Workspace package exports point at dist/; emit deps before builder tsc
       # (fresh CI has no dist — same reason as ci-6.0 "Build (packages + builder emit)").
-      - name: Build builder TS → js/ + sync @config/@pyramid vendor
+      - name: Build builder TS → js/ + sync @config/@pyramid vendor + PWA sw
         run: |
           pnpm --filter @allure-notifications/builder... run build
           pnpm --filter @allure-notifications/builder run sync-config
           pnpm --filter @allure-notifications/builder run sync-pyramid
+          pnpm --filter @allure-notifications/builder run generate-sw
 
-      - name: Assemble static site (index / css / js / vendor)
+      - name: Assemble static site (index / css / js / vendor / PWA)
         run: |
           set -euo pipefail
           rm -rf _site
           mkdir -p _site
           cp apps/builder/index.html _site/
-          cp -R apps/builder/css apps/builder/js apps/builder/vendor _site/
+          cp apps/builder/manifest.webmanifest apps/builder/sw.js _site/
+          cp -R apps/builder/css apps/builder/js apps/builder/vendor apps/builder/icons _site/
           # Current prod hostname on allure-notifications-builder Pages.
           # Domain switch in GitHub UI is manual (docs/pages-cutover.md).
           printf '%s\n' 'allure-notifications.qa.guru' > _site/CNAME

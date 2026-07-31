@@ -3,7 +3,7 @@
   "phase": 6,
   "vendor": {
     "source": "projects/design-system-home/design-system/",
-    "copied": "2026-07-29",
+    "copied": "2026-07-31",
     "policy": "copy-once pin; do not edit files under vendor/",
     "files": [
       {
@@ -125,6 +125,10 @@
       {
         "path": "js/plaque-number.js",
         "sha256_16": "0d4a82d1059cd7c5"
+      },
+      {
+        "path": "js/pwa-register.js",
+        "sha256_16": "103aceb2a135c622"
       },
       {
         "path": "js/theme-icons.js",

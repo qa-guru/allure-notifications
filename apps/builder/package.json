@@ -16,7 +16,8 @@
     "test:e2e": "PLAYWRIGHT_HEADLESS=1 playwright test",
     "test:headed": "PW_HEADED=1 playwright test --headed",
     "test:ui": "playwright test --ui",
-    "test:dogfood-jar": "python tests/dogfood_jar.py"
+    "test:dogfood-jar": "python tests/dogfood_jar.py",
+    "generate-sw": "node scripts/generate-sw.mjs"
   },
   "dependencies": {
     "@allure-notifications/config": "workspace:*",
