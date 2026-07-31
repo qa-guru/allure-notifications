@@ -6,15 +6,15 @@
   <title>iPad Pro 13″ landscape frame</title>
   <style>
     :root {
-      /* iPad Pro 13″ landscape — CSS px screen 1376×1032, thin bezel */
+      /* iPad Pro 13″ landscape — CSS px screen 1376×1032 */
       --screen-w: 1376px;
       --screen-h: 1032px;
-      --bezel: 18px;
-      --radius-outer: 36px;
-      --radius-screen: 12px;
-      --chassis: #2b2b2f;
-      --chassis-hi: #3a3a40;
-      --chassis-lo: #141416;
+      --bezel: 26px;
+      --radius-outer: 42px;
+      --radius-screen: 14px;
+      --chassis: #1f1f22;
+      --chassis-hi: #35353b;
+      --chassis-lo: #0e0e10;
     }
     * { box-sizing: border-box; }
     body {
@@ -22,8 +22,12 @@
       min-height: 100vh;
       display: grid;
       place-items: center;
-      background: #eceef1;
-      padding: 56px 40px;
+      background: #e6e8ec;
+      padding: 64px 56px;
+    }
+    .stage {
+      /* room for protruding side buttons in the screenshot crop */
+      padding: 8px 10px;
     }
     .device {
       position: relative;
@@ -32,38 +36,38 @@
       padding: var(--bezel);
       border-radius: var(--radius-outer);
       background:
-        linear-gradient(160deg, var(--chassis-hi) 0%, var(--chassis) 45%, var(--chassis-lo) 100%);
+        linear-gradient(155deg, var(--chassis-hi) 0%, var(--chassis) 48%, var(--chassis-lo) 100%);
       box-shadow:
-        inset 0 1px 0 rgba(255, 255, 255, 0.18),
-        inset 0 -1px 0 rgba(0, 0, 0, 0.55),
-        inset 1px 0 0 rgba(255, 255, 255, 0.06),
-        inset -1px 0 0 rgba(0, 0, 0, 0.35),
-        0 40px 80px rgba(0, 0, 0, 0.28),
-        0 12px 24px rgba(0, 0, 0, 0.16);
+        inset 0 1.5px 0 rgba(255, 255, 255, 0.22),
+        inset 0 -2px 0 rgba(0, 0, 0, 0.55),
+        inset 1px 0 0 rgba(255, 255, 255, 0.08),
+        inset -1px 0 0 rgba(0, 0, 0, 0.4),
+        0 36px 70px rgba(0, 0, 0, 0.3),
+        0 10px 22px rgba(0, 0, 0, 0.18);
     }
     /* Power button — landscape right edge */
     .btn-power {
       position: absolute;
-      right: -3px;
-      top: 120px;
-      width: 3px;
-      height: 72px;
-      border-radius: 2px 1px 1px 2px;
-      background: linear-gradient(180deg, #4a4a50, #1a1a1c);
-      box-shadow: -1px 0 0 rgba(0, 0, 0, 0.4);
+      right: -5px;
+      top: 150px;
+      width: 5px;
+      height: 88px;
+      border-radius: 2px;
+      background: linear-gradient(180deg, #5a5a62, #222226 40%, #111114);
+      box-shadow: -1px 0 0 rgba(0, 0, 0, 0.5), 1px 0 0 rgba(255, 255, 255, 0.05);
     }
     /* Volume buttons — landscape left edge */
     .btn-vol-up, .btn-vol-down {
       position: absolute;
-      left: -3px;
-      width: 3px;
-      height: 48px;
-      border-radius: 1px 2px 2px 1px;
-      background: linear-gradient(180deg, #4a4a50, #1a1a1c);
-      box-shadow: 1px 0 0 rgba(0, 0, 0, 0.4);
+      left: -5px;
+      width: 5px;
+      height: 56px;
+      border-radius: 2px;
+      background: linear-gradient(180deg, #5a5a62, #222226 40%, #111114);
+      box-shadow: 1px 0 0 rgba(0, 0, 0, 0.5), -1px 0 0 rgba(255, 255, 255, 0.05);
     }
-    .btn-vol-up { top: 140px; }
-    .btn-vol-down { top: 198px; }
+    .btn-vol-up { top: 160px; }
+    .btn-vol-down { top: 228px; }
     .screen {
       position: relative;
       width: var(--screen-w);
@@ -85,39 +89,41 @@
     /* Front camera — top long edge center (landscape) */
     .camera {
       position: absolute;
-      top: 5px;
+      top: 8px;
       left: 50%;
-      width: 9px;
-      height: 9px;
+      width: 11px;
+      height: 11px;
       transform: translateX(-50%);
       border-radius: 50%;
-      background: radial-gradient(circle at 30% 30%, #2c2c32 0%, #0b0b0d 65%, #000 100%);
-      box-shadow: 0 0 0 1.5px #0a0a0c, 0 0 0 2.5px #1f1f22;
+      background: radial-gradient(circle at 32% 30%, #3a3a44 0%, #121218 55%, #000 100%);
+      box-shadow: 0 0 0 2px #0a0a0c, 0 0 0 3.5px #26262c;
       z-index: 4;
     }
     .home-indicator {
       position: absolute;
       left: 50%;
-      bottom: 7px;
-      width: 160px;
+      bottom: 8px;
+      width: 180px;
       height: 5px;
       transform: translateX(-50%);
       border-radius: 999px;
-      background: rgba(255, 255, 255, 0.42);
+      background: rgba(255, 255, 255, 0.5);
       z-index: 4;
       pointer-events: none;
     }
   </style>
 </head>
 <body>
-  <div class="device" id="device">
-    <span class="btn-power" aria-hidden="true"></span>
-    <span class="btn-vol-up" aria-hidden="true"></span>
-    <span class="btn-vol-down" aria-hidden="true"></span>
-    <span class="camera" aria-hidden="true"></span>
-    <div class="screen">
-      <img src="readme_images/anb-ipad13pro-screen.png" alt="ANB on iPad Pro 13 landscape" />
-      <div class="home-indicator" aria-hidden="true"></div>
+  <div class="stage" id="device">
+    <div class="device">
+      <span class="btn-power" aria-hidden="true"></span>
+      <span class="btn-vol-up" aria-hidden="true"></span>
+      <span class="btn-vol-down" aria-hidden="true"></span>
+      <span class="camera" aria-hidden="true"></span>
+      <div class="screen">
+        <img src="readme_images/anb-ipad13pro-screen.png" alt="ANB on iPad Pro 13 landscape" />
+        <div class="home-indicator" aria-hidden="true"></div>
+      </div>
     </div>
   </div>
 </body>
