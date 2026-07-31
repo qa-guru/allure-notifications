@@ -2,6 +2,16 @@
 
 ## Unreleased
 
+### English
+
+- **README** — Omni-tool icon strips, ANB on iPad Pro 13 landscape frame, Telegram notification example, `proxy` in minimal `config.json`
+- **Chart** — free-grid / panels id is Allure 3 `currentStatus` only (drop `pie` alias); `chart.mode: pie` stays legacy
+
+### Russian
+
+- **README** — Omni-tool strips, ANB в рамке iPad Pro 13 landscape, пример Telegram-уведомления, блок `proxy` в минимальном `config.json`
+- **Chart** — free-grid / panels id — только Allure 3 `currentStatus` (без алиаса `pie`); `chart.mode: pie` остаётся legacy
+
 ## v 6.0.11
 
 ### English
@@ -17,10 +27,14 @@
 ### English
 
 - **Toolchain** — unified **Node 26** (CI, `.nvmrc`, `engines.node >=26`) and **TypeScript 7.0.2** pin across workspace; `@types/node` **26.1.2**
+- **Builder** — PWA baseline (manifest / service worker / icons); tighter preview-bar + Telegram header chrome
+- **Locale** — Morse (`morse`) phrases across TS schema, builder vendor, and Java resources
 
 ### Russian
 
 - **Toolchain** — единый **Node 26** (CI, `.nvmrc`, `engines.node >=26`) и pin **TypeScript 7.0.2** по workspace; `@types/node` **26.1.2**
+- **Builder** — PWA baseline (manifest / service worker / icons); компактнее preview-bar и Telegram header
+- **Locale** — Morse (`morse`) phrases в TS schema, builder vendor и Java resources
 
 ## v 6.0.9
 
@@ -171,7 +185,7 @@
 
 - **`chart.cardGap`** — configurable inter-card gap (default **14**, former hard-coded `CARD_GAP`); `CollageRenderer` resolves via `resolveCardGap` alongside existing `headerHeight`
 - **`testResultSeverities` panel** — horizontal severity bars from `allure-results` severity labels (awesome-charts catalog #3); aliases `severities` / `severity`
-- Free-grid status panel type is Allure 3 `currentStatus` (no `pie` alias)
+- **Alias** `pie` ↔ `currentStatus` unchanged for free-grid `items`
 - **Skipped (no analytics/history series yet):** `statusTransitions`, `testBaseGrowthDynamics`, `coverageDiff`, `problemsDistribution`, `stabilityDistribution`, `durationDynamics`, `statusAgePyramid` — deferred until data model exists
 - Dogfood: `config/config.preview-cb870-cardgap.json` (+ wide gap spot-check)
 - CB-870 free `items` shape unchanged
@@ -180,7 +194,7 @@
 
 - **`chart.cardGap`** — настраиваемый зазор между карточками (по умолчанию **14**, бывший `CARD_GAP`); `CollageRenderer` читает через `resolveCardGap` вместе с `headerHeight`
 - **Панель `testResultSeverities`** — горизонтальные бары severity из labels `allure-results`
-- Тип статус-панели — Allure 3 `currentStatus` (без алиаса `pie`); форма CB-870 `items` без изменений
+- Алиас `pie` ↔ `currentStatus` сохранён; форма CB-870 `items` без изменений
 - Остальные типы каталога 17 без данных — stub/skip до появления analytics/history
 
 ## v 5.0.0
