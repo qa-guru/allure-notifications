@@ -67,3 +67,6 @@ config/ci-telegram.runtime.json
 
 # Local README collage picks (stand preview only)
 docs/preview/readme-picks/
+
+docs/preview/readme_images
+docs/preview/notification-example.png

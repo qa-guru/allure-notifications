@@ -8,7 +8,7 @@ Collage PNG + текст со статистикой и ссылками. Соб
 
 ## Пример уведомления
 
-<img width="488" alt="Пример уведомления Telegram: collage + статистика + ссылки" src="docs/notification-example.png">
+![Пример уведомления Telegram: collage + статистика + ссылки](docs/notification-example.png)
 
 | Зона | Что внутри |
 |------|------------|
@@ -24,35 +24,31 @@ Collage PNG + текст со статистикой и ссылками. Соб
 
 Нет вашего канала? [Issue](https://github.com/qa-guru/allure-notifications/issues/new) или [PR](https://github.com/qa-guru/allure-notifications/compare).
 
-<p>
-  <img src="docs/preview/icons/messengers/telegram.svg" width="20" height="20" alt=""> Telegram
-  · <img src="docs/preview/icons/messengers/slack.svg" width="20" height="20" alt=""> Slack
-  · <img src="docs/preview/icons/messengers/email.svg" width="20" height="20" alt=""> Email
-  · <img src="docs/preview/icons/messengers/mattermost.svg" width="20" height="20" alt=""> Mattermost
-  · <img src="docs/preview/icons/messengers/discord.svg" width="20" height="20" alt=""> Discord
-  · <img src="docs/preview/icons/messengers/loop.svg" width="20" height="20" alt=""> Loop
-  · <img src="docs/preview/icons/messengers/rocketdotchat.svg" width="20" height="20" alt=""> Rocket.Chat
-  · <img src="docs/preview/icons/messengers/zoho.svg" width="20" height="20" alt=""> Zoho Cliq
-  · <img src="docs/preview/icons/messengers/microsoftteams.svg" width="20" height="20" alt=""> Microsoft Teams
-</p>
+![Telegram](readme_images/icons/messengers/telegram.png) Telegram
+· ![Slack](readme_images/icons/messengers/slack.png) Slack
+· ![Email](readme_images/icons/messengers/email.png) Email
+· ![Mattermost](readme_images/icons/messengers/mattermost.png) Mattermost
+· ![Discord](readme_images/icons/messengers/discord.png) Discord
+· ![Loop](readme_images/icons/messengers/loop.png) Loop
+· ![Rocket.Chat](readme_images/icons/messengers/rocketdotchat.png) Rocket.Chat
+· ![Zoho Cliq](readme_images/icons/messengers/zoho.png) Zoho Cliq
+· ![Microsoft Teams](readme_images/icons/messengers/microsoftteams.png) Microsoft Teams
 
 ### 2. Any CI
 
 Работает везде, где есть Allure results — от ноутбука до hosted CI.
 
-<p>
-  <img src="docs/preview/icons/ci/local.svg" width="20" height="20" alt=""> local
-  · <img src="docs/preview/icons/ci/githubactions.svg" width="20" height="20" alt=""> GitHub Actions
-  · <img src="docs/preview/icons/ci/gitlab.svg" width="20" height="20" alt=""> GitLab CI
-  · <img src="docs/preview/icons/ci/amazonaws.svg" width="20" height="20" alt=""> AWS CI
-  · <img src="docs/preview/icons/ci/azuredevops.svg" width="20" height="20" alt=""> Azure DevOps
-  · <img src="docs/preview/icons/ci/jenkins.svg" width="20" height="20" alt=""> Jenkins
-  · <img src="docs/preview/icons/ci/bamboo.svg" width="20" height="20" alt=""> Bamboo
-  · <img src="docs/preview/icons/ci/bitbucket.svg" width="20" height="20" alt=""> Bitbucket Pipelines
-  · <img src="docs/preview/icons/ci/teamcity.svg" width="20" height="20" alt=""> TeamCity
-  · <img src="docs/preview/icons/ci/circleci.svg" width="20" height="20" alt=""> CircleCI
-  · <img src="docs/preview/icons/ci/buildkite.svg" width="20" height="20" alt=""> Buildkite
-</p>
+![local](readme_images/icons/ci/local.png) local
+· ![GitHub Actions](readme_images/icons/ci/githubactions.png) GitHub Actions
+· ![GitLab CI](readme_images/icons/ci/gitlab.png) GitLab CI
+· ![AWS CI](readme_images/icons/ci/amazonaws.png) AWS CI
+· ![Azure DevOps](readme_images/icons/ci/azuredevops.png) Azure DevOps
+· ![Jenkins](readme_images/icons/ci/jenkins.png) Jenkins
+· ![Bamboo](readme_images/icons/ci/bamboo.png) Bamboo
+· ![Bitbucket Pipelines](readme_images/icons/ci/bitbucket.png) Bitbucket Pipelines
+· ![TeamCity](readme_images/icons/ci/teamcity.png) TeamCity
+· ![CircleCI](readme_images/icons/ci/circleci.png) CircleCI
+· ![Buildkite](readme_images/icons/ci/buildkite.png) Buildkite
 
 …и любой другой runner, который может выполнить CLI.
 
@@ -60,36 +56,32 @@ Collage PNG + текст со статистикой и ссылками. Соб
 
 Адаптеры фреймворков → [список на allurereport.org](https://allurereport.org/docs/frameworks/).
 
-<p>
-  <img src="docs/preview/icons/languages/java.svg" width="20" height="20" alt=""> Java
-  · <img src="docs/preview/icons/languages/kotlin.svg" width="20" height="20" alt=""> Kotlin
-  · <img src="docs/preview/icons/languages/groovy.svg" width="20" height="20" alt=""> Groovy
-  · <img src="docs/preview/icons/languages/javascript.svg" width="20" height="20" alt=""> JavaScript
-  · <img src="docs/preview/icons/languages/typescript.svg" width="20" height="20" alt=""> TypeScript
-  · <img src="docs/preview/icons/languages/python.svg" width="20" height="20" alt=""> Python
-  · <img src="docs/preview/icons/languages/csharp.svg" width="20" height="20" alt=""> C#
-  · <img src="docs/preview/icons/languages/php.svg" width="20" height="20" alt=""> PHP
-  · <img src="docs/preview/icons/languages/ruby.svg" width="20" height="20" alt=""> Ruby
-  · <img src="docs/preview/icons/languages/go.svg" width="20" height="20" alt=""> Go
-  · <img src="docs/preview/icons/languages/rust.svg" width="20" height="20" alt=""> Rust
-  · <img src="docs/preview/icons/languages/dart.svg" width="20" height="20" alt=""> Dart
-</p>
+![Java](readme_images/icons/languages/java.png) Java
+· ![Kotlin](readme_images/icons/languages/kotlin.png) Kotlin
+· ![Groovy](readme_images/icons/languages/groovy.png) Groovy
+· ![JavaScript](readme_images/icons/languages/javascript.png) JavaScript
+· ![TypeScript](readme_images/icons/languages/typescript.png) TypeScript
+· ![Python](readme_images/icons/languages/python.png) Python
+· ![C#](readme_images/icons/languages/csharp.png) C#
+· ![PHP](readme_images/icons/languages/php.png) PHP
+· ![Ruby](readme_images/icons/languages/ruby.png) Ruby
+· ![Go](readme_images/icons/languages/go.png) Go
+· ![Rust](readme_images/icons/languages/rust.png) Rust
+· ![Dart](readme_images/icons/languages/dart.png) Dart
 
 ### 4. Notification locales
 
 Нет вашей локали? [Issue](https://github.com/qa-guru/allure-notifications/issues/new) или [PR](https://github.com/qa-guru/allure-notifications/compare).
 
-<p>
-  <img src="docs/preview/icons/locales/en.svg" width="20" height="20" alt=""> <code>en</code>
-  · <img src="docs/preview/icons/locales/de.svg" width="20" height="20" alt=""> <code>de</code>
-  · <img src="docs/preview/icons/locales/fr.svg" width="20" height="20" alt=""> <code>fr</code>
-  · <img src="docs/preview/icons/locales/ru.svg" width="20" height="20" alt=""> <code>ru</code>
-  · <img src="docs/preview/icons/locales/by.svg" width="20" height="20" alt=""> <code>by</code>
-  · <img src="docs/preview/icons/locales/ua.svg" width="20" height="20" alt=""> <code>ua</code>
-  · <img src="docs/preview/icons/locales/cn.svg" width="20" height="20" alt=""> <code>cn</code>
-  · <img src="docs/preview/icons/locales/cnt.svg" width="20" height="20" alt=""> <code>cnt</code>
-  · <img src="docs/preview/icons/locales/morse.svg" width="20" height="20" alt=""> <code>morse</code>
-</p>
+![en](readme_images/icons/locales/en.png) `en`
+· ![de](readme_images/icons/locales/de.png) `de`
+· ![fr](readme_images/icons/locales/fr.png) `fr`
+· ![ru](readme_images/icons/locales/ru.png) `ru`
+· ![by](readme_images/icons/locales/by.png) `by`
+· ![ua](readme_images/icons/locales/ua.png) `ua`
+· ![cn](readme_images/icons/locales/cn.png) `cn`
+· ![cnt](readme_images/icons/locales/cnt.png) `cnt`
+· ![morse](readme_images/icons/locales/morse.png) `morse`
 
 ## Содержание
 
@@ -151,11 +143,11 @@ Web UI: полный `config.json` (`base` · `chart` · `links` · messengers) 
 | **Исходники** | [`apps/builder/`](apps/builder/) |
 | **Canon** | [`apps/builder/CANON.md`](apps/builder/CANON.md) |
 
-<img width="900" alt="Allure Notifications Builder — desktop" src="readme_images/anb-desktop.png">
+![Allure Notifications Builder — desktop](readme_images/anb-desktop.png)
 
 Установите как **PWA** (Add to Home Screen / Install) — offline shell и standalone-режим. На iPad Pro 13″:
 
-<img width="420" alt="Allure Notifications Builder — iPad Pro 13" src="readme_images/anb-ipad13pro.png">
+![Allure Notifications Builder — iPad Pro 13](readme_images/anb-ipad13pro.png)
 
 ### Canvas presets
 
