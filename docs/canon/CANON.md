@@ -1,9 +1,25 @@
 # allure-notifications collage canon (locked)
 
-**Jar pin:** [`../VERSION`](../VERSION) → **5.0.3**  
-**Release:** [v5.0.3](https://github.com/qa-guru/allure-notifications/releases/tag/v5.0.3)
+**Product pin:** monorepo `docs/allure-notifications/VERSION` → **6.0.11** (`npx allure-notifications`)  
+**Classic visual lock:** [v5.0.3](https://github.com/qa-guru/allure-notifications/releases/tag/v5.0.3) 3-tile PNG (pixel gate)
 
-## Visual lock (Telegram CB-870 free post)
+## Showcase lock (Telegram CB-870 readme-hero / dogfood-full)
+
+Asset: [`collage-cb870-readme-hero-dogfood.png`](./collage-cb870-readme-hero-dogfood.png)  
+Config SSOT: [`config/config.dogfood-telegram-full.json`](../../config/config.dogfood-telegram-full.json)  
+Aliases: `config.preview-cb870-readme-hero.json` · `config.preview-cb870-compact-hero.json` · `config/chart-telegram-cb870-readme-hero.png`
+
+| Rule | Value |
+|------|--------|
+| Layout | `chart.layout: "free"` · **7 tiles** on 10×10 |
+| Canvas | **870×1080** · `headerHeight` 56 · `cardGap` 14 · `tilePad` 6 |
+| Theme | `base.darkMode: true` |
+| History | `packages/core/test/fixtures/history-dogfood-full.jsonl` |
+| Items | pie 5×4 · statusDynamics 5×4 · pyramid 4×3 · durations-by-layer 6×3 · successRate 3×3 · durationDynamics 4×3 · statusTransitions 3×3 |
+
+Builder `DEFAULT_ITEMS` (4-tile) stays separate — this is the **Telegram / README showcase**.
+
+## Visual lock (Telegram CB-870 free post · classic 3-tile)
 
 Asset: [`collage-cb870-free-dogfood-5.0.3.png`](./collage-cb870-free-dogfood-5.0.3.png)  
 Alias: [`collage-cb870-free-dogfood.png`](./collage-cb870-free-dogfood.png)
@@ -31,4 +47,5 @@ Alias: [`collage-cb870-free-dogfood.png`](./collage-cb870-free-dogfood.png)
 
 1. Do **not** reintroduce a separate “accessible” green for `unit` that drifts from pie success.
 2. Do **not** ship consumer configs without `base.darkMode: true` for Monitoring dogfood.
-3. Pin consumers to `docs/allure-notifications/VERSION` (currently 5.0.3).
+3. Pin consumers to monorepo `docs/allure-notifications/VERSION` (**6.0.11** CLI). Legacy jar: **5.0.8**.
+4. Do **not** swap dogfood-full / README hero footer back to `testResultSeverities` + wide `successRate`.

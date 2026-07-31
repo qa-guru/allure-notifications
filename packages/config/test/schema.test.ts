@@ -155,6 +155,15 @@ describe("@allure-notifications/config schema vs repo fixtures", () => {
     assert.equal(result.success, true, result.success ? "" : JSON.stringify(result.error.format()));
   });
 
+  it("validates config.dogfood-telegram-full.json (readme-hero 7-tile)", () => {
+    const data = loadJson("config.dogfood-telegram-full.json") as {
+      base: { chart: { items: unknown[] } };
+    };
+    const result = safeParseConfig(data);
+    assert.equal(result.success, true, result.success ? "" : JSON.stringify(result.error.format()));
+    assert.equal(data.base.chart.items.length, 7);
+  });
+
   it("validates config-5.0-collage.example.json (legacy panels flat array)", () => {
     const data = loadJson("config-5.0-collage.example.json");
     const result = safeParseConfig(data);

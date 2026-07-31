@@ -64,3 +64,6 @@ config/ci-telegram.runtime.json
 
 # Sonar local scanner workdir
 .scannerwork/
+
+# Local README collage picks (stand preview only)
+docs/preview/readme-picks/

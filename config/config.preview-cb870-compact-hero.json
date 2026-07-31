@@ -1,10 +1,10 @@
 {
   "base": {
-    "project": "reference-app",
-    "environment": "ci / compact",
-    "comment": "cb870-compact-hero · pie 5×5 hero · dynamics · pyramid|durations · successRate footer",
-    "allureFolder": "/Users/stanislav/zero-design-system/projects/allure-notifications-home/allure-notifications/build/pyramid-showcase/allure-report",
-    "allureResultsFolder": "/Users/stanislav/zero-design-system/projects/allure-notifications-home/allure-notifications/build/pyramid-showcase/allure-results",
+    "project": "allure-notifications",
+    "environment": "ci / compact-hero",
+    "comment": "cb870-compact-hero = readme-hero canon · pie|dynamics · pyramid|durations · successRate|durationDynamics|statusTransitions",
+    "allureFolder": "../packages/core/test/fixtures/dogfood-report",
+    "allureResultsFolder": "../packages/core/test/fixtures/dogfood-results",
     "enableChart": true,
     "darkMode": true,
     "enableSuitesPublishing": false,
@@ -19,43 +19,15 @@
       "tilePad": 6,
       "gridCols": 10,
       "gridRows": 10,
+      "historyPath": "../packages/core/test/fixtures/history-dogfood-full.jsonl",
       "items": [
-        {
-          "type": "pie",
-          "x": 0,
-          "y": 0,
-          "w": 5,
-          "h": 5
-        },
-        {
-          "type": "statusDynamics",
-          "x": 5,
-          "y": 0,
-          "w": 5,
-          "h": 5
-        },
-        {
-          "type": "testingPyramid",
-          "x": 0,
-          "y": 5,
-          "w": 4,
-          "h": 3
-        },
-        {
-          "type": "durations",
-          "x": 4,
-          "y": 5,
-          "w": 6,
-          "h": 3,
-          "groupBy": "layer"
-        },
-        {
-          "type": "successRateDistribution",
-          "x": 0,
-          "y": 8,
-          "w": 10,
-          "h": 2
-        }
+        { "type": "pie", "x": 0, "y": 0, "w": 5, "h": 4 },
+        { "type": "statusDynamics", "x": 5, "y": 0, "w": 5, "h": 4 },
+        { "type": "testingPyramid", "x": 0, "y": 4, "w": 4, "h": 3 },
+        { "type": "durations", "x": 4, "y": 4, "w": 6, "h": 3, "groupBy": "layer" },
+        { "type": "successRateDistribution", "x": 0, "y": 7, "w": 3, "h": 3 },
+        { "type": "durationDynamics", "x": 3, "y": 7, "w": 4, "h": 3 },
+        { "type": "statusTransitions", "x": 7, "y": 7, "w": 3, "h": 3 }
       ],
       "pyramidFallback": "suites"
     },
