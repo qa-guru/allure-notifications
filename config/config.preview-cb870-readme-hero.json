@@ -2,7 +2,7 @@
   "base": {
     "project": "allure-notifications",
     "environment": "CI / readme",
-    "comment": "cb870-readme-hero canon · alias of dogfood-telegram-full layout",
+    "comment": "Release smoke · master",
     "language": "ru",
     "allureFolder": "../packages/core/test/fixtures/dogfood-report",
     "allureResultsFolder": "../packages/core/test/fixtures/dogfood-results",

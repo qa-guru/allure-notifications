@@ -19,6 +19,9 @@ Aliases: `config.preview-cb870-readme-hero.json` · `config.preview-cb870-compac
 
 Builder `DEFAULT_ITEMS` (4-tile) stays separate — this is the **Telegram / README showcase**.
 
+**Caption (real report):** HTML text under the collage — environment · comment · duration · statistic counters · `base.links` (`report` / `dashboard` / `testops` / `build`).  
+Preview bubble: [`docs/preview/notification-example.html`](../preview/notification-example.html) · asset [`docs/notification-example.png`](../notification-example.png).
+
 ## Visual lock (Telegram CB-870 free post · classic 3-tile)
 
 Asset: [`collage-cb870-free-dogfood-5.0.3.png`](./collage-cb870-free-dogfood-5.0.3.png)  

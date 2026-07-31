@@ -2,7 +2,7 @@
   "base": {
     "project": "allure-notifications",
     "environment": "CI / dogfood",
-    "comment": "Q4 · dogfood-full CB-870 7-tile (readme-hero canon)",
+    "comment": "Release smoke · master",
     "language": "ru",
     "allureFolder": "../packages/core/test/fixtures/dogfood-report",
     "allureResultsFolder": "../packages/core/test/fixtures/dogfood-results",

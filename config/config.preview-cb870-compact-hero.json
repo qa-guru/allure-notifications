@@ -2,7 +2,7 @@
   "base": {
     "project": "allure-notifications",
     "environment": "ci / compact-hero",
-    "comment": "cb870-compact-hero = readme-hero canon · pie|dynamics · pyramid|durations · successRate|durationDynamics|statusTransitions",
+    "comment": "Release smoke · master",
     "allureFolder": "../packages/core/test/fixtures/dogfood-report",
     "allureResultsFolder": "../packages/core/test/fixtures/dogfood-results",
     "enableChart": true,

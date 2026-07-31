@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>README draft — notification example</title>
+  <style>
+    :root {
+      --bg: #0e1621;
+      --bubble: #182533;
+      --text: #e4eaf0;
+      --muted: #7f8b99;
+      --link: #6ab3f3;
+      --banner-bg: #fff8c5;
+      --banner-border: #d4a72c66;
+      --banner-text: #656d76;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font: 15px/1.45 -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans", Helvetica, Arial, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+    }
+    .banner {
+      padding: 10px 16px;
+      background: var(--banner-bg);
+      border-bottom: 1px solid var(--banner-border);
+      color: var(--banner-text);
+      font-size: 13px;
+    }
+    .banner strong { color: #1f2328; }
+    .banner a { color: #0969da; }
+    .stage {
+      max-width: 520px;
+      margin: 0 auto;
+      padding: 28px 16px 48px;
+    }
+    .meta {
+      color: var(--muted);
+      font-size: 13px;
+      margin: 0 0 12px;
+    }
+    .bubble {
+      background: var(--bubble);
+      border-radius: 14px 14px 14px 4px;
+      overflow: hidden;
+      box-shadow: 0 8px 28px rgba(0, 0, 0, 0.35);
+    }
+    .bubble .photo {
+      display: block;
+      width: 100%;
+      height: auto;
+      background: #111;
+    }
+    .caption {
+      padding: 12px 14px 10px;
+      white-space: pre-wrap;
+      word-break: break-word;
+    }
+    .caption b { font-weight: 650; }
+    .caption a {
+      color: var(--link);
+      text-decoration: none;
+    }
+    .caption a:hover { text-decoration: underline; }
+    .foot {
+      display: flex;
+      justify-content: flex-end;
+      gap: 8px;
+      padding: 0 14px 10px;
+      color: var(--muted);
+      font-size: 12px;
+    }
+    .labels {
+      margin-top: 18px;
+      border-collapse: collapse;
+      width: 100%;
+      font-size: 13px;
+      color: var(--text);
+    }
+    .labels th, .labels td {
+      border-top: 1px solid #243447;
+      padding: 8px 6px;
+      text-align: left;
+      vertical-align: top;
+    }
+    .labels th { color: var(--muted); font-weight: 600; width: 38%; }
+    body.shot {
+      background: #6e7f91;
+    }
+    body.shot .banner,
+    body.shot .meta,
+    body.shot .labels { display: none; }
+    body.shot .stage { padding: 24px 16px 32px; }
+  </style>
+</head>
+<body>
+  <script>if (new URLSearchParams(location.search).has("shot")) document.documentElement.classList.add("shot-pending");</script>
+  <div class="banner">
+    <strong>Preview only</strong> — collage + caption as in Telegram <code>sendPhoto</code>.
+    Source: <a href="../canon/CANON.md">canon readme-hero</a> ·
+    <a href="../../config/config.dogfood-telegram-full.json">dogfood-full</a>
+  </div>
+  <div class="stage">
+    <p class="meta">allure-notifications · dogfood · CB-870 7-tile</p>
+    <article class="bubble" aria-label="Telegram notification example">
+      <img
+        class="photo"
+        src="readme-picks/chart-telegram-cb870-readme-hero.png"
+        width="870"
+        height="1080"
+        alt="Collage CB-870 readme-hero"
+      />
+      <div class="caption" id="caption"><b>Результаты:</b>
+<b>Рабочее окружение: </b>CI / dogfood
+<b>Комментарий: </b>Release smoke · master
+<b>Продолжительность: </b>00:00:59.840
+<b>Всего сценариев: </b>34
+<b>Всего успешных тестов: </b>30 (88.2 %)
+<b>Всего упавших тестов: </b>2 (5.9 %)
+<b>Всего сломанных тестов: </b>1
+<b>Всего пропущенных тестов: </b>1
+<b>Отчёт:</b> <a href="https://allure.qa.guru/project/5297">https://allure.qa.guru/project/5297</a>
+<b>Дашборд:</b> <a href="https://sonar.qa.guru/dashboard?id=allure-notifications">https://sonar.qa.guru/dashboard?id=allure-notifications</a>
+<b>TestOps:</b> <a href="https://allure.qa.guru/project/5297">https://allure.qa.guru/project/5297</a>
+<b>Сборка:</b> <a href="https://github.com/qa-guru/allure-notifications/actions/runs/30258259618">https://github.com/qa-guru/allure-notifications/actions/runs/30258259618</a></div>
+      <div class="foot"><span>18:00</span></div>
+    </article>
+
+    <table class="labels">
+      <caption style="caption-side:top;text-align:left;color:var(--muted);padding:0 0 8px;font-size:13px">Подписи для README</caption>
+      <tr><th>Collage</th><td>7 панелей: pie · status dynamics · pyramid · durations · success rate · duration dynamics · status transitions</td></tr>
+      <tr><th>Текст</th><td>окружение, комментарий, duration, счётчики passed/failed/broken/skipped</td></tr>
+      <tr><th>Ссылки</th><td><code>report</code> · <code>dashboard</code> · <code>testops</code> · <code>build</code> из <code>base.links</code></td></tr>
+    </table>
+  </div>
+  <script type="module">
+    if (new URLSearchParams(location.search).has("shot")) {
+      document.body.classList.add("shot");
+    }
+    // Prefer live caption dump when present (regenerated by scripts / agent).
+    try {
+      const res = await fetch("readme-picks/dogfood-caption.html");
+      if (res.ok) {
+        const html = await res.text();
+        if (html.trim()) document.getElementById("caption").innerHTML = html;
+      }
+    } catch { /* static fallback above */ }
+  </script>
+</body>
+</html>
