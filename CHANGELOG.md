@@ -2,6 +2,16 @@
 
 ## Unreleased
 
+## v 6.0.11
+
+### English
+
+- **Coverage** — `resolvePhraseLanguage` unit tests (`packages/config/test/phrases.test.ts`); builder e2e covers palette `dragend` non-Element target (100% branch gate on Node 26)
+
+### Russian
+
+- **Coverage** — unit-тесты `resolvePhraseLanguage` (`packages/config/test/phrases.test.ts`); builder e2e закрывает `dragend` с non-Element target (100% branch gate на Node 26)
+
 ## v 6.0.10
 
 ### English

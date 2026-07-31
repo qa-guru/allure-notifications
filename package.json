@@ -1,6 +1,6 @@
 {
   "name": "@allure-notifications/monorepo",
-  "version": "6.0.10",
+  "version": "6.0.11",
   "private": true,
   "description": "Allure report \u2192 messenger notifications. 6.0.* = TypeScript monorepo (CLI + builder). 5.0.* = Java jar under legacy/java (freeze 5.0.8); there is no 5.1 line.",
   "packageManager": "pnpm@9.15.0",

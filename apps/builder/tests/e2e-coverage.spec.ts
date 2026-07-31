@@ -163,9 +163,11 @@ test.describe('formats', () => {
       if (palette) {
         palette.dispatchEvent(new MouseEvent('click', { bubbles: true }));
         palette.dispatchEvent(new DragEvent('dragstart', { bubbles: true }));
+        palette.dispatchEvent(new DragEvent('dragend', { bubbles: true }));
         const pbtn = palette.querySelector('[data-anb-panel-id]');
         if (pbtn) {
           pbtn.dispatchEvent(new DragEvent('dragstart', { bubbles: true }));
+          pbtn.dispatchEvent(new DragEvent('dragend', { bubbles: true }));
         }
       }
 
@@ -1042,6 +1044,7 @@ test.describe('negative', () => {
         pal.appendChild(t);
         t.dispatchEvent(new MouseEvent('click', { bubbles: true }));
         t.dispatchEvent(new DragEvent('dragstart', { bubbles: true }));
+        t.dispatchEvent(new DragEvent('dragend', { bubbles: true }));
         t.remove();
         const emptyId = document.createElement('button');
         emptyId.setAttribute('data-anb-panel-id', '');
@@ -1051,6 +1054,7 @@ test.describe('negative', () => {
         emptyId.dispatchEvent(
           new DragEvent('dragstart', { bubbles: true, dataTransfer: dtEmpty }),
         );
+        emptyId.dispatchEvent(new DragEvent('dragend', { bubbles: true }));
         emptyId.remove();
       }
 
