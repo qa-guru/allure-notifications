@@ -135,7 +135,7 @@ Minimal **6.0** example — collage + free layout + one messenger:
 | `project`, `environment`, `comment` | Shown in notification text |
 | `links` | `report`, `dashboard`, `testops`, `build` — only non-empty links appear |
 | `reportLink` | **Deprecated** — use `links.report` (still accepted as fallback) |
-| `language` | `en` / `fr` / `ru` / `ua` / `by` / `cn` / `cnt` |
+| `language` | `en` / `de` / `fr` / `ru` / `ua` / `by` / `cn` / `cnt` / `morse` |
 | `allureFolder` | Generated Allure report directory |
 | `allureResultsFolder` | Raw `allure-results` (needed for collage analytics) |
 | `enableChart` | Attach collage / chart image |

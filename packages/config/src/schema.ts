@@ -5,7 +5,17 @@
 
 import { z } from "zod";
 
-const LanguageSchema = z.enum(["en", "de", "fr", "ru", "by", "ua", "cn", "cnt"]);
+const LanguageSchema = z.enum([
+  "en",
+  "de",
+  "fr",
+  "ru",
+  "by",
+  "ua",
+  "cn",
+  "cnt",
+  "morse",
+]);
 
 const LinksSchema = z
   .object({

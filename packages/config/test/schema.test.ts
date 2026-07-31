@@ -211,4 +211,14 @@ describe("@allure-notifications/config schema vs repo fixtures", () => {
       assert.equal(result.data.base.language, "de");
     }
   });
+
+  it('accepts base.language "morse"', () => {
+    const result = safeParseConfig({
+      base: { language: "morse", chart: { layout: "free", width: 870, height: 1080, items: [{ type: "pie", x: 0, y: 0, w: 2, h: 2 }] } },
+    });
+    assert.equal(result.success, true, result.success ? "" : JSON.stringify(result.error.format()));
+    if (result.success) {
+      assert.equal(result.data.base.language, "morse");
+    }
+  });
 });

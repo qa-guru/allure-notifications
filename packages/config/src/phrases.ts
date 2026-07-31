@@ -199,6 +199,26 @@ export const PHRASES = Object.freeze({
       totalSkipped: "跳過總數",
     },
   },
+  morse: {
+    results: ".-. . ... ..- .-.. - ...",
+    environment: ". -. ...- .. .-. --- -. -- . -. -",
+    comment: "-.-. --- -- -- . -. -",
+    links: {
+      report: ".-. . .--. --- .-. -",
+      dashboard: "-.. .- ... .... -... --- .- .-. -..",
+      testops: "- . ... - --- .--. ...",
+      build: "-... ..- .. .-.. -..",
+    },
+    scenario: {
+      duration: "-.. ..- .-. .- - .. --- -.",
+      totalScenarios: "- --- - .- .-.. / ... -.-. . -. .- .-. .. --- ...",
+      totalPassed: "- --- - .- .-.. / .--. .- ... ... . -..",
+      totalFailed: "- --- - .- .-.. / ..-. .- .. .-.. . -..",
+      totalBroken: "- --- - .- .-.. / -... .-. --- -.- . -.",
+      totalUnknown: "- --- - .- .-.. / ..- -. -.- -. --- .-- -.",
+      totalSkipped: "- --- - .- .-.. / ... -.- .. .--. .--. . -..",
+    },
+  },
 } satisfies Record<string, PhrasePack>);
 
 export type PhraseLanguage = keyof typeof PHRASES;

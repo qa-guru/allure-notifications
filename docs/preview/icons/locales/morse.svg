@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512" aria-label="Morse code">
+  <mask id="a"><circle cx="256" cy="256" r="256" fill="#fff"/></mask>
+  <g mask="url(#a)">
+    <rect width="512" height="512" fill="#1a1a2e"/>
+    <circle cx="148" cy="256" r="28" fill="#f0c040"/>
+    <rect x="208" y="228" width="96" height="56" rx="10" fill="#f0c040"/>
+    <circle cx="364" cy="256" r="28" fill="#f0c040"/>
+  </g>
+</svg>

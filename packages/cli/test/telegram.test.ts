@@ -243,6 +243,45 @@ describe("@allure-notifications/cli telegram caption + sendPhoto", () => {
     assert.doesNotMatch(caption, /SECRET/);
   });
 
+  it("caption includes morse phrases", () => {
+    const caption = buildTelegramCaption(
+      {
+        base: {
+          project: "allure-notifications",
+          language: "morse",
+          environment: "ci",
+          comment: "SOS",
+        },
+        telegram: { token: "SECRET" },
+      },
+      {
+        statistic: {
+          passed: 2,
+          failed: 1,
+          broken: 0,
+          skipped: 0,
+          unknown: 0,
+          total: 3,
+        },
+        durationMs: 5000,
+        layers: {},
+        suites: [],
+        durationsMs: [],
+        durationsMsByLayer: {},
+        severities: {},
+        hasLayerLabels: false,
+        hasKnownLayerLabels: false,
+        resultCount: 3,
+        history: null,
+        stabilityCases: [],
+      },
+    );
+    assert.ok(caption.includes(".-. . ... ..- .-.. - ...:"));
+    assert.ok(caption.includes("- --- - .- .-.. / .--. .- ... ... . -..:"));
+    assert.doesNotMatch(caption, /Results:/);
+    assert.doesNotMatch(caption, /SECRET/);
+  });
+
   it("sendTelegramPhoto posts multipart and returns message id (mocked fetch)", async () => {
     const calls: { url: string; method?: string; form?: FormData }[] = [];
     const fetchImpl: typeof fetch = async (input, init) => {
