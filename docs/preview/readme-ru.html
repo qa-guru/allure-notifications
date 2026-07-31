@@ -14,7 +14,7 @@ pre code{background:transparent;padding:0;font-size:inherit;line-height:inherit}
 h1,h2{border-bottom:1px solid #d0d7de;padding-bottom:6px}
 h2{margin-top:28px}
 </style></head><body>
-<div class="banner"><strong>Preview</strong> — актуальный README.ru.md (компактные code blocks)</div>
+<div class="banner"><strong>Preview</strong> — актуальный README.ru.md (config + proxy)</div>
 <div class="wrap">
 <p><a href="README.md"><img src="https://img.shields.io/badge/lang-en-white.svg" alt="en" width="20" height="20" style="vertical-align:middle"></a> <a href="#"><img src="https://img.shields.io/badge/lang-ru-blue.svg" alt="ru" width="20" height="20" style="vertical-align:middle"></a> <a href="README.fr.md"><img src="https://img.shields.io/badge/lang-fr-white.svg" alt="fr" width="20" height="20" style="vertical-align:middle"></a></p>
 <h1>Allure notifications</h1>
@@ -188,10 +188,17 @@ npx allure-notifications@6.0.11 send --config config.json --live
     &quot;chat&quot;: &quot;${TELEGRAM_CHAT_ID}&quot;,
     &quot;topic&quot;: &quot;&quot;,
     &quot;templatePath&quot;: &quot;/templates/telegram.ftl&quot;
+  },
+  &quot;proxy&quot;: {
+    &quot;type&quot;: &quot;socks5&quot;,
+    &quot;host&quot;: &quot;${PROXY_HOST}&quot;,
+    &quot;port&quot;: 7777,
+    &quot;username&quot;: &quot;&quot;,
+    &quot;password&quot;: &quot;&quot;
   }
 }
 </code></pre>
-<p>Showcase layout (7-tile readme-hero) = <a href="config/config.dogfood-telegram-full.json"><code>config/config.dogfood-telegram-full.json</code></a>.</p>
+<p>Showcase layout (7-tile readme-hero) = <a href="config/config.dogfood-telegram-full.json"><code>config/config.dogfood-telegram-full.json</code></a>. SOCKS5-пример: <a href="config/config.proxy-socks5.example.json"><code>config/config.proxy-socks5.example.json</code></a>.</p>
 <h3>Поля <code>base</code></h3>
 <table>
 <tr><th>Поле</th><th>Заметки</th></tr>
@@ -241,7 +248,7 @@ npx allure-notifications@6.0.11 send --config config.json --live
 
 `webhookUrl` из шаблона Workflows *“Post to a channel when a webhook request is received”* (legacy Office 365 Connectors уходят). Chart — base64; payload ≤ 28 KB; throttle ~4 req/s.
 </details>
-<p>Опциональный top-level <code>proxy</code> (<code>type</code>: <code>http</code> \| <code>socks5</code>, <code>host</code>, <code>port</code>, …) для исходящего HTTP/SOCKS где поддерживается.</p>
+<p>Top-level <code>proxy</code> (<code>type</code>: <code>http</code> \| <code>socks5</code>, <code>host</code>, <code>port</code>, опционально <code>username</code> / <code>password</code>) — исходящий HTTP/SOCKS, где поддерживается.</p>
 <h2>Визуальный канон</h2>
 <p>Правила collage и reference PNG: <a href="docs/canon/CANON.md"><code>docs/canon/CANON.md</code></a>.</p>
 <h2>Плагин (альтернатива)</h2>

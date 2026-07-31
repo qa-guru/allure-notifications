@@ -227,11 +227,18 @@ npx allure-notifications@6.0.11 send --config <exported>.json
     "chat": "${TELEGRAM_CHAT_ID}",
     "topic": "",
     "templatePath": "/templates/telegram.ftl"
+  },
+  "proxy": {
+    "type": "socks5",
+    "host": "${PROXY_HOST}",
+    "port": 7777,
+    "username": "",
+    "password": ""
   }
 }
 ```
 
-Showcase layout (7-tile readme-hero) = [`config/config.dogfood-telegram-full.json`](config/config.dogfood-telegram-full.json).
+Showcase layout (7-tile readme-hero) = [`config/config.dogfood-telegram-full.json`](config/config.dogfood-telegram-full.json). SOCKS5-пример: [`config/config.proxy-socks5.example.json`](config/config.proxy-socks5.example.json).
 
 ### Поля `base`
 
@@ -294,7 +301,7 @@ Showcase layout (7-tile readme-hero) = [`config/config.dogfood-telegram-full.jso
 `webhookUrl` из шаблона Workflows *“Post to a channel when a webhook request is received”* (legacy Office 365 Connectors уходят). Chart — base64; payload ≤ 28 KB; throttle ~4 req/s.
 </details>
 
-Опциональный top-level `proxy` (`type`: `http` \| `socks5`, `host`, `port`, …) для исходящего HTTP/SOCKS где поддерживается.
+Top-level `proxy` (`type`: `http` \| `socks5`, `host`, `port`, опционально `username` / `password`) — исходящий HTTP/SOCKS, где поддерживается.
 
 ## Визуальный канон
 

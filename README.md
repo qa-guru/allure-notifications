@@ -227,11 +227,18 @@ Minimal **6.0** example — collage + free layout + one messenger:
     "chat": "${TELEGRAM_CHAT_ID}",
     "topic": "",
     "templatePath": "/templates/telegram.ftl"
+  },
+  "proxy": {
+    "type": "socks5",
+    "host": "${PROXY_HOST}",
+    "port": 7777,
+    "username": "",
+    "password": ""
   }
 }
 ```
 
-Showcase layout (7-tile readme-hero) = [`config/config.dogfood-telegram-full.json`](config/config.dogfood-telegram-full.json).
+Showcase layout (7-tile readme-hero) = [`config/config.dogfood-telegram-full.json`](config/config.dogfood-telegram-full.json). SOCKS5 sample: [`config/config.proxy-socks5.example.json`](config/config.proxy-socks5.example.json).
 
 ### `base` fields
 
@@ -294,7 +301,7 @@ Keep `base` and only the messenger block you need. Optional `templatePath` point
 `webhookUrl` from the Workflows app template *“Post to a channel when a webhook request is received”* (legacy Office 365 Connectors are retiring). Chart embeds as base64; payload ≤ 28 KB; ~4 req/s throttle.
 </details>
 
-Optional top-level `proxy` (`type`: `http` \| `socks5`, `host`, `port`, …) for outbound HTTP/SOCKS where supported.
+Top-level `proxy` (`type`: `http` \| `socks5`, `host`, `port`, optional `username` / `password`) — outbound HTTP/SOCKS where supported.
 
 ## Visual canon
 
