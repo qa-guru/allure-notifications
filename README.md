@@ -2,84 +2,183 @@
 
 # Allure notifications
 
-CLI that turns an Allure report into a messenger notification: text + optional collage PNG.
+**Beautiful test-run notifications — right in your messenger.**
 
-Messengers: Telegram, Slack, Email, Mattermost, Discord, Loop, Rocket.Chat, Zoho Cliq, Microsoft Teams.  
-Languages: 🇬🇧 🇫🇷 🇷🇺 🇺🇦 🇧🇾 🇨🇳
+Collage PNG + caption with statistics and links. Build `config.json` in the [Config builder](#config-builder-anb), send with the TypeScript CLI **6.0.11**.
 
-Build `config.json` in the [Config builder](#config-builder), then send with the CLI.
+## Notification example
+
+<img width="488" alt="Telegram notification example: collage + statistics + links" src="docs/notification-example.png">
+
+| Zone | Contents |
+|------|----------|
+| Collage | 7 panels: pie · status dynamics · pyramid · durations · success rate · duration dynamics · status transitions |
+| Text | environment, comment, duration, passed / failed / broken / skipped counters |
+| Links | `report` · `dashboard` · `testops` · `build` from `base.links` |
+
+## Omni-tool
+
+([allure-notifications.qa.guru](https://allure-notifications.qa.guru/) · [qa-guru.github.io/allure-notifications](https://qa-guru.github.io/allure-notifications/))
+
+### 1. Messengers
+
+Missing yours? [Open an issue](https://github.com/qa-guru/allure-notifications/issues/new) or [send a PR](https://github.com/qa-guru/allure-notifications/compare).
+
+<p>
+  <img src="docs/preview/icons/messengers/telegram.svg" width="20" height="20" alt=""> Telegram
+  · <img src="docs/preview/icons/messengers/slack.svg" width="20" height="20" alt=""> Slack
+  · <img src="docs/preview/icons/messengers/email.svg" width="20" height="20" alt=""> Email
+  · <img src="docs/preview/icons/messengers/mattermost.svg" width="20" height="20" alt=""> Mattermost
+  · <img src="docs/preview/icons/messengers/discord.svg" width="20" height="20" alt=""> Discord
+  · <img src="docs/preview/icons/messengers/loop.svg" width="20" height="20" alt=""> Loop
+  · <img src="docs/preview/icons/messengers/rocketdotchat.svg" width="20" height="20" alt=""> Rocket.Chat
+  · <img src="docs/preview/icons/messengers/zoho.svg" width="20" height="20" alt=""> Zoho Cliq
+  · <img src="docs/preview/icons/messengers/microsoftteams.svg" width="20" height="20" alt=""> Microsoft Teams
+</p>
+
+### 2. Any CI
+
+Runs anywhere Allure results exist — local laptop to hosted CI.
+
+<p>
+  <img src="docs/preview/icons/ci/local.svg" width="20" height="20" alt=""> local
+  · <img src="docs/preview/icons/ci/githubactions.svg" width="20" height="20" alt=""> GitHub Actions
+  · <img src="docs/preview/icons/ci/gitlab.svg" width="20" height="20" alt=""> GitLab CI
+  · <img src="docs/preview/icons/ci/amazonaws.svg" width="20" height="20" alt=""> AWS CI
+  · <img src="docs/preview/icons/ci/azuredevops.svg" width="20" height="20" alt=""> Azure DevOps
+  · <img src="docs/preview/icons/ci/jenkins.svg" width="20" height="20" alt=""> Jenkins
+  · <img src="docs/preview/icons/ci/bamboo.svg" width="20" height="20" alt=""> Bamboo
+  · <img src="docs/preview/icons/ci/bitbucket.svg" width="20" height="20" alt=""> Bitbucket Pipelines
+  · <img src="docs/preview/icons/ci/teamcity.svg" width="20" height="20" alt=""> TeamCity
+  · <img src="docs/preview/icons/ci/circleci.svg" width="20" height="20" alt=""> CircleCI
+  · <img src="docs/preview/icons/ci/buildkite.svg" width="20" height="20" alt=""> Buildkite
+</p>
+
+…and any other runner that can execute the CLI.
+
+### 3. Any language with Allure
+
+Framework adapters → [frameworks list](https://allurereport.org/docs/frameworks/).
+
+<p>
+  <img src="docs/preview/icons/languages/java.svg" width="20" height="20" alt=""> Java
+  · <img src="docs/preview/icons/languages/kotlin.svg" width="20" height="20" alt=""> Kotlin
+  · <img src="docs/preview/icons/languages/groovy.svg" width="20" height="20" alt=""> Groovy
+  · <img src="docs/preview/icons/languages/javascript.svg" width="20" height="20" alt=""> JavaScript
+  · <img src="docs/preview/icons/languages/typescript.svg" width="20" height="20" alt=""> TypeScript
+  · <img src="docs/preview/icons/languages/python.svg" width="20" height="20" alt=""> Python
+  · <img src="docs/preview/icons/languages/csharp.svg" width="20" height="20" alt=""> C#
+  · <img src="docs/preview/icons/languages/php.svg" width="20" height="20" alt=""> PHP
+  · <img src="docs/preview/icons/languages/ruby.svg" width="20" height="20" alt=""> Ruby
+  · <img src="docs/preview/icons/languages/go.svg" width="20" height="20" alt=""> Go
+  · <img src="docs/preview/icons/languages/rust.svg" width="20" height="20" alt=""> Rust
+  · <img src="docs/preview/icons/languages/dart.svg" width="20" height="20" alt=""> Dart
+</p>
+
+### 4. Notification locales
+
+Missing a locale? [Open an issue](https://github.com/qa-guru/allure-notifications/issues/new) or [send a PR](https://github.com/qa-guru/allure-notifications/compare).
+
+<p>
+  <img src="docs/preview/icons/locales/en.svg" width="20" height="20" alt=""> <code>en</code>
+  · <img src="docs/preview/icons/locales/de.svg" width="20" height="20" alt=""> <code>de</code>
+  · <img src="docs/preview/icons/locales/fr.svg" width="20" height="20" alt=""> <code>fr</code>
+  · <img src="docs/preview/icons/locales/ru.svg" width="20" height="20" alt=""> <code>ru</code>
+  · <img src="docs/preview/icons/locales/by.svg" width="20" height="20" alt=""> <code>by</code>
+  · <img src="docs/preview/icons/locales/ua.svg" width="20" height="20" alt=""> <code>ua</code>
+  · <img src="docs/preview/icons/locales/cn.svg" width="20" height="20" alt=""> <code>cn</code>
+  · <img src="docs/preview/icons/locales/cnt.svg" width="20" height="20" alt=""> <code>cnt</code>
+  · <img src="docs/preview/icons/locales/morse.svg" width="20" height="20" alt=""> <code>morse</code>
+</p>
 
 ## Table of contents
 
-+ [What's new in 6.0](#whats-new-in-60)
-+ [How it works](#how-it-works)
-+ [Quick start](#quick-start)
++ [TypeScript · Quick start](#typescript--quick-start)
++ [Config builder (ANB)](#config-builder-anb)
 + [config.json](#configjson)
-+ [Config builder](#config-builder)
++ [Messengers](#messengers)
 + [Visual canon](#visual-canon)
 + [Plugin (alternate)](#plugin-alternate)
 + [Legacy Java 5.0.8](#legacy-java-508)
 + [CI cookbook](#ci-cookbook)
 
-## What's new in 6.0
+## TypeScript · Quick start
 
 | Version | Stack | Allure | Status |
 |---------|-------|--------|--------|
 | **4.\*** | Java | Allure 2 | Historical |
 | **5.\*** | Java | Allure 3 | Legacy freeze at **5.0.8** (`legacy/java/`); there is **no 5.1** |
-| **6.\*** | TypeScript | Allure 3 | **Product** — pin **6.0.9** (CLI + builder + plugin) |
+| **6.\*** | TypeScript | Allure 3 | **Product** — pin **6.0.11** (CLI + builder + plugin) |
 
 Older patch notes → [GitHub Releases](https://github.com/qa-guru/allure-notifications/releases) · migration → [`MIGRATION.md`](MIGRATION.md).
 
 | Piece | Role |
 |-------|------|
-| **CLI** | `npx allure-notifications@6.0.9 send --config …` — primary runtime |
+| **CLI** | `npx allure-notifications@6.0.11 send --config …` — primary runtime |
 | **Collage PNG** | `@napi-rs/canvas` in `@allure-notifications/core` (Playwright = tests only) |
 | **Config builder** | Web UI → full `config.json` + free-layout collage — [`apps/builder/`](apps/builder/) |
 | **Packages** | `@allure-notifications/config` · `pyramid` · `core` · bin `allure-notifications` · plugin `@allure-notifications/plugin` |
-| **Allure 3 plugin** | Alternate `done` hook — see [Plugin](#plugin-alternate) |
-
-## How it works
 
 After tests finish, Allure writes a summary. The CLI finds it automatically:
 
 - **Allure 2** — `<allureFolder>/widgets/summary.json`
 - **Allure 3** — `<allureFolder>/summary.json`
 
-Summary drives notification text. In collage mode the CLI also reads `*-result.json` from `allureResultsFolder` for pyramid, suites, durations, and other panels.
-
-```mermaid
-flowchart LR
-    A[Running\nautomated tests] --> B[Generating\nsummary.json]
-    B --> C
-    subgraph C[Allure Notifications]
-        D[Building collage\nand text] --> E[Sending to\nmessenger]
-    end
-```
-
-Example notification (Telegram):
-
-<img width="660" alt="Telegram notification example" src="docs/telegram_notification.png">
-
-## Quick start
+Summary drives notification text. In collage mode the CLI also reads `*-result.json` from `allureResultsFolder`.
 
 ```bash
 npx allure generate allure-results --clean -o allure-report
-npx allure-notifications@6.0.9 send --config config.json --live
+npx allure-notifications@6.0.11 send --config config.json --live
 ```
 
 | Flag | Behavior |
 |------|----------|
-| `--dry-run` | Render collage; list messengers that *would* send; **no network** (PR / local without secrets) |
+| `--dry-run` | Render collage; list messengers that *would* send; **no network** |
 | `--mock` | Render collage; mock deliveries; **no network** |
 | `--live` | Actually send (Telegram when credentials are set) |
 | `--out <png>` | Write collage PNG to disk |
 
 Default without `--live` / `--mock` is safe **dry-run**.
 
+## Config builder (ANB)
+
+Web UI that exports a full `config.json` (`base` · `chart` · `links` · messengers) with a free-layout collage editor.
+
+| | |
+|--|--|
+| **Prod** | [allure-notifications.qa.guru](https://allure-notifications.qa.guru/) |
+| **Project Pages** | [qa-guru.github.io/allure-notifications](https://qa-guru.github.io/allure-notifications/) |
+| **Source** | [`apps/builder/`](apps/builder/) |
+| **Canon** | [`apps/builder/CANON.md`](apps/builder/CANON.md) |
+
+<img width="900" alt="Allure Notifications Builder — desktop" src="readme_images/anb-desktop.png">
+
+Install as a **PWA** (Add to Home Screen / Install) for offline shell and standalone display. On iPad Pro 13″:
+
+<img width="420" alt="Allure Notifications Builder — iPad Pro 13" src="readme_images/anb-ipad13pro.png">
+
+### Canvas presets
+
+| Preset | Size | Notes |
+|--------|------|--------|
+| **SQ-1080** | 1080×1080 | Dense square canvas |
+| **CB-870** | 870×1080 | Telegram-oriented editor canvas (post cap 1024×1280) |
+| **WD-1410** | 1410×1080 | Wide canvas |
+
+### Export → CLI
+
+1. Arrange panels in the builder → **Export** / Download `config.json`.
+2. Point `base.allureFolder` / `base.allureResultsFolder` at your report and results.
+3. Fill messenger credentials (or env placeholders).
+4. Send:
+
+```bash
+npx allure-notifications@6.0.11 send --config <exported>.json
+```
+
 ## config.json
 
-Schema: [`packages/config`](packages/config) (zod). Prefer Export from the [Config builder](#config-builder).
+Schema: [`packages/config`](packages/config) (zod). Prefer Export from the [Config builder](#config-builder-anb).
 
 Minimal **6.0** example — collage + free layout + one messenger:
 
@@ -88,7 +187,7 @@ Minimal **6.0** example — collage + free layout + one messenger:
   "base": {
     "project": "my-project",
     "environment": "ci",
-    "comment": "",
+    "comment": "Release smoke · master",
     "language": "en",
     "allureFolder": "allure-report/",
     "allureResultsFolder": "allure-results/",
@@ -99,16 +198,19 @@ Minimal **6.0** example — collage + free layout + one messenger:
       "layout": "free",
       "width": 870,
       "height": 1080,
-      "headerHeight": 22,
+      "headerHeight": 56,
       "cardGap": 14,
       "tilePad": 6,
       "gridCols": 10,
       "gridRows": 10,
       "items": [
-        { "type": "pie", "x": 0, "y": 0, "w": 4, "h": 4 },
-        { "type": "durationDynamics", "x": 4, "y": 0, "w": 6, "h": 4 },
-        { "type": "testingPyramid", "x": 0, "y": 4, "w": 3, "h": 3 },
-        { "type": "durations", "x": 3, "y": 4, "w": 4, "h": 3, "groupBy": "layer" }
+        { "type": "pie", "x": 0, "y": 0, "w": 5, "h": 4 },
+        { "type": "statusDynamics", "x": 5, "y": 0, "w": 5, "h": 4 },
+        { "type": "testingPyramid", "x": 0, "y": 4, "w": 4, "h": 3 },
+        { "type": "durations", "x": 4, "y": 4, "w": 6, "h": 3, "groupBy": "layer" },
+        { "type": "successRateDistribution", "x": 0, "y": 7, "w": 3, "h": 3 },
+        { "type": "durationDynamics", "x": 3, "y": 7, "w": 4, "h": 3 },
+        { "type": "statusTransitions", "x": 7, "y": 7, "w": 3, "h": 3 }
       ],
       "pyramidFallback": "suites"
     },
@@ -127,6 +229,8 @@ Minimal **6.0** example — collage + free layout + one messenger:
   }
 }
 ```
+
+Showcase layout (7-tile readme-hero) = [`config/config.dogfood-telegram-full.json`](config/config.dogfood-telegram-full.json).
 
 ### `base` fields
 
@@ -147,7 +251,7 @@ Minimal **6.0** example — collage + free layout + one messenger:
 | `enableSuitesPublishing` | Per-suite stats from `suites.json` when present |
 | `logo`, `durationFormat`, `customData` | Optional |
 
-### Messengers
+## Messengers
 
 Keep `base` and only the messenger block you need. Optional `templatePath` points to a custom Freemarker template.
 
@@ -191,49 +295,6 @@ Keep `base` and only the messenger block you need. Optional `templatePath` point
 
 Optional top-level `proxy` (`type`: `http` \| `socks5`, `host`, `port`, …) for outbound HTTP/SOCKS where supported.
 
-## Config builder
-
-Web UI that exports a full `config.json` (`base` · `chart` · `links` · messengers) with a free-layout collage editor.
-
-| | |
-|--|--|
-| **Prod** | [allure-notifications.qa.guru](https://allure-notifications.qa.guru/) |
-| **Project Pages** | [qa-guru.github.io/allure-notifications](https://qa-guru.github.io/allure-notifications/) |
-| **Source** | [`apps/builder/`](apps/builder/) |
-| **Canon** | [`apps/builder/CANON.md`](apps/builder/CANON.md) |
-
-### Canvas presets
-
-| Preset | Size | Notes |
-|--------|------|--------|
-| **SQ-1080** | 1080×1080 | Dense 12-tile default square canvas |
-| **CB-870** | 870×1080 | Telegram-oriented editor canvas (post cap 1024×1280) |
-| **WD-1410** | 1410×1080 | Wide canvas |
-
-### Export → CLI
-
-1. Arrange panels in the builder → **Export** / Download `config.json`.
-2. Point `base.allureFolder` / `base.allureResultsFolder` at your report and results.
-3. Fill messenger credentials (or env placeholders).
-4. Send:
-
-```bash
-npx allure-notifications@6.0.9 send --config <exported>.json
-```
-
-### Local stand (monorepo)
-
-```bash
-python scripts/stands/ensure.py anb-apps-builder
-```
-
-Opens the static builder at [http://localhost:3011/](http://localhost:3011/).
-
-### Collage preview
-
-<img width="420" alt="SQ-1080 collage example" src="config/chart-sq1080-dogfood.png">
-<img width="340" alt="CB-870 collage example" src="config/chart-cb870-dogfood.png">
-
 ## Visual canon
 
 Locked collage rules and reference PNG: [`docs/canon/CANON.md`](docs/canon/CANON.md).
@@ -243,7 +304,7 @@ Locked collage rules and reference PNG: [`docs/canon/CANON.md`](docs/canon/CANON
 Allure 3 plugin — thin wrapper over the same core pipeline. CLI remains primary.
 
 ```bash
-npm add allure @allure-notifications/plugin@6.0.9
+npm add allure @allure-notifications/plugin@6.0.11
 ```
 
 - Docs: [`packages/plugin/README.md`](packages/plugin/README.md)
