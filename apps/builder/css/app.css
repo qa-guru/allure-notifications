@@ -62,7 +62,20 @@ body {
 }
 
 .anb-zone--preview .panel__bar {
-  min-height: 41px;
+  box-sizing: border-box;
+  flex: 0 0 var(--panel-bar-height-chrome, 36px);
+  height: var(--panel-bar-height-chrome, 36px);
+  min-height: var(--panel-bar-height-chrome, 36px);
+}
+
+.anb-zone--preview .panel__bar.anb-preview-bar {
+  /* Equal vertical air; divider via inset shadow (border-bottom skews flex centering). */
+  height: auto;
+  min-height: unset;
+  flex: 0 0 auto;
+  padding: 7px var(--space-2) 7px var(--space-3);
+  border-bottom: none;
+  box-shadow: inset 0 -1px 0 var(--panel-border);
 }
 
 .anb-preview-bar {
@@ -223,10 +236,6 @@ body {
   --panel-bg: #f7f7f9;
   --panel-border: rgba(210, 210, 214, 0.95);
   --panel-bar-bg: #ffffff;
-}
-
-#anb-preview-panel[data-anb-dark="false"] .anb-tg__bot-sub {
-  color: rgba(90, 90, 90, 0.95);
 }
 
 .anb-canvas[data-anb-dark="true"] {
@@ -892,9 +901,8 @@ html.theme-light .anb-canvas--chart-off::after {
 }
 
 .anb-tg__avatar {
-  width: 28px;
-  height: 28px;
-  border-radius: 50%;
+  width: 23px;
+  height: 23px;
   flex: 0 0 auto;
   display: block;
   object-fit: contain;
@@ -903,14 +911,8 @@ html.theme-light .anb-canvas--chart-off::after {
 .anb-tg__bot-name {
   font-size: 0.78rem;
   font-weight: 700;
-  line-height: 1;
+  line-height: 23px;
   color: #6cb6f3;
-}
-
-.anb-tg__bot-sub {
-  font-size: 0.62rem;
-  line-height: 1;
-  color: #7f8b99;
 }
 
 /*
