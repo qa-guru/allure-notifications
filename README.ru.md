@@ -154,9 +154,9 @@ Web UI: полный `config.json` (`base` · `chart` · `links` · messengers) 
 
 ![Allure Notifications Builder — desktop](readme_images/anb-desktop.png)
 
-Установите как **PWA** (Add to Home Screen / Install) — offline shell и standalone-режим. На iPad Pro 13″:
+Установите как **PWA** (Add to Home Screen / Install) — offline shell и standalone-режим. На iPad Pro 13″ (landscape):
 
-![Allure Notifications Builder — iPad Pro 13](readme_images/anb-ipad13pro.png)
+![Allure Notifications Builder — iPad Pro 13 landscape](readme_images/anb-ipad13pro.png)
 
 ### Canvas presets
 

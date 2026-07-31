@@ -154,9 +154,9 @@ Web UI that exports a full `config.json` (`base` · `chart` · `links` · messen
 
 ![Allure Notifications Builder — desktop](readme_images/anb-desktop.png)
 
-Install as a **PWA** (Add to Home Screen / Install) for offline shell and standalone display. On iPad Pro 13″:
+Install as a **PWA** (Add to Home Screen / Install) for offline shell and standalone display. On iPad Pro 13″ (landscape):
 
-![Allure Notifications Builder — iPad Pro 13](readme_images/anb-ipad13pro.png)
+![Allure Notifications Builder — iPad Pro 13 landscape](readme_images/anb-ipad13pro.png)
 
 ### Canvas presets
 
