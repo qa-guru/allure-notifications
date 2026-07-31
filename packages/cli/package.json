@@ -1,6 +1,6 @@
 {
   "name": "allure-notifications",
-  "version": "6.0.9",
+  "version": "6.0.10",
   "description": "CLI: allure-notifications send --config (6.0 TypeScript). Collage via @napi-rs/canvas.",
   "type": "module",
   "bin": {
@@ -24,7 +24,7 @@
   "homepage": "https://github.com/qa-guru/allure-notifications#readme",
   "license": "Apache-2.0",
   "engines": {
-    "node": ">=20"
+    "node": ">=26"
   },
   "scripts": {
     "build": "tsc -p tsconfig.json",
@@ -38,9 +38,9 @@
   },
   "devDependencies": {
     "@allure-notifications/test-meta": "workspace:*",
-    "@types/node": "^22.13.10",
+    "@types/node": "26.1.2",
     "allure-node-test": "3.10.2",
-    "typescript": "^7.0.2"
+    "typescript": "7.0.2"
   },
   "publishConfig": {
     "access": "public"

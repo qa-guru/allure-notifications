@@ -1,6 +1,6 @@
 {
   "name": "@allure-notifications/core",
-  "version": "6.0.9",
+  "version": "6.0.10",
   "description": "Allure 3 summary/results \u2192 native collage PNG (Phase 3 / Stage C).",
   "type": "module",
   "exports": {
@@ -20,7 +20,7 @@
   },
   "license": "Apache-2.0",
   "engines": {
-    "node": ">=20"
+    "node": ">=26"
   },
   "scripts": {
     "build": "tsc -p tsconfig.json",
@@ -35,9 +35,9 @@
   },
   "devDependencies": {
     "@allure-notifications/test-meta": "workspace:*",
-    "@types/node": "^22.13.10",
+    "@types/node": "26.1.2",
     "allure-node-test": "3.10.2",
-    "typescript": "^7.0.2"
+    "typescript": "7.0.2"
   },
   "publishConfig": {
     "access": "public"

@@ -1,11 +1,11 @@
 {
   "name": "@allure-notifications/monorepo",
-  "version": "6.0.9",
+  "version": "6.0.10",
   "private": true,
-  "description": "Allure report → messenger notifications. 6.0.* = TypeScript monorepo (CLI + builder). 5.0.* = Java jar under legacy/java (freeze 5.0.8); there is no 5.1 line.",
+  "description": "Allure report \u2192 messenger notifications. 6.0.* = TypeScript monorepo (CLI + builder). 5.0.* = Java jar under legacy/java (freeze 5.0.8); there is no 5.1 line.",
   "packageManager": "pnpm@9.15.0",
   "engines": {
-    "node": ">=20"
+    "node": ">=26"
   },
   "scripts": {
     "build": "pnpm -r run build",
@@ -18,7 +18,7 @@
     "typecheck": "pnpm -r run typecheck"
   },
   "devDependencies": {
-    "@types/node": "^22.13.10",
+    "@types/node": "26.1.2",
     "allure": "^3.14.3",
     "allure-js-commons": "3.10.2",
     "allure-node-test": "3.10.2",
@@ -30,7 +30,7 @@
     "istanbul-lib-instrument": "^6.0.3",
     "istanbul-lib-report": "^3.0.1",
     "istanbul-reports": "^3.2.0",
-    "typescript": "^7.0.2",
+    "typescript": "7.0.2",
     "v8-to-istanbul": "^9.3.0"
   },
   "changelog": {

@@ -28,7 +28,7 @@
     "@playwright/test": "^1.61.1",
     "allure-node-test": "3.10.2",
     "allure-playwright": "3.10.2",
-    "typescript": "^7.0.2",
-    "@types/node": "^22.13.10"
+    "typescript": "7.0.2",
+    "@types/node": "26.1.2"
   }
 }

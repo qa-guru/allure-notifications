@@ -2,6 +2,16 @@
 
 ## Unreleased
 
+## v 6.0.10
+
+### English
+
+- **Toolchain** — unified **Node 26** (CI, `.nvmrc`, `engines.node >=26`) and **TypeScript 7.0.2** pin across workspace; `@types/node` **26.1.2**
+
+### Russian
+
+- **Toolchain** — единый **Node 26** (CI, `.nvmrc`, `engines.node >=26`) и pin **TypeScript 7.0.2** по workspace; `@types/node` **26.1.2**
+
 ## v 6.0.9
 
 ### English

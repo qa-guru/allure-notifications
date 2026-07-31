@@ -33,7 +33,7 @@ jobs:
 
       - uses: actions/setup-node@v6
         with:
-          node-version: 24
+          node-version: 26
 
       # Pin ≥6.0.9 (main entry for Allure require.resolve; skip 6.0.6). Bump with VERSION checklist.
       - name: Install Allure 3 + notifications plugin
