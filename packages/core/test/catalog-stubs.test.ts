@@ -256,7 +256,7 @@ describe("@allure-notifications/core catalog panels PNG", () => {
   it("dense SQ-1080 mix real+remaining paints collage", async () => {
     const analytics = await baseAnalytics(true);
     const items: ChartItem[] = [
-      { type: "pie", x: 0, y: 0, w: 2, h: 2 },
+      { type: "currentStatus", x: 0, y: 0, w: 2, h: 2 },
       { type: "testingPyramid", x: 2, y: 0, w: 2, h: 2 },
       { type: "durations", x: 4, y: 0, w: 2, h: 2 },
       { type: "statusDynamics", x: 6, y: 0, w: 2, h: 2 },

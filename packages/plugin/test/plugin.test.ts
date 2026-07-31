@@ -213,7 +213,7 @@ describe("@allure-notifications/plugin done dry-run", () => {
               layout: "free",
               width: 870,
               height: 1080,
-              items: [{ type: "pie", x: 0, y: 0, w: 0, h: 0 }],
+              items: [{ type: "currentStatus", x: 0, y: 0, w: 0, h: 0 }],
             },
           },
         }),

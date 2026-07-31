@@ -12,7 +12,7 @@
     "chart": {
       "mode": "collage",
       "panels": [
-        "pie",
+        "currentStatus",
         "testingPyramid",
         "durations"
       ],

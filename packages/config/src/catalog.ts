@@ -45,7 +45,7 @@ function panel(seed: PanelSeed): PanelMeta {
 
 /** @type {ReadonlyArray<PanelMeta>} */
 export const PANEL_CATALOG: ReadonlyArray<PanelMeta> = Object.freeze([
-  panel({ id: "pie", type: "pie", title: "Current status" }),
+  panel({ id: "currentStatus", type: "currentStatus", title: "Current status" }),
   panel({ id: "testingPyramid", type: "testingPyramid", title: "Testing pyramid" }),
   panel({
     id: "durationsByLayer",
@@ -116,7 +116,7 @@ export const CHART_TYPES: ReadonlySet<string> = Object.freeze(
 );
 
 /**
- * Resolve palette meta by id, or by type + groupBy/by (pie ↔ currentStatus).
+ * Resolve palette meta by id, or by type + groupBy/by.
  */
 export function resolvePanelMeta(
   raw: Partial<ChartItem> & { id?: string },
@@ -132,6 +132,5 @@ export function resolvePanelMeta(
       (p.by || undefined) === by,
   );
   if (exact) return exact;
-  if (type === "currentStatus") return PANEL_META.pie;
   return PANEL_CATALOG.find((p) => p.type === type && !p.groupBy && !p.by);
 }

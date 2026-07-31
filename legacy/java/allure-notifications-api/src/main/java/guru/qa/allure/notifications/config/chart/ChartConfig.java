@@ -24,7 +24,7 @@ public class ChartConfig {
 
     @JsonDeserialize(using = PanelsDeserializer.class)
     private List<List<String>> panels = Arrays.asList(
-            Arrays.asList("pie", "testingPyramid"),
+            Arrays.asList("currentStatus", "testingPyramid"),
             Arrays.asList("statusDynamics", "successRateDistribution"));
 
     /**

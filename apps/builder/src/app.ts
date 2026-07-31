@@ -774,7 +774,7 @@ function previewItemHtml(item: ChartItem) {
   const rect = freeCellRect(chart, item);
   const meta = resolvePanelMeta(item);
   const title = meta ? meta.title : item.type;
-  const chartType = item.type === 'pie' ? 'currentStatus' : item.type;
+  const chartType = item.type;
   const groupBy = item.groupBy || meta?.groupBy || '';
   const by = item.by || meta?.by || '';
   let attrs = `data-chart="${escapeHtml(chartType)}"`;
@@ -1224,7 +1224,7 @@ function clearSelection() {
 function panelInnerHtml(item: ChartItem) {
   const meta = resolvePanelMeta(item);
   const title = meta ? meta.title : item.type;
-  const chartType = item.type === 'pie' ? 'currentStatus' : item.type;
+  const chartType = item.type;
   const tier =
     typeof WidgetTileMocks !== 'undefined' && WidgetTileMocks.tierForSpan
       ? WidgetTileMocks.tierForSpan(GRID_COLS, item.w, item.h)
@@ -1444,7 +1444,7 @@ function clearAll() {
  * @returns {string}
  */
 function paletteItemHtml(item: PanelMeta): string {
-  const chartType = item.type === 'pie' ? 'currentStatus' : item.type;
+  const chartType = item.type;
   let attrs = `data-chart="${escapeHtml(chartType)}"`;
   if (item.groupBy) attrs += ` data-group-by="${escapeHtml(item.groupBy)}"`;
   if (item.by) attrs += ` data-by="${escapeHtml(item.by)}"`;

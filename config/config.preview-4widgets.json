@@ -12,7 +12,7 @@
     "chart": {
       "mode": "collage",
       "panels": [
-        ["pie", "testingPyramid"],
+        ["currentStatus", "testingPyramid"],
         ["statusDynamics", "successRateDistribution"]
       ],
       "pyramidFallback": "suites",

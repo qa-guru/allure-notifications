@@ -23,7 +23,7 @@ export const DEFAULT_TILE_PAD = 6;
  * See builder CANON.md.
  */
 export const DEFAULT_ITEMS = Object.freeze([
-    { type: "pie", x: 0, y: 0, w: 4, h: 4 },
+    { type: "currentStatus", x: 0, y: 0, w: 4, h: 4 },
     { type: "durationDynamics", x: 4, y: 0, w: 6, h: 4 },
     { type: "testingPyramid", x: 0, y: 4, w: 3, h: 3 },
     { type: "durations", x: 3, y: 4, w: 4, h: 3, groupBy: "layer" },

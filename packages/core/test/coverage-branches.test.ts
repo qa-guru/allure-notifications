@@ -111,7 +111,7 @@ function bareConfig(opts: {
         gridRows: 6,
         pyramidFallback: "suites",
         historyPath: opts.historyPath,
-        items: opts.items ?? [{ type: "pie", x: 0, y: 0, w: 1, h: 1 }],
+        items: opts.items ?? [{ type: "currentStatus", x: 0, y: 0, w: 1, h: 1 }],
       },
     },
   });
@@ -549,7 +549,7 @@ describe("@allure-notifications/core coverage collage render defaults", () => {
           height: 400,
           gridCols: 10,
           gridRows: 10,
-          items: [{ type: "pie", x: 0, y: 0, w: 10, h: 10 }],
+          items: [{ type: "currentStatus", x: 0, y: 0, w: 10, h: 10 }],
         },
       },
     });
@@ -578,14 +578,14 @@ describe("@allure-notifications/core coverage collage render defaults", () => {
           gridCols: 4,
           gridRows: 4,
           items: [
-            { type: "pie", x: 0, y: 0, w: 2, h: 2 },
+            { type: "currentStatus", x: 0, y: 0, w: 2, h: 2 },
             { type: "totallyUnknown", x: 2, y: 0, w: 2, h: 2 },
           ],
         },
       },
     });
     config.base.chart!.items = [
-      { type: "pie", y: 0, w: 2, h: 2 },
+      { type: "currentStatus", y: 0, w: 2, h: 2 },
       { type: null as unknown as string, x: 0, y: 2, w: 2, h: 2 },
     ] as NonNullable<typeof config.base.chart>["items"];
     const png = await renderCollagePng(config, analytics);
@@ -1304,7 +1304,7 @@ describe("@allure-notifications/core coverage render + analytics edges", () => {
           height: 300,
           gridCols: 4,
           gridRows: 4,
-          items: [{ type: "pie", x: 0, y: 0, w: 1, h: 1 }],
+          items: [{ type: "currentStatus", x: 0, y: 0, w: 1, h: 1 }],
         },
       },
     });
@@ -1322,13 +1322,13 @@ describe("@allure-notifications/core coverage render + analytics edges", () => {
     chart.gridRows = undefined;
     // Omit x/y/w/h to hit clamp defaults; oversized tile hits overflow shrink.
     chart.items = [
-      { type: "pie" },
-      { type: "pie", x: 8, y: 8, w: 8, h: 8 },
+      { type: "currentStatus" },
+      { type: "currentStatus", x: 8, y: 8, w: 8, h: 8 },
     ];
     const png = await renderCollagePng(config, analytics);
     assert.ok(png.length > 100);
     assert.equal(
-      resolveCardTitle({ type: "pie", x: 0, y: 0, w: 1, h: 1 }, config, analytics),
+      resolveCardTitle({ type: "currentStatus", x: 0, y: 0, w: 1, h: 1 }, config, analytics),
       "Summary",
     );
 

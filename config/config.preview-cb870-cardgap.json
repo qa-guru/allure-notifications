@@ -2,7 +2,7 @@
   "base": {
     "project": "CB-870 cardGap dogfood",
     "environment": "local dogfood",
-    "comment": "5.0.4: cardGap+headerHeight; pie alias currentStatus; CB-870 items shape",
+    "comment": "5.0.4: cardGap+headerHeight; currentStatus; CB-870 items shape",
     "language": "ru",
     "allureFolder": "/Users/stanislav/zero-design-system/projects/allure-notifications-home/allure-notifications/build/pyramid-showcase/allure-report/",
     "allureResultsFolder": "/Users/stanislav/zero-design-system/projects/allure-notifications-home/allure-notifications/build/pyramid-showcase/allure-results/",

@@ -45,8 +45,8 @@ describe("@allure-notifications/config catalog", () => {
     assert.equal(ids.size, 17);
   });
 
-  it("resolves pie ↔ currentStatus and groupBy variants", () => {
-    assert.equal(resolvePanelMeta({ type: "currentStatus" })?.id, "pie");
+  it("resolves currentStatus and groupBy variants", () => {
+    assert.equal(resolvePanelMeta({ type: "currentStatus" })?.id, "currentStatus");
     assert.equal(
       resolvePanelMeta({
         type: "stabilityDistribution",
@@ -58,8 +58,8 @@ describe("@allure-notifications/config catalog", () => {
       resolvePanelMeta({ type: "problemsDistribution", by: "environment" })?.id,
       "problemsDistribution",
     );
-    assert.equal(resolvePanelMeta({ id: "pie" })?.type, "pie");
-    assert.equal(resolvePanelMeta({ id: "missing-id", type: "pie" })?.id, "pie");
+    assert.equal(resolvePanelMeta({ id: "currentStatus" })?.type, "currentStatus");
+    assert.equal(resolvePanelMeta({ id: "missing-id", type: "currentStatus" })?.id, "currentStatus");
     // Unknown groupBy on a type that also has a bare row → fall through to bare.
     assert.equal(
       resolvePanelMeta({ type: "durations", groupBy: "not-a-real-group" })?.id,
@@ -91,7 +91,7 @@ describe("@allure-notifications/config presets", () => {
     ]);
     assert.equal(DEFAULT_CANVAS, "870x1080");
     assert.deepEqual([...DEFAULT_ITEMS], [
-      { type: "pie", x: 0, y: 0, w: 4, h: 4 },
+      { type: "currentStatus", x: 0, y: 0, w: 4, h: 4 },
       { type: "durationDynamics", x: 4, y: 0, w: 6, h: 4 },
       { type: "testingPyramid", x: 0, y: 4, w: 3, h: 3 },
       { type: "durations", x: 3, y: 4, w: 4, h: 3, groupBy: "layer" },
@@ -193,7 +193,7 @@ describe("@allure-notifications/config schema vs repo fixtures", () => {
           layout: "free",
           width: 1080,
           height: 1080,
-          items: [{ type: "pie", x: -1, y: 0, w: 2, h: 2 }],
+          items: [{ type: "currentStatus", x: -1, y: 0, w: 2, h: 2 }],
         },
       },
     };
@@ -213,7 +213,7 @@ describe("@allure-notifications/config schema vs repo fixtures", () => {
 
   it('accepts base.language "de"', () => {
     const result = safeParseConfig({
-      base: { language: "de", chart: { layout: "free", width: 870, height: 1080, items: [{ type: "pie", x: 0, y: 0, w: 2, h: 2 }] } },
+      base: { language: "de", chart: { layout: "free", width: 870, height: 1080, items: [{ type: "currentStatus", x: 0, y: 0, w: 2, h: 2 }] } },
     });
     assert.equal(result.success, true, result.success ? "" : JSON.stringify(result.error.format()));
     if (result.success) {
@@ -223,7 +223,7 @@ describe("@allure-notifications/config schema vs repo fixtures", () => {
 
   it('accepts base.language "morse"', () => {
     const result = safeParseConfig({
-      base: { language: "morse", chart: { layout: "free", width: 870, height: 1080, items: [{ type: "pie", x: 0, y: 0, w: 2, h: 2 }] } },
+      base: { language: "morse", chart: { layout: "free", width: 870, height: 1080, items: [{ type: "currentStatus", x: 0, y: 0, w: 2, h: 2 }] } },
     });
     assert.equal(result.success, true, result.success ? "" : JSON.stringify(result.error.format()));
     if (result.success) {

@@ -16,7 +16,7 @@
       "height": 1080,
       "headerHeight": 68,
       "panels": [
-        ["pie", "testingPyramid"],
+        ["currentStatus", "testingPyramid"],
         ["durations"]
       ],
       "pyramidFallback": "suites"

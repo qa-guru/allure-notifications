@@ -261,7 +261,7 @@ test.describe('formats', () => {
       const A = globalThis.__ANB__;
       A.panelInnerHtml({
         id: 'durationsByLayer',
-        type: 'pie',
+        type: 'currentStatus',
         x: 0,
         y: 0,
         w: 2,
@@ -269,7 +269,7 @@ test.describe('formats', () => {
       });
       A.panelInnerHtml({
         id: 'problemsDistribution',
-        type: 'pie',
+        type: 'currentStatus',
         x: 0,
         y: 0,
         w: 2,
@@ -324,7 +324,7 @@ test.describe('formats', () => {
       A.setGridAnimate(true);
       A.fitAndFillEditor();
       A.readItemsFromGrid();
-      A.loadItems([{ type: 'pie', x: 0, y: 0, w: 2, h: 2 }]);
+      A.loadItems([{ type: 'currentStatus', x: 0, y: 0, w: 2, h: 2 }]);
       A.clearAll();
       A.deleteItem(document.createElement('div'));
       A.setGridForTest(kept);
@@ -417,9 +417,9 @@ test.describe('panels', () => {
     await page.evaluate(() => {
       const A = globalThis.__ANB__;
       for (let i = 0; i < 40; i += 1) {
-        A.addItem('pie', { w: 2, h: 2 });
+        A.addItem('currentStatus', { w: 2, h: 2 });
       }
-      A.addItem('pie', { w: 10, h: 10 });
+      A.addItem('currentStatus', { w: 10, h: 10 });
       A.addItem('not-a-panel');
       A.findFreeSpot(2, 2, 0, 0);
       A.findFreeSpot(2, 2, null, null);
@@ -453,24 +453,24 @@ test.describe('messengers', () => {
         pctFrac: A.formatPercentage(2, 3),
         pctEmpty: A.formatPercentage(0, 10),
         overlap: A.rectsOverlap(
-          { type: 'pie', x: 0, y: 0, w: 2, h: 2 },
-          { type: 'pie', x: 1, y: 1, w: 2, h: 2 },
+          { type: 'currentStatus', x: 0, y: 0, w: 2, h: 2 },
+          { type: 'currentStatus', x: 1, y: 1, w: 2, h: 2 },
         ),
         noOverlap: A.rectsOverlap(
-          { type: 'pie', x: 0, y: 0, w: 2, h: 2 },
-          { type: 'pie', x: 3, y: 0, w: 2, h: 2 },
+          { type: 'currentStatus', x: 0, y: 0, w: 2, h: 2 },
+          { type: 'currentStatus', x: 3, y: 0, w: 2, h: 2 },
         ),
         clampNull: A.clampItem({ type: 'totally-unknown' }),
-        clampOk: A.clampItem({ type: 'pie', x: -1, y: 99, w: 99, h: 99 }),
+        clampOk: A.clampItem({ type: 'currentStatus', x: -1, y: 99, w: 99, h: 99 }),
         pathNull: A.resolvePath('x'),
         vh: A.vectorHash({ a: 1 }),
         free: A.freeCellRect(
           { width: 870, height: 1080, cardGap: 14 },
-          { type: 'pie', x: 0, y: 0, w: 2, h: 2 },
+          { type: 'currentStatus', x: 0, y: 0, w: 2, h: 2 },
         ),
         freeDefaultGap: A.freeCellRect(
           { width: 870, height: 1080 },
-          { type: 'pie', x: 2, y: 2, w: 2, h: 2 },
+          { type: 'currentStatus', x: 2, y: 2, w: 2, h: 2 },
         ),
       };
     });
@@ -682,14 +682,14 @@ test.describe('negative', () => {
       A.readItemsFromGrid();
       A.loadItems([]);
       A.loadItems([
-        { type: 'pie', x: 0, y: 0, w: 2, h: 2 },
+        { type: 'currentStatus', x: 0, y: 0, w: 2, h: 2 },
         { type: 'durations', x: 2, y: 0, w: 2, h: 2, groupBy: 'layer' },
         { type: 'problemsDistribution', x: 4, y: 0, w: 2, h: 2, by: 'environment' },
       ]);
       const stage = document.createElement('div');
       A.renderCollageStage(stage, 'tg');
       A.renderCollageStage(stage, 'full');
-      A.previewItemHtml({ type: 'pie', x: 0, y: 0, w: 2, h: 2 });
+      A.previewItemHtml({ type: 'currentStatus', x: 0, y: 0, w: 2, h: 2 });
       A.previewItemHtml({
         type: 'durations',
         x: 0,
@@ -699,7 +699,7 @@ test.describe('negative', () => {
         groupBy: 'layer',
         by: 'environment',
       });
-      A.panelInnerHtml({ type: 'pie', x: 0, y: 0, w: 2, h: 2 });
+      A.panelInnerHtml({ type: 'currentStatus', x: 0, y: 0, w: 2, h: 2 });
       A.panelInnerHtml({
         type: 'stabilityDistribution',
         x: 0,
@@ -946,7 +946,7 @@ test.describe('negative', () => {
 
       A.freeCellRect(
         { width: 870, height: 1080, cardGap: 16 },
-        { type: 'pie', x: 0, y: rows - 2, w: 2, h: 2 },
+        { type: 'currentStatus', x: 0, y: rows - 2, w: 2, h: 2 },
       );
       A.chromeCssVars({});
       A.chromeCssVars({ headerHeight: Number.NaN, tilePad: Number.NaN });
@@ -955,7 +955,7 @@ test.describe('negative', () => {
       A.setPath('base.chart.height', 456);
       A.canvasKeyFromState();
       A.hydrateControls();
-      A.clampItem({ type: 'pie' });
+      A.clampItem({ type: 'currentStatus' });
       A.previewItemHtml({ type: 'totally-unknown', x: 0, y: 0, w: 2, h: 2 });
       A.panelInnerHtml({ type: 'totally-unknown', x: 0, y: 0, w: 2, h: 2 });
 
@@ -974,9 +974,9 @@ test.describe('negative', () => {
       const stage = document.createElement('div');
       A.setPath('base.chart.items', null);
       A.renderCollageStage(stage, 'tg');
-      A.setPath('base.chart.items', [{ type: 'pie', x: 0, y: 0, w: 2, h: 2 }]);
+      A.setPath('base.chart.items', [{ type: 'currentStatus', x: 0, y: 0, w: 2, h: 2 }]);
       A.renderCollageStage(stage, 'tg');
-      A.makeWidgetEl({ type: 'pie', x: 0, y: 0, w: 2, h: 2 });
+      A.makeWidgetEl({ type: 'currentStatus', x: 0, y: 0, w: 2, h: 2 });
       A.fillEditorMocks(document.createElement('div'));
       const pal = document.getElementById('anb-palette');
       if (pal) A.renderPalette();
@@ -998,7 +998,7 @@ test.describe('negative', () => {
         g.engine = undefined;
         A.readItemsFromGrid();
         const nodeEl = document.createElement('div');
-        nodeEl.dataset.type = 'pie';
+        nodeEl.dataset.type = 'currentStatus';
         g.engine = {
           nodes: [{ el: nodeEl, x: null, y: null, w: null, h: null }],
         };
@@ -1018,8 +1018,8 @@ test.describe('negative', () => {
         opts: {},
         update: () => {},
       });
-      A.addItem('pie', { w: 2, h: 2, preferX: 0, preferY: 0 });
-      A.loadItems([{ type: 'pie', x: 0, y: 0, w: 2, h: 2 }]);
+      A.addItem('currentStatus', { w: 2, h: 2, preferX: 0, preferY: 0 });
+      A.loadItems([{ type: 'currentStatus', x: 0, y: 0, w: 2, h: 2 }]);
       A.setGridForTest(kept);
 
       // copyItem nullish geometry — stub addItem path via stub grid (avoid GridStack).
@@ -1033,7 +1033,7 @@ test.describe('negative', () => {
         update: () => {},
       });
       const ghost = document.createElement('div');
-      ghost.dataset.type = 'pie';
+      ghost.dataset.type = 'currentStatus';
       ghost.gridstackNode = { w: null, h: null, x: null, y: null };
       A.copyItem(ghost);
       A.setGridForTest(kept);
@@ -1062,7 +1062,7 @@ test.describe('negative', () => {
       const dropCanvas = document.getElementById('anb-canvas');
       if (dropCanvas) {
         const dt = new DataTransfer();
-        dt.setData('text/anb-panel-id', 'pie');
+        dt.setData('text/anb-panel-id', 'currentStatus');
         dropCanvas.dispatchEvent(
           new DragEvent('dragover', {
             bubbles: true,
@@ -1214,7 +1214,7 @@ test.describe('negative', () => {
         engine: { nodes: [] },
         opts: {},
       });
-      A.loadItems([{ type: 'pie', x: 0, y: 0, w: 2, h: 2 }]);
+      A.loadItems([{ type: 'currentStatus', x: 0, y: 0, w: 2, h: 2 }]);
       A.setGridForTest(kept);
 
       document.getElementById('anb-export-popover')?.remove();

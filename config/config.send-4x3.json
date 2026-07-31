@@ -12,10 +12,10 @@
     "chart": {
       "mode": "collage",
       "panels": [
-        ["pie", "testingPyramid", "durations"],
-        ["statusDynamics", "successRateDistribution", "pie"],
+        ["currentStatus", "testingPyramid", "durations"],
+        ["statusDynamics", "successRateDistribution", "currentStatus"],
         ["testingPyramid", "durations", "statusDynamics"],
-        ["successRateDistribution", "pie", "testingPyramid"]
+        ["successRateDistribution", "currentStatus", "testingPyramid"]
       ],
       "pyramidFallback": "suites",
       "layout": "grid",

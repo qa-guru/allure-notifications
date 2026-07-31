@@ -47,7 +47,7 @@ class CollageRendererTest {
     void rendersDashboardGridWithHistoryPanels() throws Exception {
         Base base = collageBase();
         base.getChart().setPanels(java.util.Arrays.asList(
-                java.util.Arrays.asList("pie", "testingPyramid"),
+                java.util.Arrays.asList("currentStatus", "testingPyramid"),
                 java.util.Arrays.asList("statusDynamics", "successRateDistribution")));
         base.getChart().setHistoryPath(historyFixture().toString());
 
@@ -100,7 +100,7 @@ class CollageRendererTest {
         chart.setCardGap(14);
 
         ChartPanelItem pie = new ChartPanelItem();
-        pie.setType("pie");
+        pie.setType("currentStatus");
         pie.setX(0);
         pie.setY(0);
         pie.setW(5);
@@ -128,7 +128,7 @@ class CollageRendererTest {
     }
 
     @Test
-    void freeLayoutAcceptsCurrentStatusAliasAndCardGap() throws Exception {
+    void freeLayoutAcceptsCurrentStatusAndCardGap() throws Exception {
         Base base = collageBase();
         ChartConfig chart = base.getChart();
         chart.setLayout("free");
@@ -224,7 +224,7 @@ class CollageRendererTest {
     private static java.util.List<ChartPanelItem> sq1080Items() {
         return java.util.Arrays.asList(
                 item("testingPyramid", 0, 0, 3, 3, null, null),
-                item("pie", 3, 0, 3, 3, null, null),
+                item("currentStatus", 3, 0, 3, 3, null, null),
                 item("statusDynamics", 6, 0, 4, 3, null, null),
                 item("testResultSeverities", 0, 3, 3, 2, null, null),
                 item("statusTransitions", 3, 3, 3, 2, null, null),
@@ -274,7 +274,7 @@ class CollageRendererTest {
         ChartConfig chartConfig = new ChartConfig();
         chartConfig.setMode("collage");
         chartConfig.setPanels(java.util.Arrays.asList(
-                java.util.Arrays.asList("pie", "testingPyramid"),
+                java.util.Arrays.asList("currentStatus", "testingPyramid"),
                 java.util.Arrays.asList("durations")));
         chartConfig.setPyramidFallback("suites");
         chartConfig.setWidth(1000);

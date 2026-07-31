@@ -17,7 +17,7 @@ class ChartConfigTest {
 
         List<List<String>> panels = config.getPanels();
         assertEquals(1, panels.size());
-        assertEquals(java.util.Arrays.asList("pie", "testingPyramid"), panels.get(0));
+        assertEquals(java.util.Arrays.asList("currentStatus", "testingPyramid"), panels.get(0));
     }
 
     @Test
@@ -28,7 +28,7 @@ class ChartConfigTest {
 
         List<List<String>> panels = config.getPanels();
         assertEquals(2, panels.size());
-        assertEquals(java.util.Arrays.asList("pie", "testingPyramid"), panels.get(0));
+        assertEquals(java.util.Arrays.asList("currentStatus", "testingPyramid"), panels.get(0));
         assertEquals(java.util.Arrays.asList("statusDynamics", "successRateDistribution"), panels.get(1));
     }
 
@@ -59,7 +59,7 @@ class ChartConfigTest {
         assertEquals("free", config.getLayout());
         assertEquals(Integer.valueOf(10), config.getGridCols());
         assertEquals(3, config.getItems().size());
-        assertEquals("pie", config.getItems().get(0).getType());
+        assertEquals("currentStatus", config.getItems().get(0).getType());
         assertEquals(Integer.valueOf(5), config.getItems().get(0).getW());
         assertEquals("durations", config.getItems().get(2).getType());
         assertEquals(Integer.valueOf(10), config.getItems().get(2).getW());
@@ -69,7 +69,7 @@ class ChartConfigTest {
     void defaultPanelsAreDashboardGrid() {
         ChartConfig config = new ChartConfig();
         assertEquals(2, config.getPanels().size());
-        assertEquals(java.util.Arrays.asList("pie", "testingPyramid"), config.getPanels().get(0));
+        assertEquals(java.util.Arrays.asList("currentStatus", "testingPyramid"), config.getPanels().get(0));
         assertEquals(
                 java.util.Arrays.asList("statusDynamics", "successRateDistribution"),
                 config.getPanels().get(1));

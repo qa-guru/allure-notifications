@@ -75,13 +75,12 @@ public final class CollageRenderer {
     private static final Color DOT_MAXIMIZE = new Color(0x28c840);
 
     // Panel identifiers accepted in chart.panels / chart.items (config order is preserved).
-    // Aliases: pie ↔ currentStatus (awesome-charts catalog).
-    // Implemented: pie/currentStatus, testingPyramid, durations, statusDynamics,
+    // Implemented: currentStatus, testingPyramid, durations, statusDynamics,
     // successRateDistribution, testResultSeverities (+ suites via pyramidFallback).
     // Catalog stubs (empty-state — keep free-grid tiles, do not silent-drop):
     // statusTransitions, testBaseGrowthDynamics, coverageDiff, problemsDistribution,
     // stabilityDistribution, durationDynamics, statusAgePyramid.
-    private static final String PANEL_PIE = "pie";
+    private static final String PANEL_CURRENT_STATUS = "currentstatus";
     private static final String PANEL_PYRAMID = "testingpyramid";
     private static final String PANEL_DURATIONS = "durations";
     private static final String PANEL_STATUS_DYNAMICS = "statusdynamics";
@@ -94,9 +93,9 @@ public final class CollageRenderer {
     private static final String PANEL_STABILITY = "stabilitydistribution";
     private static final String PANEL_DURATION_DYNAMICS = "durationdynamics";
     private static final String PANEL_STATUS_AGE = "statusagepyramid";
-    // Default grid: dashboard-style 2x2 (pie + pyramid on top, history charts below).
+    // Default grid: dashboard-style 2x2 (status + pyramid on top, history charts below).
     private static final List<List<String>> DEFAULT_ROWS = Arrays.asList(
-            Arrays.asList(PANEL_PIE, PANEL_PYRAMID),
+            Arrays.asList(PANEL_CURRENT_STATUS, PANEL_PYRAMID),
             Arrays.asList(PANEL_STATUS_DYNAMICS, PANEL_SUCCESS_RATE));
 
     private CollageRenderer() {
@@ -140,8 +139,8 @@ public final class CollageRenderer {
             return null;
         }
         String key = raw.trim().toLowerCase(Locale.ROOT);
-        if (PANEL_PIE.equals(key) || "currentstatus".equals(key)) {
-            return PANEL_PIE;
+        if (PANEL_CURRENT_STATUS.equals(key)) {
+            return PANEL_CURRENT_STATUS;
         }
         if (PANEL_PYRAMID.equals(key) || "pyramid".equals(key)) {
             return PANEL_PYRAMID;
@@ -214,7 +213,7 @@ public final class CollageRenderer {
         // The card's header bar captions each panel, so panels skip their own title.
         PanelContext context = PanelContext.of(base, width, height, analytics, legend, false,
                 groupBy, by);
-        if (PANEL_PIE.equals(key)) {
+        if (PANEL_CURRENT_STATUS.equals(key)) {
             return new PiePanel().render(context);
         }
         if (PANEL_PYRAMID.equals(key)) {
@@ -240,7 +239,7 @@ public final class CollageRenderer {
     }
 
     private static String panelTitle(String key, Base base, ReportAnalytics analytics) {
-        if (PANEL_PIE.equals(key)) {
+        if (PANEL_CURRENT_STATUS.equals(key)) {
             return pieTitle(base);
         }
         if (PANEL_PYRAMID.equals(key)) {
@@ -437,7 +436,7 @@ public final class CollageRenderer {
         }
         // CB-870-grid default: pie | pyramid top 5×5, durations full-width 10×5 bottom.
         ChartPanelItem pie = new ChartPanelItem();
-        pie.setType(PANEL_PIE);
+        pie.setType(PANEL_CURRENT_STATUS);
         pie.setX(0);
         pie.setY(0);
         pie.setW(5);

@@ -12,7 +12,7 @@ Collage PNG + текст со статистикой и ссылками. Соб
 
 | Зона | Что внутри |
 |------|------------|
-| Collage | 7 панелей: pie · status dynamics · pyramid · durations · success rate · duration dynamics · status transitions |
+| Collage | 7 панелей: current status · status dynamics · pyramid · durations · success rate · duration dynamics · status transitions |
 | Текст | окружение, комментарий, duration, счётчики passed / failed / broken / skipped |
 | Ссылки | `report` · `dashboard` · `testops` · `build` из `base.links` |
 
@@ -205,7 +205,7 @@ npx allure-notifications@6.0.11 send --config <exported>.json
       "gridCols": 10,
       "gridRows": 10,
       "items": [
-        { "type": "pie", "x": 0, "y": 0, "w": 5, "h": 4 },
+        { "type": "currentStatus", "x": 0, "y": 0, "w": 5, "h": 4 },
         { "type": "statusDynamics", "x": 5, "y": 0, "w": 5, "h": 4 },
         { "type": "testingPyramid", "x": 0, "y": 4, "w": 4, "h": 3 },
         { "type": "durations", "x": 4, "y": 4, "w": 6, "h": 3, "groupBy": "layer" },

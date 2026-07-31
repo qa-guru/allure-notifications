@@ -32,7 +32,7 @@ See [config/config-5.0-collage.example.json](../config/config-5.0-collage.exampl
       "gridRows": 10,
       "items": [
         {
-          "type": "pie",
+          "type": "currentStatus",
           "x": 0,
           "y": 0,
           "w": 4,

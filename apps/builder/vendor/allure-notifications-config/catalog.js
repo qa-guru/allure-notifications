@@ -19,7 +19,7 @@ function panel(seed) {
 }
 /** @type {ReadonlyArray<PanelMeta>} */
 export const PANEL_CATALOG = Object.freeze([
-    panel({ id: "pie", type: "pie", title: "Current status" }),
+    panel({ id: "currentStatus", type: "currentStatus", title: "Current status" }),
     panel({ id: "testingPyramid", type: "testingPyramid", title: "Testing pyramid" }),
     panel({
         id: "durationsByLayer",
@@ -83,7 +83,7 @@ export const PANEL_META = Object.freeze(Object.fromEntries(PANEL_CATALOG.map((p)
 /** Chart types known to the catalog (unique `type` values). */
 export const CHART_TYPES = Object.freeze(new Set(PANEL_CATALOG.map((p) => p.type)));
 /**
- * Resolve palette meta by id, or by type + groupBy/by (pie ↔ currentStatus).
+ * Resolve palette meta by id, or by type + groupBy/by.
  */
 export function resolvePanelMeta(raw) {
     if (raw.id && PANEL_META[raw.id])
@@ -96,7 +96,5 @@ export function resolvePanelMeta(raw) {
         (p.by || undefined) === by);
     if (exact)
         return exact;
-    if (type === "currentStatus")
-        return PANEL_META.pie;
     return PANEL_CATALOG.find((p) => p.type === type && !p.groupBy && !p.by);
 }

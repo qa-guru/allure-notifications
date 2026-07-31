@@ -35,7 +35,7 @@ class ChartPanelsTest {
 
         BufferedImage image = new PiePanel().render(context);
 
-        assertEquals("pie", new PiePanel().getId());
+        assertEquals("currentstatus", new PiePanel().getId());
         assertEquals(500, image.getWidth());
         assertEquals(250, image.getHeight());
         assertTrue(hasNonBackgroundPixels(image));

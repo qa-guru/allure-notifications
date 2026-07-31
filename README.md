@@ -12,7 +12,7 @@ Collage PNG + caption with statistics and links. Build `config.json` in the [Con
 
 | Zone | Contents |
 |------|----------|
-| Collage | 7 panels: pie · status dynamics · pyramid · durations · success rate · duration dynamics · status transitions |
+| Collage | 7 panels: current status · status dynamics · pyramid · durations · success rate · duration dynamics · status transitions |
 | Text | environment, comment, duration, passed / failed / broken / skipped counters |
 | Links | `report` · `dashboard` · `testops` · `build` from `base.links` |
 
@@ -205,7 +205,7 @@ Minimal **6.0** example — collage + free layout + one messenger:
       "gridCols": 10,
       "gridRows": 10,
       "items": [
-        { "type": "pie", "x": 0, "y": 0, "w": 5, "h": 4 },
+        { "type": "currentStatus", "x": 0, "y": 0, "w": 5, "h": 4 },
         { "type": "statusDynamics", "x": 5, "y": 0, "w": 5, "h": 4 },
         { "type": "testingPyramid", "x": 0, "y": 4, "w": 4, "h": 3 },
         { "type": "durations", "x": 4, "y": 4, "w": 6, "h": 3, "groupBy": "layer" },

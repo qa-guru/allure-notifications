@@ -28,7 +28,7 @@ import { loadConfigVendorBrowser } from "./vendor-browser.js";
 const vendorBrowser = loadConfigVendorBrowser();
 
 const SQ1080_ITEMS = [
-  { type: "pie", x: 0, y: 0, w: 4, h: 4 },
+  { type: "currentStatus", x: 0, y: 0, w: 4, h: 4 },
   { type: "durationDynamics", x: 4, y: 0, w: 6, h: 4 },
   { type: "testingPyramid", x: 0, y: 4, w: 3, h: 3 },
   { type: "durations", x: 3, y: 4, w: 4, h: 3, groupBy: "layer" },

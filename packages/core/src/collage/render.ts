@@ -65,7 +65,7 @@ const DOT_CLOSE: Rgb = { r: 0xff, g: 0x5f, b: 0x57 };
 const DOT_MINIMIZE: Rgb = { r: 0xfe, g: 0xbc, b: 0x2e };
 const DOT_MAXIMIZE: Rgb = { r: 0x28, g: 0xc8, b: 0x40 };
 
-const PANEL_PIE = "pie";
+const PANEL_CURRENT_STATUS = "currentstatus";
 const PANEL_PYRAMID = "testingpyramid";
 const PANEL_DURATIONS = "durations";
 const PANEL_STATUS_DYNAMICS = "statusdynamics";
@@ -85,8 +85,8 @@ function normalize(raw: string | undefined | null): string | null {
     return null;
   }
   const key = raw.trim().toLowerCase();
-  if (key === PANEL_PIE || key === "currentstatus") {
-    return PANEL_PIE;
+  if (key === PANEL_CURRENT_STATUS) {
+    return PANEL_CURRENT_STATUS;
   }
   if (key === PANEL_PYRAMID || key === "pyramid") {
     return PANEL_PYRAMID;
@@ -159,7 +159,7 @@ function clamp(value: number | undefined, min: number, max: number): number {
 
 function defaultFreeItems(): ChartItem[] {
   return [
-    { type: "pie", x: 0, y: 0, w: 5, h: 5 },
+    { type: "currentStatus", x: 0, y: 0, w: 5, h: 5 },
     { type: "testingPyramid", x: 5, y: 0, w: 5, h: 5 },
     { type: "durations", x: 0, y: 5, w: 10, h: 5 },
   ];
@@ -202,7 +202,7 @@ export function resolveCardTitle(
   analytics: ReportAnalytics,
 ): string {
   const key = normalize(item.type);
-  if (key === PANEL_PIE) {
+  if (key === PANEL_CURRENT_STATUS) {
     return pieTitle(config);
   }
   if (key === PANEL_PYRAMID) {
@@ -254,7 +254,7 @@ function renderPanelPng(
     groupBy,
     by,
   });
-  if (key === PANEL_PIE) {
+  if (key === PANEL_CURRENT_STATUS) {
     return renderPiePanel(ctx);
   }
   if (key === PANEL_PYRAMID) {

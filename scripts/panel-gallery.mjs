@@ -67,7 +67,7 @@ function panelHasData(panel, analytics) {
   if (type === "testingPyramid") {
     return analytics.hasKnownLayerLabels || analytics.suites.length > 0;
   }
-  if (type === "pie") return (analytics.statistic?.total ?? 0) > 0;
+  if (type === "currentStatus") return (analytics.statistic?.total ?? 0) > 0;
   if (type === "suites") return analytics.suites.length > 0;
   return false;
 }

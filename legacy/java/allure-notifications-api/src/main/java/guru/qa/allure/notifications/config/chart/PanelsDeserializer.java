@@ -15,8 +15,8 @@ import com.fasterxml.jackson.databind.JsonNode;
  * <p>Accepts both a flat array of panel ids (treated as a single row) and a nested
  * array of rows:
  * <pre>
- *   "panels": ["pie", "testingPyramid"]                 -&gt; [["pie", "testingPyramid"]]
- *   "panels": [["pie", "testingPyramid"], ["durations"]] -&gt; as-is
+ *   "panels": ["currentStatus", "testingPyramid"]                 -&gt; [["currentStatus", "testingPyramid"]]
+ *   "panels": [["currentStatus", "testingPyramid"], ["durations"]] -&gt; as-is
  * </pre>
  * Non-string / non-array entries are ignored.
  */

@@ -93,7 +93,7 @@ Omitting `chart` entirely keeps 4.x pie chart behaviour.
     "allureResultsFolder": "build/allure-results/",
     "chart": {
       "mode": "collage",
-      "panels": ["pie", "testingPyramid", "durations"],
+      "panels": ["currentStatus", "testingPyramid", "durations"],
       "pyramidFallback": "suites",
       "width": 1000,
       "height": 600
@@ -142,7 +142,7 @@ Example free (CB-870 default):
   "gridCols": 10,
   "gridRows": 10,
   "items": [
-    {"type": "pie", "x": 0, "y": 0, "w": 5, "h": 5},
+    {"type": "currentStatus", "x": 0, "y": 0, "w": 5, "h": 5},
     {"type": "testingPyramid", "x": 5, "y": 0, "w": 5, "h": 5},
     {"type": "durations", "x": 0, "y": 5, "w": 10, "h": 5}
   ]
@@ -155,7 +155,7 @@ Example free (CB-870 default):
 |-------|---------|-------------|
 | `mode` | `pie` | `pie` or `collage` |
 | `layout` | `grid` | `grid` \| `stacked` \| `row` \| `free` (5.0.2) |
-| `panels` | `["pie","testingPyramid","durations"]` | Panel order for `grid`/`stacked`/`row` |
+| `panels` | `["currentStatus","testingPyramid","durations"]` | Panel order for `grid`/`stacked`/`row` |
 | `items` | — | Free-grid cells `{type,x,y,w,h}` (required when `layout: free`) |
 | `gridCols` / `gridRows` | `10` / `10` | Free-grid substrate |
 | `pyramidFallback` | `suites` | Panel shown when no `layer` labels in results (`suites` = top suites bar) |

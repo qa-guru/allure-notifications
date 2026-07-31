@@ -271,7 +271,7 @@ describe("@allure-notifications/core analytics panels render", () => {
           gridRows: 10,
           pyramidFallback: "suites",
           items: [
-            { type: "pie", x: 0, y: 0, w: 3, h: 3 },
+            { type: "currentStatus", x: 0, y: 0, w: 3, h: 3 },
             { type: "testingPyramid", x: 3, y: 0, w: 3, h: 3 },
             { type: "durations", x: 6, y: 0, w: 4, h: 3 },
             { type: "testResultSeverities", x: 0, y: 3, w: 3, h: 3 },

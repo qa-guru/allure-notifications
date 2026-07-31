@@ -142,7 +142,7 @@ function cb870Config(opts: {
         gridCols: 10,
         gridRows: 10,
         items: [
-          { type: "pie", x: 0, y: 0, w: 5, h: 5 },
+          { type: "currentStatus", x: 0, y: 0, w: 5, h: 5 },
           { type: "testingPyramid", x: 5, y: 0, w: 5, h: 5 },
           { type: "durations", x: 0, y: 5, w: 10, h: 5 },
         ],
@@ -407,7 +407,7 @@ describe("@allure-notifications/core collage", () => {
 
     // Panel regions — catch single-card regressions the full-frame average can hide.
     const regions: Array<[string, { x: number; y: number; w: number; h: number }]> = [
-      ["pie", { x: 0, y: 0, w: 5, h: 5 }],
+      ["currentStatus", { x: 0, y: 0, w: 5, h: 5 }],
       ["pyramid", { x: 5, y: 0, w: 5, h: 5 }],
       ["durations", { x: 0, y: 5, w: 10, h: 5 }],
     ];
@@ -564,15 +564,7 @@ describe("@allure-notifications/core empty-state panels", () => {
     );
 
     assert.equal(
-      resolveCardTitle({ type: "pie", x: 0, y: 0, w: 1, h: 1 }, config, analytics),
-      "Title Project",
-    );
-    assert.equal(
-      resolveCardTitle(
-        { type: "currentStatus", x: 0, y: 0, w: 1, h: 1 },
-        config,
-        analytics,
-      ),
+      resolveCardTitle({ type: "currentStatus", x: 0, y: 0, w: 1, h: 1 }, config, analytics),
       "Title Project",
     );
     assert.equal(

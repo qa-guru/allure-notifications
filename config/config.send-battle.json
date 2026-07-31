@@ -11,7 +11,7 @@
     "enableSuitesPublishing": false,
     "chart": {
       "mode": "collage",
-      "panels": ["pie", "testingPyramid"],
+      "panels": ["currentStatus", "testingPyramid"],
       "pyramidFallback": "suites",
       "layout": "stacked",
       "width": 1000,

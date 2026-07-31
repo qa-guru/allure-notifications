@@ -32,7 +32,7 @@ import lombok.extern.slf4j.Slf4j;
  */
 @Slf4j
 public class PiePanel implements ChartPanel {
-    public static final String ID = "pie";
+    public static final String ID = "currentstatus";
 
     // Ring geometry as a fraction of the panel's shorter side.
     private static final double RING_STROKE_RATIO = 0.085;

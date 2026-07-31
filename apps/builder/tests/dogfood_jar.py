@@ -31,7 +31,7 @@ SHOWCASE = AN / "build" / "pyramid-showcase"
 JAR_GLOB = "allure-notifications/build/libs/allure-notifications-*.jar"
 
 CB870_ITEMS = [
-    {"type": "pie", "x": 0, "y": 0, "w": 5, "h": 5},
+    {"type": "currentStatus", "x": 0, "y": 0, "w": 5, "h": 5},
     {"type": "testingPyramid", "x": 5, "y": 0, "w": 5, "h": 5},
     {"type": "durations", "x": 0, "y": 5, "w": 10, "h": 5},
 ]

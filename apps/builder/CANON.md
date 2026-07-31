@@ -6,7 +6,7 @@
 |--|--|
 | Canvas | **870×1080** · grid **10×10** · cell **87×108** |
 | Presets only | **870×1080** · **1080×1080** · **1410×1080** (no 1024×1280) |
-| Panels | **17 catalog** (pie ↔ currentStatus · ChartType + groupBy/by) · mocks synced |
+| Panels | **17 catalog** (currentStatus · ChartType + groupBy/by) · mocks synced |
 | Layout | **4-tile on 10×10** — pie 4×4 · durationDynamics 6×4 · pyramid 3×3 \| durations-by-layer 4×3 · empty cols 7–9 + rows 7–9 (`DEFAULT_ITEMS` only) |
 | Palette add | always **2×2** footprint — caption = panel title; `defaultW/H` never mirror grid presets |
 | Grid SSOT | `base.chart.items` from current vector · boot / Reset / `vector#default` → `applyDefaultVector()` |
@@ -30,7 +30,7 @@ Palette slots ↔ `awesome-charts.mjs` / DS `WidgetTileMocks` (id unique; `type`
 
 | id | type | notes |
 |----|------|-------|
-| pie | pie | ↔ currentStatus |
+| currentStatus | currentStatus | |
 | testingPyramid | testingPyramid | |
 | testResultSeverities | testResultSeverities | |
 | statusDynamics | statusDynamics | |
@@ -64,7 +64,7 @@ Terminal exports full `config.json`. Chart block for jar free-grid (CB-870 defau
   "gridCols": 10,
   "gridRows": 10,
   "items": [
-    {"type": "pie", "x": 0, "y": 0, "w": 4, "h": 4},
+    {"type": "currentStatus", "x": 0, "y": 0, "w": 4, "h": 4},
     {"type": "durationDynamics", "x": 4, "y": 0, "w": 6, "h": 4},
     {"type": "testingPyramid", "x": 0, "y": 4, "w": 3, "h": 3},
     {"type": "durations", "x": 3, "y": 4, "w": 4, "h": 3, "groupBy": "layer"}

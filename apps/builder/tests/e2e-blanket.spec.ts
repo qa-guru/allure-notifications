@@ -151,7 +151,7 @@ test.describe('allure-notifications-builder e2e blanket', () => {
     await expect
       .poll(async () => {
         const items = (await terminalChart(page)).items;
-        return items.some((/** @type {{ type: string }} */ i) => i.type === 'pie');
+        return items.some((/** @type {{ type: string }} */ i) => i.type === 'currentStatus');
       })
       .toBe(true);
   });

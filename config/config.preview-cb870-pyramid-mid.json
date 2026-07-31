@@ -28,7 +28,7 @@
           "h": 3
         },
         {
-          "type": "pie",
+          "type": "currentStatus",
           "x": 7,
           "y": 0,
           "w": 3,

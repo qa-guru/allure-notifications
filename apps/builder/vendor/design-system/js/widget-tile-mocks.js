@@ -1479,7 +1479,6 @@
   var RENDERERS = {
     currentStatus: donutSvg,
     donut: donutSvg,
-    pie: donutSvg,
     testingPyramid: pyramidSvg,
     pyramid: pyramidSvg,
     testResultSeverities: severitySvg,
@@ -1498,12 +1497,12 @@
 
   /**
    * Resolve ChartType + variant attrs → renderer.
-   * Aliases: pie/donut → currentStatus; pyramid → testingPyramid;
+   * Aliases: donut → currentStatus; pyramid → testingPyramid;
    * duration-trend → durationDynamics. Variants: groupBy / by.
    */
   function resolveKind(kind, variant) {
     var k = (kind || "").trim();
-    if (k === "pie" || k === "donut") k = "currentStatus";
+    if (k === "donut") k = "currentStatus";
     if (k === "pyramid") k = "testingPyramid";
     if (k === "duration-trend") k = "durationDynamics";
     var groupBy = (variant && variant.groupBy) || "";
