@@ -1,6 +1,6 @@
 # allure-notifications collage canon (locked)
 
-**Product pin:** monorepo `docs/allure-notifications/VERSION` → **6.0.11** (`npx allure-notifications`)  
+**Product pin:** monorepo `docs/allure-notifications/VERSION` → **6.0.12** (`npx allure-notifications`)  
 **Classic visual lock:** [v5.0.3](https://github.com/qa-guru/allure-notifications/releases/tag/v5.0.3) 3-tile PNG (pixel gate)
 
 ## Showcase lock (Telegram CB-870 readme-hero / dogfood-full)
@@ -50,5 +50,5 @@ Alias: [`collage-cb870-free-dogfood.png`](./collage-cb870-free-dogfood.png)
 
 1. Do **not** reintroduce a separate “accessible” green for `unit` that drifts from pie success.
 2. Do **not** ship consumer configs without `base.darkMode: true` for Monitoring dogfood.
-3. Pin consumers to monorepo `docs/allure-notifications/VERSION` (**6.0.11** CLI). Legacy jar: **5.0.8**.
+3. Pin consumers to monorepo `docs/allure-notifications/VERSION` (**6.0.12** CLI). Legacy jar: **5.0.8**.
 4. Do **not** swap dogfood-full / README hero footer back to `testResultSeverities` + wide `successRate`.

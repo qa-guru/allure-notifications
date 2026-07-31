@@ -116,25 +116,25 @@ test.describe('allure-notifications-builder e2e blanket', () => {
       .toBe(4);
   });
 
-  test('palette drag-add: pie from palette lands on empty canvas', async ({
+  test('palette drag-add: currentStatus from palette lands on empty canvas', async ({
     page,
   }) => {
     await page.goto('/');
     await page.getByTestId('anb-btn-clear').click();
     await expect(page.getByTestId('anb-empty')).toBeVisible();
 
-    const pie = page.getByTestId('anb-palette-pie');
+    const status = page.getByTestId('anb-palette-currentStatus');
     const canvas = page.getByTestId('anb-canvas');
-    await expect(pie).toBeVisible();
+    await expect(status).toBeVisible();
 
-    const pieBox = await pie.boundingBox();
+    const statusBox = await status.boundingBox();
     const canvasBox = await canvas.boundingBox();
-    expect(pieBox).toBeTruthy();
+    expect(statusBox).toBeTruthy();
     expect(canvasBox).toBeTruthy();
 
     await page.mouse.move(
-      pieBox.x + pieBox.width / 2,
-      pieBox.y + pieBox.height / 2,
+      statusBox.x + statusBox.width / 2,
+      statusBox.y + statusBox.height / 2,
     );
     await page.mouse.down();
     await page.mouse.move(

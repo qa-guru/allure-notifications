@@ -1,6 +1,6 @@
 {
   "name": "@allure-notifications/test-meta",
-  "version": "6.0.11",
+  "version": "6.0.12",
   "description": "Explicit Allure suite labels for allure-notifications tests (Epic/Feature/Story/layer SSOT).",
   "type": "module",
   "exports": {

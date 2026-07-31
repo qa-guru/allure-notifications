@@ -410,7 +410,7 @@ test.describe('panels', () => {
       await d.accept();
     });
     await page.getByTestId('anb-btn-clear').click();
-    await page.getByTestId('anb-palette-pie').click();
+    await page.getByTestId('anb-palette-currentStatus').click();
     await expect(page.locator('#anb-grid .grid-stack-item')).toHaveCount(1);
 
     // Fill grid via seam until addItem alerts.

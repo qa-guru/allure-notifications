@@ -2,15 +2,19 @@
 
 ## Unreleased
 
+## v 6.0.12
+
 ### English
 
 - **README** — Omni-tool icon strips, ANB on iPad Pro 13 landscape frame, Telegram notification example, `proxy` in minimal `config.json`
 - **Chart** — free-grid / panels id is Allure 3 `currentStatus` only (drop `pie` alias); `chart.mode: pie` stays legacy
+- **Builder e2e** — palette testids follow `anb-palette-currentStatus`
 
 ### Russian
 
 - **README** — Omni-tool strips, ANB в рамке iPad Pro 13 landscape, пример Telegram-уведомления, блок `proxy` в минимальном `config.json`
 - **Chart** — free-grid / panels id — только Allure 3 `currentStatus` (без алиаса `pie`); `chart.mode: pie` остаётся legacy
+- **Builder e2e** — palette testids → `anb-palette-currentStatus`
 
 ## v 6.0.11
 
