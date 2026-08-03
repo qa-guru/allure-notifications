@@ -3,7 +3,7 @@
   "phase": 6,
   "vendor": {
     "source": "projects/design-system-home/design-system/",
-    "copied": "2026-07-31",
+    "copied": "2026-08-03",
     "policy": "copy-once pin; do not edit files under vendor/",
     "files": [
       {
@@ -12,7 +12,7 @@
       },
       {
         "path": "assets/qa-guru-logo.svg",
-        "sha256_16": "a802c9737e0f23fd"
+        "sha256_16": "20ca0e73cb21f7e4"
       },
       {
         "path": "css/button.css",

@@ -1,11 +1,12 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="none" viewBox="0 0 32 32">
-  <!-- QA.GURU mark: Q bowl fills the square edge-to-edge; short Q spur -->
-  <g stroke="#111111" stroke-width="4" stroke-linecap="round">
-    <circle cx="16" cy="16" r="14"/>
-    <path d="M26.4 26.4 L30 30"/>
+  <!-- QA.GURU mark: r=13.5 sw=5 → outer edge same as r=14 sw=4; gap +5px below tail -->
+  <g stroke="#111111" stroke-width="5">
+    <path stroke-linecap="round" d="M 19.34 29.08 A 13.5 13.5 0 1 1 26.03 25.03"/>
+    <path stroke-linecap="round" d="M26.05 26.05 L29.65 29.65"/>
   </g>
-  <g stroke="#0EA5E9" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
-    <path d="M11.5 11.5 L15.5 15.5 L11.5 19.5"/>
-    <path d="M17.7 19.45 H21"/>
+  <!-- Prompt: square caps (flat ends), miter > tip, wider gap before _ -->
+  <g stroke="#0284C7" stroke-width="3.5" stroke-linecap="square" stroke-linejoin="miter" stroke-miterlimit="6">
+    <path d="M10.3 11.3 L14.2 15.5 L10.3 19.3"/>
+    <path d="M19 19.3 H22"/>
   </g>
 </svg>
