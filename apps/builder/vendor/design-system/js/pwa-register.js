@@ -7,7 +7,9 @@
  *
  * Semantics match vite-plugin-pwa `registerType: 'autoUpdate'` +
  * `registerSW({ immediate: true })`: register ASAP, call `update()`, reload
- * on `controllerchange` so an installed window picks up a new shell.
+ * on `controllerchange` when an *existing* controller is replaced (new shell).
+ * First claim (no prior controller) must not reload — otherwise every fresh
+ * mount / cross-scope navigation blinks twice (claim → reload → paint).
  *
  * Preview / local HTTP stands should not call this (no SW on DS preview).
  *
@@ -74,9 +76,11 @@ export function registerServiceWorker(options = {}) {
   }
 
   if (reloadOnControllerChange) {
+    // Capture before register(): first clientsClaim also fires controllerchange.
+    const hadController = Boolean(navigator.serviceWorker.controller);
     let refreshing = false;
     navigator.serviceWorker.addEventListener('controllerchange', () => {
-      if (refreshing) {
+      if (!hadController || refreshing) {
         return;
       }
       refreshing = true;
