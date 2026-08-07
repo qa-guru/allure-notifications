@@ -4,7 +4,29 @@
 
 **Beautiful test-run notifications — right in your messenger.**
 
-Collage PNG + caption with statistics and links. Build `config.json` in the [Config builder](#config-builder-anb), send with the TypeScript CLI **6.0.12**.
+Collage PNG + caption with statistics and links. Build `config.json` in the [Config builder](#config-builder-anb), send with the GitHub Action or TypeScript CLI **6.0.13**.
+
+## GitHub Marketplace Action
+
+Generate the Allure report once, then let the Action render and send the
+notification:
+
+```yaml
+- uses: qa-guru/allure-notifications@v6
+  with:
+    config: notifications/config.json
+    allure-folder: build/reports/allure-report/allureReport/awesome
+    allure-results-folder: build/allure-results
+    mode: live
+  env:
+    TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+    TELEGRAM_CHAT_ID: ${{ vars.TELEGRAM_CHAT_ID }}
+    TELEGRAM_TOPIC_ID: ${{ vars.TELEGRAM_TOPIC_ID }}
+```
+
+Pipeline: `tests → allure-results → npx allure generate (once) → Action send`.
+The Action never generates the report and never writes credentials to JSON.
+See the [complete workflow and static config](examples/github-actions/).
 
 ## Notification example
 
@@ -109,13 +131,13 @@ Missing a locale? [Open an issue](https://github.com/qa-guru/allure-notification
 |---------|-------|--------|--------|
 | **4.\*** | Java | Allure 2 | Historical |
 | **5.\*** | Java | Allure 3 | Legacy freeze at **5.0.8** (`legacy/java/`); there is **no 5.1** |
-| **6.\*** | TypeScript | Allure 3 | **Product** — pin **6.0.12** (CLI + builder + plugin) |
+| **6.\*** | TypeScript | Allure 3 | **Product** — pin **6.0.13** (Action + CLI + builder + plugin) |
 
 Older patch notes → [GitHub Releases](https://github.com/qa-guru/allure-notifications/releases) · migration → [`MIGRATION.md`](MIGRATION.md).
 
 | Piece | Role |
 |-------|------|
-| **CLI** | `npx allure-notifications@6.0.12 send --config …` — primary runtime |
+| **CLI** | `npx allure-notifications@6.0.13 send --config …` — primary runtime |
 | **Collage PNG** | `@napi-rs/canvas` in `@allure-notifications/core` (Playwright = tests only) |
 | **Config builder** | Web UI → full `config.json` + free-layout collage — [`apps/builder/`](apps/builder/) |
 | **Packages** | `@allure-notifications/config` · `pyramid` · `core` · bin `allure-notifications` · plugin `@allure-notifications/plugin` |
@@ -129,7 +151,7 @@ Summary drives notification text. In collage mode the CLI also reads `*-result.j
 
 ```bash
 npx allure generate allure-results --clean -o allure-report
-npx allure-notifications@6.0.12 send --config config.json --live
+npx allure-notifications@6.0.13 send --config config.json --live
 ```
 
 | Flag | Behavior |
@@ -170,11 +192,11 @@ Install as a **PWA** (Add to Home Screen / Install) for offline shell and standa
 
 1. Arrange panels in the builder → **Export** / Download `config.json`.
 2. Point `base.allureFolder` / `base.allureResultsFolder` at your report and results.
-3. Fill messenger credentials (or env placeholders).
+3. Keep messenger credentials empty in JSON and provide them through environment variables.
 4. Send:
 
 ```bash
-npx allure-notifications@6.0.12 send --config <exported>.json
+npx allure-notifications@6.0.13 send --config <exported>.json
 ```
 
 ## config.json
@@ -223,8 +245,8 @@ Minimal **6.0** example — collage + free layout + one messenger:
     }
   },
   "telegram": {
-    "token": "${TELEGRAM_BOT_TOKEN}",
-    "chat": "${TELEGRAM_CHAT_ID}",
+    "token": "",
+    "chat": "",
     "topic": "",
     "templatePath": "/templates/telegram.ftl"
   },
@@ -312,7 +334,7 @@ Locked collage rules and reference PNG: [`docs/canon/CANON.md`](docs/canon/CANON
 Allure 3 plugin — thin wrapper over the same core pipeline. CLI remains primary.
 
 ```bash
-npm add allure @allure-notifications/plugin@6.0.12
+npm add allure @allure-notifications/plugin@6.0.13
 ```
 
 - Docs: [`packages/plugin/README.md`](packages/plugin/README.md)

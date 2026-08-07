@@ -31,6 +31,9 @@ on:
       - 'package.json'
       - 'pnpm-lock.yaml'
       - 'pnpm-workspace.yaml'
+      - 'action.yml'
+      - 'examples/github-actions/**'
+      - '.github/workflows/action-e2e.yml'
       - '.github/workflows/ci-6.0.yml'
   workflow_dispatch:
 
@@ -66,6 +69,9 @@ jobs:
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
+
+      - name: Validate Action metadata and workflows
+        run: pnpm validate:action
 
       - name: Install Playwright Chromium
         run: pnpm --filter @allure-notifications/builder exec playwright install chromium --with-deps

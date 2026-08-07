@@ -12,6 +12,7 @@ import {
 } from "@allure-notifications/core";
 
 import { deliver, type DeliveryResult } from "./messengers.js";
+import type { ConfigOverrides } from "./parse.js";
 
 export type SendOptions = {
   configPath: string;
@@ -20,6 +21,8 @@ export type SendOptions = {
   /** Live Telegram (ADR 008). Requires explicit --live; never default. */
   live?: boolean;
   out?: string;
+  /** Runtime config overrides. Relative folder paths resolve from cwd. */
+  overrides?: ConfigOverrides;
   /** Override cwd for relative path resolution (tests). */
   cwd?: string;
   /** Env override for credential resolution / tests. */
@@ -78,6 +81,57 @@ export function resolveConfigPaths(config: Config, configDir: string): Config {
   return { ...config, base };
 }
 
+/**
+ * Apply runtime values without rendering a second config file.
+ * Folder overrides are consumer-cwd-relative; paths read from config remain
+ * config-directory-relative via resolveConfigPaths.
+ */
+export function applyConfigOverrides(
+  config: Config,
+  overrides: ConfigOverrides,
+  baseDir: string,
+): Config {
+  const base = { ...config.base };
+  const allureFolder = resolveMaybeRelative(overrides.allureFolder, baseDir);
+  const allureResultsFolder = resolveMaybeRelative(
+    overrides.allureResultsFolder,
+    baseDir,
+  );
+  if (allureFolder !== undefined) {
+    base.allureFolder = allureFolder;
+  }
+  if (allureResultsFolder !== undefined) {
+    base.allureResultsFolder = allureResultsFolder;
+  }
+  if (overrides.project !== undefined) {
+    base.project = overrides.project;
+  }
+
+  const links = { ...base.links };
+  if (overrides.reportUrl !== undefined) {
+    links.report = overrides.reportUrl;
+  }
+  if (overrides.dashboardUrl !== undefined) {
+    links.dashboard = overrides.dashboardUrl;
+  }
+  if (overrides.testopsUrl !== undefined) {
+    links.testops = overrides.testopsUrl;
+  }
+  if (overrides.buildUrl !== undefined) {
+    links.build = overrides.buildUrl;
+  }
+  if (
+    overrides.reportUrl !== undefined ||
+    overrides.dashboardUrl !== undefined ||
+    overrides.testopsUrl !== undefined ||
+    overrides.buildUrl !== undefined
+  ) {
+    base.links = links;
+  }
+
+  return { ...config, base };
+}
+
 type ZodLikeIssue = { path: PropertyKey[]; message: string };
 
 function isZodLikeError(
@@ -112,7 +166,16 @@ export function formatConfigValidationError(
   return new Error(String(err));
 }
 
-export async function loadConfigFile(configPath: string): Promise<Config> {
+export type LoadConfigOptions = {
+  overrides?: ConfigOverrides;
+  /** Base directory for runtime path overrides. */
+  overrideBaseDir?: string;
+};
+
+export async function loadConfigFile(
+  configPath: string,
+  options: LoadConfigOptions = {},
+): Promise<Config> {
   const abs = resolve(configPath);
   const raw = await readFile(abs, "utf8");
   let data: unknown;
@@ -124,7 +187,12 @@ export async function loadConfigFile(configPath: string): Promise<Config> {
   }
   try {
     const config = parseConfig(data);
-    return resolveConfigPaths(config, dirname(abs));
+    const resolved = resolveConfigPaths(config, dirname(abs));
+    return applyConfigOverrides(
+      resolved,
+      options.overrides ?? {},
+      resolve(options.overrideBaseDir ?? process.cwd()),
+    );
   } catch (err) {
     throw formatConfigValidationError(err, abs);
   }
@@ -151,7 +219,10 @@ export async function send(options: SendOptions): Promise<SendResult> {
     options.dryRun !== true &&
     options.mock !== true;
 
-  const config = await loadConfigFile(configPath);
+  const config = await loadConfigFile(configPath, {
+    overrides: options.overrides,
+    overrideBaseDir: cwd,
+  });
   const analytics = await loadReportAnalytics(config);
   const png = await renderCollagePng(config, analytics);
 

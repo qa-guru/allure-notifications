@@ -1,53 +1,40 @@
-# GitHub Actions — notify after Allure generate
+# GitHub Marketplace Action
 
-**Primary:** one `allure generate`, then CLI `allure-notifications send` (or the composite Action at repo root).
+The primary pipeline is:
 
-| Path | When |
-|------|------|
-| **CLI / Action (primary)** | Post-step after generate — [`cli-notify.yml`](cli-notify.yml) · root [`action.yml`](../../action.yml) |
-| **Plugin (legacy alternate)** | Second `allure generate` with `plugins.notifications` — [`plugin-notify.yml`](plugin-notify.yml) |
+```text
+tests → allure-results → npx allure generate (once) → Action send
+```
 
-## Why not two generates?
-
-Allure 3 plugins run inside `generate`. Using `@allure-notifications/plugin` forces a second pass. The CLI reads `summary.json` / results from disk after the first generate — no second pass.
-
-## Marketplace Action
+The Action reads an existing report. It does not run Allure and does not write
+runtime JSON. Keep a static [`notifications/config.json`](notifications/config.json)
+in the consumer repository and pass credentials only through environment
+variables.
 
 ```yaml
-- uses: qa-guru/allure-notifications@v6   # after release tag + Marketplace publish
+- uses: qa-guru/allure-notifications@v6
   with:
-    config: notifications/config.runtime.json
-    mode: ${{ github.event_name == 'pull_request' && 'dry-run' || 'live' }}
+    config: notifications/config.json
+    allure-folder: build/reports/allure-report/allureReport/awesome
+    allure-results-folder: build/allure-results
+    mode: live
   env:
     TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
-    # token/chat/topic must already be in the config file (render step)
+    TELEGRAM_CHAT_ID: ${{ vars.TELEGRAM_CHAT_ID }}
+    TELEGRAM_TOPIC_ID: ${{ vars.TELEGRAM_TOPIC_ID }}
 ```
 
-Publish checklist (human):
+Runtime folder inputs are resolved from the consumer workspace, or from
+`working-directory` when it is set. Relative paths stored inside the static
+config remain relative to the config file.
 
-1. Tag release matching npm pin (e.g. `v6.0.12`)
-2. GitHub → Release → Publish this Action to the GitHub Marketplace
-3. Consumers pin `@v6` or `@v6.0.12` (never floating `latest`)
+[`cli-notify.yml`](cli-notify.yml) is the copy-paste workflow and
+[`allurerc.mjs`](allurerc.mjs) is its native Allure 3 config.
 
-## Files
+## Plugin capability
 
-| File | Role |
-|------|------|
-| [`cli-notify.yml`](cli-notify.yml) | Primary: generate once + Action/CLI send |
-| [`allurerc.cli.mjs`](allurerc.cli.mjs) | Report-only Allure config (no notifications plugin) |
-| [`plugin-notify.yml`](plugin-notify.yml) | Legacy: two generates + plugin |
-| [`allurerc.mjs`](allurerc.mjs) | Plugin example config (notifications in `done`) |
-| [`notifications.config.json`](notifications.config.json) | Same schema as CLI `send --config` |
-
-## Local smoke (CLI)
-
-```bash
-npm install allure@^3.14.3 allure-notifications@6.0.12
-npx allure generate ./allure-results -o ./allure-report
-# render config.runtime.json from notifications.config.json + env
-npx allure-notifications send --config notifications/config.runtime.json --dry-run --out collage.png
-```
-
-`NOTIFICATION_MODE=live` / Action `mode: live` only with `TELEGRAM_*` (ADR 008).
-
-More: [`packages/cli` README](../../packages/cli/README.md) · [`docs/ci-cookbook.md`](../../docs/ci-cookbook.md).
+`@allure-notifications/plugin` remains available as a legacy alternate. It is
+not the recommended GitHub Actions path because Allure calls `Plugin.done`
+before report files are flushed, which requires another generate pass. Its
+separate example is [`plugin-notify.yml`](plugin-notify.yml) with
+[`allurerc.plugin.mjs`](allurerc.plugin.mjs).

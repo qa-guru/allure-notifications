@@ -1,6 +1,6 @@
 {
   "name": "@allure-notifications/pyramid",
-  "version": "6.0.12",
+  "version": "6.0.13",
   "description": "Testing-pyramid palette + rounded-tier geometry SSOT (Phase 2).",
   "type": "module",
   "exports": {

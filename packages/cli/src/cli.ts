@@ -69,6 +69,15 @@ export async function runCli(argv: string[]): Promise<RunCliResult> {
       mock: args.mock,
       live: args.live,
       out: args.out,
+      overrides: {
+        allureFolder: args.allureFolder,
+        allureResultsFolder: args.allureResultsFolder,
+        project: args.project,
+        reportUrl: args.reportUrl,
+        dashboardUrl: args.dashboardUrl,
+        testopsUrl: args.testopsUrl,
+        buildUrl: args.buildUrl,
+      },
     });
 
     const lines: string[] = [

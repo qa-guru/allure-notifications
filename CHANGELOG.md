@@ -2,6 +2,20 @@
 
 ## Unreleased
 
+## v 6.0.13
+
+### English
+
+- **GitHub Marketplace Action** — root `action.yml` sends an existing Allure report with no second generate or consumer config renderer
+- **CLI overrides** — report/results folders, project, and report/dashboard/TestOps/build links; override paths resolve from the consumer working directory
+- **Action E2E** — runnable `uses: ./` workflow generates the dogfood report once and asserts the collage
+
+### Russian
+
+- **GitHub Marketplace Action** — корневой `action.yml` отправляет готовый Allure-отчёт без второго generate и consumer renderer
+- **CLI overrides** — пути report/results, project и ссылки report/dashboard/TestOps/build; пути overrides считаются от working directory consumer
+- **Action E2E** — runnable workflow с `uses: ./` один раз генерирует dogfood report и проверяет collage
+
 ## v 6.0.12
 
 ### English

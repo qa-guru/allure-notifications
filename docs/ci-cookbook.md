@@ -1,13 +1,13 @@
 # CI cookbook (6.0 TypeScript)
 
-Public surface after Phase 3 / Stages C–D: CLI `send --config` renders a native collage PNG (`@napi-rs/canvas`) and dry-runs or mocks messengers. Java `java -jar` remains the **5.0** path under [`legacy/java/`](../legacy/java/).
+Public surface: the Marketplace Action and CLI `send --config` render a native collage PNG (`@napi-rs/canvas`) from an existing report. Java `java -jar` remains the **5.0** path under [`legacy/java/`](../legacy/java/).
 
 ## Contract
 
 1. Generate Allure 3 report (or point `base.allureFolder` / `base.allureResultsFolder` at existing artifacts).
-2. **Primary:** run **allure-notifications CLI** as a separate post-step with `config.json`.
+2. **Primary on GitHub:** run `qa-guru/allure-notifications@v6` as a separate post-step with static `config.json`.
 3. CLI reads report summary/results → collage PNG → messenger(s).
-4. CLI does **not** patch awesome/dashboard HTML.
+4. Action/CLI does not generate a report, patch HTML, or render runtime JSON.
 5. **Alternate (after generate):** Allure 3 plugin via `allurerc` — [`examples/allurerc.notifications.mjs`](../examples/allurerc.notifications.mjs) · [`packages/plugin/README.md`](../packages/plugin/README.md). Same config schema / modes; not required for consumers.
 
 ```bash
@@ -22,7 +22,7 @@ npx allure-notifications send --config config.json --dry-run
 | `--mock` | Render PNG; mock deliveries; **no network** |
 | `--out <png>` | Write PNG buffer to disk |
 
-Default without `--mock` / `--live` is safe **dry-run**. Live Telegram = explicit `--live` + env credentials ([`telegram-dogfood.md`](telegram-dogfood.md)). Product CI job **`telegram`** in `ci-6.0.yml` (Q4): PR `--dry-run`; `master` / `workflow_dispatch` `--live` when secrets present. CLI pin SSOT: monorepo `docs/allure-notifications/VERSION` (**6.0.12**).
+Default without `--mock` / `--live` is safe **dry-run**. Live Telegram = explicit `--live` + env credentials ([`telegram-dogfood.md`](telegram-dogfood.md)). Product CI job **`telegram`** in `ci-6.0.yml` (Q4): PR `--dry-run`; `master` / `workflow_dispatch` `--live` when secrets present. Current CLI pin: **6.0.13**.
 
 ### Alternate — Allure 3 plugin (`allurerc`)
 
@@ -39,7 +39,7 @@ npx allure generate ./allure-results --config ./examples/allurerc.notifications.
 | Live | `--live` + `TELEGRAM_*` | `mode: "live"` + same env |
 | Config | `config.json` | `options.config` → same schema |
 
-npm `@allure-notifications/plugin` — needs **`main`** for Allure `require.resolve` (**≥6.0.9**; skip 6.0.6; workspace dogfood OK). **Separate GitHub Actions example (plugin, not CLI):** [`examples/github-actions/`](../examples/github-actions/) · runnable workflow [`.github/workflows/example-plugin-notify.yml`](../.github/workflows/example-plugin-notify.yml) (`workflow_dispatch`, default dry-run).
+npm `@allure-notifications/plugin` — needs **`main`** for Allure `require.resolve` (**≥6.0.9**; skip 6.0.6; workspace dogfood OK). The legacy example remains under [`examples/github-actions/`](../examples/github-actions/), but it is not a product CI workflow.
 
 ## Workspace (local / before `npx`)
 
@@ -56,7 +56,7 @@ Fixture config already points at `packages/core/test/fixtures/dogfood-report` + 
 
 ## GitHub Actions — product CI (this repo)
 
-TS tests live in [`.github/workflows/ci-6.0.yml`](../.github/workflows/ci-6.0.yml) (`pnpm i` + `pnpm typecheck` + `pnpm test` + hard `pnpm coverage` = packages c8 + builder istanbul at **100% × 4** + `pnpm allure:generate` on `master` + `feature/6.0*` + `feature/quality-*`). Artifacts: `allure-results/` · `allure-report/` · `coverage/` (retain ≥7d). Job **Sonar (hard / Q5)** needs coverage → `scripts/ci-sonar.sh` + vendored `scripts/sonar-gate-wait.py` (`projectKey=allure-notifications`; `SONAR_REQUIRED=true`; forks / no token soft-skip). Job **TestOps (informational)** needs `allure-results` → `setup-allurectl@v1` + `allurectl upload` + close (soft-skip without `ALLURE_*`; forks never upload). Job **Telegram (Q4)** needs `allure-report` → `scripts/ci-telegram.sh` + `config/ci-telegram.json` (`npx allure-notifications@6.0.12`; PR dry-run / master live → topic 34). Builder Pages: [`pages-builder.yml`](../.github/workflows/pages-builder.yml) (static `apps/builder/` on `master` + `feature/6.0*`; see [`pages-cutover.md`](pages-cutover.md)). Java jar CI stays in [`build.yml`](../.github/workflows/build.yml) (**master** only; cwd `legacy/java`).
+TS tests live in [`.github/workflows/ci-6.0.yml`](../.github/workflows/ci-6.0.yml) (`pnpm i` + `pnpm typecheck` + `pnpm test` + hard `pnpm coverage` = packages c8 + builder istanbul at **100% × 4** + `pnpm allure:generate` on `master` + `feature/6.0*` + `feature/quality-*`). The runnable Marketplace path is [`.github/workflows/action-e2e.yml`](../.github/workflows/action-e2e.yml): dogfood results → one report generate → `uses: ./` → collage assertion. Artifacts from the main CI: `allure-results/` · `allure-report/` · `coverage/` (retain ≥7d).
 
 ## Own tests → Allure results (Q1)
 
@@ -117,7 +117,7 @@ Quality contour close-out for this repo:
 | Visual / collage | Unchanged pixel/ahash gate in `pnpm test` — **not** part of coverage % floor |
 | TestOps / Telegram | Still informational / dry-run-on-PR as Q3–Q4 |
 
-Contour complete. Phase 5 plugin **done** (GH example #492/#493…; plugin pin **`@6.0.12`**, CLI **`@6.0.12`**). Next product: **AI** only (separate HQ OK).
+Contour complete. Marketplace Action, plugin, and CLI are aligned at **6.0.13**.
 
 ## TestOps (Q3, informational)
 
@@ -147,7 +147,7 @@ Collage of **this run’s** Allure report into ADR 008 Monitoring topic **34** (
 | `TELEGRAM_CHAT_ID` | secret | `-1004381150566` |
 | `TELEGRAM_TOPIC_ID` | var | **34** (alias `TELEGRAM_ALLURE_NOTIFICATIONS_TOPIC_ID`) |
 
-CLI pin: `npx allure-notifications@6.0.12`. Optional artifact: `collage-telegram.png`. Job summary prints `message_id` on live success. Missing secrets on live path → soft-skip (not a merge blocker).
+CLI pin: `npx allure-notifications@6.0.13`. Optional artifact: `collage-telegram.png`. Job summary prints `message_id` on live success. Missing secrets on live path → soft-skip (not a merge blocker).
 
 Local rehearsal:
 
@@ -156,58 +156,42 @@ Local rehearsal:
 MODE=dry-run bash scripts/ci-telegram.sh
 ```
 
-## GitHub Actions — consumer notify (dry-run)
+## GitHub Actions — consumer notify
+
+Tests first write `build/allure-results`. Allure CLI then generates the report
+exactly once with the consumer's native `allurerc.mjs`.
 
 ```yaml
-# Example post-step after your test job uploads/generates Allure artifacts
-name: allure-notifications (dry-run)
-on:
-  workflow_run:
-    workflows: [tests]
-    types: [completed]
+- name: Generate report
+  run: >-
+    npx allure generate build/allure-results
+    --config allurerc.mjs
 
-jobs:
-  notify:
-    if: ${{ github.event.workflow_run.conclusion == 'success' || github.event.workflow_run.conclusion == 'failure' }}
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v7
-
-      - uses: pnpm/action-setup@v6
-        with:
-          version: 9.15.0
-
-      - uses: actions/setup-node@v6
-        with:
-          node-version: 24
-          cache: pnpm
-
-      # … restore allure-results / checkout this repo as a path dependency, or use npx after publish …
-      - name: Generate Allure report
-        run: npx allure generate allure-results --clean -o allure-report
-
-      - name: Collage dry-run (no Telegram network)
-        run: |
-          npx allure-notifications send \
-            --config config/notifications.json \
-            --dry-run \
-            --out collage.png
-
-      - uses: actions/upload-artifact@v7
-        with:
-          name: collage
-          path: collage.png
+- uses: qa-guru/allure-notifications@v6
+  with:
+    config: notifications/config.json
+    allure-folder: build/reports/allure-report/allureReport/awesome
+    allure-results-folder: build/allure-results
+    mode: live
+  env:
+    TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+    TELEGRAM_CHAT_ID: ${{ vars.TELEGRAM_CHAT_ID }}
+    TELEGRAM_TOPIC_ID: ${{ vars.TELEGRAM_TOPIC_ID }}
 ```
 
-Replace `npx allure-notifications` with `pnpm exec allure-notifications` when consuming the workspace before publish. Point `base.allureFolder` / `base.allureResultsFolder` in `config/notifications.json` at the generated paths.
+Folder overrides resolve from the consumer workspace (or
+`working-directory`). Paths stored in config remain config-directory-relative.
+Credentials always come from env; no runtime JSON renderer is needed.
 
 ## GitHub Actions — consumer notify via plugin (alternate)
 
-Same job shape as the CLI consumer example, but notifications run in `allurerc` (`done` hook). **Two generate steps** (Allure flushes `summary.json` after `Plugin.done` — see [`examples/github-actions/README.md`](../examples/github-actions/README.md)). Full template: [`examples/github-actions/plugin-notify.yml`](../examples/github-actions/plugin-notify.yml). Product dogfood: Actions → **Example — plugin notify**.
+The plugin remains a separate capability, but is not the primary GitHub path.
+Allure flushes `summary.json` after `Plugin.done`, so this alternate requires a
+later generate pass. See [`examples/github-actions/plugin-notify.yml`](../examples/github-actions/plugin-notify.yml).
 
 ```yaml
 - name: Install Allure 3 + plugin
-  run: npm install allure@^3.14.3 @allure-notifications/plugin@6.0.12
+  run: npm install allure@^3.14.3 @allure-notifications/plugin@6.0.13
 
 - name: Generate report (files on disk)
   run: npx allure generate ./allure-results -o ./allure-report
@@ -217,7 +201,7 @@ Same job shape as the CLI consumer example, but notifications run in `allurerc` 
     NOTIFICATION_MODE: dry-run   # or live + TELEGRAM_*
   run: |
     npx allure generate ./allure-results \
-      --config ./examples/github-actions/allurerc.mjs
+      --config ./examples/github-actions/allurerc.plugin.mjs
 ```
 
 ## Jenkins (dry-run)

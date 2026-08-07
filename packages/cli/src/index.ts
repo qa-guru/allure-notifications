@@ -12,6 +12,7 @@ export {
   parseArgs,
   helpText,
   type CliCommand,
+  type ConfigOverrides,
   type ParsedArgs,
 } from "./parse.js";
 
@@ -36,10 +37,12 @@ export {
 } from "./telegram.js";
 
 export {
+  applyConfigOverrides,
   formatConfigValidationError,
   loadConfigFile,
   resolveConfigPaths,
   send,
+  type LoadConfigOptions,
   type SendOptions,
   type SendResult,
 } from "./send.js";

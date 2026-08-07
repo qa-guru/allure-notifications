@@ -5,7 +5,17 @@
 
 export type CliCommand = "send" | "help" | "version";
 
-export type ParsedArgs = {
+export type ConfigOverrides = {
+  allureFolder?: string;
+  allureResultsFolder?: string;
+  project?: string;
+  reportUrl?: string;
+  dashboardUrl?: string;
+  testopsUrl?: string;
+  buildUrl?: string;
+};
+
+export type ParsedArgs = ConfigOverrides & {
   command: CliCommand;
   configPath?: string;
   dryRun: boolean;
@@ -18,20 +28,46 @@ export type ParsedArgs = {
 const HELP_TEXT = `allure-notifications — Allure report → messenger notifications (6.0)
 
 Usage:
-  allure-notifications send --config <path> [--dry-run|--mock|--live] [--out <png>]
+  allure-notifications send --config <path> [overrides] [--dry-run|--mock|--live] [--out <png>]
 
 Options:
-  --config <path>   Path to config.json (required for send)
-  --dry-run         Render collage; skip messenger network I/O (default)
-  --mock            Render collage; mock messenger deliveries (no network)
-  --live            Live messenger send (Telegram ADR 008; needs env token)
-  --out <path>      Write PNG buffer to file
-  -h, --help        Show help
-  -V, --version     Show version
+  --config <path>                  Path to config.json (required for send)
+  --allure-folder <path>           Override base.allureFolder (cwd-relative)
+  --allure-results-folder <path>   Override base.allureResultsFolder (cwd-relative)
+  --project <name>                 Override base.project
+  --report-url <url>               Override base.links.report
+  --dashboard-url <url>            Override base.links.dashboard
+  --testops-url <url>              Override base.links.testops
+  --build-url <url>                Override base.links.build
+  --dry-run                        Render collage; skip network I/O (default)
+  --mock                           Render collage; mock deliveries (no network)
+  --live                           Live Telegram send; needs env credentials
+  --out <path>                     Write PNG buffer to file (cwd-relative)
+  -h, --help                       Show help
+  -V, --version                    Show version
 
 Live credentials (env overrides config): TELEGRAM_BOT_TOKEN | TELEGRAM_TOKEN,
 TELEGRAM_CHAT_ID, TELEGRAM_TOPIC_ID. See docs/telegram-dogfood.md.
 `;
+
+type ValueOption =
+  | "configPath"
+  | "out"
+  | keyof ConfigOverrides;
+
+const VALUE_OPTIONS: Record<string, ValueOption> = {
+  "--config": "configPath",
+  "-c": "configPath",
+  "--out": "out",
+  "-o": "out",
+  "--allure-folder": "allureFolder",
+  "--allure-results-folder": "allureResultsFolder",
+  "--project": "project",
+  "--report-url": "reportUrl",
+  "--dashboard-url": "dashboardUrl",
+  "--testops-url": "testopsUrl",
+  "--build-url": "buildUrl",
+};
 
 export function helpText(): string {
   return HELP_TEXT;
@@ -49,6 +85,7 @@ export function parseArgs(argv: string[]): ParsedArgs {
   let mock = false;
   let live = false;
   let out: string | undefined;
+  const overrides: ConfigOverrides = {};
 
   for (let i = 0; i < argv.length; i++) {
     const arg = argv[i]!;
@@ -80,37 +117,37 @@ export function parseArgs(argv: string[]): ParsedArgs {
       live = true;
       continue;
     }
-    if (arg === "--config" || arg === "-c") {
+    const valueOption = VALUE_OPTIONS[arg];
+    if (valueOption) {
       const next = argv[++i];
       if (!next || next.startsWith("-")) {
-        errors.push("--config requires a path");
-      } else {
+        errors.push(`${arg} requires a value`);
+      } else if (valueOption === "configPath") {
         configPath = next;
-      }
-      continue;
-    }
-    if (arg.startsWith("--config=")) {
-      configPath = arg.slice("--config=".length);
-      if (!configPath) {
-        errors.push("--config requires a path");
-      }
-      continue;
-    }
-    if (arg === "--out" || arg === "-o") {
-      const next = argv[++i];
-      if (!next || next.startsWith("-")) {
-        errors.push("--out requires a path");
-      } else {
+      } else if (valueOption === "out") {
         out = next;
+      } else {
+        overrides[valueOption] = next;
       }
       continue;
     }
-    if (arg.startsWith("--out=")) {
-      out = arg.slice("--out=".length);
-      if (!out) {
-        errors.push("--out requires a path");
+    const equalsAt = arg.indexOf("=");
+    if (equalsAt > 0) {
+      const option = arg.slice(0, equalsAt);
+      const equalsOption = VALUE_OPTIONS[option];
+      if (equalsOption && option.startsWith("--")) {
+        const value = arg.slice(equalsAt + 1);
+        if (!value) {
+          errors.push(`${option} requires a value`);
+        } else if (equalsOption === "configPath") {
+          configPath = value;
+        } else if (equalsOption === "out") {
+          out = value;
+        } else {
+          overrides[equalsOption] = value;
+        }
+        continue;
       }
-      continue;
     }
     errors.push(`unknown argument: ${arg}`);
   }
@@ -138,5 +175,14 @@ export function parseArgs(argv: string[]): ParsedArgs {
     live = false;
   }
 
-  return { command, configPath, dryRun, mock, live, out, errors };
+  return {
+    command,
+    configPath,
+    dryRun,
+    mock,
+    live,
+    out,
+    ...overrides,
+    errors,
+  };
 }

@@ -1,5 +1,5 @@
 import assert from "node:assert/strict";
-import { mkdtemp, readFile, rm, writeFile } from "node:fs/promises";
+import { mkdir, mkdtemp, readFile, rm, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { dirname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
@@ -16,6 +16,7 @@ declareSuite({
 
 import {
   ADR008_CHAT_ID,
+  applyConfigOverrides,
   configuredMessengers,
   deliver,
   deliverLive,
@@ -36,6 +37,7 @@ const DOGFOOD_CONFIG = join(
   __dirname,
   "../../test/fixtures/config.dogfood-cb870.json",
 );
+const REPO_ROOT = resolve(__dirname, "../../../..");
 
 function isPng(buf: Buffer): boolean {
   return (
@@ -251,6 +253,39 @@ describe("@allure-notifications/cli send dry-run", () => {
     assert.equal(result.live, false);
     assert.equal(result.deliveries[0]!.status, "dry-run");
   });
+
+  it("dry-runs dogfood results with consumer-cwd overrides", async () => {
+    const result = await send({
+      configPath: FIXTURE_CONFIG,
+      cwd: REPO_ROOT,
+      dryRun: true,
+      overrides: {
+        allureFolder: "packages/core/test/fixtures/dogfood-report",
+        allureResultsFolder: "packages/core/test/fixtures/dogfood-results",
+        project: "action-dogfood",
+        reportUrl: "https://example.test/report",
+        dashboardUrl: "https://example.test/dashboard",
+        testopsUrl: "https://example.test/launch/1",
+        buildUrl: "https://github.test/actions/runs/1",
+      },
+    });
+    assert.ok(isPng(result.png));
+    assert.equal(
+      result.config.base.allureFolder,
+      join(REPO_ROOT, "packages/core/test/fixtures/dogfood-report"),
+    );
+    assert.equal(
+      result.config.base.allureResultsFolder,
+      join(REPO_ROOT, "packages/core/test/fixtures/dogfood-results"),
+    );
+    assert.equal(result.config.base.project, "action-dogfood");
+    assert.deepEqual(result.config.base.links, {
+      report: "https://example.test/report",
+      dashboard: "https://example.test/dashboard",
+      testops: "https://example.test/launch/1",
+      build: "https://github.test/actions/runs/1",
+    });
+  });
 });
 
 describe("@allure-notifications/cli send path resolution", () => {
@@ -298,6 +333,60 @@ describe("@allure-notifications/cli send path resolution", () => {
       "/tmp/base",
     );
     assert.equal(resolved.base.allureFolder, "   ");
+  });
+
+  it("applyConfigOverrides leaves config links unchanged when omitted", () => {
+    const config = parseConfig({
+      base: {
+        project: "from-config",
+        links: { report: "https://example.test/original" },
+      },
+    });
+    const overridden = applyConfigOverrides(config, {}, "/tmp/workspace");
+    assert.equal(overridden.base.project, "from-config");
+    assert.deepEqual(overridden.base.links, config.base.links);
+  });
+
+  it("resolves nested-config path overrides from consumer cwd", async () => {
+    const workspace = await mkdtemp(join(tmpdir(), "an-cli-nested-"));
+    const notifications = join(workspace, "notifications");
+    const configPath = join(notifications, "config.json");
+    const fixture = JSON.parse(await readFile(FIXTURE_CONFIG, "utf8")) as {
+      base: {
+        allureFolder?: string;
+        allureResultsFolder?: string;
+      };
+    };
+    fixture.base.allureFolder = "./build/report/awesome";
+    fixture.base.allureResultsFolder = "./build/allure-results";
+    await mkdir(notifications, { recursive: true });
+    await writeFile(configPath, JSON.stringify(fixture));
+
+    try {
+      const configNative = await loadConfigFile(configPath);
+      assert.equal(
+        configNative.base.allureFolder,
+        join(notifications, "build/report/awesome"),
+      );
+
+      const overridden = await loadConfigFile(configPath, {
+        overrideBaseDir: workspace,
+        overrides: {
+          allureFolder: "build/report/awesome",
+          allureResultsFolder: "build/allure-results",
+        },
+      });
+      assert.equal(
+        overridden.base.allureFolder,
+        join(workspace, "build/report/awesome"),
+      );
+      assert.equal(
+        overridden.base.allureResultsFolder,
+        join(workspace, "build/allure-results"),
+      );
+    } finally {
+      await rm(workspace, { recursive: true, force: true });
+    }
   });
 
   it("loadConfigFile rejects invalid JSON", async () => {
@@ -396,6 +485,32 @@ describe("@allure-notifications/cli runCli integration", () => {
     assert.match(result.stdout, /\[dry-run\] telegram/);
     assert.match(result.stdout, /mode: dry-run/);
     assert.match(result.stdout, /ok/);
+    assert.equal(result.stderr, "");
+  });
+
+  it("send accepts runtime config overrides end to end", async () => {
+    const result = await runCli([
+      "send",
+      "--config",
+      FIXTURE_CONFIG,
+      "--allure-folder",
+      "../core/test/fixtures/dogfood-report",
+      "--allure-results-folder",
+      "../core/test/fixtures/dogfood-results",
+      "--project",
+      "cli-overrides",
+      "--report-url",
+      "https://example.test/report",
+      "--dashboard-url",
+      "https://example.test/dashboard",
+      "--testops-url",
+      "https://example.test/launch/1",
+      "--build-url",
+      "https://github.test/actions/runs/1",
+      "--dry-run",
+    ]);
+    assert.equal(result.exitCode, 0, result.stderr);
+    assert.match(result.stdout, /mode: dry-run/);
     assert.equal(result.stderr, "");
   });
 

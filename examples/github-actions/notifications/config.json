@@ -1,11 +1,9 @@
 {
   "base": {
-    "project": "plugin-gh-example",
+    "project": "reference-app",
     "environment": "GitHub Actions",
-    "comment": "Example: Allure 3 plugin notify (done hook)",
+    "comment": "Allure report notification",
     "language": "en",
-    "allureFolder": "../../allure-report",
-    "allureResultsFolder": "../../allure-results",
     "enableChart": true,
     "darkMode": true,
     "enableSuitesPublishing": false,

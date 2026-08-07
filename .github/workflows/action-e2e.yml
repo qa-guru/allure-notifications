@@ -1,0 +1,67 @@
+name: Action E2E
+
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+    branches:
+      - master
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  action-e2e:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: pnpm/action-setup@v6
+        with:
+          version: 9.15.0
+
+      - uses: actions/setup-node@v6
+        with:
+          node-version: 26
+          cache: pnpm
+
+      - name: Install workspace
+        run: pnpm install --frozen-lockfile
+
+      - name: Build local Action CLI
+        run: |
+          pnpm --filter @allure-notifications/test-meta build
+          pnpm --filter allure-notifications... build
+
+      - name: Validate Action metadata and workflow
+        run: pnpm validate:action
+
+      - name: Prepare dogfood results
+        run: |
+          mkdir -p build
+          cp -R packages/core/test/fixtures/dogfood-results build/allure-results
+
+      - name: Generate report
+        run: >-
+          npx allure generate build/allure-results
+          --config examples/github-actions/allurerc.mjs
+
+      - name: Run local Action
+        uses: ./
+        with:
+          config: examples/github-actions/notifications/config.json
+          allure-folder: build/reports/allure-report/allureReport/awesome
+          allure-results-folder: build/allure-results
+          project: Action E2E
+          report-url: https://example.test/report
+          dashboard-url: https://example.test/dashboard
+          testops-url: https://example.test/launch/1
+          build-url: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+          mode: dry-run
+          out: build/action-e2e-collage.png
+
+      - name: Assert collage
+        run: test -s build/action-e2e-collage.png

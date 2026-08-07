@@ -74,6 +74,33 @@ describe("@allure-notifications/cli parseArgs", () => {
     assert.equal(args.errors.length, 0);
   });
 
+  it("parses config and link overrides in separate and equals forms", () => {
+    const args = parseArgs([
+      "send",
+      "--config",
+      "notifications/config.json",
+      "--allure-folder",
+      "build/report/awesome",
+      "--allure-results-folder=build/allure-results",
+      "--project",
+      "reference-app",
+      "--report-url=https://example.test/report",
+      "--dashboard-url",
+      "https://example.test/dashboard",
+      "--testops-url=https://example.test/launch/1",
+      "--build-url",
+      "https://github.test/actions/runs/1",
+    ]);
+    assert.equal(args.allureFolder, "build/report/awesome");
+    assert.equal(args.allureResultsFolder, "build/allure-results");
+    assert.equal(args.project, "reference-app");
+    assert.equal(args.reportUrl, "https://example.test/report");
+    assert.equal(args.dashboardUrl, "https://example.test/dashboard");
+    assert.equal(args.testopsUrl, "https://example.test/launch/1");
+    assert.equal(args.buildUrl, "https://github.test/actions/runs/1");
+    assert.equal(args.errors.length, 0);
+  });
+
   it("parses -c / --dry-run", () => {
     const args = parseArgs(["send", "-c", "a.json", "--dry-run"]);
     assert.equal(args.configPath, "a.json");
@@ -89,6 +116,17 @@ describe("@allure-notifications/cli parseArgs", () => {
   it("errors on unknown flags", () => {
     const args = parseArgs(["send", "--config", "x.json", "--teleport"]);
     assert.ok(args.errors.some((e) => e.includes("unknown")));
+
+    const unknownEquals = parseArgs([
+      "send",
+      "--config",
+      "x.json",
+      "--teleport=yes",
+    ]);
+    assert.ok(unknownEquals.errors.some((e) => e.includes("unknown")));
+
+    const shortEquals = parseArgs(["send", "-c=x.json"]);
+    assert.ok(shortEquals.errors.some((e) => e.includes("unknown")));
   });
 
   it("help and version commands", () => {
@@ -146,6 +184,23 @@ describe("@allure-notifications/cli parseArgs", () => {
 
     const emptyEq = parseArgs(["send", "--config", "x.json", "--out="]);
     assert.ok(emptyEq.errors.some((e) => e.includes("--out requires")));
+
+    const emptyOverride = parseArgs([
+      "send",
+      "--config",
+      "x.json",
+      "--project=",
+    ]);
+    assert.ok(emptyOverride.errors.some((e) => e.includes("--project requires")));
+
+    const missingOverride = parseArgs([
+      "send",
+      "--config",
+      "x.json",
+      "--project",
+      "--dry-run",
+    ]);
+    assert.ok(missingOverride.errors.some((e) => e.includes("--project requires")));
   });
 });
 

@@ -8,6 +8,12 @@ importers:
 
   .:
     devDependencies:
+      '@action-validator/cli':
+        specifier: ^0.6.0
+        version: 0.6.0(@action-validator/core@0.6.0)
+      '@action-validator/core':
+        specifier: ^0.6.0
+        version: 0.6.0
       '@types/node':
         specifier: 26.1.2
         version: 26.1.2
@@ -205,6 +211,15 @@ importers:
         version: 7.0.2
 
 packages:
+
+  '@action-validator/cli@0.6.0':
+    resolution: {integrity: sha512-Z8TYOK4GqUIpI0UuspUJPB6dhr0niTumhwI5iiZVqFRXm4u05bZawnFKltpvoFUfJg9mHbbIBlleqsRJAgl53Q==}
+    hasBin: true
+    peerDependencies:
+      '@action-validator/core': 0.6.0
+
+  '@action-validator/core@0.6.0':
+    resolution: {integrity: sha512-tPglwCr8Mm8SWzwnVewwFmqRx91F0WvMsM0BRAqH4CLalyGndm53Xvp+UcUSzswpk1wkjIDYI7RyEhWMLyPkig==}
 
   '@allurereport/aql@3.14.3':
     resolution: {integrity: sha512-6GqgV3wKQmhc9bxIn6oNvZwyA5iqTKP9G+bs2iToMKPC2Subecj21cvVznXMiUK9T8k7fBhoPZDnwAjJhFH/ug==}
@@ -911,6 +926,10 @@ packages:
 
   caniuse-lite@1.0.30001806:
     resolution: {integrity: sha512-72Cuvd95zbSYPKq6Fhg8eDJRlzgWDf7/mtoZv6Qe/DYNCEBdNxoA3+rZAU2ZhGCpZlns3EssFavaZomckT5Uuw==}
+
+  chalk@5.2.0:
+    resolution: {integrity: sha512-ree3Gqw/nazQAPuJJEy+avdl7QfZMcUvmHIKgEZkGL+xOBzRvup5Hxo6LHuMceSxOabuJLJm5Yp/92R9eMmMvA==}
+    engines: {node: ^12.17.0 || ^14.13 || >=16.0.0}
 
   charenc@0.0.2:
     resolution: {integrity: sha512-yrLQ/yVUFXkzg7EDQsPieE/53+0RlaWTs+wBrvW36cyilJ2SaDWfl4Yj7MtLTXleV9uEKefbAGUPv2/iWSooRA==}
@@ -1759,6 +1778,13 @@ packages:
     resolution: {integrity: sha512-gzUt/qt81nXsFGKIFcC3YnfEAx5NkunCfnDlvuBSSFS02bcXu4Lmea0AFIUwbLWxWPx3d9p8S5QoaujKcNQxcQ==}
 
 snapshots:
+
+  '@action-validator/cli@0.6.0(@action-validator/core@0.6.0)':
+    dependencies:
+      '@action-validator/core': 0.6.0
+      chalk: 5.2.0
+
+  '@action-validator/core@0.6.0': {}
 
   '@allurereport/aql@3.14.3': {}
 
@@ -2847,6 +2873,8 @@ snapshots:
       function-bind: 1.1.2
 
   caniuse-lite@1.0.30001806: {}
+
+  chalk@5.2.0: {}
 
   charenc@0.0.2: {}
 

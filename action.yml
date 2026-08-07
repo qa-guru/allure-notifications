@@ -1,8 +1,7 @@
 name: Allure Notifications
 description: >
-  Send Allure collage notifications (Telegram and other messengers) via the
-  allure-notifications CLI after a single report generate. Does not run
-  allure generate.
+  Send a collage from an existing Allure report to Telegram and other
+  messengers. This Action never generates the report.
 author: qa-guru
 branding:
   icon: bell
@@ -10,28 +9,48 @@ branding:
 
 inputs:
   config:
-    description: Path to notifications config JSON (after render, or static)
+    description: Path to a static notifications config JSON
     required: true
-  version:
-    description: npm package version of allure-notifications (pin; do not use latest)
+  allure-folder:
+    description: Existing Allure report folder, relative to working-directory
     required: false
-    default: "6.0.12"
+    default: ""
+  allure-results-folder:
+    description: Allure results folder, relative to working-directory
+    required: false
+    default: ""
+  project:
+    description: Notification project name
+    required: false
+    default: ""
+  report-url:
+    description: Published Allure report URL
+    required: false
+    default: ""
+  dashboard-url:
+    description: Dashboard URL
+    required: false
+    default: ""
+  testops-url:
+    description: Allure TestOps launch URL
+    required: false
+    default: ""
+  build-url:
+    description: CI build URL
+    required: false
+    default: ""
   mode:
-    description: Messenger mode — dry-run | mock | live
+    description: Messenger mode (dry-run, mock, or live)
     required: false
     default: dry-run
   out:
-    description: Output collage PNG path
+    description: Output collage PNG path, relative to working-directory
     required: false
     default: collage.png
   working-directory:
-    description: Directory for config/out paths (default repo root)
+    description: Consumer directory used to resolve config, overrides, and out
     required: false
     default: "."
-  node-version:
-    description: Node.js version (engines >=26)
-    required: false
-    default: "26"
 
 runs:
   using: composite
@@ -39,18 +58,25 @@ runs:
     - name: Setup Node
       uses: actions/setup-node@v6
       with:
-        node-version: ${{ inputs.node-version }}
+        node-version: 26
 
     - name: Send allure-notifications
       shell: bash
       working-directory: ${{ inputs.working-directory }}
       env:
         AN_CONFIG: ${{ inputs.config }}
-        AN_VERSION: ${{ inputs.version }}
+        AN_ALLURE_FOLDER: ${{ inputs.allure-folder }}
+        AN_ALLURE_RESULTS_FOLDER: ${{ inputs.allure-results-folder }}
+        AN_PROJECT: ${{ inputs.project }}
+        AN_REPORT_URL: ${{ inputs.report-url }}
+        AN_DASHBOARD_URL: ${{ inputs.dashboard-url }}
+        AN_TESTOPS_URL: ${{ inputs.testops-url }}
+        AN_BUILD_URL: ${{ inputs.build-url }}
         AN_MODE: ${{ inputs.mode }}
         AN_OUT: ${{ inputs.out }}
       run: |
         set -euo pipefail
+
         case "${AN_MODE}" in
           dry-run|mock|live) ;;
           *)
@@ -58,11 +84,24 @@ runs:
             exit 1
             ;;
         esac
-        if [ ! -f "${AN_CONFIG}" ]; then
-          echo "Config not found: ${AN_CONFIG}" >&2
-          exit 1
+
+        args=(send --config "${AN_CONFIG}" "--${AN_MODE}" --out "${AN_OUT}")
+        append_if_set() {
+          if [[ -n "$2" ]]; then
+            args+=("$1" "$2")
+          fi
+        }
+        append_if_set --allure-folder "${AN_ALLURE_FOLDER}"
+        append_if_set --allure-results-folder "${AN_ALLURE_RESULTS_FOLDER}"
+        append_if_set --project "${AN_PROJECT}"
+        append_if_set --report-url "${AN_REPORT_URL}"
+        append_if_set --dashboard-url "${AN_DASHBOARD_URL}"
+        append_if_set --testops-url "${AN_TESTOPS_URL}"
+        append_if_set --build-url "${AN_BUILD_URL}"
+
+        local_cli="${GITHUB_ACTION_PATH}/packages/cli/dist/src/bin.js"
+        if [[ -f "${local_cli}" ]]; then
+          node "${local_cli}" "${args[@]}"
+        else
+          npx --yes "allure-notifications@6.0.13" "${args[@]}"
         fi
-        npx --yes "allure-notifications@${AN_VERSION}" send \
-          --config "${AN_CONFIG}" \
-          "--${AN_MODE}" \
-          --out "${AN_OUT}"
