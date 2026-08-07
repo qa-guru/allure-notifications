@@ -1,0 +1,31 @@
+name: Assert Allure collage
+description: Validate that a generated collage is a non-empty PNG of the expected size
+
+inputs:
+  path:
+    description: Collage path relative to the repository workspace
+    required: true
+  width:
+    description: Expected PNG width
+    required: false
+    default: "870"
+  height:
+    description: Expected PNG height
+    required: false
+    default: "1080"
+  min-bytes:
+    description: Minimum PNG size
+    required: false
+    default: "1000"
+
+runs:
+  using: composite
+  steps:
+    - name: Validate collage PNG
+      shell: bash
+      env:
+        COLLAGE_PATH: ${{ inputs.path }}
+        EXPECTED_WIDTH: ${{ inputs.width }}
+        EXPECTED_HEIGHT: ${{ inputs.height }}
+        MIN_BYTES: ${{ inputs.min-bytes }}
+      run: node "${GITHUB_ACTION_PATH}/assert-collage.mjs"

@@ -5,6 +5,9 @@ import { access, readFile } from "node:fs/promises";
 
 const workflows = [
   ".github/workflows/action-e2e.yml",
+  ".github/workflows/example-native-cli.yml",
+  ".github/workflows/example-allure-plugin.yml",
+  ".github/workflows/example-marketplace.yml",
   "examples/github-actions/cli-notify.yml",
 ];
 
@@ -18,13 +21,36 @@ for (const workflow of workflows) {
   );
   assert.doesNotMatch(source, /render-notifications-config|allure-report\.sh/);
   assert.doesNotMatch(source, /\bnode\s+<<|\bnode\s+-\s*<</);
+  if (workflow.startsWith(".github/workflows/example-")) {
+    assert.match(source, /^\s*workflow_dispatch:\s*$/m);
+  }
 }
 
-const e2e = await readFile(workflows[0], "utf8");
+const [e2e, native, plugin, marketplace] = await Promise.all(
+  workflows.slice(0, 4).map((workflow) => readFile(workflow, "utf8")),
+);
 assert.match(e2e, /^\s*uses:\s*\.\/\s*$/m);
-assert.match(e2e, /\btest -s build\/action-e2e-collage\.png\b/);
+assert.match(e2e, /uses:\s*\.\/\.github\/actions\/assert-collage/);
+assert.match(native, /\ballure-notifications send\b/);
+assert.match(plugin, /@allure-notifications\/plugin@6\.0\.13/);
+assert.match(marketplace, /uses:\s*qa-guru\/allure-notifications@v6/);
+
+const config = JSON.parse(
+  await readFile("examples/github-actions/notifications/config.json", "utf8"),
+);
+assert.deepEqual(
+  {
+    token: config.telegram?.token,
+    chat: config.telegram?.chat,
+    topic: config.telegram?.topic,
+  },
+  { token: "", chat: "", topic: "" },
+);
 
 await access("action.yml");
 await assert.rejects(access("action.yaml"));
+await access(".github/actions/assert-collage/action.yml");
 
-console.log("Action contract ok: one root metadata file, one generate per workflow");
+console.log(
+  "Action examples ok: local, Marketplace, native CLI, and plugin workflows",
+);

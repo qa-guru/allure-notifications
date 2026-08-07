@@ -33,7 +33,11 @@ on:
       - 'pnpm-workspace.yaml'
       - 'action.yml'
       - 'examples/github-actions/**'
+      - '.github/README.md'
+      - '.github/actions/**'
+      - '.github/examples/**'
       - '.github/workflows/action-e2e.yml'
+      - '.github/workflows/example-*.yml'
       - '.github/workflows/ci-6.0.yml'
   workflow_dispatch:
 

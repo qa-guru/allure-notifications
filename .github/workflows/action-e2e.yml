@@ -1,4 +1,4 @@
-name: Action E2E
+name: Example — local Action source
 
 on:
   push:
@@ -63,5 +63,16 @@ jobs:
           mode: dry-run
           out: build/action-e2e-collage.png
 
-      - name: Assert collage
-        run: test -s build/action-e2e-collage.png
+      - uses: ./.github/actions/assert-collage
+        with:
+          path: build/action-e2e-collage.png
+
+      - uses: actions/upload-artifact@v7
+        if: always()
+        with:
+          name: example-local-action
+          path: |
+            build/action-e2e-collage.png
+            build/reports/allure-report/
+          if-no-files-found: error
+          retention-days: 7

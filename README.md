@@ -27,6 +27,8 @@ notification:
 Pipeline: `tests → allure-results → npx allure generate (once) → Action send`.
 The Action never generates the report and never writes credentials to JSON.
 See the [complete workflow and static config](examples/github-actions/).
+Runnable Marketplace, native CLI, plugin, and local-Action variants live in
+[`.github/README.md`](.github/README.md).
 
 ## Notification example
 

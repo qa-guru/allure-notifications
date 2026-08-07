@@ -1,0 +1,77 @@
+name: Example — Marketplace Action
+
+on:
+  workflow_dispatch:
+    inputs:
+      mode:
+        description: Delivery mode
+        type: choice
+        options:
+          - dry-run
+          - mock
+          - live
+        default: dry-run
+
+permissions:
+  contents: read
+
+jobs:
+  marketplace-action:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/setup-node@v6
+        with:
+          node-version: 26
+
+      - name: Prepare dogfood consumer
+        run: |
+          mkdir -p build/example-marketplace/notifications
+          cp -R packages/core/test/fixtures/dogfood-results build/example-marketplace/allure-results
+          cp examples/github-actions/notifications/config.json build/example-marketplace/notifications/config.json
+          cp .github/examples/allure-notifications/allurerc.mjs build/example-marketplace/allurerc.mjs
+
+      - name: Install Allure
+        working-directory: build/example-marketplace
+        run: |
+          npm init -y >/dev/null
+          npm install --no-save --package-lock=false allure@3.14.3
+
+      - name: Generate report
+        working-directory: build/example-marketplace
+        run: npx --no-install allure generate allure-results --config allurerc.mjs
+
+      - name: Send with Marketplace Action
+        uses: qa-guru/allure-notifications@v6
+        with:
+          working-directory: build/example-marketplace
+          config: notifications/config.json
+          allure-folder: allure-report/awesome
+          allure-results-folder: allure-results
+          project: "Marketplace Action #${{ github.run_number }}"
+          report-url: https://example.test/report
+          dashboard-url: https://example.test/dashboard
+          testops-url: https://example.test/launch/1
+          build-url: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+          mode: ${{ inputs.mode }}
+          out: collage-marketplace.png
+        env:
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN || secrets.TELEGRAM_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+          TELEGRAM_TOPIC_ID: ${{ vars.TELEGRAM_TOPIC_ID }}
+
+      - uses: ./.github/actions/assert-collage
+        with:
+          path: build/example-marketplace/collage-marketplace.png
+
+      - uses: actions/upload-artifact@v7
+        if: always()
+        with:
+          name: example-marketplace-action
+          path: |
+            build/example-marketplace/collage-marketplace.png
+            build/example-marketplace/allure-report/
+          if-no-files-found: error
+          retention-days: 7

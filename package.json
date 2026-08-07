@@ -11,7 +11,7 @@
     "build": "pnpm -r run build",
     "test": "node scripts/run-tests.mjs",
     "coverage": "node scripts/run-coverage.mjs",
-    "validate:action": "action-validator action.yml && action-validator .github/workflows/action-e2e.yml && action-validator examples/github-actions/cli-notify.yml && node scripts/validate-action-contract.mjs",
+    "validate:action": "action-validator action.yml && action-validator .github/actions/assert-collage/action.yml && action-validator .github/workflows/action-e2e.yml && action-validator .github/workflows/example-native-cli.yml && action-validator .github/workflows/example-allure-plugin.yml && action-validator .github/workflows/example-marketplace.yml && action-validator examples/github-actions/cli-notify.yml && action-validator examples/github-actions/plugin-notify.yml && node scripts/validate-action-contract.mjs",
     "allure:generate": "rm -rf allure-report && allure generate allure-results --output allure-report",
     "panel-gallery": "node scripts/panel-gallery.mjs",
     "widget-picker": "node scripts/panel-gallery.mjs",

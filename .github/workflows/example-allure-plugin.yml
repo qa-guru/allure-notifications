@@ -1,0 +1,66 @@
+name: Example — Allure notifications plugin
+
+on:
+  workflow_dispatch:
+    inputs:
+      mode:
+        description: Delivery mode
+        type: choice
+        options:
+          - dry-run
+          - mock
+          - live
+        default: dry-run
+
+permissions:
+  contents: read
+
+jobs:
+  allure-plugin:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/setup-node@v6
+        with:
+          node-version: 26
+
+      - name: Prepare dogfood consumer
+        run: |
+          mkdir -p build/example-plugin/notifications
+          cp -R packages/core/test/fixtures/dogfood-results build/example-plugin/allure-results
+          cp -R packages/core/test/fixtures/dogfood-report build/example-plugin/dogfood-report
+          cp examples/github-actions/notifications/config.json build/example-plugin/notifications/config.json
+          cp .github/examples/allure-notifications/allurerc.plugin.mjs build/example-plugin/allurerc.mjs
+
+      - name: Install published packages
+        working-directory: build/example-plugin
+        run: |
+          npm init -y >/dev/null
+          npm install --no-save --package-lock=false \
+            allure@3.14.3 \
+            @allure-notifications/plugin@6.0.13
+
+      - name: Generate through Allure plugin
+        working-directory: build/example-plugin
+        env:
+          NOTIFICATION_MODE: ${{ inputs.mode }}
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN || secrets.TELEGRAM_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+          TELEGRAM_TOPIC_ID: ${{ vars.TELEGRAM_TOPIC_ID }}
+        run: npx --no-install allure generate allure-results --config allurerc.mjs
+
+      - uses: ./.github/actions/assert-collage
+        with:
+          path: build/example-plugin/collage-plugin.png
+
+      - uses: actions/upload-artifact@v7
+        if: always()
+        with:
+          name: example-allure-plugin
+          path: |
+            build/example-plugin/collage-plugin.png
+            build/example-plugin/generated-report/
+          if-no-files-found: error
+          retention-days: 7
