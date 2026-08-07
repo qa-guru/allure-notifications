@@ -1,15 +1,12 @@
-# Consumer copy-paste: Allure 3 generate + @allure-notifications/plugin (done hook).
+# LEGACY alternate: Allure 3 generate + @allure-notifications/plugin (done hook).
+# Prefer cli-notify.yml / root action.yml (one generate + CLI send).
 #
 # Difference from CLI post-step:
 #   CLI:     npx allure generate … && npx allure-notifications send --config …
 #   Plugin:  generate report → generate again with allurerc (notifications in done)
 #
 # Requires @allure-notifications/plugin ≥6.0.9 (`main` entry — Allure resolve; skip 6.0.6). Current pin 6.0.12.
-# Drop into .github/workflows/ or merge steps into your test workflow.
 # Docs: packages/plugin/README.md · docs/ci-cookbook.md · examples/github-actions/README.md
-#
-# Runnable dogfood in this repo:
-#   .github/workflows/example-plugin-notify.yml  (Actions → Run workflow)
 
 name: allure-notifications (plugin)
 

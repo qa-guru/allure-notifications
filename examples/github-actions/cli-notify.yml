@@ -1,0 +1,97 @@
+# Consumer copy-paste: one Allure generate + CLI send (primary path).
+#
+#   npx allure generate … --config allurerc.mjs
+#   npx allure-notifications send --config …
+#
+# Or use the published composite Action (same CLI, no second generate):
+#   uses: qa-guru/allure-notifications@v6
+#
+# Plugin path (second generate) is legacy — see plugin-notify.yml.
+
+name: allure-notifications (CLI)
+
+on:
+  workflow_dispatch:
+    inputs:
+      mode:
+        description: Messenger mode (live needs TELEGRAM_* secrets)
+        type: choice
+        options:
+          - dry-run
+          - live
+        default: dry-run
+
+jobs:
+  notify-via-cli:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/setup-node@v6
+        with:
+          node-version: 26
+
+      - name: Install Allure 3 + notifications CLI
+        run: npm install allure@^3.14.3 allure-notifications@6.0.12
+
+      # Expect ./allure-results from your test job (upload/download-artifact or same job).
+
+      - name: Generate report once
+        run: |
+          npx allure generate ./allure-results \
+            -o ./allure-report \
+            --config ./examples/github-actions/allurerc.cli.mjs
+
+      - name: Render notifications config from env
+        env:
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN || secrets.TELEGRAM_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+          TELEGRAM_TOPIC_ID: ${{ vars.TELEGRAM_TOPIC_ID || '34' }}
+          ALLURE_REPORT_URL: ""
+          ALLURE_DASHBOARD_URL: ""
+          BUILD_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+          NOTIFICATION_PROJECT: allure-notifications example #${{ github.run_number }}
+        run: |
+          set -euo pipefail
+          node <<'JS'
+          const fs = require("fs");
+          const cfg = JSON.parse(
+            fs.readFileSync("examples/github-actions/notifications.config.json", "utf8"),
+          );
+          cfg.base.project = process.env.NOTIFICATION_PROJECT || cfg.base.project;
+          cfg.base.allureFolder = "./allure-report/awesome";
+          cfg.base.allureResultsFolder = "./allure-results";
+          cfg.base.links = {
+            report: process.env.ALLURE_REPORT_URL || "",
+            dashboard: process.env.ALLURE_DASHBOARD_URL || "",
+            testops: process.env.TESTOPS_LAUNCH_URL || "",
+            build: process.env.BUILD_URL || "",
+          };
+          cfg.telegram.token = process.env.TELEGRAM_BOT_TOKEN || "";
+          cfg.telegram.chat = process.env.TELEGRAM_CHAT_ID || "";
+          cfg.telegram.topic = process.env.TELEGRAM_TOPIC_ID || "";
+          fs.mkdirSync("notifications", { recursive: true });
+          fs.writeFileSync(
+            "notifications/config.runtime.json",
+            `${JSON.stringify(cfg, null, 2)}\n`,
+          );
+          JS
+
+      - name: Send notification (Action → CLI)
+        uses: ./
+        with:
+          config: notifications/config.runtime.json
+          version: "6.0.12"
+          mode: ${{ inputs.mode }}
+          out: collage-cli.png
+
+      - uses: actions/upload-artifact@v7
+        if: always()
+        with:
+          name: collage-cli
+          path: |
+            collage-cli.png
+            allure-report/
+          if-no-files-found: warn
+          retention-days: 7

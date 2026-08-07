@@ -1,0 +1,68 @@
+name: Allure Notifications
+description: >
+  Send Allure collage notifications (Telegram and other messengers) via the
+  allure-notifications CLI after a single report generate. Does not run
+  allure generate.
+author: qa-guru
+branding:
+  icon: bell
+  color: orange
+
+inputs:
+  config:
+    description: Path to notifications config JSON (after render, or static)
+    required: true
+  version:
+    description: npm package version of allure-notifications (pin; do not use latest)
+    required: false
+    default: "6.0.12"
+  mode:
+    description: Messenger mode — dry-run | mock | live
+    required: false
+    default: dry-run
+  out:
+    description: Output collage PNG path
+    required: false
+    default: collage.png
+  working-directory:
+    description: Directory for config/out paths (default repo root)
+    required: false
+    default: "."
+  node-version:
+    description: Node.js version (engines >=26)
+    required: false
+    default: "26"
+
+runs:
+  using: composite
+  steps:
+    - name: Setup Node
+      uses: actions/setup-node@v6
+      with:
+        node-version: ${{ inputs.node-version }}
+
+    - name: Send allure-notifications
+      shell: bash
+      working-directory: ${{ inputs.working-directory }}
+      env:
+        AN_CONFIG: ${{ inputs.config }}
+        AN_VERSION: ${{ inputs.version }}
+        AN_MODE: ${{ inputs.mode }}
+        AN_OUT: ${{ inputs.out }}
+      run: |
+        set -euo pipefail
+        case "${AN_MODE}" in
+          dry-run|mock|live) ;;
+          *)
+            echo "Invalid mode=${AN_MODE} (expected dry-run|mock|live)" >&2
+            exit 1
+            ;;
+        esac
+        if [ ! -f "${AN_CONFIG}" ]; then
+          echo "Config not found: ${AN_CONFIG}" >&2
+          exit 1
+        fi
+        npx --yes "allure-notifications@${AN_VERSION}" send \
+          --config "${AN_CONFIG}" \
+          "--${AN_MODE}" \
+          --out "${AN_OUT}"
