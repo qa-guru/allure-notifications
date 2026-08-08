@@ -1,0 +1,135 @@
+# One-shot bootstrap: Monitoring forum topic + collage for allure-report-kit (ADR 008).
+# Run manually after quality contour Q1 lands on qa-guru/allure-report-kit@main.
+name: Bootstrap allure-report-kit Telegram
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  bootstrap:
+    name: topic + collage
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+
+    steps:
+      - name: Checkout allure-report-kit
+        uses: actions/checkout@v7
+        with:
+          repository: qa-guru/allure-report-kit
+          ref: main
+          path: ark
+
+      - uses: actions/setup-node@v6
+        with:
+          node-version: 26
+          cache: npm
+          cache-dependency-path: ark/package-lock.json
+
+      - name: Install + test + report (allure-report-kit)
+        working-directory: ark
+        env:
+          CI: true
+          ALLURE_RESULTS_DIR: ${{ github.workspace }}/ark/allure-results
+        run: |
+          npm run setup
+          npx playwright install --with-deps chromium
+          npm test
+          npm run report
+          npx allure generate ./allure-results -o allure-report
+
+      - name: Create forum topic (if missing)
+        id: topic
+        env:
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+        run: |
+          set -euo pipefail
+          NAME="allure-report-kit"
+          RESP=$(curl -sf -X POST "https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/createForumTopic" \
+            -d "chat_id=${TELEGRAM_CHAT_ID}" \
+            --data-urlencode "name=${NAME}")
+          TOPIC_ID=$(python -c "import json,sys; print(json.load(sys.stdin)['result']['message_thread_id'])" <<< "$RESP")
+          echo "topic_id=${TOPIC_ID}" >> "$GITHUB_OUTPUT"
+          echo "Created topic **${NAME}** → id \`${TOPIC_ID}\`"
+
+      - name: Send collage (--live)
+        working-directory: ark
+        env:
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+          TELEGRAM_TOPIC_ID: ${{ steps.topic.outputs.topic_id }}
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import json, os, pathlib
+          cfg = {
+            "base": {
+              "project": "allure-report-kit",
+              "environment": "bootstrap",
+              "comment": "Quality contour Q1 · first live collage",
+              "language": "ru",
+              "allureFolder": "allure-report",
+              "allureResultsFolder": "allure-results",
+              "enableChart": True,
+              "darkMode": True,
+              "enableSuitesPublishing": False,
+              "chart": {
+                "mode": "collage",
+                "layout": "free",
+                "width": 870,
+                "height": 1080,
+                "headerHeight": 56,
+                "cardGap": 14,
+                "tilePad": 6,
+                "gridCols": 10,
+                "gridRows": 10,
+                "items": [
+                  {"type": "currentStatus", "x": 0, "y": 0, "w": 4, "h": 4},
+                  {"type": "suites", "x": 4, "y": 0, "w": 6, "h": 4},
+                  {"type": "testingPyramid", "x": 0, "y": 4, "w": 3, "h": 3},
+                  {"type": "durations", "x": 3, "y": 4, "w": 4, "h": 3, "groupBy": "layer"},
+                ],
+                "pyramidFallback": "none",
+              },
+              "links": {
+                "report": "https://github.com/qa-guru/allure-report-kit/actions",
+                "testops": "https://allure.qa.guru/project/5321",
+                "build": "https://github.com/qa-guru/allure-report-kit/actions",
+              },
+            },
+            "telegram": {
+              "token": "",
+              "chat": "",
+              "topic": "",
+              "replyTo": "",
+              "templatePath": "/templates/telegram.ftl",
+            },
+          }
+          pathlib.Path("config").mkdir(exist_ok=True)
+          pathlib.Path("config/bootstrap-telegram.json").write_text(
+            json.dumps(cfg, indent=2, ensure_ascii=False) + "\n",
+            encoding="utf-8",
+          )
+          PY
+          npx allure-notifications@6.0.13 send \
+            --config config/bootstrap-telegram.json \
+            --live
+
+      - name: Job summary
+        if: always()
+        env:
+          TOPIC_ID: ${{ steps.topic.outputs.topic_id }}
+        run: |
+          {
+            echo "## allure-report-kit Telegram bootstrap"
+            echo ""
+            echo "- topic slug: \`allure-report-kit\`"
+            echo "- topic id: \`${TOPIC_ID}\`"
+            echo "- chat: \`${{ secrets.TELEGRAM_CHAT_ID }}\`"
+            echo "- TestOps: [project 5321](https://allure.qa.guru/project/5321)"
+            echo ""
+            echo "Next: add to \`docs/allure-notifications/topics.json\` and set \`vars.TELEGRAM_TOPIC_ID\` on \`qa-guru/allure-report-kit\`."
+          } >> "$GITHUB_STEP_SUMMARY"
