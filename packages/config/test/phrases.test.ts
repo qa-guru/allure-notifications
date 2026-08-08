@@ -1,12 +1,12 @@
 import assert from "node:assert/strict";
 import { describe, it } from "node:test";
-import { declareSuite } from "@allure-notifications/test-meta";
+import { declareSuite } from "@qa-guru/allure-notifications-test-meta";
 
 declareSuite({
   feature: "config",
   story: "Phrase packs and language resolution",
   layer: "unit",
-  component: "@allure-notifications/config",
+  component: "@qa-guru/allure-notifications-config",
   severity: "normal",
 });
 
@@ -17,7 +17,7 @@ import {
   resolvePhraseLanguage,
 } from "../src/phrases.js";
 
-describe("@allure-notifications/config phrases", () => {
+describe("@qa-guru/allure-notifications-config phrases", () => {
   it("resolvePhraseLanguage defaults undefined to en", () => {
     assert.equal(resolvePhraseLanguage(undefined), "en");
   });

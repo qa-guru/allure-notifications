@@ -72,10 +72,10 @@ jobs:
       # (fresh CI has no dist — same reason as ci-6.0 "Build (packages + builder emit)").
       - name: Build builder TS → js/ + sync @config/@pyramid vendor + PWA sw
         run: |
-          pnpm --filter @allure-notifications/builder... run build
-          pnpm --filter @allure-notifications/builder run sync-config
-          pnpm --filter @allure-notifications/builder run sync-pyramid
-          pnpm --filter @allure-notifications/builder run generate-sw
+          pnpm --filter @qa-guru/allure-notifications-builder... run build
+          pnpm --filter @qa-guru/allure-notifications-builder run sync-config
+          pnpm --filter @qa-guru/allure-notifications-builder run sync-pyramid
+          pnpm --filter @qa-guru/allure-notifications-builder run generate-sw
 
       - name: Assemble static site (index / css / js / vendor / PWA)
         run: |

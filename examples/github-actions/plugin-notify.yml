@@ -1,11 +1,11 @@
-# LEGACY alternate: Allure 3 generate + @allure-notifications/plugin (done hook).
+# LEGACY alternate: Allure 3 generate + @qa-guru/allure-notifications-plugin (done hook).
 # Prefer cli-notify.yml / root action.yml (one generate + CLI send).
 #
 # Difference from CLI post-step:
 #   CLI:     npx allure generate … && npx allure-notifications send --config …
 #   Plugin:  generate report → generate again with allurerc (notifications in done)
 #
-# Requires @allure-notifications/plugin ≥6.0.9 (`main` entry — Allure resolve; skip 6.0.6). Current pin 6.0.13.
+# Requires @qa-guru/allure-notifications-plugin ≥6.0.9 (`main` entry — Allure resolve; skip 6.0.6). Current pin 6.0.13.
 # Docs: packages/plugin/README.md · docs/ci-cookbook.md · examples/github-actions/README.md
 
 name: allure-notifications (plugin)
@@ -34,7 +34,7 @@ jobs:
 
       # Pin 6.0.13 (main entry for Allure require.resolve; skip 6.0.6). Bump with VERSION checklist.
       - name: Install Allure 3 + notifications plugin
-        run: npm install allure@^3.14.3 @allure-notifications/plugin@6.0.13
+        run: npm install allure@^3.14.3 @qa-guru/allure-notifications-plugin@6.0.14
 
       # Expect ./allure-results from your test job (upload/download-artifact or same job).
 

@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import { describe, it } from "node:test";
-import { declareSuite } from "@allure-notifications/test-meta";
+import { declareSuite } from "@qa-guru/allure-notifications-test-meta";
 
 declareSuite({
   feature: "cli-send",
@@ -17,7 +17,7 @@ import {
   sendTelegramPhoto,
 } from "../src/telegram.js";
 
-describe("@allure-notifications/cli telegram credentials", () => {
+describe("@qa-guru/allure-notifications telegram credentials", () => {
   it("prefers env token/topic over config; keeps config chat when set", () => {
     const creds = resolveTelegramCredentials({
       config: {
@@ -98,7 +98,7 @@ describe("@allure-notifications/cli telegram credentials", () => {
   });
 });
 
-describe("@allure-notifications/cli telegram caption + sendPhoto", () => {
+describe("@qa-guru/allure-notifications telegram caption + sendPhoto", () => {
   it("builds HTML caption without leaking secrets", () => {
     const caption = buildTelegramCaption(
       {

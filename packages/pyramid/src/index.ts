@@ -1,10 +1,10 @@
 /**
- * @allure-notifications/pyramid — palette + rounded-tier geometry SSOT.
+ * @qa-guru/allure-notifications-pyramid — palette + rounded-tier geometry SSOT.
  *
  * Phase 2. Not dashboard-overrides / HTML inject — those stay private zds stack.
  */
 
-export const PACKAGE = "@allure-notifications/pyramid";
+export const PACKAGE = "@qa-guru/allure-notifications-pyramid";
 export const PHASE = 2;
 
 export {

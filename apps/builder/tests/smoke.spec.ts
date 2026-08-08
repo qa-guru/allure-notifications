@@ -9,7 +9,7 @@ bindSuiteMeta(test, {
   severity: 'blocker',
 });
 
-/** SQ-1080 canon 4-tile — must match @allure-notifications/config DEFAULT_ITEMS + CANON.md */
+/** SQ-1080 canon 4-tile — must match @qa-guru/allure-notifications-config DEFAULT_ITEMS + CANON.md */
 const SQ1080_ITEMS = [
   { type: 'currentStatus', x: 0, y: 0, w: 4, h: 4 },
   { type: 'durationDynamics', x: 4, y: 0, w: 6, h: 4 },

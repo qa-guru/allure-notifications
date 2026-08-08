@@ -1,6 +1,6 @@
 {
-  "name": "@allure-notifications/plugin",
-  "version": "6.0.13",
+  "name": "@qa-guru/allure-notifications-plugin",
+  "version": "6.0.14",
   "description": "Allure 3 plugin \u2014 thin wrapper over core + CLI messengers (Phase 5).",
   "type": "module",
   "main": "./dist/src/index.js",
@@ -30,13 +30,13 @@
     "prepublishOnly": "pnpm run build"
   },
   "dependencies": {
-    "@allure-notifications/config": "workspace:*",
-    "@allure-notifications/core": "workspace:*",
+    "@qa-guru/allure-notifications-config": "workspace:*",
+    "@qa-guru/allure-notifications-core": "workspace:*",
     "@allurereport/plugin-api": "^3.14.3",
-    "allure-notifications": "workspace:*"
+    "@qa-guru/allure-notifications": "workspace:*"
   },
   "devDependencies": {
-    "@allure-notifications/test-meta": "workspace:*",
+    "@qa-guru/allure-notifications-test-meta": "workspace:*",
     "@types/node": "26.1.2",
     "allure-node-test": "3.10.2",
     "typescript": "7.0.2"

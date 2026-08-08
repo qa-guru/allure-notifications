@@ -100,16 +100,16 @@ h2{margin-top:28px}
 <p>Патч-ноты → <a href="https://github.com/qa-guru/allure-notifications/releases">GitHub Releases</a> · миграция → <a href="MIGRATION.md"><code>MIGRATION.md</code></a>.</p>
 <table>
 <tr><th>Часть</th><th>Роль</th></tr>
-<tr><td><strong>CLI</strong></td><td><code>npx allure-notifications@6.0.11 send --config …</code> — основной runtime</td></tr>
-<tr><td><strong>Collage PNG</strong></td><td><code>@napi-rs/canvas</code> в <code>@allure-notifications/core</code> (Playwright — только тесты)</td></tr>
+<tr><td><strong>CLI</strong></td><td><code>npx @qa-guru/allure-notifications@6.0.11 send --config …</code> — основной runtime</td></tr>
+<tr><td><strong>Collage PNG</strong></td><td><code>@napi-rs/canvas</code> в <code>@qa-guru/allure-notifications-core</code> (Playwright — только тесты)</td></tr>
 <tr><td><strong>Config builder</strong></td><td>Web UI → полный <code>config.json</code> + free-layout collage — <a href="apps/builder/"><code>apps/builder/</code></a></td></tr>
-<tr><td><strong>Пакеты</strong></td><td><code>@allure-notifications/config</code> · <code>pyramid</code> · <code>core</code> · bin <code>allure-notifications</code> · plugin <code>@allure-notifications/plugin</code></td></tr>
+<tr><td><strong>Пакеты</strong></td><td><code>@qa-guru/allure-notifications-config</code> · <code>pyramid</code> · <code>core</code> · bin <code>allure-notifications</code> · plugin <code>@qa-guru/allure-notifications-plugin</code></td></tr>
 </table>
 <p>После тестов Allure пишет summary. CLI находит его автоматически:</p>
 <p>- <strong>Allure 2</strong> — <code><allureFolder>/widgets/summary.json</code> - <strong>Allure 3</strong> — <code><allureFolder>/summary.json</code></p>
 <p>По summary строится текст уведомления. В режиме collage дополнительно читаются <code>*-result.json</code> из <code>allureResultsFolder</code>.</p>
 <pre><code class="language-bash">npx allure generate allure-results --clean -o allure-report
-npx allure-notifications@6.0.11 send --config config.json --live
+npx @qa-guru/allure-notifications@6.0.11 send --config config.json --live
 </code></pre>
 <table>
 <tr><th>Флаг</th><th>Поведение</th></tr>
@@ -140,7 +140,7 @@ npx allure-notifications@6.0.11 send --config config.json --live
 </table>
 <h3>Export → CLI</h3>
 <p>1. Раскладка панелей в builder → <strong>Export</strong> / Download <code>config.json</code>. 2. Укажите <code>base.allureFolder</code> / <code>base.allureResultsFolder</code>. 3. Заполните credentials мессенджера (или env-плейсхолдеры). 4. Отправка:</p>
-<pre><code class="language-bash">npx allure-notifications@6.0.11 send --config &lt;exported&gt;.json
+<pre><code class="language-bash">npx @qa-guru/allure-notifications@6.0.11 send --config &lt;exported&gt;.json
 </code></pre>
 <h2>config.json</h2>
 <p>Схема: <a href="packages/config"><code>packages/config</code></a> (zod). Удобнее всего Export из <a href="#config-builder-anb">Config builder</a>.</p>
@@ -253,7 +253,7 @@ npx allure-notifications@6.0.11 send --config config.json --live
 <p>Правила collage и reference PNG: <a href="docs/canon/CANON.md"><code>docs/canon/CANON.md</code></a>.</p>
 <h2>Плагин (альтернатива)</h2>
 <p>Плагин Allure 3 — тонкая обёртка над тем же core. Основной путь — CLI.</p>
-<pre><code class="language-bash">npm add allure @allure-notifications/plugin@6.0.11
+<pre><code class="language-bash">npm add allure @qa-guru/allure-notifications-plugin@6.0.11
 </code></pre>
 <p>- Документация: <a href="packages/plugin/README.md"><code>packages/plugin/README.md</code></a> - Пример: <a href="examples/allurerc.notifications.mjs"><code>examples/allurerc.notifications.mjs</code></a> - GitHub Actions: <a href="examples/github-actions/"><code>examples/github-actions/</code></a></p>
 <h2>Legacy Java 5.0.8</h2>

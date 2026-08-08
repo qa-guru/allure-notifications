@@ -13,12 +13,12 @@ no Telegram network call is required.
 
 2. **Native npm CLI**
    - Workflow: [`example-native-cli.yml`](workflows/example-native-cli.yml)
-   - Runtime: `allure-notifications@6.0.13`
+   - Runtime: `@qa-guru/allure-notifications@6.0.14`
    - Pipeline: install published packages → one report generate → CLI `send`.
 
 3. **Allure plugin — alternate capability**
    - Workflow: [`example-allure-plugin.yml`](workflows/example-allure-plugin.yml)
-   - Runtime: `@allure-notifications/plugin@6.0.13`
+   - Runtime: `@qa-guru/allure-notifications-plugin@6.0.14`
    - The plugin executes in `Plugin.done`. The dogfood example supplies a
      checked-in report fixture because files from the current generate are
      flushed after `done`.

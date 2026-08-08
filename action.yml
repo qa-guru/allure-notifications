@@ -103,5 +103,5 @@ runs:
         if [[ -f "${local_cli}" ]]; then
           node "${local_cli}" "${args[@]}"
         else
-          npx --yes "allure-notifications@6.0.13" "${args[@]}"
+          npx --yes "@qa-guru/allure-notifications@6.0.14" "${args[@]}"
         fi

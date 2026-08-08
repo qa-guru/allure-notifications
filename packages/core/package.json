@@ -1,6 +1,6 @@
 {
-  "name": "@allure-notifications/core",
-  "version": "6.0.13",
+  "name": "@qa-guru/allure-notifications-core",
+  "version": "6.0.14",
   "description": "Allure 3 summary/results \u2192 native collage PNG (Phase 3 / Stage C).",
   "type": "module",
   "exports": {
@@ -29,12 +29,12 @@
     "prepublishOnly": "pnpm run build"
   },
   "dependencies": {
-    "@allure-notifications/config": "workspace:*",
-    "@allure-notifications/pyramid": "workspace:*",
+    "@qa-guru/allure-notifications-config": "workspace:*",
+    "@qa-guru/allure-notifications-pyramid": "workspace:*",
     "@napi-rs/canvas": "^0.1.70"
   },
   "devDependencies": {
-    "@allure-notifications/test-meta": "workspace:*",
+    "@qa-guru/allure-notifications-test-meta": "workspace:*",
     "@types/node": "26.1.2",
     "allure-node-test": "3.10.2",
     "typescript": "7.0.2"

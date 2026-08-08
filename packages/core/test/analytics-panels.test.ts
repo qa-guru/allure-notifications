@@ -2,18 +2,18 @@ import assert from "node:assert/strict";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { describe, it } from "node:test";
-import { declareSuite } from "@allure-notifications/test-meta";
+import { declareSuite } from "@qa-guru/allure-notifications-test-meta";
 
 declareSuite({
   feature: "core-collage",
   story: "Analytics panels render",
   layer: "unit",
-  component: "@allure-notifications/core",
+  component: "@qa-guru/allure-notifications-core",
   severity: "normal",
 });
 
 import { createCanvas, loadImage } from "@napi-rs/canvas";
-import { parseConfig } from "@allure-notifications/config";
+import { parseConfig } from "@qa-guru/allure-notifications-config";
 
 import {
   DEFAULT_TOP_SUITES,
@@ -87,7 +87,7 @@ async function hasNonBackgroundPixels(png: Buffer): Promise<boolean> {
   return false;
 }
 
-describe("@allure-notifications/core analytics history", () => {
+describe("@qa-guru/allure-notifications-core analytics history", () => {
   it("history buckets: statusDynamics + successRateDistribution", async () => {
     const runs = await readHistoryFile(join(fixtures, "history.jsonl"), 20);
     assert.equal(runs.length, 3);
@@ -156,7 +156,7 @@ describe("@allure-notifications/core analytics history", () => {
   });
 });
 
-describe("@allure-notifications/core analytics panels render", () => {
+describe("@qa-guru/allure-notifications-core analytics panels render", () => {
   async function baseAnalytics(withHistory: boolean) {
     const summary = await readSummary(
       join(fixtures, "allure3-report/summary.json"),

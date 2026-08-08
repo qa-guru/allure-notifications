@@ -7,8 +7,8 @@ import {
   captionPhrasesFor,
   type CaptionPhrases,
   type Config,
-} from "@allure-notifications/config";
-import type { ReportAnalytics } from "@allure-notifications/core";
+} from "@qa-guru/allure-notifications-config";
+import type { ReportAnalytics } from "@qa-guru/allure-notifications-core";
 
 /** ADR 008 monitoring forum chat. */
 export const ADR008_CHAT_ID = "-1004381150566";

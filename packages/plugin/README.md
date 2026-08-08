@@ -1,17 +1,17 @@
-# @allure-notifications/plugin
+# @qa-guru/allure-notifications-plugin
 
-Allure 3 **plugin** for line **6.0.\*** — thin wrapper over `@allure-notifications/core` + CLI messengers.
+Allure 3 **plugin** for line **6.0.\*** — thin wrapper over `@qa-guru/allure-notifications-core` + CLI messengers.
 
 Runs in the Allure 3 `done` hook (etalon: [`@allurereport/plugin-slack`](https://github.com/allure-framework/allure3/blob/main/packages/plugin-slack/src/plugin.ts)). Same collage + messenger pipeline as the CLI; **CLI remains the primary consumer path**.
 
 ## Install
 
 ```bash
-npm add allure @allure-notifications/plugin
+npm add allure @qa-guru/allure-notifications-plugin
 # workspace: already in pnpm packages/plugin
 ```
 
-> **npm:** `@allure-notifications/plugin` — use **≥6.0.9** (`main` entry required for Allure resolve; skip 6.0.6). Workspace `packages/plugin` for monorepo dogfood.
+> **npm:** `@qa-guru/allure-notifications-plugin` — use **≥6.0.9** (`main` entry required for Allure resolve; skip 6.0.6). Workspace `packages/plugin` for monorepo dogfood.
 
 ## allurerc
 
@@ -28,7 +28,7 @@ export default defineConfig({
   plugins: {
     awesome: {},
     notifications: {
-      import: "@allure-notifications/plugin",
+      import: "@qa-guru/allure-notifications-plugin",
       options: {
         // Same JSON schema as: npx allure-notifications send --config …
         config: "./config/notifications.json",
@@ -86,6 +86,6 @@ Dogfood / credentials: [`docs/telegram-dogfood.md`](../../docs/telegram-dogfood.
 ## Verify
 
 ```bash
-pnpm --filter @allure-notifications/plugin test
-pnpm --filter @allure-notifications/plugin typecheck
+pnpm --filter @qa-guru/allure-notifications-plugin test
+pnpm --filter @qa-guru/allure-notifications-plugin typecheck
 ```

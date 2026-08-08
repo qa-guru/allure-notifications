@@ -6,18 +6,18 @@ import assert from "node:assert/strict";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { describe, it } from "node:test";
-import { declareSuite } from "@allure-notifications/test-meta";
+import { declareSuite } from "@qa-guru/allure-notifications-test-meta";
 
 declareSuite({
   feature: "core-collage",
   story: "Catalog stub analytics",
   layer: "unit",
-  component: "@allure-notifications/core",
+  component: "@qa-guru/allure-notifications-core",
   severity: "normal",
 });
 
 import { createCanvas, loadImage } from "@napi-rs/canvas";
-import { parseConfig, type ChartItem } from "@allure-notifications/config";
+import { parseConfig, type ChartItem } from "@qa-guru/allure-notifications-config";
 
 import {
   DEFAULT_TOP_SUITES,
@@ -92,7 +92,7 @@ async function countNearColor(
   return count;
 }
 
-describe("@allure-notifications/core catalog stub → real analytics", () => {
+describe("@qa-guru/allure-notifications-core catalog stub → real analytics", () => {
   it("history derives transitions / growth / coverage / problems / durations / age", async () => {
     const runs = await readHistoryFile(join(fixtures, "history.jsonl"), 20);
     const history = historyFromRuns(runs);
@@ -173,7 +173,7 @@ describe("@allure-notifications/core catalog stub → real analytics", () => {
   });
 });
 
-describe("@allure-notifications/core catalog panels PNG", () => {
+describe("@qa-guru/allure-notifications-core catalog panels PNG", () => {
   async function baseAnalytics(withHistory: boolean) {
     const summary = await readSummary(
       join(fixtures, "allure3-report/summary.json"),

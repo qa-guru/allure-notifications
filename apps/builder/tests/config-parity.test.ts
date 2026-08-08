@@ -1,9 +1,9 @@
 /**
- * Phase 4: @allure-notifications/config is the SSOT; browser vendor copy must match.
+ * Phase 4: @qa-guru/allure-notifications-config is the SSOT; browser vendor copy must match.
  */
 import assert from "node:assert/strict";
 import test from "node:test";
-import { declareSuite } from "@allure-notifications/test-meta";
+import { declareSuite } from "@qa-guru/allure-notifications-test-meta";
 
 declareSuite({
   feature: "config",
@@ -21,8 +21,8 @@ import {
   DEFAULT_TILE_PAD,
   PANEL_CATALOG,
   createDefaultConfig,
-} from "@allure-notifications/config";
-import * as browserPkg from "@allure-notifications/config/browser";
+} from "@qa-guru/allure-notifications-config";
+import * as browserPkg from "@qa-guru/allure-notifications-config/browser";
 import { loadConfigVendorBrowser } from "./vendor-browser.js";
 
 const vendorBrowser = loadConfigVendorBrowser();
@@ -34,11 +34,11 @@ const SQ1080_ITEMS = [
   { type: "durations", x: 3, y: 4, w: 4, h: 3, groupBy: "layer" },
 ];
 
-test("@allure-notifications/config DEFAULT_ITEMS matches SQ-1080 canon", () => {
+test("@qa-guru/allure-notifications-config DEFAULT_ITEMS matches SQ-1080 canon", () => {
   assert.deepEqual([...DEFAULT_ITEMS], SQ1080_ITEMS);
 });
 
-test("@allure-notifications/config CANVAS_PRESETS are CB-870 / SQ-1080 / WD-1410", () => {
+test("@qa-guru/allure-notifications-config CANVAS_PRESETS are CB-870 / SQ-1080 / WD-1410", () => {
   assert.deepEqual(Object.keys(CANVAS_PRESETS), [
     "870x1080",
     "1080x1080",
@@ -49,7 +49,7 @@ test("@allure-notifications/config CANVAS_PRESETS are CB-870 / SQ-1080 / WD-1410
   assert.deepEqual(CANVAS_PRESETS["1410x1080"], { w: 1410, h: 1080 });
 });
 
-test("@allure-notifications/config chrome defaults + PANEL_CATALOG size", () => {
+test("@qa-guru/allure-notifications-config chrome defaults + PANEL_CATALOG size", () => {
   assert.equal(DEFAULT_HEADER_HEIGHT, 22);
   assert.equal(DEFAULT_CARD_GAP, 14);
   assert.equal(DEFAULT_TILE_PAD, 6);

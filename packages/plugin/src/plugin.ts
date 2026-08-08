@@ -8,21 +8,21 @@
 import { readFile, writeFile } from "node:fs/promises";
 import { dirname, isAbsolute, resolve } from "node:path";
 
-import { parseConfig, type Config } from "@allure-notifications/config";
+import { parseConfig, type Config } from "@qa-guru/allure-notifications-config";
 import {
   loadReportAnalytics,
   renderCollagePng,
   type ReportAnalytics,
-} from "@allure-notifications/core";
+} from "@qa-guru/allure-notifications-core";
 import type { AllureStore, Plugin, PluginContext } from "@allurereport/plugin-api";
 import {
   deliver,
   formatConfigValidationError,
   resolveConfigPaths,
   type DeliveryResult,
-} from "allure-notifications";
+} from '@qa-guru/allure-notifications';
 
-export const PACKAGE = "@allure-notifications/plugin";
+export const PACKAGE = "@qa-guru/allure-notifications-plugin";
 export const PHASE = 5;
 
 export type NotificationsPluginMode = "dry-run" | "mock" | "live";

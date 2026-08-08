@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /**
- * @deprecated SSOT path uses explicit labels via @allure-notifications/test-meta
+ * @deprecated SSOT path uses explicit labels via @qa-guru/allure-notifications-test-meta
  * (declareSuite / bindSuiteMeta). Dev-only fallback — not invoked from run-tests.mjs
  * or ci-telegram.sh.
  *
@@ -16,7 +16,7 @@ const RESULT_SUFFIX = "-result.json";
 function inferLayer(haystack) {
   const p = haystack.replace(/\\/g, "/").toLowerCase();
   if (
-    (p.includes("@allure-notifications/builder") && p.includes(".spec.")) ||
+    (p.includes("@qa-guru/allure-notifications-builder") && p.includes(".spec.")) ||
     (p.includes("apps/builder/tests/") && p.includes(".spec.")) ||
     p.includes("e2e-blanket") ||
     p.includes("e2e-coverage") ||
@@ -25,7 +25,7 @@ function inferLayer(haystack) {
     return "e2e";
   }
   if (
-    p.includes("@allure-notifications/builder.tests") ||
+    p.includes("@qa-guru/allure-notifications-builder.tests") ||
     p.includes("config-parity") ||
     p.includes("pyramid-parity") ||
     (p.includes("apps/builder/") && p.includes(".test."))

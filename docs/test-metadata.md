@@ -4,11 +4,11 @@ Explicit suite labels for the allure-notifications monorepo test run. Model mirr
 
 ## Package
 
-`@allure-notifications/test-meta` — one `declareSuite()` per `node:test` file, `bindSuiteMeta()` per Playwright spec.
+`@qa-guru/allure-notifications-test-meta` — one `declareSuite()` per `node:test` file, `bindSuiteMeta()` per Playwright spec.
 
 ```typescript
 import { describe, it } from "node:test";
-import { declareSuite } from "@allure-notifications/test-meta";
+import { declareSuite } from "@qa-guru/allure-notifications-test-meta";
 
 declareSuite({
   feature: "cli-send",
@@ -21,7 +21,7 @@ declareSuite({
 describe("loadConfigFile", () => { /* … */ });
 ```
 
-Default epic: **`allure-notifications`** (`packages/test-meta/src/defaults.ts`).
+Default epic: **`@qa-guru/allure-notifications`** (`packages/test-meta/src/defaults.ts`).
 
 ## Taxonomy
 

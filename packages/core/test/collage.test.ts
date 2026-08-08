@@ -4,13 +4,13 @@ import { existsSync, readFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { describe, it } from "node:test";
-import { declareSuite } from "@allure-notifications/test-meta";
+import { declareSuite } from "@qa-guru/allure-notifications-test-meta";
 
 declareSuite({
   feature: "core-collage",
   story: "Collage render",
   layer: "unit",
-  component: "@allure-notifications/core",
+  component: "@qa-guru/allure-notifications-core",
   severity: "normal",
 });
 
@@ -22,12 +22,12 @@ import {
   parseConfig,
   resolvePanelMeta,
   type ChartItem,
-} from "@allure-notifications/config";
+} from "@qa-guru/allure-notifications-config";
 import {
   CORNER_RATIO,
   STATUS_COLORS,
   TIER_GAP_RATIO,
-} from "@allure-notifications/pyramid";
+} from "@qa-guru/allure-notifications-pyramid";
 
 import {
   DEFAULT_EMPTY_MESSAGE,
@@ -296,7 +296,7 @@ async function regionMatchRatio(
   return match / pixels;
 }
 
-describe("@allure-notifications/core collage", () => {
+describe("@qa-guru/allure-notifications-core collage", () => {
   it("locks PNG backend to @napi-rs/canvas", () => {
     assert.equal(PNG_BACKEND, "@napi-rs/canvas");
   });
@@ -492,7 +492,7 @@ const CATALOG_PANEL_ITEMS: ChartItem[] = [
   { type: "statusAgePyramid", x: 4, y: 2, w: 2, h: 2 },
 ];
 
-describe("@allure-notifications/core empty-state panels", () => {
+describe("@qa-guru/allure-notifications-core empty-state panels", () => {
   it("renderEmptyPanel: themed body + muted marker (Java parity)", async () => {
     const theme = themeFromDarkMode(true);
     const analytics = buildAnalytics(

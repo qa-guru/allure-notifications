@@ -1,6 +1,6 @@
 {
-  "name": "@allure-notifications/pyramid",
-  "version": "6.0.13",
+  "name": "@qa-guru/allure-notifications-pyramid",
+  "version": "6.0.14",
   "description": "Testing-pyramid palette + rounded-tier geometry SSOT (Phase 2).",
   "type": "module",
   "exports": {
@@ -33,7 +33,7 @@
     "prepublishOnly": "pnpm run build"
   },
   "devDependencies": {
-    "@allure-notifications/test-meta": "workspace:*",
+    "@qa-guru/allure-notifications-test-meta": "workspace:*",
     "@types/node": "26.1.2",
     "allure-node-test": "3.10.2",
     "typescript": "7.0.2"

@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import { createRequire } from "node:module";
 import { describe, it } from "node:test";
-import { declareSuite } from "@allure-notifications/test-meta";
+import { declareSuite } from "@qa-guru/allure-notifications-test-meta";
 
 declareSuite({
   feature: "cli-send",
@@ -19,7 +19,7 @@ const pkgVersion = (
   require("../../package.json") as { version: string }
 ).version;
 
-describe("@allure-notifications/cli parseArgs", () => {
+describe("@qa-guru/allure-notifications parseArgs", () => {
   it("parses send --config path", () => {
     const args = parseArgs(["send", "--config", "config.json"]);
     assert.equal(args.command, "send");
@@ -204,7 +204,7 @@ describe("@allure-notifications/cli parseArgs", () => {
   });
 });
 
-describe("@allure-notifications/cli runCli help", () => {
+describe("@qa-guru/allure-notifications runCli help", () => {
   it("help with parse errors exits 1 and prints errors to stderr", async () => {
     const result = await runCli(["--foo"]);
     assert.equal(result.exitCode, 1);
@@ -220,7 +220,7 @@ describe("@allure-notifications/cli runCli help", () => {
   });
 });
 
-describe("@allure-notifications/cli VERSION", () => {
+describe("@qa-guru/allure-notifications VERSION", () => {
   it("matches packages/cli/package.json (no stale 6.0.0 pin)", async () => {
     assert.equal(VERSION, pkgVersion);
     assert.match(VERSION, /^6\.0\.\d+$/);

@@ -17,7 +17,7 @@ npx allure-notifications send --config config.json --dry-run
 
 | Flag | Behavior |
 |------|----------|
-| `send --config <path>` | Required — load config, collage via `@allure-notifications/core` |
+| `send --config <path>` | Required — load config, collage via `@qa-guru/allure-notifications-core` |
 | `--dry-run` | Render PNG; list messengers that *would* send; **no network** |
 | `--mock` | Render PNG; mock deliveries; **no network** |
 | `--out <png>` | Write PNG buffer to disk |
@@ -39,13 +39,13 @@ npx allure generate ./allure-results --config ./examples/allurerc.notifications.
 | Live | `--live` + `TELEGRAM_*` | `mode: "live"` + same env |
 | Config | `config.json` | `options.config` → same schema |
 
-npm `@allure-notifications/plugin` — needs **`main`** for Allure `require.resolve` (**≥6.0.9**; skip 6.0.6; workspace dogfood OK). The legacy example remains under [`examples/github-actions/`](../examples/github-actions/), but it is not a product CI workflow.
+npm `@qa-guru/allure-notifications-plugin` — needs **`main`** for Allure `require.resolve` (**≥6.0.9**; skip 6.0.6; workspace dogfood OK). The legacy example remains under [`examples/github-actions/`](../examples/github-actions/), but it is not a product CI workflow.
 
 ## Workspace (local / before `npx`)
 
 ```bash
 pnpm install
-pnpm --filter allure-notifications run build
+pnpm --filter @qa-guru/allure-notifications run build
 pnpm exec allure-notifications send \
   --config packages/cli/test/fixtures/config.dry-run.json \
   --dry-run \
@@ -87,7 +87,7 @@ Notes:
 
 ## Sonar (Q2 soft → Q5 hard)
 
-One Sonar project for the TS monorepo: **`allure-notifications`** → [dashboard](https://sonar.qa.guru/dashboard?id=allure-notifications).  
+One Sonar project for the TS monorepo: **`@qa-guru/allure-notifications`** → [dashboard](https://sonar.qa.guru/dashboard?id=allure-notifications).  
 Config: [`sonar-project.properties`](../sonar-project.properties). Coverage in: `coverage/lcov.info` (from `pnpm coverage`).  
 Gate poll: vendored thin copy [`scripts/sonar-gate-wait.py`](../scripts/sonar-gate-wait.py) (nested CI has no monorepo `scripts/`; keep in sync with zds `scripts/sonar-gate-wait.py`). Wrapper: [`scripts/ci-sonar.sh`](../scripts/ci-sonar.sh).
 
@@ -147,7 +147,7 @@ Collage of **this run’s** Allure report into ADR 008 Monitoring topic **34** (
 | `TELEGRAM_CHAT_ID` | secret | `-1004381150566` |
 | `TELEGRAM_TOPIC_ID` | var | **34** (alias `TELEGRAM_ALLURE_NOTIFICATIONS_TOPIC_ID`) |
 
-CLI pin: `npx allure-notifications@6.0.13`. Optional artifact: `collage-telegram.png`. Job summary prints `message_id` on live success. Missing secrets on live path → soft-skip (not a merge blocker).
+CLI pin: `npx @qa-guru/allure-notifications@6.0.14`. Optional artifact: `collage-telegram.png`. Job summary prints `message_id` on live success. Missing secrets on live path → soft-skip (not a merge blocker).
 
 Local rehearsal:
 
@@ -191,7 +191,7 @@ later generate pass. See [`examples/github-actions/plugin-notify.yml`](../exampl
 
 ```yaml
 - name: Install Allure 3 + plugin
-  run: npm install allure@^3.14.3 @allure-notifications/plugin@6.0.13
+  run: npm install allure@^3.14.3 @qa-guru/allure-notifications-plugin@6.0.14
 
 - name: Generate report (files on disk)
   run: npx allure generate ./allure-results -o ./allure-report

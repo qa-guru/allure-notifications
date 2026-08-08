@@ -1,10 +1,10 @@
 /**
- * Phase 4 optional: @allure-notifications/pyramid is the geometry/palette SSOT;
+ * Phase 4 optional: @qa-guru/allure-notifications-pyramid is the geometry/palette SSOT;
  * browser vendor copy must match.
  */
 import assert from "node:assert/strict";
 import test from "node:test";
-import { declareSuite } from "@allure-notifications/test-meta";
+import { declareSuite } from "@qa-guru/allure-notifications-test-meta";
 
 declareSuite({
   feature: "pyramid",
@@ -24,20 +24,20 @@ import {
   colorForLayer,
   tierCornerRadius,
   tierGapPx,
-} from "@allure-notifications/pyramid";
-import * as browserPkg from "@allure-notifications/pyramid/browser";
+} from "@qa-guru/allure-notifications-pyramid";
+import * as browserPkg from "@qa-guru/allure-notifications-pyramid/browser";
 import { loadPyramidVendorBrowser } from "./vendor-browser.js";
 
 const vendorBrowser = loadPyramidVendorBrowser();
 
-test("@allure-notifications/pyramid locks CORNER_RATIO / TIER_GAP_RATIO", () => {
+test("@qa-guru/allure-notifications-pyramid locks CORNER_RATIO / TIER_GAP_RATIO", () => {
   assert.equal(CORNER_RATIO, 0.18);
   assert.equal(TIER_GAP_RATIO, 0.11);
   assert.equal(tierGapPx(100), 11);
   assert.equal(tierCornerRadius(200, 100), 18);
 });
 
-test("@allure-notifications/pyramid unit = pie passed #94ca66", () => {
+test("@qa-guru/allure-notifications-pyramid unit = pie passed #94ca66", () => {
   assert.equal(STATUS_COLORS.passed, "#94ca66");
   assert.equal(PYRAMID_COLORS_LIGHT.unit, "#94ca66");
   assert.equal(PYRAMID_COLORS_DARK.unit, "#94ca66");
@@ -45,7 +45,7 @@ test("@allure-notifications/pyramid unit = pie passed #94ca66", () => {
   assert.equal(colorForLayer("unit", "dark"), "#94ca66");
 });
 
-test("@allure-notifications/pyramid LAYER_ORDER is unit → manual", () => {
+test("@qa-guru/allure-notifications-pyramid LAYER_ORDER is unit → manual", () => {
   assert.deepEqual([...LAYER_ORDER], [
     "unit",
     "component",

@@ -1,10 +1,10 @@
 # allure-notifications (CLI)
 
-Public npm bin **`allure-notifications`** for line **6.0.\***.
+Public npm bin **`@qa-guru/allure-notifications`** for line **6.0.\***.
 
 ```bash
-npx allure-notifications@6.0.13 send --config config.json --dry-run
-npx allure-notifications@6.0.13 send --config config.json \
+npx @qa-guru/allure-notifications@6.0.14 send --config config.json --dry-run
+npx @qa-guru/allure-notifications@6.0.14 send --config config.json \
   --allure-folder build/reports/allure-report/allureReport/awesome \
   --allure-results-folder build/allure-results \
   --project reference-app \
@@ -14,7 +14,7 @@ npx allure-notifications@6.0.13 send --config config.json \
 
 | Flag | Role |
 |------|------|
-| `send --config <path>` | Required command — load config, collage via `@allure-notifications/core` |
+| `send --config <path>` | Required command — load config, collage via `@qa-guru/allure-notifications-core` |
 | `--dry-run` | Render PNG; list messengers that *would* send; **no network** (default) |
 | `--mock` | Render PNG; record mock deliveries; **no network** |
 | `--live` | Live Telegram `sendPhoto` (ADR 008); needs env token |
@@ -34,6 +34,6 @@ memory; the CLI never writes a runtime config or copies credentials into JSON.
 Workspace (pre-publish / local):
 
 ```bash
-pnpm --filter allure-notifications test
+pnpm --filter @qa-guru/allure-notifications test
 pnpm exec allure-notifications send --config … --dry-run
 ```

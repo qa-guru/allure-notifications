@@ -10,7 +10,7 @@ import { fileURLToPath } from "node:url";
 import playwright from "@playwright/test";
 import { createInstrumenter } from "istanbul-lib-instrument";
 import libCoverage from "istanbul-lib-coverage";
-import { bindSuiteMeta } from "@allure-notifications/test-meta/playwright";
+import { bindSuiteMeta } from "@qa-guru/allure-notifications-test-meta/playwright";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 

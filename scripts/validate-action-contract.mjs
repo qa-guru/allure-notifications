@@ -32,7 +32,7 @@ const [e2e, native, plugin, marketplace] = await Promise.all(
 assert.match(e2e, /^\s*uses:\s*\.\/\s*$/m);
 assert.match(e2e, /uses:\s*\.\/\.github\/actions\/assert-collage/);
 assert.match(native, /\ballure-notifications send\b/);
-assert.match(plugin, /@allure-notifications\/plugin@6\.0\.13/);
+assert.match(plugin, /@qa-guru\/allure-notifications-plugin@6\.0\.14/);
 assert.match(marketplace, /uses:\s*qa-guru\/allure-notifications@v6/);
 
 const config = JSON.parse(

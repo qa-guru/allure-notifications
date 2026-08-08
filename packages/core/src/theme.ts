@@ -2,7 +2,7 @@
  * Chart theme — mirrors Java ChartTheme.
  */
 
-import { STATUS_COLORS } from "@allure-notifications/pyramid";
+import { STATUS_COLORS } from "@qa-guru/allure-notifications-pyramid";
 
 export type Rgb = { r: number; g: number; b: number };
 

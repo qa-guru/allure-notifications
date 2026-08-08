@@ -2,8 +2,8 @@
  * Messenger delivery — dry-run / mock (default) + live Telegram (ADR 008).
  */
 
-import type { Config } from "@allure-notifications/config";
-import type { ReportAnalytics } from "@allure-notifications/core";
+import type { Config } from "@qa-guru/allure-notifications-config";
+import type { ReportAnalytics } from "@qa-guru/allure-notifications-core";
 
 import {
   buildTelegramCaption,

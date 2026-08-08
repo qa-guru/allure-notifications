@@ -2,7 +2,7 @@
  * Panel render context.
  */
 
-import type { Config } from "@allure-notifications/config";
+import type { Config } from "@qa-guru/allure-notifications-config";
 
 import type { ReportAnalytics } from "../report/types.js";
 import type { ChartTheme } from "../theme.js";

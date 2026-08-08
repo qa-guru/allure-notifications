@@ -14,6 +14,9 @@ importers:
       '@action-validator/core':
         specifier: ^0.6.0
         version: 0.6.0
+      '@qa-guru/allure-notifications':
+        specifier: workspace:*
+        version: link:packages/cli
       '@types/node':
         specifier: 26.1.2
         version: 26.1.2
@@ -26,9 +29,6 @@ importers:
       allure-node-test:
         specifier: 3.10.2
         version: 3.10.2(allure-playwright@3.10.2(@playwright/test@1.62.0))
-      allure-notifications:
-        specifier: workspace:*
-        version: link:packages/cli
       allure-playwright:
         specifier: 3.10.2
         version: 3.10.2(@playwright/test@1.62.0)
@@ -59,19 +59,19 @@ importers:
 
   apps/builder:
     dependencies:
-      '@allure-notifications/config':
+      '@qa-guru/allure-notifications-config':
         specifier: workspace:*
         version: link:../../packages/config
-      '@allure-notifications/pyramid':
+      '@qa-guru/allure-notifications-pyramid':
         specifier: workspace:*
         version: link:../../packages/pyramid
     devDependencies:
-      '@allure-notifications/test-meta':
-        specifier: workspace:*
-        version: link:../../packages/test-meta
       '@playwright/test':
         specifier: ^1.61.1
         version: 1.62.0
+      '@qa-guru/allure-notifications-test-meta':
+        specifier: workspace:*
+        version: link:../../packages/test-meta
       '@types/node':
         specifier: 26.1.2
         version: 26.1.2
@@ -87,14 +87,14 @@ importers:
 
   packages/cli:
     dependencies:
-      '@allure-notifications/config':
+      '@qa-guru/allure-notifications-config':
         specifier: workspace:*
         version: link:../config
-      '@allure-notifications/core':
+      '@qa-guru/allure-notifications-core':
         specifier: workspace:*
         version: link:../core
     devDependencies:
-      '@allure-notifications/test-meta':
+      '@qa-guru/allure-notifications-test-meta':
         specifier: workspace:*
         version: link:../test-meta
       '@types/node':
@@ -113,7 +113,7 @@ importers:
         specifier: ^3.24.2
         version: 3.25.76
     devDependencies:
-      '@allure-notifications/test-meta':
+      '@qa-guru/allure-notifications-test-meta':
         specifier: workspace:*
         version: link:../test-meta
       '@types/node':
@@ -128,17 +128,17 @@ importers:
 
   packages/core:
     dependencies:
-      '@allure-notifications/config':
-        specifier: workspace:*
-        version: link:../config
-      '@allure-notifications/pyramid':
-        specifier: workspace:*
-        version: link:../pyramid
       '@napi-rs/canvas':
         specifier: ^0.1.70
         version: 0.1.100
+      '@qa-guru/allure-notifications-config':
+        specifier: workspace:*
+        version: link:../config
+      '@qa-guru/allure-notifications-pyramid':
+        specifier: workspace:*
+        version: link:../pyramid
     devDependencies:
-      '@allure-notifications/test-meta':
+      '@qa-guru/allure-notifications-test-meta':
         specifier: workspace:*
         version: link:../test-meta
       '@types/node':
@@ -153,20 +153,20 @@ importers:
 
   packages/plugin:
     dependencies:
-      '@allure-notifications/config':
-        specifier: workspace:*
-        version: link:../config
-      '@allure-notifications/core':
-        specifier: workspace:*
-        version: link:../core
       '@allurereport/plugin-api':
         specifier: ^3.14.3
         version: 3.14.3
-      allure-notifications:
+      '@qa-guru/allure-notifications':
         specifier: workspace:*
         version: link:../cli
+      '@qa-guru/allure-notifications-config':
+        specifier: workspace:*
+        version: link:../config
+      '@qa-guru/allure-notifications-core':
+        specifier: workspace:*
+        version: link:../core
     devDependencies:
-      '@allure-notifications/test-meta':
+      '@qa-guru/allure-notifications-test-meta':
         specifier: workspace:*
         version: link:../test-meta
       '@types/node':
@@ -181,7 +181,7 @@ importers:
 
   packages/pyramid:
     devDependencies:
-      '@allure-notifications/test-meta':
+      '@qa-guru/allure-notifications-test-meta':
         specifier: workspace:*
         version: link:../test-meta
       '@types/node':

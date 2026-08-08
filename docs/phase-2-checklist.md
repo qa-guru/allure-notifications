@@ -12,7 +12,7 @@
 ```bash
 cd projects/allure-notifications-home/allure-notifications
 pnpm install
-pnpm --filter @allure-notifications/pyramid test
+pnpm --filter @qa-guru/allure-notifications-pyramid test
 # from monorepo root:
 python scripts/pyramid_palette_sync.py --check
 ```

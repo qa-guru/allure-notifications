@@ -2,13 +2,13 @@ import assert from "node:assert/strict";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { describe, it } from "node:test";
-import { declareSuite } from "@allure-notifications/test-meta";
+import { declareSuite } from "@qa-guru/allure-notifications-test-meta";
 
 declareSuite({
   feature: "core-collage",
   story: "Report helpers",
   layer: "unit",
-  component: "@allure-notifications/core",
+  component: "@qa-guru/allure-notifications-core",
   severity: "normal",
 });
 
@@ -27,7 +27,7 @@ import {
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const fixtures = join(__dirname, "../../test/fixtures");
 
-describe("@allure-notifications/core report", () => {
+describe("@qa-guru/allure-notifications-core report", () => {
   it("adapts Allure 3 summary.json stats → Statistic", async () => {
     const summary = await readSummary(
       join(fixtures, "allure3-report/summary.json"),

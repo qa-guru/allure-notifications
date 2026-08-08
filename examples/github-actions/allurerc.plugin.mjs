@@ -15,7 +15,7 @@ export default defineConfig({
   plugins: {
     awesome: {},
     notifications: {
-      import: "@allure-notifications/plugin",
+      import: "@qa-guru/allure-notifications-plugin",
       options: {
         config: "./examples/github-actions/notifications/config.json",
         mode,

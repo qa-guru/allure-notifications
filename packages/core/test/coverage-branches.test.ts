@@ -9,17 +9,17 @@ import { join } from "node:path";
 import { dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 import { describe, it } from "node:test";
-import { declareSuite } from "@allure-notifications/test-meta";
+import { declareSuite } from "@qa-guru/allure-notifications-test-meta";
 
 declareSuite({
   feature: "core-collage",
   story: "Coverage branch paths",
   layer: "unit",
-  component: "@allure-notifications/core",
+  component: "@qa-guru/allure-notifications-core",
   severity: "normal",
 });
 
-import { parseConfig } from "@allure-notifications/config";
+import { parseConfig } from "@qa-guru/allure-notifications-config";
 
 import {
   DEFAULT_EMPTY_MESSAGE,
@@ -117,7 +117,7 @@ function bareConfig(opts: {
   });
 }
 
-describe("@allure-notifications/core coverage theme", () => {
+describe("@qa-guru/allure-notifications-core coverage theme", () => {
   it("hexToRgb expands 3-char hex; light theme palette helpers", () => {
     const rgb = hexToRgb("#abc");
     assert.equal(rgb.r, 0xaa);
@@ -133,7 +133,7 @@ describe("@allure-notifications/core coverage theme", () => {
   });
 });
 
-describe("@allure-notifications/core coverage report helpers", () => {
+describe("@qa-guru/allure-notifications-core coverage report helpers", () => {
   it("adaptSummaryJson: invalid root, string numerics, empty shape", () => {
     const fromStrings = adaptSummaryJson({
       stats: {
@@ -290,7 +290,7 @@ describe("@allure-notifications/core coverage report helpers", () => {
   });
 });
 
-describe("@allure-notifications/core coverage history", () => {
+describe("@qa-guru/allure-notifications-core coverage history", () => {
   it("historyWithBuckets + isHistoryEmpty + groupBy + normalizeStatus", () => {
     const buckets = new Array(10).fill(0);
     buckets[9] = 2;
@@ -526,7 +526,7 @@ describe("@allure-notifications/core coverage history", () => {
   });
 });
 
-describe("@allure-notifications/core coverage collage render defaults", () => {
+describe("@qa-guru/allure-notifications-core coverage collage render defaults", () => {
   it("default free items when chart.items omitted; header/gap defaults", async () => {
     const summary = adaptSummaryJson({
       stats: { passed: 2, failed: 1, total: 3 },
@@ -607,7 +607,7 @@ describe("@allure-notifications/core coverage collage render defaults", () => {
   });
 });
 
-describe("@allure-notifications/core coverage panels edge UI", () => {
+describe("@qa-guru/allure-notifications-core coverage panels edge UI", () => {
   function ctx(
     analytics: ReturnType<typeof buildAnalytics>,
     opts: {
@@ -1108,7 +1108,7 @@ describe("@allure-notifications/core coverage panels edge UI", () => {
   });
 });
 
-describe("@allure-notifications/core coverage history deep edges", () => {
+describe("@qa-guru/allure-notifications-core coverage history deep edges", () => {
   it("normalizeStatus nullish + caseId empty + labelsMap first-wins", () => {
     const h = historyFromRuns([
       {
@@ -1284,7 +1284,7 @@ describe("@allure-notifications/core coverage history deep edges", () => {
   });
 });
 
-describe("@allure-notifications/core coverage render + analytics edges", () => {
+describe("@qa-guru/allure-notifications-core coverage render + analytics edges", () => {
   it("renderCollagePng defaults when chart metrics missing/invalid", async () => {
     const summary = adaptSummaryJson({
       stats: { passed: 1, total: 1 },

@@ -1,1 +1,1 @@
-export * from "@allure-notifications/pyramid/browser";
+export * from "@qa-guru/allure-notifications-pyramid/browser";

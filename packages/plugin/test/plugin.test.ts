@@ -4,13 +4,13 @@ import { tmpdir } from "node:os";
 import { dirname, isAbsolute, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import { describe, it } from "node:test";
-import { declareSuite } from "@allure-notifications/test-meta";
+import { declareSuite } from "@qa-guru/allure-notifications-test-meta";
 
 declareSuite({
   feature: "plugin-hook",
   story: "Plugin done hook",
   layer: "unit",
-  component: "@allure-notifications/plugin",
+  component: "@qa-guru/allure-notifications-plugin",
   severity: "normal",
 });
 
@@ -71,9 +71,9 @@ function mockContext(overrides: Partial<PluginContext> = {}): {
 
 const emptyStore = {} as AllureStore;
 
-describe("@allure-notifications/plugin package", () => {
+describe("@qa-guru/allure-notifications-plugin package", () => {
   it("exports Phase 5 identity", () => {
-    assert.equal(PACKAGE, "@allure-notifications/plugin");
+    assert.equal(PACKAGE, "@qa-guru/allure-notifications-plugin");
     assert.equal(PHASE, 5);
   });
 
@@ -83,7 +83,7 @@ describe("@allure-notifications/plugin package", () => {
   });
 });
 
-describe("@allure-notifications/plugin done dry-run", () => {
+describe("@qa-guru/allure-notifications-plugin done dry-run", () => {
   it("renders PNG from fixture config and dry-runs messengers (no network)", async () => {
     const { context, files } = mockContext();
     const result = await runNotificationsPlugin(context, {

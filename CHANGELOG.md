@@ -58,44 +58,44 @@
 
 ### English
 
-- **TS test blanket** ([PR #496](https://github.com/qa-guru/allure-notifications/pull/496)) — c8 hard floors lines/statements **100%** on `packages/{config,pyramid,core,cli,plugin}/src`; builder e2e blanket + Playwright tests migrated to TypeScript; `@allure-notifications/test-meta` for explicit Allure suite labels
+- **TS test blanket** ([PR #496](https://github.com/qa-guru/allure-notifications/pull/496)) — c8 hard floors lines/statements **100%** on `packages/{config,pyramid,core,cli,plugin}/src`; builder e2e blanket + Playwright tests migrated to TypeScript; `@qa-guru/allure-notifications-test-meta` for explicit Allure suite labels
 - **Collage** — cap pyramid/durations tile height in tall free-layout cells; Telegram CI layout pyramid w3 + durations by layer w4; pie paints 1-test slices as dots when Skia drops tiny arcs
 - **Telegram** — FTL-parity caption (RU labels, real links); CI sends this-run report (no dogfood fallback); single-run collage with testing pyramid
-- **Builder** — theme/terminal/darkMode sync; L-bracket gutter chrome; palette 4-up/5-up; monochrome Allure header mark; `@allure-notifications/config` phrase SSOT in browser bundle
-- **feat: German locale (`de`)** — schema, jar phrases/legend, builder select, CLI Telegram caption, preview omni-tool flag; shared `PHRASES` in `@allure-notifications/config`
+- **Builder** — theme/terminal/darkMode sync; L-bracket gutter chrome; palette 4-up/5-up; monochrome Allure header mark; `@qa-guru/allure-notifications-config` phrase SSOT in browser bundle
+- **feat: German locale (`de`)** — schema, jar phrases/legend, builder select, CLI Telegram caption, preview omni-tool flag; shared `PHRASES` in `@qa-guru/allure-notifications-config`
 - **Quality** — Sonar gate clean on `allure-notifications` projectKey; panel gallery dev script + marketing collage configs
 
 ### Russian
 
-- **TS test blanket** ([PR #496](https://github.com/qa-guru/allure-notifications/pull/496)) — c8 hard floors lines/statements **100%** на `packages/{config,pyramid,core,cli,plugin}/src`; builder e2e blanket + Playwright-тесты на TypeScript; `@allure-notifications/test-meta` для явных Allure suite labels
+- **TS test blanket** ([PR #496](https://github.com/qa-guru/allure-notifications/pull/496)) — c8 hard floors lines/statements **100%** на `packages/{config,pyramid,core,cli,plugin}/src`; builder e2e blanket + Playwright-тесты на TypeScript; `@qa-guru/allure-notifications-test-meta` для явных Allure suite labels
 - **Collage** — cap высоты pyramid/durations в tall free-layout; Telegram CI layout pyramid w3 + durations by layer w4; pie рисует 1-test slices точками, когда Skia теряет tiny arcs
 - **Telegram** — caption FTL-parity (RU labels, реальные links); CI шлёт this-run report (без dogfood fallback); single-run collage с testing pyramid
-- **Builder** — sync theme/terminal/darkMode; L-bracket gutter chrome; palette 4-up/5-up; monochrome Allure mark в header; phrase SSOT из `@allure-notifications/config` в browser bundle
-- **feat: немецкая локаль (`de`)** — schema, jar phrases/legend, select в builder, caption CLI Telegram, флаг в preview omni-tool; общий `PHRASES` в `@allure-notifications/config`
+- **Builder** — sync theme/terminal/darkMode; L-bracket gutter chrome; palette 4-up/5-up; monochrome Allure mark в header; phrase SSOT из `@qa-guru/allure-notifications-config` в browser bundle
+- **feat: немецкая локаль (`de`)** — schema, jar phrases/legend, select в builder, caption CLI Telegram, флаг в preview omni-tool; общий `PHRASES` в `@qa-guru/allure-notifications-config`
 - **Quality** — Sonar gate clean на projectKey `allure-notifications`; dev-скрипт panel gallery + marketing collage configs
 
 ## v 6.0.8
 
 ### English
 
-- **Version sync** — CLI, libs, and `@allure-notifications/plugin` all publish as **6.0.8** (align after plugin-only 6.0.7; skip broken 6.0.6)
+- **Version sync** — CLI, libs, and `@qa-guru/allure-notifications-plugin` all publish as **6.0.8** (align after plugin-only 6.0.7; skip broken 6.0.6)
 - No product feature change vs 6.0.5/6.0.7 — consumer pin is now one number
 
 ### Russian
 
-- **Синхронизация версий** — CLI, libs и `@allure-notifications/plugin` публикуются как **6.0.8** (выравнивание после plugin-only 6.0.7; битый 6.0.6 пропускаем)
+- **Синхронизация версий** — CLI, libs и `@qa-guru/allure-notifications-plugin` публикуются как **6.0.8** (выравнивание после plugin-only 6.0.7; битый 6.0.6 пропускаем)
 - Без новых фич относительно 6.0.5/6.0.7 — один номер для consumers
 
 ## v 6.0.7
 
 ### English
 
-- **Plugin resolve fix** — `@allure-notifications/plugin` adds `main`/`module`/`types` so Allure 3 `require.resolve` can load the package (6.0.5 / npm `6.0.6` were `exports`-only and broke `allurerc` import)
+- **Plugin resolve fix** — `@qa-guru/allure-notifications-plugin` adds `main`/`module`/`types` so Allure 3 `require.resolve` can load the package (6.0.5 / npm `6.0.6` were `exports`-only and broke `allurerc` import)
 - **GitHub Actions example (plugin path)** — `examples/github-actions/` + `.github/workflows/example-plugin-notify.yml` (two-step generate; not CLI Q4)
 
 ### Russian
 
-- **Фикс resolve плагина** — у `@allure-notifications/plugin` добавлены `main`/`module`/`types` (6.0.5 / npm `6.0.6` — `exports`-only, Allure не резолвил пакет из `allurerc`)
+- **Фикс resolve плагина** — у `@qa-guru/allure-notifications-plugin` добавлены `main`/`module`/`types` (6.0.5 / npm `6.0.6` — `exports`-only, Allure не резолвил пакет из `allurerc`)
 - **Пример GitHub Actions (plugin)** — `examples/github-actions/` + `.github/workflows/example-plugin-notify.yml` (два generate; не CLI Q4)
 
 ## v 6.0.6
@@ -112,11 +112,11 @@
 
 ### English
 
-- **Allure 3 plugin** — `@allure-notifications/plugin` (`packages/plugin`): `Plugin.done` → parseConfig → core collage PNG → CLI messengers; `mode` dry-run|mock|live (default dry-run); example `examples/allurerc.notifications.mjs`
+- **Allure 3 plugin** — `@qa-guru/allure-notifications-plugin` (`packages/plugin`): `Plugin.done` → parseConfig → core collage PNG → CLI messengers; `mode` dry-run|mock|live (default dry-run); example `examples/allurerc.notifications.mjs`
 
 ### Russian
 
-- **Allure 3 plugin** — `@allure-notifications/plugin` (`packages/plugin`): `Plugin.done` → parseConfig → collage PNG (core) → messengers (CLI); `mode` dry-run|mock|live (default dry-run); пример `examples/allurerc.notifications.mjs`
+- **Allure 3 plugin** — `@qa-guru/allure-notifications-plugin` (`packages/plugin`): `Plugin.done` → parseConfig → collage PNG (core) → messengers (CLI); `mode` dry-run|mock|live (default dry-run); пример `examples/allurerc.notifications.mjs`
 
 ## v 6.0.3
 

@@ -8,7 +8,7 @@ import {
   resolvePanelMeta,
   type ChartItem,
   type Config,
-} from "@allure-notifications/config";
+} from "@qa-guru/allure-notifications-config";
 
 import type { ReportAnalytics } from "../report/types.js";
 import {

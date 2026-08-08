@@ -5,11 +5,11 @@
 import { readFile, writeFile } from "node:fs/promises";
 import { dirname, isAbsolute, resolve } from "node:path";
 
-import { parseConfig, type Config } from "@allure-notifications/config";
+import { parseConfig, type Config } from "@qa-guru/allure-notifications-config";
 import {
   loadReportAnalytics,
   renderCollagePng,
-} from "@allure-notifications/core";
+} from "@qa-guru/allure-notifications-core";
 
 import { deliver, type DeliveryResult } from "./messengers.js";
 import type { ConfigOverrides } from "./parse.js";

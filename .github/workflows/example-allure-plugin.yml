@@ -40,7 +40,7 @@ jobs:
           npm init -y >/dev/null
           npm install --no-save --package-lock=false \
             allure@3.14.3 \
-            @allure-notifications/plugin@6.0.13
+            @qa-guru/allure-notifications-plugin@6.0.14
 
       - name: Generate through Allure plugin
         working-directory: build/example-plugin

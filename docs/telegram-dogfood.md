@@ -1,6 +1,6 @@
 # Telegram dogfood (6.0 CLI · ADR 008)
 
-Live `sendPhoto` of a CB-870 collage via **`@allure-notifications/cli` (primary)**.  
+Live `sendPhoto` of a CB-870 collage via **`@qa-guru/allure-notifications` (primary)**.  
 **Default CLI mode stays `--dry-run` / `--mock` (no network).** Live requires explicit `--live`.
 
 **Alternate:** Allure 3 plugin (`mode: "live"`) after `allure generate` — same credentials / ADR 008. Example: [`examples/allurerc.notifications.mjs`](../examples/allurerc.notifications.mjs) · [`packages/plugin/README.md`](../packages/plugin/README.md). CLI and plugin pins match (**6.0.12**).
@@ -37,7 +37,7 @@ From repo root (`feature/6.0-phase-0-1`):
 
 ```bash
 pnpm install
-pnpm --filter @allure-notifications/cli run build
+pnpm --filter @qa-guru/allure-notifications run build
 
 # Full 7-tile dogfood (readme-hero canon — preferred showcase)
 node packages/cli/dist/src/bin.js send \
@@ -73,7 +73,7 @@ node packages/cli/dist/src/bin.js send \
 - Optional real send in tests: `ALLURE_NOTIFICATIONS_LIVE_TEST=1` + token env (off in CI).
 - Quality contour **Q4**: job **`telegram`** in [`.github/workflows/ci-6.0.yml`](../.github/workflows/ci-6.0.yml) via [`scripts/ci-telegram.sh`](../scripts/ci-telegram.sh).
   - Config always uses this run’s `allure-report/` / `allure-results/` (no dogfood fixture fallback). Showcase fixtures remain for local CLI demos: [`config/config.dogfood-telegram-full.json`](../config/config.dogfood-telegram-full.json).
-  - PR / feature: `npx allure-notifications@6.0.12 send --config … --dry-run` (+ optional collage artifact).
+  - PR / feature: `npx @qa-guru/allure-notifications@6.0.12 send --config … --dry-run` (+ optional collage artifact).
   - `master` + `workflow_dispatch`: `--live` when `TELEGRAM_*` present → topic **34**; else soft-skip.
   - Forks: never `--live`.
 

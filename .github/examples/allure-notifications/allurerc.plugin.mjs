@@ -6,7 +6,7 @@ export default defineConfig({
   plugins: {
     awesome: {},
     notifications: {
-      import: "@allure-notifications/plugin",
+      import: "@qa-guru/allure-notifications-plugin",
       options: {
         config: "./notifications/config.json",
         mode: process.env.NOTIFICATION_MODE || "dry-run",

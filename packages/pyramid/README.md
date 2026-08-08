@@ -1,4 +1,4 @@
-# @allure-notifications/pyramid
+# @qa-guru/allure-notifications-pyramid
 
 Testing-pyramid **palette** + **rounded-tier geometry** SSOT for line **6.0.\***.
 
@@ -18,5 +18,5 @@ Builder: `apps/builder/scripts/sync-pyramid.mjs` → `vendor/allure-notification
 Not shipped: `dashboard-overrides` / HTML inject (private zds stack).
 
 ```bash
-pnpm --filter @allure-notifications/pyramid test
+pnpm --filter @qa-guru/allure-notifications-pyramid test
 ```

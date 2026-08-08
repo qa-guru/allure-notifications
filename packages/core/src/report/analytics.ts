@@ -2,11 +2,11 @@
  * Build ReportAnalytics from summary + allure-results (+ optional history).
  */
 
-import { isKnownLayer } from "@allure-notifications/pyramid";
+import { isKnownLayer } from "@qa-guru/allure-notifications-pyramid";
 import { access } from "node:fs/promises";
 import { join } from "node:path";
 
-import type { Config } from "@allure-notifications/config";
+import type { Config } from "@qa-guru/allure-notifications-config";
 
 import {
   loadHistoryAnalytics,

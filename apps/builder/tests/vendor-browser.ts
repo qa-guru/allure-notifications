@@ -14,10 +14,10 @@ function loadVendor<T extends object>(rel: string): T {
   return require(vendorPath) as T;
 }
 
-export function loadConfigVendorBrowser(): typeof import("@allure-notifications/config/browser") {
+export function loadConfigVendorBrowser(): typeof import("@qa-guru/allure-notifications-config/browser") {
   return loadVendor("allure-notifications-config/browser.js");
 }
 
-export function loadPyramidVendorBrowser(): typeof import("@allure-notifications/pyramid/browser") {
+export function loadPyramidVendorBrowser(): typeof import("@qa-guru/allure-notifications-pyramid/browser") {
   return loadVendor("allure-notifications-pyramid/browser.js");
 }

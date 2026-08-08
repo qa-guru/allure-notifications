@@ -5,7 +5,7 @@
 #   MODE=dry-run|live|skip
 #   TELEGRAM_BOT_TOKEN | TELEGRAM_TOKEN, TELEGRAM_CHAT_ID, TELEGRAM_TOPIC_ID (live)
 #   BUILD_URL, REF_NAME, SHORT_SHA (optional links / project label)
-# Pin: npx allure-notifications@6.0.13.
+# Pin: npx @qa-guru/allure-notifications@6.0.14.
 set -euo pipefail
 
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
@@ -111,10 +111,10 @@ if [[ "$MODE" == "live" ]]; then
   export TELEGRAM_TOPIC_ID="${TELEGRAM_TOPIC_ID:-${TELEGRAM_ALLURE_NOTIFICATIONS_TOPIC_ID:-34}}"
 fi
 
-echo "==> npx allure-notifications@${CLI_PIN} send --config ${RUNTIME_CONFIG} ${FLAG}"
+echo "==> npx @qa-guru/allure-notifications@${CLI_PIN} send --config ${RUNTIME_CONFIG} ${FLAG}"
 set +e
 SEND_LOG="$(mktemp)"
-npx --yes "allure-notifications@${CLI_PIN}" send \
+npx --yes "@qa-guru/allure-notifications@${CLI_PIN}" send \
   --config "$RUNTIME_CONFIG" \
   $FLAG \
   --out "$OUT_PNG" 2>&1 | tee "$SEND_LOG"

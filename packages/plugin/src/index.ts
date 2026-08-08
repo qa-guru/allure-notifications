@@ -1,5 +1,5 @@
 /**
- * @allure-notifications/plugin — Allure 3 plugin (Phase 5).
+ * @qa-guru/allure-notifications-plugin — Allure 3 plugin (Phase 5).
  *
  * Thin wrapper: parseConfig → loadReportAnalytics / renderCollagePng → CLI messengers.
  * Default export matches @allurereport/plugin-slack etalon for allurerc `import`.

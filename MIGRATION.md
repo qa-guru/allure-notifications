@@ -14,7 +14,7 @@ There is **no 5.1** line. Historical Java A3 MVP stays at **5.0.8**; product con
 | **5.\*** | Allure 3 | Java MVP (Gradle fat jar **5.0.8**) | **Historical build** under [`legacy/java/`](legacy/java/) — **keep forever**; bugfix / security only; **no TypeScript**; **do not delete** |
 | **6.\*** | Allure 3 | TypeScript / typescript-go · CLI · builder · A3 plugin · AI | **Product** on `master` — pin `docs/allure-notifications/VERSION` (**6.0.12**) |
 
-Monorepo pin = **6.0.12**. Product packages: npm **`allure-notifications`** + scoped `@allure-notifications/*` (CLI + plugin aligned at **6.0.9**).
+Monorepo pin = **6.0.12**. Product packages: npm **`@qa-guru/allure-notifications`** + scoped `@qa-guru/allure-notifications-*` (CLI + plugin aligned at **6.0.9**).
 
 ## Public product 6.\* (locked)
 
@@ -76,7 +76,7 @@ Java **5.0.8** Gradle multi-module lives under [`legacy/java/`](legacy/java/) (`
 | **2** | `packages/pyramid` — palette + geometry SSOT (not dashboard-overrides) | **done** |
 | **3** | `packages/core` + `cli` — native PNG, Telegram, dogfood, cookbooks; public **6.0.0** | **done** (core + cli dry-run/mock + live Telegram `--live` / ADR 008 dogfood) |
 | **4** | Builder import `@config` (browser SSOT); optional `@pyramid`; full TS / typescript@7 | **done** (`@config` + `@pyramid` import map → vendor sync); **full TS done** (`apps/builder/src` → emit `js/`, toolchain `typescript@7`) |
-| **5** | Thin `@allurereport/plugin-api` wrapper over `core` (`packages/plugin`) | **done** (`@allure-notifications/plugin` — `done` hook; dry-run default) |
+| **5** | Thin `@allurereport/plugin-api` wrapper over `core` (`packages/plugin`) | **done** (`@qa-guru/allure-notifications-plugin` — `done` hook; dry-run default) |
 
 ## Anti-hack rules
 
@@ -107,30 +107,30 @@ See [docs/ci-cookbook.md](docs/ci-cookbook.md): **primary** = `allure generate` 
 
 ## Phase 1 notes
 
-`@allure-notifications/config` (`packages/config/`):
+`@qa-guru/allure-notifications-config` (`packages/config/`):
 
 - zod `ConfigSchema` — `base.chart` free layout + chrome knobs (`headerHeight` / `cardGap` / `tilePad`)
 - `PANEL_CATALOG` (17), `DEFAULT_ITEMS` (SQ-1080 4-tile compact-hero), `CANVAS_PRESETS` (870/1080/1410×1080), `createDefaultConfig()`
 - Extracted from hub builder `allure-notifications-builder/js/app.js` (builder still has a local copy until Phase 4 / `apps/builder/` merge)
-- Verify: `pnpm --filter @allure-notifications/config test`
+- Verify: `pnpm --filter @qa-guru/allure-notifications-config test`
 
 ## Phase 2 notes
 
-`@allure-notifications/pyramid` (`packages/pyramid/`):
+`@qa-guru/allure-notifications-pyramid` (`packages/pyramid/`):
 
 - Palette mirrors monorepo SSOT `stacks/java-spring/tests/allure/pyramid-layers.json`
 - `unit` light/dark = pie `STATUS_COLORS.passed` / `#94ca66`
 - Geometry: `CORNER_RATIO=0.18`, `TIER_GAP_RATIO=0.11` (+ `tierGapPx` / `tierCornerRadius`)
 - Not shipped: `dashboard-overrides` / HTML inject
-- Verify: `pnpm --filter @allure-notifications/pyramid test` and
+- Verify: `pnpm --filter @qa-guru/allure-notifications-pyramid test` and
   (from monorepo root) `python scripts/pyramid_palette_sync.py --check`
 
 ## Phase 3 notes (core — Stage C)
 
-`@allure-notifications/core` (`packages/core/`):
+`@qa-guru/allure-notifications-core` (`packages/core/`):
 
 - Native collage PNG via **`@napi-rs/canvas`** (locked in package README) — not Playwright
-- Depends on `@allure-notifications/config` + `@allure-notifications/pyramid`
+- Depends on `@qa-guru/allure-notifications-config` + `@qa-guru/allure-notifications-pyramid`
 - Allure 3 `summary.json` (`stats`) + `*-result.json` → `ReportAnalytics` → free-layout collage
 - Panels: **real** = pie / testingPyramid / durations (+ `groupBy: layer`); **empty-state stubs** =
   other `PANEL_CATALOG` types + unknown tiles (Java `EmptyStatePanel` parity — themed card,
@@ -138,31 +138,31 @@ See [docs/ci-cookbook.md](docs/ci-cookbook.md): **primary** = `allure generate` 
   analytics: statusDynamics / successRateDistribution / testResultSeverities / suites
 - Tests: fixture → PNG; unit green `#94ca66`; pixel/ahash vs
   monorepo `docs/allure-notifications/canon/collage-cb870-free-dogfood-5.0.3.png`
-- Verify: `pnpm --filter @allure-notifications/core test` / root `pnpm test`
+- Verify: `pnpm --filter @qa-guru/allure-notifications-core test` / root `pnpm test`
 - **Not in Stage C:** `packages/cli`, messengers / Telegram dogfood, `apps/builder`
 
 ## Phase 3 notes (cli — Stage D)
 
-`@allure-notifications/cli` (`packages/cli/`):
+`@qa-guru/allure-notifications` (`packages/cli/`):
 
 - Bin: `allure-notifications` → `send --config <path>`
-- Collage via `@allure-notifications/core` + `@allure-notifications/config`
+- Collage via `@qa-guru/allure-notifications-core` + `@qa-guru/allure-notifications-config`
 - Messengers: **`--dry-run` / `--mock`** (default safe, no network); **`--live`** → Telegram `sendPhoto` (ADR 008)
 - Credentials: env `TELEGRAM_BOT_TOKEN` / `TELEGRAM_CHAT_ID` / `TELEGRAM_TOPIC_ID` (override config; refuse retired chat)
 - Optional `--out <png>` writes buffer to disk
 - Tests: argv parse + dry-run/mock + mocked live fetch; real network only if `ALLURE_NOTIFICATIONS_LIVE_TEST=1`
 - Dogfood runbook: [`docs/telegram-dogfood.md`](docs/telegram-dogfood.md) · fixture `packages/cli/test/fixtures/config.dogfood-cb870.json`
-- Verify: `pnpm --filter @allure-notifications/cli test` / root `pnpm test`
+- Verify: `pnpm --filter @qa-guru/allure-notifications test` / root `pnpm test`
 
 ## Stage E notes (builder merge)
 
-`@allure-notifications/builder` (`apps/builder/`):
+`@qa-guru/allure-notifications-builder` (`apps/builder/`):
 
 - Merged from hub clone `allure-notifications-builder/` (Playwright + index/js/css/vendor)
 - Stand registry cwd → `…/allure-notifications/apps/builder` (`ensure.py anb-apps-builder`)
 - Playwright e2e: CB-870 / SQ-1080 / WD-1410, export, panel bar (`tests/smoke.spec.js`)
-- Started `@allure-notifications/config` import via `tests/config-parity.test.mjs` (browser `js/app.js` still local — Phase 4)
-- Verify: `pnpm --filter @allure-notifications/builder test` / root `pnpm test`
+- Started `@qa-guru/allure-notifications-config` import via `tests/config-parity.test.mjs` (browser `js/app.js` still local — Phase 4)
+- Verify: `pnpm --filter @qa-guru/allure-notifications-builder test` / root `pnpm test`
 - **Not in Stage E:** live Telegram, publish, Java→`legacy/java`, VERSION bump, Stage F CI
 
 ## Stage F notes (CI)
@@ -175,16 +175,16 @@ See [docs/ci-cookbook.md](docs/ci-cookbook.md): **primary** = `allure generate` 
 
 ## Phase 4 notes (builder → shared packages)
 
-- `@allure-notifications/config/browser` — catalog + presets + `createDefaultConfig` (no zod)
+- `@qa-guru/allure-notifications-config/browser` — catalog + presets + `createDefaultConfig` (no zod)
 - `apps/builder/scripts/sync-config.mjs` → `vendor/allure-notifications-config/` (real files; stand cannot follow pnpm symlink outside cwd)
-- `index.html` import map: `@allure-notifications/config` → vendor `browser.js`
+- `index.html` import map: `@qa-guru/allure-notifications-config` → vendor `browser.js`
 - `js/app.js` imports SSOT; local leftovers = packing / TG preview / vector UI only
-- `@allure-notifications/pyramid/browser` — geometry (`CORNER_RATIO` / `TIER_GAP_RATIO`) + layer palette (`unit` = `#94ca66`)
+- `@qa-guru/allure-notifications-pyramid/browser` — geometry (`CORNER_RATIO` / `TIER_GAP_RATIO`) + layer palette (`unit` = `#94ca66`)
 - `apps/builder/scripts/sync-pyramid.mjs` → `vendor/allure-notifications-pyramid/`
-- `index.html` import map: `@allure-notifications/pyramid` → vendor `browser.js`
+- `index.html` import map: `@qa-guru/allure-notifications-pyramid` → vendor `browser.js`
 - `js/app.js` injects `--layer-*` + `--anb-pyramid-*` from `@pyramid`; packing UI stays local
 - Parity: `tests/config-parity.test.mjs` · `tests/pyramid-parity.test.mjs`
-- Verify: `pnpm --filter @allure-notifications/builder test` / root `pnpm test`
+- Verify: `pnpm --filter @qa-guru/allure-notifications-builder test` / root `pnpm test`
 
 ## Layout move notes (Java → `legacy/java`)
 
@@ -202,14 +202,14 @@ See [docs/ci-cookbook.md](docs/ci-cookbook.md): **primary** = `allure generate` 
 
 ## Phase 5 notes (Allure 3 plugin)
 
-`@allure-notifications/plugin` (`packages/plugin/`):
+`@qa-guru/allure-notifications-plugin` (`packages/plugin/`):
 
 - Implements `@allurereport/plugin-api` `Plugin.done` (etalon: `@allurereport/plugin-slack`)
-- Pipeline: `parseConfig` → `loadReportAnalytics` / `renderCollagePng` (`@allure-notifications/core`, `@napi-rs/canvas`) → `deliver` (CLI messengers)
+- Pipeline: `parseConfig` → `loadReportAnalytics` / `renderCollagePng` (`@qa-guru/allure-notifications-core`, `@napi-rs/canvas`) → `deliver` (CLI messengers)
 - Options: `config` (path or inline), `mode: "dry-run" | "mock" | "live"` (**default dry-run**, no network), optional `out` / `reportFile`
 - Example: [`examples/allurerc.notifications.mjs`](examples/allurerc.notifications.mjs)
 - Tests: fixture dry-run → PNG + dry-run messenger (no network)
-- Verify: `pnpm --filter @allure-notifications/plugin test` / root `pnpm test` + `pnpm typecheck`
+- Verify: `pnpm --filter @qa-guru/allure-notifications-plugin test` / root `pnpm test` + `pnpm typecheck`
 - **Not in Phase 5:** npm publish / VERSION bump (propose **6.0.5**), AI features
 
 ## Next

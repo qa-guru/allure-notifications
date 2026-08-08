@@ -1,10 +1,10 @@
 /**
- * @allure-notifications/core — Allure 3 → native collage PNG.
+ * @qa-guru/allure-notifications-core — Allure 3 → native collage PNG.
  *
  * Phase 3 / Stage C. Production PNG via @napi-rs/canvas (not Playwright).
  */
 
-export const PACKAGE = "@allure-notifications/core";
+export const PACKAGE = "@qa-guru/allure-notifications-core";
 export const PHASE = 3;
 /** Locked native PNG backend — see README. */
 export const PNG_BACKEND = "@napi-rs/canvas" as const;

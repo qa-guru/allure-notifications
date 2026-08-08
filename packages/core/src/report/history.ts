@@ -10,7 +10,7 @@
 import { access, readFile } from "node:fs/promises";
 import { isAbsolute, join, resolve } from "node:path";
 
-import type { Config } from "@allure-notifications/config";
+import type { Config } from "@qa-guru/allure-notifications-config";
 
 import type { AllureLabel } from "./types.js";
 

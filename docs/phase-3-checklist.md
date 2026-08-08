@@ -3,7 +3,7 @@
 | # | Item | Done |
 |---|------|------|
 | 1 | Native PNG backend locked (`@napi-rs/canvas`) in package README | [x] |
-| 2 | Depend on `@allure-notifications/config` + `@pyramid` | [x] |
+| 2 | Depend on `@qa-guru/allure-notifications-config` + `@pyramid` | [x] |
 | 3 | A3 summary + `*-result.json` → `ReportAnalytics` | [x] |
 | 4 | Free-layout collage: pie / testingPyramid / durations + card chrome | [x] |
 | 5 | Unit/integration: fixture → PNG; `#94ca66`; pixel/hash vs canon | [x] |
@@ -15,7 +15,7 @@
 cd projects/allure-notifications-home/allure-notifications
 pnpm install
 pnpm test
-pnpm --filter @allure-notifications/cli test
+pnpm --filter @qa-guru/allure-notifications test
 ```
 
 Canon: monorepo `docs/allure-notifications/canon/CANON.md`.

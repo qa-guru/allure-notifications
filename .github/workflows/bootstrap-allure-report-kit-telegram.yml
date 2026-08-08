@@ -126,7 +126,7 @@ jobs:
             encoding="utf-8",
           )
           PY
-          npx allure-notifications@6.0.13 send \
+          npx @qa-guru/allure-notifications@6.0.14 send \
             --config bootstrap-telegram.json \
             --live
 

@@ -6,7 +6,7 @@ import { createCanvas, type SKRSContext2D } from "@napi-rs/canvas";
 import {
   LAYER_ORDER,
   colorForLayer,
-} from "@allure-notifications/pyramid";
+} from "@qa-guru/allure-notifications-pyramid";
 
 import { hexToRgb, rgbCss, type ChartTheme } from "../../theme.js";
 import type { PanelContext } from "../context.js";

@@ -3,13 +3,13 @@ import { readFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { describe, it } from "node:test";
-import { declareSuite } from "@allure-notifications/test-meta";
+import { declareSuite } from "@qa-guru/allure-notifications-test-meta";
 
 declareSuite({
   feature: "config",
   story: "Config schema and catalog",
   layer: "unit",
-  component: "@allure-notifications/config",
+  component: "@qa-guru/allure-notifications-config",
   severity: "normal",
 });
 
@@ -38,7 +38,7 @@ function loadJson(name: string): unknown {
   return JSON.parse(readFileSync(join(CONFIG_DIR, name), "utf8"));
 }
 
-describe("@allure-notifications/config catalog", () => {
+describe("@qa-guru/allure-notifications-config catalog", () => {
   it("exposes 17 panel catalog slots", () => {
     assert.equal(PANEL_CATALOG.length, 17);
     const ids = new Set(PANEL_CATALOG.map((p) => p.id));
@@ -82,7 +82,7 @@ describe("@allure-notifications/config catalog", () => {
   });
 });
 
-describe("@allure-notifications/config presets", () => {
+describe("@qa-guru/allure-notifications-config presets", () => {
   it("has three canvas presets and DEFAULT_ITEMS (4-tile screenshot layout)", () => {
     assert.deepEqual(Object.keys(CANVAS_PRESETS).sort(), [
       "1080x1080",
@@ -136,7 +136,7 @@ describe("@allure-notifications/config presets", () => {
   });
 });
 
-describe("@allure-notifications/config schema vs repo fixtures", () => {
+describe("@qa-guru/allure-notifications-config schema vs repo fixtures", () => {
   it("validates builder-shaped CB-870 default (synthetic export)", () => {
     const exported = createDefaultConfig();
     const result = safeParseConfig(exported);

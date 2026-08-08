@@ -1,6 +1,6 @@
 {
-  "name": "allure-notifications",
-  "version": "6.0.13",
+  "name": "@qa-guru/allure-notifications",
+  "version": "6.0.14",
   "description": "CLI: allure-notifications send --config (6.0 TypeScript). Collage via @napi-rs/canvas.",
   "type": "module",
   "bin": {
@@ -33,11 +33,11 @@
     "prepublishOnly": "pnpm run build"
   },
   "dependencies": {
-    "@allure-notifications/config": "workspace:*",
-    "@allure-notifications/core": "workspace:*"
+    "@qa-guru/allure-notifications-config": "workspace:*",
+    "@qa-guru/allure-notifications-core": "workspace:*"
   },
   "devDependencies": {
-    "@allure-notifications/test-meta": "workspace:*",
+    "@qa-guru/allure-notifications-test-meta": "workspace:*",
     "@types/node": "26.1.2",
     "allure-node-test": "3.10.2",
     "typescript": "7.0.2"

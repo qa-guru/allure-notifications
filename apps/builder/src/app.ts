@@ -13,14 +13,14 @@ import {
   resolvePanelMeta,
   type ChartItem,
   type PanelMeta,
-} from '@allure-notifications/config';
+} from '@qa-guru/allure-notifications-config';
 import {
   CORNER_RATIO,
   PYRAMID_COLORS_DARK,
   PYRAMID_COLORS_LIGHT,
   STATUS_COLORS,
   TIER_GAP_RATIO,
-} from '@allure-notifications/pyramid';
+} from '@qa-guru/allure-notifications-pyramid';
 import { mountHighlightedOutput } from '../vendor/design-system/js/code-highlight.js';
 
 /**
@@ -41,8 +41,8 @@ import { mountHighlightedOutput } from '../vendor/design-system/js/code-highligh
  * Terminal body canon: `.panel__code.ch-code` + CodeHighlight (always colored;
  * no blank pad rows before `{` / after `}`).
  *
- * Catalog / presets from `@allure-notifications/config`; pyramid geometry +
- * layer palette from `@allure-notifications/pyramid` (import map → vendor sync).
+ * Catalog / presets from `@qa-guru/allure-notifications-config`; pyramid geometry +
+ * layer palette from `@qa-guru/allure-notifications-pyramid` (import map → vendor sync).
  * UI-only packing stays local.
  */
 

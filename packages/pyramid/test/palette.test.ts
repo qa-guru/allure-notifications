@@ -3,13 +3,13 @@ import { existsSync, readFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { describe, it } from "node:test";
-import { declareSuite } from "@allure-notifications/test-meta";
+import { declareSuite } from "@qa-guru/allure-notifications-test-meta";
 
 declareSuite({
   feature: "pyramid",
   story: "Pyramid palette and geometry",
   layer: "unit",
-  component: "@allure-notifications/pyramid",
+  component: "@qa-guru/allure-notifications-pyramid",
   severity: "normal",
 });
 
@@ -58,7 +58,7 @@ function loadSsot(): Ssot | null {
   return JSON.parse(readFileSync(path, "utf8")) as Ssot;
 }
 
-describe("@allure-notifications/pyramid geometry", () => {
+describe("@qa-guru/allure-notifications-pyramid geometry", () => {
   it("locks CORNER_RATIO / TIER_GAP_RATIO to canon", () => {
     assert.equal(CORNER_RATIO, 0.18);
     assert.equal(TIER_GAP_RATIO, 0.11);
@@ -72,7 +72,7 @@ describe("@allure-notifications/pyramid geometry", () => {
   });
 });
 
-describe("@allure-notifications/pyramid palette vs SSOT", () => {
+describe("@qa-guru/allure-notifications-pyramid palette vs SSOT", () => {
   it("matches stacks/java-spring/tests/allure/pyramid-layers.json", (t) => {
     const ssot = loadSsot();
     if (!ssot) {

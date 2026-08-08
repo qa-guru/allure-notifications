@@ -1,6 +1,6 @@
 import { PHRASES } from './phrases.js';
-import { CANVAS_PRESETS, DEFAULT_CANVAS, DEFAULT_CARD_GAP, DEFAULT_HEADER_HEIGHT, DEFAULT_TILE_PAD, GRID_COLS, GRID_ROWS, PANEL_CATALOG, PANEL_META, createDefaultConfig, resolvePanelMeta, } from '@allure-notifications/config';
-import { CORNER_RATIO, PYRAMID_COLORS_DARK, PYRAMID_COLORS_LIGHT, STATUS_COLORS, TIER_GAP_RATIO, } from '@allure-notifications/pyramid';
+import { CANVAS_PRESETS, DEFAULT_CANVAS, DEFAULT_CARD_GAP, DEFAULT_HEADER_HEIGHT, DEFAULT_TILE_PAD, GRID_COLS, GRID_ROWS, PANEL_CATALOG, PANEL_META, createDefaultConfig, resolvePanelMeta, } from '@qa-guru/allure-notifications-config';
+import { CORNER_RATIO, PYRAMID_COLORS_DARK, PYRAMID_COLORS_LIGHT, STATUS_COLORS, TIER_GAP_RATIO, } from '@qa-guru/allure-notifications-pyramid';
 import { mountHighlightedOutput } from '../vendor/design-system/js/code-highlight.js';
 /** Default tile footprint + flush 5-up packing on 10-col grid (2×2, no gutters). */
 const DEFAULT_TILE_W = 2;

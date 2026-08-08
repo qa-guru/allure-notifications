@@ -4,7 +4,7 @@ import { tmpdir } from "node:os";
 import { dirname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import { describe, it } from "node:test";
-import { declareSuite } from "@allure-notifications/test-meta";
+import { declareSuite } from "@qa-guru/allure-notifications-test-meta";
 
 declareSuite({
   feature: "cli-send",
@@ -28,7 +28,7 @@ import {
   runCli,
   send,
 } from "../src/index.js";
-import { parseConfig } from "@allure-notifications/config";
+import { parseConfig } from "@qa-guru/allure-notifications-config";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 /** Compiled at packages/cli/dist/test → fixtures live at packages/cli/test/fixtures */
@@ -49,7 +49,7 @@ function isPng(buf: Buffer): boolean {
   );
 }
 
-describe("@allure-notifications/cli messengers mock", () => {
+describe("@qa-guru/allure-notifications messengers mock", () => {
   it("lists configured messengers without network", () => {
     const ids = configuredMessengers({
       base: {},
@@ -89,7 +89,7 @@ describe("@allure-notifications/cli messengers mock", () => {
   });
 });
 
-describe("@allure-notifications/cli messengers live", () => {
+describe("@qa-guru/allure-notifications messengers live", () => {
   it("live with no messengers configured returns skipped telegram", async () => {
     const results = await deliverLive(
       { base: {} },
@@ -170,7 +170,7 @@ describe("@allure-notifications/cli messengers live", () => {
   });
 });
 
-describe("@allure-notifications/cli send dry-run", () => {
+describe("@qa-guru/allure-notifications send dry-run", () => {
   it("renders PNG buffer from fixture config (no network)", async () => {
     const result = await send({
       configPath: FIXTURE_CONFIG,
@@ -288,7 +288,7 @@ describe("@allure-notifications/cli send dry-run", () => {
   });
 });
 
-describe("@allure-notifications/cli send path resolution", () => {
+describe("@qa-guru/allure-notifications send path resolution", () => {
   it("resolveConfigPaths resolves relative and absolute folders + historyPath", () => {
     const configDir = "/tmp/an-config";
     const resolved = resolveConfigPaths(
@@ -472,7 +472,7 @@ describe("@allure-notifications/cli send path resolution", () => {
   });
 });
 
-describe("@allure-notifications/cli runCli integration", () => {
+describe("@qa-guru/allure-notifications runCli integration", () => {
   it("send --config --dry-run exits 0 and reports collage size", async () => {
     const result = await runCli([
       "send",
@@ -631,7 +631,7 @@ describe("@allure-notifications/cli runCli integration", () => {
   });
 });
 
-describe("@allure-notifications/cli live gated", () => {
+describe("@qa-guru/allure-notifications live gated", () => {
   it("skips real network live test unless ALLURE_NOTIFICATIONS_LIVE_TEST=1", async () => {
     if (process.env.ALLURE_NOTIFICATIONS_LIVE_TEST !== "1") {
       return;

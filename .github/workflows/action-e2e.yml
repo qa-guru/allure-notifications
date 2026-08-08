@@ -33,8 +33,8 @@ jobs:
 
       - name: Build local Action CLI
         run: |
-          pnpm --filter @allure-notifications/test-meta build
-          pnpm --filter allure-notifications... build
+          pnpm --filter @qa-guru/allure-notifications-test-meta build
+          pnpm --filter @qa-guru/allure-notifications... build
 
       - name: Validate Action metadata and workflow
         run: pnpm validate:action

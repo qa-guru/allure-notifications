@@ -39,7 +39,7 @@ jobs:
           npm init -y >/dev/null
           npm install --no-save --package-lock=false \
             allure@3.14.3 \
-            allure-notifications@6.0.13
+            @qa-guru/allure-notifications@6.0.14
 
       - name: Generate report
         working-directory: build/example-native

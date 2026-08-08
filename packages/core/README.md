@@ -1,4 +1,4 @@
-# @allure-notifications/core
+# @qa-guru/allure-notifications-core
 
 Allure 3 **summary/results → native collage PNG buffer** for line **6.0.\***.
 
@@ -12,14 +12,14 @@ Production collage uses **[`@napi-rs/canvas`](https://github.com/Brooooood/canva
 | **Not used** | Playwright, Puppeteer, Sharp-as-draw, browser screenshot |
 | **Playwright** | tests only (elsewhere — builder e2e); never production render |
 
-Depends on `@allure-notifications/config` + `@allure-notifications/pyramid`
+Depends on `@qa-guru/allure-notifications-config` + `@qa-guru/allure-notifications-pyramid`
 (`CORNER_RATIO` / `TIER_GAP_RATIO`, `STATUS_COLORS.passed` = `#94ca66`).
 
 ## API
 
 ```ts
-import { parseConfig } from "@allure-notifications/config";
-import { renderCollagePng, loadReportAnalytics } from "@allure-notifications/core";
+import { parseConfig } from "@qa-guru/allure-notifications-config";
+import { renderCollagePng, loadReportAnalytics } from "@qa-guru/allure-notifications-core";
 
 const config = parseConfig(/* config.json */);
 const analytics = await loadReportAnalytics(config);
@@ -38,7 +38,7 @@ Free-layout collage panels:
 ## Verify
 
 ```bash
-pnpm --filter @allure-notifications/core test
+pnpm --filter @qa-guru/allure-notifications-core test
 ```
 
 Canon: monorepo `docs/allure-notifications/canon/CANON.md` +

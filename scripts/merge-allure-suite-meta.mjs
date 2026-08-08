@@ -3,9 +3,9 @@
  * Merge declareSuite registry labels into Allure *-result.json (Node 24 reporter-only path).
  *
  * Matching heuristics (first hit wins):
- * 1. labels.package — e.g. @allure-notifications/core.dist.test.report.test.js
+ * 1. labels.package — e.g. @qa-guru/allure-notifications-core.dist.test.report.test.js
  *    → packages/core/dist/test/report.test.js (+ source alias packages/core/test/report.test.ts)
- * 2. fullName — e.g. @allure-notifications/core:dist/test/report.test.js#…
+ * 2. fullName — e.g. @qa-guru/allure-notifications-core:dist/test/report.test.js#…
  * 3. titlePath — dist/test/report.test.js under inferred package dir
  *
  * Playwright results with bindSuiteMeta labels are left unchanged (merge only fills missing keys).
@@ -21,13 +21,13 @@ const SUITE_LABELS = ["epic", "feature", "story", "layer", "severity", "componen
 
 /** @type {Record<string, string>} npm name → repo-relative directory */
 const PACKAGE_SCOPE_DIRS = {
-  "@allure-notifications/core": "packages/core",
-  "@allure-notifications/config": "packages/config",
-  "@allure-notifications/pyramid": "packages/pyramid",
-  "@allure-notifications/plugin": "packages/plugin",
-  "@allure-notifications/test-meta": "packages/test-meta",
+  "@qa-guru/allure-notifications-core": "packages/core",
+  "@qa-guru/allure-notifications-config": "packages/config",
+  "@qa-guru/allure-notifications-pyramid": "packages/pyramid",
+  "@qa-guru/allure-notifications-plugin": "packages/plugin",
+  "@qa-guru/allure-notifications-test-meta": "packages/test-meta",
   "allure-notifications": "packages/cli",
-  "@allure-notifications/builder": "apps/builder",
+  "@qa-guru/allure-notifications-builder": "apps/builder",
 };
 
 /** @param {string} dotted e.g. dist.test.report.test.js */

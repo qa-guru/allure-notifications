@@ -1,6 +1,6 @@
 /**
  * Testing pyramid panel — port of Java TestingPyramidPanel.
- * Geometry + palette from @allure-notifications/pyramid.
+ * Geometry + palette from @qa-guru/allure-notifications-pyramid.
  */
 
 import { createCanvas } from "@napi-rs/canvas";
@@ -21,7 +21,7 @@ import {
   tierCornerRadius,
   tierGapPx,
   type LayerKey,
-} from "@allure-notifications/pyramid";
+} from "@qa-guru/allure-notifications-pyramid";
 
 import { hexToRgb, rgbCss, type ChartTheme, type Rgb } from "../../theme.js";
 import type { PanelContext } from "../context.js";

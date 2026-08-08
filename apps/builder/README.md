@@ -1,4 +1,4 @@
-# @allure-notifications/builder
+# @qa-guru/allure-notifications-builder
 
 Full `config.json` configurator for [allure-notifications](https://github.com/qa-guru/allure-notifications) (base · messengers · links · chart/collage).
 
@@ -10,15 +10,15 @@ Merged into the 6.0 monorepo as `apps/builder/` (Stage E). Pages deploy from thi
 
 | Layer | Path | Role |
 |-------|------|------|
-| Source | `src/app.ts`, `src/phrases.ts` | Typed app (contracts from `@allure-notifications/config` + `@pyramid`) |
+| Source | `src/app.ts`, `src/phrases.ts` | Typed app (contracts from `@qa-guru/allure-notifications-config` + `@pyramid`) |
 | Emit | `js/` | Browser runtime — `tsc -p tsconfig.json` (ESM, no bundler) |
 | Toolchain | `typescript@7` | Native `tsc` from the `typescript` package (no separate `tsgo` script) |
 
-**Emit strategy:** commit both `src/` and emitted `js/` so the stand (`ensure.py` cwd = `apps/builder`) serves static files without a build step. CI/Pages always re-run `pnpm --filter @allure-notifications/builder run build` before tests/deploy so `js/` cannot drift. `index.html` loads `js/app.js` (import map → vendor).
+**Emit strategy:** commit both `src/` and emitted `js/` so the stand (`ensure.py` cwd = `apps/builder`) serves static files without a build step. CI/Pages always re-run `pnpm --filter @qa-guru/allure-notifications-builder run build` before tests/deploy so `js/` cannot drift. `index.html` loads `js/app.js` (import map → vendor).
 
 ```bash
-pnpm --filter @allure-notifications/builder run build      # src → js/
-pnpm --filter @allure-notifications/builder run typecheck  # tsc --noEmit
+pnpm --filter @qa-guru/allure-notifications-builder run build      # src → js/
+pnpm --filter @qa-guru/allure-notifications-builder run typecheck  # tsc --noEmit
 ```
 
 ## Canvas presets
@@ -29,8 +29,8 @@ Only: **870×1080** · **1080×1080** · **1410×1080**. No 1024×1280.
 
 | Package | Role | Vendor sync |
 |---------|------|-------------|
-| `@allure-notifications/config` | catalog / presets / `createDefaultConfig` (browser, no zod) | `pnpm run sync-config` → `vendor/allure-notifications-config/` |
-| `@allure-notifications/pyramid` | `CORNER_RATIO` / `TIER_GAP_RATIO` + layer palette (`unit` = `#94ca66`) | `pnpm run sync-pyramid` → `vendor/allure-notifications-pyramid/` |
+| `@qa-guru/allure-notifications-config` | catalog / presets / `createDefaultConfig` (browser, no zod) | `pnpm run sync-config` → `vendor/allure-notifications-config/` |
+| `@qa-guru/allure-notifications-pyramid` | `CORNER_RATIO` / `TIER_GAP_RATIO` + layer palette (`unit` = `#94ca66`) | `pnpm run sync-pyramid` → `vendor/allure-notifications-pyramid/` |
 
 Stand/`http.server` cannot follow pnpm symlinks outside `apps/builder`, so sync copies real files. `index.html` import map maps both bare specifiers → vendor. UI-only packing (`DEFAULT_TILE_W`, `PACK_*`, `WT_BAR_BASELINE`) stays local. Parity: `tests/config-parity.test.mjs` · `tests/pyramid-parity.test.mjs`.
 
@@ -60,14 +60,14 @@ HTTP required (`header.js` fetches `vendor/design-system/templates/header.html`)
 
 ```bash
 # from monorepo root (allure-notifications nested)
-pnpm --filter @allure-notifications/builder test
+pnpm --filter @qa-guru/allure-notifications-builder test
 # or root:
 pnpm test
 pnpm typecheck
 ```
 
-- `tests/config-parity.test.mjs` — import `@allure-notifications/config` (SQ-1080 / presets / catalog)
-- `tests/pyramid-parity.test.mjs` — import `@allure-notifications/pyramid` (geometry / palette / vendor)
+- `tests/config-parity.test.mjs` — import `@qa-guru/allure-notifications-config` (SQ-1080 / presets / catalog)
+- `tests/pyramid-parity.test.mjs` — import `@qa-guru/allure-notifications-pyramid` (geometry / palette / vendor)
 - `tests/smoke.spec.js` — Playwright: header, zones, Reset → free `items`, CB-870 / SQ-1080 / WD-1410, export, panel bar
 - `tests/dogfood_jar.py` — needs jar + `build/pyramid-showcase`; skip unless `ANB_DOGFOOD_REQUIRED=1`
 

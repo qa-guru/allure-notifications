@@ -78,7 +78,7 @@ jobs:
         run: pnpm validate:action
 
       - name: Install Playwright Chromium
-        run: pnpm --filter @allure-notifications/builder exec playwright install chromium --with-deps
+        run: pnpm --filter @qa-guru/allure-notifications-builder exec playwright install chromium --with-deps
 
       # Workspace package exports point at dist/; emit before typecheck (fresh CI has no dist).
       - name: Build (packages + builder emit)
@@ -415,7 +415,7 @@ jobs:
             echo "## Telegram (Q4)"
             echo ""
             echo "- topic: slug \`allure-notifications\` → id **34** (ADR 008)"
-            echo "- CLI pin: \`allure-notifications@6.0.13\`"
+            echo "- CLI pin: \`@qa-guru/allure-notifications@6.0.14\`"
             echo "- gate: \`${GATE_MODE}\` (\`${GATE_REASON}\`)"
             if [[ "${GATE_MODE}" == "skip" ]]; then
               echo "- status: soft-skip (missing TELEGRAM_* — not a merge blocker)"

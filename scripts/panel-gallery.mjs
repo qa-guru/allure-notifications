@@ -38,8 +38,8 @@ const EXTRA = [{ id: "suites", type: "suites", title: "Suites" }];
 const ALL = [...PANEL_CATALOG, ...EXTRA];
 
 /**
- * @param {import("@allure-notifications/config").PanelMeta} panel
- * @param {import("@allure-notifications/core").ReportAnalytics} analytics
+ * @param {import("@qa-guru/allure-notifications-config").PanelMeta} panel
+ * @param {import("@qa-guru/allure-notifications-core").ReportAnalytics} analytics
  */
 function panelHasData(panel, analytics) {
   const type = panel.type;
@@ -72,7 +72,7 @@ function panelHasData(panel, analytics) {
   return false;
 }
 
-/** @param {import("@allure-notifications/config").PanelMeta} panel */
+/** @param {import("@qa-guru/allure-notifications-config").PanelMeta} panel */
 function skipReason(panel) {
   if (HISTORY_TYPES.has(panel.type)) return "нужен history.jsonl";
   if (panel.type === "testResultSeverities") return "нет severity-лейблов";
@@ -83,8 +83,8 @@ function skipReason(panel) {
 }
 
 /**
- * @param {import("@allure-notifications/core").ReportAnalytics} analytics
- * @param {import("@allure-notifications/config").PanelMeta} panel
+ * @param {import("@qa-guru/allure-notifications-core").ReportAnalytics} analytics
+ * @param {import("@qa-guru/allure-notifications-config").PanelMeta} panel
  * @param {string} reportDir
  * @param {string} resultsDir
  */

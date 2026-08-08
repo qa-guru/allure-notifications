@@ -26,11 +26,11 @@ declareSuite({
   feature: "test-meta",
   story: "Suite metadata helpers",
   layer: "unit",
-  component: "@allure-notifications/test-meta",
+  component: "@qa-guru/allure-notifications-test-meta",
   severity: "normal",
 });
 
-describe("@allure-notifications/test-meta", () => {
+describe("@qa-guru/allure-notifications-test-meta", () => {
   it("DEFAULT_EPIC is allure-notifications", () => {
     assert.equal(DEFAULT_EPIC, "allure-notifications");
   });
@@ -161,7 +161,7 @@ describe("@allure-notifications/test-meta", () => {
       feature: "test-meta",
       story: "applySuiteMeta",
       layer: "unit",
-      component: "@allure-notifications/test-meta",
+      component: "@qa-guru/allure-notifications-test-meta",
       severity: "normal",
     });
   });

@@ -36,7 +36,7 @@ config remain relative to the config file.
 
 ## Plugin capability
 
-`@allure-notifications/plugin` remains available as a legacy alternate. It is
+`@qa-guru/allure-notifications-plugin` remains available as a legacy alternate. It is
 not the recommended GitHub Actions path because Allure calls `Plugin.done`
 before report files are flushed, which requires another generate pass. Its
 separate example is [`plugin-notify.yml`](plugin-notify.yml) with
