@@ -4,6 +4,8 @@
  *   1×1 → hard-square __body (подложка); equal --wt-pad on all sides; bar outside ratio.
  *   Square layouts (cols===rows) keep the same hard-square body — never stretch to portrait.
  *   One chrome: bar 28 · pad 6 · marks 1.12 (dashboard + Telegram collage).
+ *   Bar inset: --wt-bar-inset = (bar-height − indicator-size) / 2 — first indicator has
+ *   equal distance to top / left / bottom of the bar (trailing chrome uses the same inset).
  * Format: __body aspect-ratio from --layout-WxH (default 1×1).
  * Tier (footprint chrome): --tier-hero|regular|compact|micro
  *   → mocks switch labels / axes / center values; see widget-tile-mocks.js.
@@ -23,6 +25,8 @@
   --wt-square: 1; /* default layout 1×1 — hard-square body */
   --indicator-size: 10px;
   --indicator-mix: 100%;
+  /* First indicator: top = left = bottom. Trailing actions share the same inset. */
+  --wt-bar-inset: calc((var(--wt-bar-height) - var(--indicator-size)) / 2);
 
   display: flex;
   flex-direction: column;
@@ -44,7 +48,7 @@
   gap: 6px;
   box-sizing: border-box;
   height: var(--wt-bar-height);
-  padding: 0 var(--space-2);
+  padding: 0 var(--wt-bar-inset);
   border-bottom: 1px solid var(--color-border);
   background: color-mix(in srgb, var(--color-text) 3%, transparent);
   overflow: hidden;
@@ -154,7 +158,7 @@
 }
 
 .widget-tile--tier-micro .widget-tile__bar {
-  padding: 0 6px;
+  padding: 0 var(--wt-bar-inset);
   gap: 4px;
 }
 
