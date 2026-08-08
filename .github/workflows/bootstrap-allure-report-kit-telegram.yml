@@ -4,6 +4,12 @@ name: Bootstrap allure-report-kit Telegram
 
 on:
   workflow_dispatch:
+    inputs:
+      topic_id:
+        description: Existing forum topic id (skip createForumTopic when set)
+        required: false
+        default: "405"
+        type: string
 
 permissions:
   contents: read
@@ -39,14 +45,21 @@ jobs:
           npm test
           npm run report
           npx allure generate ./allure-results -o allure-report
+          test -f allure-report/summary.json
 
-      - name: Create forum topic (if missing)
+      - name: Resolve forum topic id
         id: topic
         env:
           TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_TOKEN }}
           TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+          INPUT_TOPIC: ${{ inputs.topic_id }}
         run: |
           set -euo pipefail
+          if [[ -n "${INPUT_TOPIC}" ]]; then
+            echo "topic_id=${INPUT_TOPIC}" >> "$GITHUB_OUTPUT"
+            echo "Using existing topic id \`${INPUT_TOPIC}\`"
+            exit 0
+          fi
           NAME="allure-report-kit"
           RESP=$(curl -sf -X POST "https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/createForumTopic" \
             -d "chat_id=${TELEGRAM_CHAT_ID}" \
@@ -64,7 +77,7 @@ jobs:
         run: |
           set -euo pipefail
           python - <<'PY'
-          import json, os, pathlib
+          import json, pathlib
           cfg = {
             "base": {
               "project": "allure-report-kit",
@@ -108,14 +121,13 @@ jobs:
               "templatePath": "/templates/telegram.ftl",
             },
           }
-          pathlib.Path("config").mkdir(exist_ok=True)
-          pathlib.Path("config/bootstrap-telegram.json").write_text(
+          pathlib.Path("bootstrap-telegram.json").write_text(
             json.dumps(cfg, indent=2, ensure_ascii=False) + "\n",
             encoding="utf-8",
           )
           PY
           npx allure-notifications@6.0.13 send \
-            --config config/bootstrap-telegram.json \
+            --config bootstrap-telegram.json \
             --live
 
       - name: Job summary
@@ -128,8 +140,6 @@ jobs:
             echo ""
             echo "- topic slug: \`allure-report-kit\`"
             echo "- topic id: \`${TOPIC_ID}\`"
-            echo "- chat: \`${{ secrets.TELEGRAM_CHAT_ID }}\`"
+            echo "- registry: \`docs/allure-notifications/topics.json\`"
             echo "- TestOps: [project 5321](https://allure.qa.guru/project/5321)"
-            echo ""
-            echo "Next: add to \`docs/allure-notifications/topics.json\` and set \`vars.TELEGRAM_TOPIC_ID\` on \`qa-guru/allure-report-kit\`."
           } >> "$GITHUB_STEP_SUMMARY"
