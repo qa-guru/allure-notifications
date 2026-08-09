@@ -53,12 +53,13 @@ test("@qa-guru/allure-notifications-config chrome defaults + PANEL_CATALOG size"
   assert.equal(DEFAULT_HEADER_HEIGHT, 22);
   assert.equal(DEFAULT_CARD_GAP, 14);
   assert.equal(DEFAULT_TILE_PAD, 6);
-  assert.equal(PANEL_CATALOG.length, 17);
+  assert.equal(PANEL_CATALOG.length, 19);
 });
 
 test("createDefaultConfig is jar-shaped free CB-870", () => {
   const cfg = createDefaultConfig();
   assert.equal(cfg.base.chart.layout, "free");
+  assert.equal(cfg.base.chart.profile, "default");
   assert.equal(cfg.base.chart.width, 870);
   assert.equal(cfg.base.chart.height, 1080);
   assert.deepEqual(cfg.base.chart.items, SQ1080_ITEMS);

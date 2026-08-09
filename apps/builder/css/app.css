@@ -1046,3 +1046,38 @@ html.theme-light .anb-zone--terminal .ch-theme--vscode .ch-tok-cmd { color: #795
   background: color-mix(in srgb, var(--color-danger, #e85d4c) 22%, transparent);
   color: color-mix(in srgb, var(--color-danger, #e85d4c) 85%, #fff);
 }
+
+.anb-qg-mock {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.35rem;
+  width: 100%;
+  height: 100%;
+  min-height: 2.5rem;
+  box-sizing: border-box;
+  font-size: 0.7rem;
+  line-height: 1.2;
+  color: var(--color-text-muted, #8a8a8a);
+}
+
+.anb-qg-mock__label {
+  font-weight: 600;
+  color: var(--color-text, #1a1a1a);
+}
+
+.anb-qg-mock__status {
+  padding: 0.1rem 0.45rem;
+  border-radius: 999px;
+  background: color-mix(in srgb, #2e7d32 18%, transparent);
+  color: #2e7d32;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.anb-canvas[data-anb-dark='true'] .anb-qg-mock__label,
+.anb-export-popover__stage[data-anb-dark='true'] .anb-qg-mock__label {
+  color: #e8e8e8;
+}

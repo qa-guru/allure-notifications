@@ -78,6 +78,16 @@ export const PANEL_CATALOG = Object.freeze([
         groupBy: "story",
         title: "Stability by story",
     }),
+    panel({
+        id: "allureQualityGate",
+        type: "qualityGate",
+        title: "Allure quality gate",
+    }),
+    panel({
+        id: "sonarQualityGate",
+        type: "qualityGate",
+        title: "Sonar quality gate",
+    }),
 ]);
 export const PANEL_META = Object.freeze(Object.fromEntries(PANEL_CATALOG.map((p) => [p.id, p])));
 /** Chart types known to the catalog (unique `type` values). */

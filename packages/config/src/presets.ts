@@ -4,6 +4,7 @@
  */
 
 import type { ChartItem } from "./catalog.js";
+import { CHART_PROFILE_DEFAULT } from "./kit-only.js";
 
 export type CanvasSize = { w: number; h: number };
 
@@ -77,6 +78,7 @@ export function createDefaultConfig(opts: DefaultConfigOptions = {}) {
       enableChart: true,
       darkMode: true,
       chart: {
+        profile: CHART_PROFILE_DEFAULT,
         mode: "collage" as const,
         layout: "free" as const,
         width: canvas.w,

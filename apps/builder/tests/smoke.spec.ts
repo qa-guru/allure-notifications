@@ -64,6 +64,7 @@ test.describe('allure-notifications-builder smoke', () => {
       .toMatchObject({
         mode: 'collage',
         layout: 'free',
+        profile: 'default',
         width: 870,
         height: 1080,
         headerHeight: 22,
@@ -223,6 +224,7 @@ test.describe('allure-notifications-builder smoke', () => {
     const cfg = JSON.parse(fs.readFileSync(path, 'utf8'));
     expect(cfg.telegram).toBeTruthy();
     expect(cfg.base.chart.layout).toBe('free');
+    expect(cfg.base.chart.profile).toBe('default');
     expect(cfg.base.chart.items).toEqual(SQ1080_ITEMS);
     expect(cfg.base.chart.width).toBe(870);
     expect(cfg.base.chart.height).toBe(1080);
@@ -408,5 +410,63 @@ test.describe('allure-notifications-builder smoke', () => {
     expect(pos.radius).toBe(10);
     // Regression: merge once parked NE/NW under the title bar.
     expect(pos.nwBelowBar).toBe(false);
+  });
+
+  test('chart.profile kit shows QG palette slots; export includes profile + QG ids', async ({
+    page,
+  }) => {
+    const errors: string[] = [];
+    page.on('console', (msg) => {
+      if (msg.type() === 'error') errors.push(msg.text());
+    });
+    page.on('pageerror', (err) => {
+      errors.push(err.message);
+    });
+
+    await page.goto('/');
+    const palette = page.getByTestId('anb-palette');
+    await expect(palette.locator('.anb-palette__item')).toHaveCount(17);
+    await expect(page.getByTestId('anb-palette-allureQualityGate')).toHaveCount(0);
+    await expect(page.getByTestId('anb-palette-sonarQualityGate')).toHaveCount(0);
+
+    await page.getByTestId('anb-chart-profile').selectOption('kit');
+    await expect(palette.locator('.anb-palette__item')).toHaveCount(19);
+    await expect(page.getByTestId('anb-palette-allureQualityGate')).toBeVisible();
+    await expect(page.getByTestId('anb-palette-sonarQualityGate')).toBeVisible();
+
+    await page.getByTestId('anb-palette-allureQualityGate').click();
+    await page.getByTestId('anb-palette-sonarQualityGate').click();
+
+    await expect
+      .poll(async () => {
+        const raw = await page.getByTestId('anb-terminal').innerText();
+        return JSON.parse(raw).base.chart;
+      })
+      .toMatchObject({
+        profile: 'kit',
+        items: expect.arrayContaining([
+          expect.objectContaining({ id: 'allureQualityGate', type: 'qualityGate' }),
+          expect.objectContaining({ id: 'sonarQualityGate', type: 'qualityGate' }),
+        ]),
+      });
+
+    await page.getByTestId('anb-chart-profile').selectOption('default');
+    await expect(palette.locator('.anb-palette__item')).toHaveCount(17);
+    await expect(page.getByTestId('anb-palette-allureQualityGate')).toHaveCount(0);
+
+    await expect
+      .poll(async () => {
+        const raw = await page.getByTestId('anb-terminal').innerText();
+        const chart = JSON.parse(raw).base.chart;
+        return {
+          profile: chart.profile,
+          qgCount: chart.items.filter(
+            (item: { type?: string }) => item.type === 'qualityGate',
+          ).length,
+        };
+      })
+      .toEqual({ profile: 'default', qgCount: 2 });
+
+    expect(errors, errors.join('\n')).toEqual([]);
   });
 });

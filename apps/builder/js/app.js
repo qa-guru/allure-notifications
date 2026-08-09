@@ -1,5 +1,5 @@
 import { PHRASES } from './phrases.js';
-import { CANVAS_PRESETS, DEFAULT_CANVAS, DEFAULT_CARD_GAP, DEFAULT_HEADER_HEIGHT, DEFAULT_TILE_PAD, GRID_COLS, GRID_ROWS, PANEL_CATALOG, PANEL_META, createDefaultConfig, resolvePanelMeta, } from '@qa-guru/allure-notifications-config';
+import { CANVAS_PRESETS, DEFAULT_CANVAS, DEFAULT_CARD_GAP, DEFAULT_HEADER_HEIGHT, DEFAULT_TILE_PAD, GRID_COLS, GRID_ROWS, PANEL_CATALOG, PANEL_META, createDefaultConfig, resolvePanelMeta, isKitOnlyPanelId, isKitOnlyPanelType, normalizeChartProfile, } from '@qa-guru/allure-notifications-config';
 import { CORNER_RATIO, PYRAMID_COLORS_DARK, PYRAMID_COLORS_LIGHT, STATUS_COLORS, TIER_GAP_RATIO, } from '@qa-guru/allure-notifications-pyramid';
 import { mountHighlightedOutput } from '../vendor/design-system/js/code-highlight.js';
 /** Default tile footprint + flush 5-up packing on 10-col grid (2×2, no gutters). */
@@ -253,6 +253,24 @@ function canvasKeyFromState() {
     const key = `${chart.width}x${chart.height}`;
     return Object.prototype.hasOwnProperty.call(CANVAS_PRESETS, key) ? key : DEFAULT_CANVAS;
 }
+function chartProfile() {
+    const chart = /** @type {{ profile?: string }} */ (state.base.chart);
+    return normalizeChartProfile(chart.profile);
+}
+function isKitProfile() {
+    return chartProfile() === 'kit';
+}
+/** Palette slots — kit-only QG visible only when profile=kit. */
+function paletteCatalog() {
+    if (isKitProfile())
+        return [...PANEL_CATALOG];
+    return PANEL_CATALOG.filter((p) => !isKitOnlyPanelId(p.id));
+}
+function canAddPalettePanel(panelId) {
+    if (!isKitOnlyPanelId(panelId))
+        return true;
+    return isKitProfile();
+}
 /**
  * @param {string} key
  */
@@ -474,13 +492,15 @@ function applySnap(snap) {
     const next = cloneSnap(snap);
     state.base = /** @type {Record<string, unknown>} */ (next.base);
     state.telegram = /** @type {Record<string, unknown>} */ (next.telegram);
+    setPath('base.chart.profile', normalizeChartProfile(
+    /** @type {{ profile?: string }} */ (state.base.chart)?.profile));
+    const chartState = /** @type {{ items?: ChartItem[] }} */ (state.base.chart);
     vectorDraft = null;
     vectorMiss = false;
     rememberSnap(capsSnap());
     hydrateControls();
     applyCanvasMetrics();
-    const chart = /** @type {{ items?: ChartItem[] }} */ (state.base.chart);
-    loadItems(Array.isArray(chart.items) ? chart.items.map((p) => ({ ...p })) : []);
+    loadItems(Array.isArray(chartState.items) ? chartState.items.map((p) => ({ ...p })) : []);
     scheduleFitEditorScale();
     renderTerminal();
     renderMessengerPreview();
@@ -655,6 +675,14 @@ function buildTgCaptionHtml() {
     });
     return lines.join('\n');
 }
+/** Builder-only QG tile body — not collage IR; avoids Allure HTML screenshot. */
+function qualityGateMockHtml(panelId) {
+    const label = panelId === 'sonarQualityGate' ? 'Sonar QG' : 'Allure QG';
+    return (`<div class="anb-qg-mock" data-anb-qg-mock="${escapeHtml(panelId)}">` +
+        `<span class="anb-qg-mock__label">${escapeHtml(label)}</span>` +
+        `<span class="anb-qg-mock__status">passed</span>` +
+        `</div>`);
+}
 /**
  * Mini-render of free-layout items into TG photo stage (logical canvas px → scale).
  * Uses DS widget-tile + WidgetTileMocks (not anb-tg__tile placeholder).
@@ -670,18 +698,24 @@ function previewItemHtml(item) {
     const chartType = item.type;
     const groupBy = item.groupBy || meta?.groupBy || '';
     const by = item.by || meta?.by || '';
+    const panelId = item.id || meta?.id || '';
     let attrs = `data-chart="${escapeHtml(chartType)}"`;
+    if (panelId)
+        attrs += ` data-panel-id="${escapeHtml(panelId)}"`;
     if (groupBy)
         attrs += ` data-group-by="${escapeHtml(groupBy)}"`;
     if (by)
         attrs += ` data-by="${escapeHtml(by)}"`;
     const chrome = chromeCssVars(chart);
+    const body = isKitOnlyPanelType(chartType) && panelId
+        ? qualityGateMockHtml(panelId)
+        : '';
     return (`<figure class="widget-tile anb-tg__widget" ${attrs} ` +
         `style="left:${rect.left}px;top:${rect.top}px;width:${rect.width}px;height:${rect.height}px;${chrome}">` +
         `<div class="widget-tile__bar">` +
         `<span class="widget-tile__title">${escapeHtml(title)}</span>` +
         `</div>` +
-        `<div class="widget-tile__body"></div>` +
+        `<div class="widget-tile__body">${body}</div>` +
         `</figure>`);
 }
 /**
@@ -924,6 +958,10 @@ function hydrateControls() {
     if (canvas instanceof HTMLSelectElement) {
         canvas.value = canvasKeyFromState();
     }
+    const profile = root.querySelector('[data-testid="anb-chart-profile"]');
+    if (profile instanceof HTMLSelectElement) {
+        profile.value = chartProfile();
+    }
     applyChartFlags();
 }
 function bindControls() {
@@ -943,6 +981,9 @@ function bindControls() {
         if (!path)
             return;
         setPath(path, controlValue(t));
+        if (path === 'base.chart.profile') {
+            onChartProfileChange();
+        }
         if (path === 'base.chart.cardGap' ||
             path === 'base.chart.headerHeight' ||
             path === 'base.chart.tilePad') {
@@ -966,6 +1007,9 @@ function bindControls() {
         if (!path)
             return;
         setPath(path, controlValue(t));
+        if (path === 'base.chart.profile') {
+            onChartProfileChange();
+        }
         if (path === 'base.chart.cardGap' ||
             path === 'base.chart.headerHeight' ||
             path === 'base.chart.tilePad') {
@@ -1018,6 +1062,8 @@ function clampItem(raw) {
     const x = Math.max(0, Math.min(GRID_COLS - w, Math.round(raw.x ?? 0)));
     const y = Math.max(0, Math.min(GRID_ROWS - h, Math.round(raw.y ?? 0)));
     const item = { type: meta.type, x, y, w, h };
+    if (isKitOnlyPanelId(meta.id))
+        item.id = meta.id;
     if (meta.groupBy)
         item.groupBy = meta.groupBy;
     if (meta.by)
@@ -1035,8 +1081,10 @@ function readItemsFromGrid() {
         if (!type)
             return null;
         const inner = el?.querySelector('.widget-tile[data-group-by], .widget-tile[data-by]');
+        const panelId = el?.dataset?.panelId || undefined;
         return clampItem({
             type,
+            id: panelId,
             groupBy: el?.dataset?.groupBy ||
                 (inner instanceof HTMLElement ? inner.getAttribute('data-group-by') : undefined) ||
                 undefined,
@@ -1105,10 +1153,13 @@ function panelInnerHtml(item) {
     const meta = resolvePanelMeta(item);
     const title = meta ? meta.title : item.type;
     const chartType = item.type;
+    const panelId = item.id || meta?.id || '';
     const tier = typeof WidgetTileMocks !== 'undefined' && WidgetTileMocks.tierForSpan
         ? WidgetTileMocks.tierForSpan(GRID_COLS, item.w, item.h)
         : 'regular';
     let attrs = `data-chart="${escapeHtml(chartType)}"`;
+    if (panelId)
+        attrs += ` data-panel-id="${escapeHtml(panelId)}"`;
     if (item.groupBy)
         attrs += ` data-group-by="${escapeHtml(item.groupBy)}"`;
     else if (meta?.groupBy)
@@ -1117,6 +1168,7 @@ function panelInnerHtml(item) {
         attrs += ` data-by="${escapeHtml(item.by)}"`;
     else if (meta?.by)
         attrs += ` data-by="${escapeHtml(meta.by)}"`;
+    const qgBody = isKitOnlyPanelType(chartType) && panelId ? qualityGateMockHtml(panelId) : '';
     return (`<div class="anb-panel__bar">` +
         `<span class="anb-panel__title">${escapeHtml(title)}</span>` +
         `<span class="anb-panel__actions">` +
@@ -1126,7 +1178,7 @@ function panelInnerHtml(item) {
         `</div>` +
         `<div class="anb-panel__body">` +
         `<div class="widget-tile widget-tile--tier-${tier} anb-panel__tile" ${attrs}>` +
-        `<div class="widget-tile__body"></div>` +
+        `<div class="widget-tile__body">${qgBody}</div>` +
         `</div>` +
         `</div>`);
 }
@@ -1148,6 +1200,8 @@ function makeWidgetEl(item) {
     const el = document.createElement('div');
     el.className = 'grid-stack-item';
     el.dataset.type = item.type;
+    if (item.id)
+        el.dataset.panelId = item.id;
     if (item.groupBy)
         el.dataset.groupBy = item.groupBy;
     if (item.by)
@@ -1209,6 +1263,8 @@ function addItem(panelId, opts = {}) {
     const meta = PANEL_META[panelId] || resolvePanelMeta({ type: panelId });
     if (!meta || !grid)
         return;
+    if (!canAddPalettePanel(meta.id))
+        return;
     /* New tiles from palette → 2×2. Explicit w/h (copy, drop spot) win; grid presets stay in DEFAULT_ITEMS. */
     const w = Math.max(1, opts.w || DEFAULT_TILE_W);
     const h = Math.max(1, opts.h || DEFAULT_TILE_H);
@@ -1222,6 +1278,7 @@ function addItem(panelId, opts = {}) {
     // meta already resolved — clampItem cannot return null for a catalog type.
     const item = clampItem({
         type: meta.type,
+        id: meta.id,
         groupBy: meta.groupBy,
         by: meta.by,
         x: spot.x,
@@ -1346,14 +1403,23 @@ function paletteItemHtml(item) {
         `<span class="anb-palette__hint">${escapeHtml(item.title)}</span>` +
         `</button>`);
 }
-function renderPalette() {
+function renderPaletteItems() {
     const palette = document.getElementById('anb-palette');
     if (!palette)
         return;
-    palette.innerHTML = PANEL_CATALOG.map(paletteItemHtml).join('');
+    palette.innerHTML = paletteCatalog().map(paletteItemHtml).join('');
     if (typeof window.WidgetTileMocks !== 'undefined' && window.WidgetTileMocks.fill) {
         window.WidgetTileMocks.fill(palette, { force: true });
     }
+}
+function onChartProfileChange() {
+    renderPaletteItems();
+}
+function renderPalette() {
+    renderPaletteItems();
+    const palette = document.getElementById('anb-palette');
+    if (!palette)
+        return;
     palette.addEventListener('click', (e) => {
         const btn = /** @type {HTMLElement | null} */ (e.target instanceof Element ? e.target.closest('[data-anb-panel-id]') : null);
         if (!btn)
@@ -1390,7 +1456,7 @@ function wireCanvasDrop() {
     canvas.addEventListener('drop', (e) => {
         e.preventDefault();
         const panelId = e.dataTransfer && e.dataTransfer.getData('text/anb-panel-id');
-        if (!panelId || !PANEL_META[panelId])
+        if (!panelId || !PANEL_META[panelId] || !canAddPalettePanel(panelId))
             return;
         const rect = canvas.getBoundingClientRect();
         const localX = e.clientX - rect.left;
@@ -1621,6 +1687,13 @@ globalThis.__ANB__ = {
     deleteItem,
     clearAll,
     resetToDefault,
+    chartProfile,
+    isKitProfile,
+    paletteCatalog,
+    canAddPalettePanel,
+    onChartProfileChange,
+    renderPaletteItems,
+    qualityGateMockHtml,
     applyCanvasPreset,
     applySnap,
     loadVectorRegistry,

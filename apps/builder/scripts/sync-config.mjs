@@ -27,7 +27,7 @@ if (build.status !== 0) {
 }
 
 mkdirSync(outDir, { recursive: true });
-const files = ["browser.js", "catalog.js", "presets.js", "phrases.js"];
+const files = ["browser.js", "catalog.js", "presets.js", "phrases.js", "kit-only.js"];
 for (const name of files) {
   const src = join(distSrc, name);
   // Drop sourceMappingURL — maps are not vendored (stand has no .map files).

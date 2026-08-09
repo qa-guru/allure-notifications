@@ -2,6 +2,7 @@
  * Canvas presets + DEFAULT_ITEMS (4-tile compact-hero) + chrome knobs.
  * Extracted from allure-notifications-builder `js/app.js` / CANON.md.
  */
+import { CHART_PROFILE_DEFAULT } from "./kit-only.js";
 /** Presets only — 870×1080 · 1080×1080 · 1410×1080 (no 1024×1280). */
 export const CANVAS_PRESETS = Object.freeze({
     "870x1080": { w: 870, h: 1080 },
@@ -49,6 +50,7 @@ export function createDefaultConfig(opts = {}) {
             enableChart: true,
             darkMode: true,
             chart: {
+                profile: CHART_PROFILE_DEFAULT,
                 mode: "collage",
                 layout: "free",
                 width: canvas.w,
