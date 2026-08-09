@@ -39,7 +39,7 @@ Kit-only tiles `allureQualityGate` / `sonarQualityGate` (`type: qualityGate`) re
 |-------|------|
 | `chart.allureQualityGatePath` | `KitQualityGateData` JSON (explicit) |
 | (fallback) | `<allureFolder>/widgets/kit-panels/allureQualityGate.json` |
-| `chart.sonarProjectStatusPath` | Sonar `projectStatus` JSON → kit `sonarProjectStatusToQualityGateOptions` |
+| `chart.sonarQualityGatePath` | Sonar `projectStatus` JSON → kit `sonarProjectStatusToQualityGateOptions` |
 
 Missing data when `profile=kit` and a QG tile is present → **fail** (`QualityGateDataMissingError`).
 

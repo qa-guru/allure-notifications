@@ -3,7 +3,7 @@
  *
  * AQG: explicit `chart.allureQualityGatePath` or report widget
  * `widgets/kit-panels/allureQualityGate.json`.
- * SQG: explicit `chart.sonarProjectStatusPath` → kit
+ * SQG: explicit `chart.sonarQualityGatePath` → kit
  * `sonarProjectStatusToQualityGateOptions` (no second mapper).
  */
 
@@ -37,7 +37,7 @@ export class QualityGateDataMissingError extends Error {
     const where = path ? ` (tried ${path})` : "";
     super(
       `quality gate data missing for ${panelId}${where}; ` +
-        `set chart.allureQualityGatePath / chart.sonarProjectStatusPath ` +
+        `set chart.allureQualityGatePath / chart.sonarQualityGatePath ` +
         `or ensure report widgets/kit-panels/<id>.json exists`,
     );
     this.name = "QualityGateDataMissingError";
@@ -119,7 +119,7 @@ async function loadAllureQualityGateData(
 async function loadSonarQualityGateData(
   config: Config,
 ): Promise<KitQualityGateData> {
-  const path = config.base.chart?.sonarProjectStatusPath?.trim();
+  const path = config.base.chart?.sonarQualityGatePath?.trim();
   if (!path) {
     throw new QualityGateDataMissingError("sonarQualityGate");
   }

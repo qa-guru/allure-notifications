@@ -77,8 +77,8 @@ export const ChartConfigSchema = z
     historyLimit: z.number().int().positive().optional().nullable(),
     /** Kit AQG payload (`KitQualityGateData`) or report widget override path. */
     allureQualityGatePath: z.string().min(1).optional(),
-    /** Sonar `projectStatus` JSON path (mapped via kit runtime). */
-    sonarProjectStatusPath: z.string().min(1).optional(),
+    /** Sonar QG input path (`projectStatus` JSON; mapped via kit runtime). */
+    sonarQualityGatePath: z.string().min(1).optional(),
   })
   .passthrough()
   .superRefine((chart, ctx) => {

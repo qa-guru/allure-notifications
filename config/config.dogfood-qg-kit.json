@@ -18,7 +18,7 @@
       "gridCols": 10,
       "gridRows": 10,
       "allureQualityGatePath": "../packages/core/test/fixtures/quality-gate/aqg-passed.json",
-      "sonarProjectStatusPath": "../packages/core/test/fixtures/sonar/project-status-passed.json",
+      "sonarQualityGatePath": "../packages/core/test/fixtures/sonar/project-status-passed.json",
       "items": [
         { "id": "allureQualityGate", "type": "qualityGate", "x": 0, "y": 0, "w": 5, "h": 4 },
         { "id": "sonarQualityGate", "type": "qualityGate", "x": 5, "y": 0, "w": 5, "h": 4 },

@@ -342,7 +342,7 @@ describe("@qa-guru/allure-notifications-config chart.profile + kit-only QG", () 
           width: 870,
           height: 1080,
           allureQualityGatePath: "fixtures/aqg-passed.json",
-          sonarProjectStatusPath: "fixtures/sonar-status.json",
+          sonarQualityGatePath: "fixtures/sonar-status.json",
           items: qgItems,
         },
       },
@@ -350,7 +350,7 @@ describe("@qa-guru/allure-notifications-config chart.profile + kit-only QG", () 
     assert.equal(result.success, true, result.success ? "" : JSON.stringify(result.error.format()));
     if (result.success) {
       assert.equal(result.data.base.chart?.allureQualityGatePath, "fixtures/aqg-passed.json");
-      assert.equal(result.data.base.chart?.sonarProjectStatusPath, "fixtures/sonar-status.json");
+      assert.equal(result.data.base.chart?.sonarQualityGatePath, "fixtures/sonar-status.json");
     }
   });
 });

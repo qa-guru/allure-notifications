@@ -41,6 +41,6 @@ Collage profile is a **manual** toggle — not inferred from `withKit` or kit pa
 - Omitted `profile` → `"default"` on parse.
 - `type: "qualityGate"` + `id` `allureQualityGate` / `sonarQualityGate` — stable kit/Allure ids (palette add footprint 2×2; overview-like grid placement often 6×3 per gate).
 - QG items are **valid in schema** under any profile; collage **silent-skips** kit-only kinds when `profile !== "kit"` (see `shouldSilentSkipKitOnlyItem` in `@qa-guru/allure-notifications-config`).
-- Data paths (T6): `chart.allureQualityGatePath` (`KitQualityGateData` JSON) and `chart.sonarProjectStatusPath` (Sonar `projectStatus` JSON → kit mapper). When `profile=kit` and a QG tile is present, missing data **fails** collage dry-run/live. AQG fallback without explicit path: `<allureFolder>/widgets/kit-panels/allureQualityGate.json`.
+- Data paths (T6): `chart.allureQualityGatePath` (`KitQualityGateData` JSON) and `chart.sonarQualityGatePath` (Sonar `projectStatus` JSON → kit mapper). When `profile=kit` and a QG tile is present, missing data **fails** collage dry-run/live. AQG fallback without explicit path: `<allureFolder>/widgets/kit-panels/allureQualityGate.json`.
 
 Source extracted from hub builder `allure-notifications-builder/js/app.js` (Phase 0 — builder not yet merged to `apps/builder/`). Phase 4 wires builder imports.

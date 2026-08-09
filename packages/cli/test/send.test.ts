@@ -329,7 +329,7 @@ describe("@qa-guru/allure-notifications send path resolution", () => {
             height: 1080,
             historyPath: "history/trend.json",
             allureQualityGatePath: "qg/aqg.json",
-            sonarProjectStatusPath: "qg/sonar.json",
+            sonarQualityGatePath: "qg/sonar.json",
             items: [{ type: "currentStatus", x: 0, y: 0, w: 2, h: 2 }],
           },
         },
@@ -347,7 +347,7 @@ describe("@qa-guru/allure-notifications send path resolution", () => {
       join(configDir, "qg/aqg.json"),
     );
     assert.equal(
-      resolved.base.chart?.sonarProjectStatusPath,
+      resolved.base.chart?.sonarQualityGatePath,
       join(configDir, "qg/sonar.json"),
     );
   });

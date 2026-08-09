@@ -88,13 +88,13 @@ export function resolveConfigPaths(config: Config, configDir: string): Config {
       base.chart = { ...base.chart, allureQualityGatePath };
     }
   }
-  if (base.chart?.sonarProjectStatusPath) {
-    const sonarProjectStatusPath = resolveMaybeRelative(
-      base.chart.sonarProjectStatusPath,
+  if (base.chart?.sonarQualityGatePath) {
+    const sonarQualityGatePath = resolveMaybeRelative(
+      base.chart.sonarQualityGatePath,
       configDir,
     );
-    if (sonarProjectStatusPath !== undefined) {
-      base.chart = { ...base.chart, sonarProjectStatusPath };
+    if (sonarQualityGatePath !== undefined) {
+      base.chart = { ...base.chart, sonarQualityGatePath };
     }
   }
   return { ...config, base };

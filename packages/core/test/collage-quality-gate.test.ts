@@ -60,7 +60,7 @@ function kitConfig(extraChart: Record<string, unknown> = {}) {
         gridCols: 10,
         gridRows: 10,
         allureQualityGatePath: join(fixtures, "quality-gate/aqg-passed.json"),
-        sonarProjectStatusPath: join(fixtures, "sonar/project-status-passed.json"),
+        sonarQualityGatePath: join(fixtures, "sonar/project-status-passed.json"),
         items: [...QG_ITEMS],
         ...extraChart,
       },
@@ -214,7 +214,7 @@ describe("quality-gate collage wire — sonar mapper", () => {
       readFileSync(join(fixtures, "sonar/project-status-passed.json"), "utf8"),
     );
     const config = kitConfig();
-    config.base.chart!.sonarProjectStatusPath = join(
+    config.base.chart!.sonarQualityGatePath = join(
       fixtures,
       "sonar/project-status-passed.json",
     );
