@@ -1,0 +1,22 @@
+{
+  "status": "OK",
+  "conditions": [
+    {
+      "status": "OK",
+      "metricKey": "coverage",
+      "comparator": "LT",
+      "errorThreshold": "80",
+      "actualValue": "100"
+    },
+    {
+      "status": "OK",
+      "metricKey": "bugs",
+      "comparator": "GT",
+      "errorThreshold": "0",
+      "actualValue": "0"
+    }
+  ],
+  "projectKey": "reference-app-backend",
+  "analysis_id": "AXfixturePassedAnalysis",
+  "dashboard_url": "https://sonar.qa.guru/dashboard?id=reference-app-backend"
+}

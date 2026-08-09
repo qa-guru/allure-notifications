@@ -1,0 +1,36 @@
+{
+  "base": {
+    "project": "QG kit dogfood",
+    "environment": "dogfood",
+    "language": "en",
+    "allureFolder": "../packages/core/test/fixtures/dogfood-report",
+    "allureResultsFolder": "../packages/core/test/fixtures/dogfood-results",
+    "enableChart": true,
+    "darkMode": true,
+    "chart": {
+      "profile": "kit",
+      "mode": "collage",
+      "layout": "free",
+      "width": 870,
+      "height": 540,
+      "headerHeight": 34,
+      "cardGap": 14,
+      "gridCols": 10,
+      "gridRows": 10,
+      "allureQualityGatePath": "../packages/core/test/fixtures/quality-gate/aqg-passed.json",
+      "sonarProjectStatusPath": "../packages/core/test/fixtures/sonar/project-status-passed.json",
+      "items": [
+        { "id": "allureQualityGate", "type": "qualityGate", "x": 0, "y": 0, "w": 5, "h": 4 },
+        { "id": "sonarQualityGate", "type": "qualityGate", "x": 5, "y": 0, "w": 5, "h": 4 },
+        { "type": "currentStatus", "x": 0, "y": 4, "w": 5, "h": 6 },
+        { "type": "testingPyramid", "x": 5, "y": 4, "w": 5, "h": 6 }
+      ],
+      "pyramidFallback": "suites"
+    }
+  },
+  "telegram": {
+    "token": "0:dogfood-qg-kit",
+    "chat": "0",
+    "templatePath": "/templates/telegram.ftl"
+  }
+}

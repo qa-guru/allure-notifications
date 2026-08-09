@@ -1,0 +1,50 @@
+{
+  "kind": "allure",
+  "testId": "quality-gate",
+  "passed": false,
+  "rules": [
+    {
+      "id": "maxFailures",
+      "passed": false,
+      "message": "The number of failed tests 3 exceeds the allowed threshold value 0",
+      "actual": 3,
+      "expected": 0,
+      "knownExcluded": 0
+    },
+    {
+      "id": "successRate",
+      "passed": false,
+      "message": "Success rate 88.2% is below the minimum required 95%",
+      "actual": 88.2,
+      "expected": 95
+    }
+  ],
+  "title": "Allure Quality Gate",
+  "barTitle": "Allure Quality Gate",
+  "config": {
+    "rules": [
+      {
+        "maxFailures": 0
+      },
+      {
+        "successRate": 95
+      }
+    ],
+    "source": {
+      "configFile": "allurerc.mjs",
+      "rulesFile": "allure/quality-gate.mjs",
+      "hrefBase": "https://github.com/qa-guru/zero-design-system/blob/master/stacks/java-spring/tests/"
+    }
+  },
+  "labels": {
+    "passed": {
+      "ru": "Allure Quality Gate пройден",
+      "en": "Allure Quality Gate passed"
+    },
+    "failed": {
+      "ru": "Allure Quality Gate не пройден",
+      "en": "Allure Quality Gate failed"
+    }
+  },
+  "lang": "ru"
+}

@@ -19,18 +19,40 @@ Depends on `@qa-guru/allure-notifications-config` + `@qa-guru/allure-notificatio
 
 ```ts
 import { parseConfig } from "@qa-guru/allure-notifications-config";
-import { renderCollagePng, loadReportAnalytics } from "@qa-guru/allure-notifications-core";
+import {
+  loadQualityGateCollageData,
+  loadReportAnalytics,
+  renderCollagePng,
+} from "@qa-guru/allure-notifications-core";
 
 const config = parseConfig(/* config.json */);
 const analytics = await loadReportAnalytics(config);
-const png: Buffer = await renderCollagePng(config, analytics);
+const qualityGates = await loadQualityGateCollageData(config);
+const png: Buffer = await renderCollagePng(config, analytics, qualityGates);
+```
+
+### Quality gates (`chart.profile=kit`)
+
+Kit-only tiles `allureQualityGate` / `sonarQualityGate` (`type: qualityGate`) render via `renderQualityGatePng` (kit IR) when `chart.profile === "kit"`. Under `profile: "default"` they **silent-skip** (parse OK, no tile).
+
+| Field | Role |
+|-------|------|
+| `chart.allureQualityGatePath` | `KitQualityGateData` JSON (explicit) |
+| (fallback) | `<allureFolder>/widgets/kit-panels/allureQualityGate.json` |
+| `chart.sonarProjectStatusPath` | Sonar `projectStatus` JSON → kit `sonarProjectStatusToQualityGateOptions` |
+
+Missing data when `profile=kit` and a QG tile is present → **fail** (`QualityGateDataMissingError`).
+
+```ts
+const png: Buffer = await renderCollagePng(config, analytics, qualityGates);
 ```
 
 Free-layout collage panels:
 
 | Kind | Types |
 |------|--------|
-| **Real (analytics)** | `currentStatus` · `testingPyramid` · `durations` (+ `groupBy: layer`) · `testResultSeverities` (aliases `severities`/`severity`) · `suites` · `statusDynamics` · `successRateDistribution` · `statusTransitions` · `testBaseGrowthDynamics` · `coverageDiff` · `problemsDistribution` (`by: environment`) · `stabilityDistribution` (`groupBy: feature\|epic\|story\|label-name:component`) · `durationDynamics` · `statusAgePyramid` |
+| **Real (analytics)** | `currentStatus` · `testingPyramid` · … · `statusAgePyramid` |
+| **Kit-only (profile=kit)** | `qualityGate` + id `allureQualityGate` \| `sonarQualityGate` |
 | **Empty-state** | Unknown tile types → themed card (`No data yet`), **not** silent-drop. Real panels keep the tile with an honest caption when their series is missing (`No history data` / `No environment data` / …). |
 
 **History source** (Java `HistoryAnalytics` / `ReportAnalyticsBuilder` parity + A3 catalog series): Allure 3 `history.jsonl` via `chart.historyPath` or auto-discover next to report/results (and parents). Typical A3 lines carry `status`, `duration`/`start`/`stop`, `environment`, and `labels` — used for transitions, growth, coverage, problems-by-env, duration trend, age pyramid, and stability. Minimal history (`id`+`status` only) still drives transitions / growth / age; duration / environment / labeled coverage→empty captions. Without history → history panels show **"No history data"** (tile kept). `stabilityDistribution` can fall back to current `*-result.json` labels. `pyramidFallback: "suites"` → real `SuitesPanel` when no known layers.

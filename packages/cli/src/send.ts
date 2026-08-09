@@ -7,6 +7,7 @@ import { dirname, isAbsolute, resolve } from "node:path";
 
 import { parseConfig, type Config } from "@qa-guru/allure-notifications-config";
 import {
+  loadQualityGateCollageData,
   loadReportAnalytics,
   renderCollagePng,
 } from "@qa-guru/allure-notifications-core";
@@ -76,6 +77,24 @@ export function resolveConfigPaths(config: Config, configDir: string): Config {
     const historyPath = resolveMaybeRelative(base.chart.historyPath, configDir);
     if (historyPath !== undefined) {
       base.chart = { ...base.chart, historyPath };
+    }
+  }
+  if (base.chart?.allureQualityGatePath) {
+    const allureQualityGatePath = resolveMaybeRelative(
+      base.chart.allureQualityGatePath,
+      configDir,
+    );
+    if (allureQualityGatePath !== undefined) {
+      base.chart = { ...base.chart, allureQualityGatePath };
+    }
+  }
+  if (base.chart?.sonarProjectStatusPath) {
+    const sonarProjectStatusPath = resolveMaybeRelative(
+      base.chart.sonarProjectStatusPath,
+      configDir,
+    );
+    if (sonarProjectStatusPath !== undefined) {
+      base.chart = { ...base.chart, sonarProjectStatusPath };
     }
   }
   return { ...config, base };
@@ -224,7 +243,8 @@ export async function send(options: SendOptions): Promise<SendResult> {
     overrideBaseDir: cwd,
   });
   const analytics = await loadReportAnalytics(config);
-  const png = await renderCollagePng(config, analytics);
+  const qualityGates = await loadQualityGateCollageData(config);
+  const png = await renderCollagePng(config, analytics, qualityGates);
 
   let pngPath: string | undefined;
   if (options.out) {

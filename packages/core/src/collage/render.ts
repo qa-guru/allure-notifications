@@ -5,7 +5,10 @@
 
 import { createCanvas, loadImage, type SKRSContext2D } from "@napi-rs/canvas";
 import {
+  isKitOnlyChartItem,
+  normalizeChartProfile,
   resolvePanelMeta,
+  shouldSilentSkipKitOnlyItem,
   type ChartItem,
   type Config,
 } from "@qa-guru/allure-notifications-config";
@@ -44,6 +47,11 @@ import { renderStatusTransitionsPanel } from "./panels/statusTransitions.js";
 import { renderSuccessRateDistributionPanel } from "./panels/successRateDistribution.js";
 import { renderSuitesPanel } from "./panels/suites.js";
 import { renderTestBaseGrowthPanel } from "./panels/testBaseGrowth.js";
+import { renderQualityGatePng } from "./panels/qualityGate.js";
+import {
+  resolveQualityGatePanelId,
+  type QualityGateCollageData,
+} from "./qualityGateData.js";
 
 const DEFAULT_WIDTH = 1000;
 const DEFAULT_HEIGHT = 600;
@@ -79,6 +87,11 @@ const PANEL_PROBLEMS = "problemsdistribution";
 const PANEL_STABILITY = "stabilitydistribution";
 const PANEL_DURATION_DYNAMICS = "durationdynamics";
 const PANEL_STATUS_AGE = "statusagepyramid";
+const PANEL_QUALITY_GATE = "qualitygate";
+
+const DEBUG =
+  process.env.ALLURE_NOTIFICATIONS_DEBUG === "1" ||
+  process.env.ALLURE_NOTIFICATIONS_DEBUG === "true";
 
 function normalize(raw: string | undefined | null): string | null {
   if (raw == null) {
@@ -131,7 +144,18 @@ function normalize(raw: string | undefined | null): string | null {
   if (key === PANEL_STATUS_AGE) {
     return PANEL_STATUS_AGE;
   }
+  if (key === PANEL_QUALITY_GATE) {
+    return PANEL_QUALITY_GATE;
+  }
   return null;
+}
+
+/** Panel dispatch key — `type` plus catalog `id` for kit-only kinds. */
+function resolvePanelKey(item: ChartItem): string | null {
+  if (isKitOnlyChartItem(item)) {
+    return PANEL_QUALITY_GATE;
+  }
+  return normalize(item.type);
 }
 
 function resolveHeaderHeight(config: Config): number {
@@ -201,6 +225,12 @@ export function resolveCardTitle(
   config: Config,
   analytics: ReportAnalytics,
 ): string {
+  if (isKitOnlyChartItem(item)) {
+    const meta = resolvePanelMeta(item);
+    if (meta?.title) {
+      return meta.title;
+    }
+  }
   const key = normalize(item.type);
   if (key === PANEL_CURRENT_STATUS) {
     return pieTitle(config);
@@ -248,6 +278,8 @@ function renderPanelPng(
   analytics: ReportAnalytics,
   groupBy?: string,
   by?: string,
+  qualityGates?: QualityGateCollageData,
+  item?: ChartItem,
 ): Buffer {
   const ctx = panelContext(config, theme, width, height, analytics, {
     showTitle: false,
@@ -295,6 +327,19 @@ function renderPanelPng(
   }
   if (key === PANEL_STATUS_AGE) {
     return renderStatusAgePyramidPanel(ctx);
+  }
+  if (key === PANEL_QUALITY_GATE && item) {
+    const qgId = resolveQualityGatePanelId(item);
+    if (!qgId) {
+      throw new Error(
+        'qualityGate collage tile requires id "allureQualityGate" or "sonarQualityGate"',
+      );
+    }
+    const data = qualityGates?.[qgId];
+    if (!data) {
+      throw new Error(`quality gate data not loaded for ${qgId}`);
+    }
+    return renderQualityGatePng(data, { width, height });
   }
   // Unknown tiles: empty-state body (card chrome carries title).
   return renderEmptyPanel(ctx, DEFAULT_EMPTY_MESSAGE);
@@ -422,6 +467,7 @@ function roundRectStroke(
 export async function renderCollagePng(
   config: Config,
   analytics: ReportAnalytics,
+  qualityGates: QualityGateCollageData = {},
 ): Promise<Buffer> {
   const chart = config.base.chart;
   const collageWidth = chart?.width && chart.width > 0 ? chart.width : DEFAULT_WIDTH;
@@ -434,6 +480,7 @@ export async function renderCollagePng(
   const rows =
     chart?.gridRows && chart.gridRows > 0 ? chart.gridRows : DEFAULT_GRID_ROWS;
   const items = selectedFreeItems(config);
+  const profile = normalizeChartProfile(chart?.profile);
   const half = Math.floor(cardGap / 2);
   const cellW = Math.floor(collageWidth / cols);
   const cellH = Math.floor(collageHeight / rows);
@@ -445,8 +492,18 @@ export async function renderCollagePng(
   graphics.fillRect(0, 0, collageWidth, collageHeight);
 
   for (const item of items) {
-    const key = normalize(item.type);
-    // Unknown / stub types still draw a card — never silent-drop a free-grid tile.
+    if (shouldSilentSkipKitOnlyItem(profile, item)) {
+      if (DEBUG) {
+        const id = item.id ?? item.type;
+        console.error(
+          `[allure-notifications] silent-skip kit-only tile ${id} (chart.profile=${profile})`,
+        );
+      }
+      continue;
+    }
+
+    const key = resolvePanelKey(item);
+    // Unknown / stub types still draw a card — kit-only kinds silent-skip above.
     const title = resolveCardTitle(item, config, analytics);
 
     let x = clamp(item.x, 0, cols - 1);
@@ -478,6 +535,8 @@ export async function renderCollagePng(
       analytics,
       item.groupBy,
       item.by,
+      qualityGates,
+      item,
     );
     await drawCard(
       graphics,

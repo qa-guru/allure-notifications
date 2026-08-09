@@ -32,12 +32,17 @@ import { parseConfig } from "@qa-guru/allure-notifications-config";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 /** Compiled at packages/cli/dist/test → fixtures live at packages/cli/test/fixtures */
+const REPO_ROOT = resolve(__dirname, "../../../..");
 const FIXTURE_CONFIG = join(__dirname, "../../test/fixtures/config.dry-run.json");
+const QG_DEFAULT_SKIP_CONFIG = join(
+  __dirname,
+  "../../test/fixtures/config.qg-default-skip.json",
+);
+const QG_KIT_CONFIG = join(REPO_ROOT, "config/config.dogfood-qg-kit.json");
 const DOGFOOD_CONFIG = join(
   __dirname,
   "../../test/fixtures/config.dogfood-cb870.json",
 );
-const REPO_ROOT = resolve(__dirname, "../../../..");
 
 function isPng(buf: Buffer): boolean {
   return (
@@ -286,6 +291,27 @@ describe("@qa-guru/allure-notifications send dry-run", () => {
       build: "https://github.test/actions/runs/1",
     });
   });
+
+  it("dry-run with profile=default + QG items silent-skips (exit 0)", async () => {
+    const result = await send({
+      configPath: QG_DEFAULT_SKIP_CONFIG,
+      dryRun: true,
+    });
+    assert.ok(isPng(result.png));
+    assert.equal(result.dryRun, true);
+    assert.equal(result.deliveries[0]!.status, "dry-run");
+  });
+
+  it("dry-run kit dogfood config renders AQG+SQG collage", async () => {
+    const result = await send({
+      configPath: QG_KIT_CONFIG,
+      cwd: REPO_ROOT,
+      dryRun: true,
+    });
+    assert.ok(isPng(result.png));
+    assert.ok(result.png.byteLength > 3000);
+    assert.equal(result.config.base.chart?.profile, "kit");
+  });
 });
 
 describe("@qa-guru/allure-notifications send path resolution", () => {
@@ -302,6 +328,8 @@ describe("@qa-guru/allure-notifications send path resolution", () => {
             width: 870,
             height: 1080,
             historyPath: "history/trend.json",
+            allureQualityGatePath: "qg/aqg.json",
+            sonarProjectStatusPath: "qg/sonar.json",
             items: [{ type: "currentStatus", x: 0, y: 0, w: 2, h: 2 }],
           },
         },
@@ -313,6 +341,14 @@ describe("@qa-guru/allure-notifications send path resolution", () => {
     assert.equal(
       resolved.base.chart?.historyPath,
       join(configDir, "history/trend.json"),
+    );
+    assert.equal(
+      resolved.base.chart?.allureQualityGatePath,
+      join(configDir, "qg/aqg.json"),
+    );
+    assert.equal(
+      resolved.base.chart?.sonarProjectStatusPath,
+      join(configDir, "qg/sonar.json"),
     );
   });
 

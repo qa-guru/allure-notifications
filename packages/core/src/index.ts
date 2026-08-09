@@ -63,6 +63,12 @@ export {
 
 export { renderCollagePng, resolveCardTitle } from "./collage/render.js";
 export {
+  loadQualityGateCollageData,
+  resolveQualityGatePanelId,
+  QualityGateDataMissingError,
+  type QualityGateCollageData,
+} from "./collage/qualityGateData.js";
+export {
   DEFAULT_EMPTY_MESSAGE,
   renderEmptyPanel,
 } from "./collage/panels/empty.js";

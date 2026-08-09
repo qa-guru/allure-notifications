@@ -10,6 +10,7 @@ import { dirname, isAbsolute, resolve } from "node:path";
 
 import { parseConfig, type Config } from "@qa-guru/allure-notifications-config";
 import {
+  loadQualityGateCollageData,
   loadReportAnalytics,
   renderCollagePng,
   type ReportAnalytics,
@@ -168,7 +169,8 @@ export async function runNotificationsPlugin(
   config = applyFolderOverrides(config, options, context, cwd);
 
   const analytics = await loadReportAnalytics(config);
-  const png = await renderCollagePng(config, analytics);
+  const qualityGates = await loadQualityGateCollageData(config);
+  const png = await renderCollagePng(config, analytics, qualityGates);
 
   let pngPath: string | undefined;
   if (options.out) {

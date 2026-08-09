@@ -1,0 +1,34 @@
+{
+  "base": {
+    "project": "cli-qg-default-skip",
+    "environment": "test",
+    "language": "en",
+    "allureFolder": "../../../core/test/fixtures/dogfood-report",
+    "allureResultsFolder": "../../../core/test/fixtures/dogfood-results",
+    "enableChart": true,
+    "darkMode": true,
+    "chart": {
+      "profile": "default",
+      "mode": "collage",
+      "layout": "free",
+      "width": 870,
+      "height": 1080,
+      "headerHeight": 68,
+      "cardGap": 14,
+      "gridCols": 10,
+      "gridRows": 10,
+      "items": [
+        { "id": "allureQualityGate", "type": "qualityGate", "x": 0, "y": 0, "w": 6, "h": 3 },
+        { "id": "sonarQualityGate", "type": "qualityGate", "x": 6, "y": 0, "w": 6, "h": 3 },
+        { "type": "currentStatus", "x": 0, "y": 3, "w": 5, "h": 5 },
+        { "type": "testingPyramid", "x": 5, "y": 3, "w": 5, "h": 5 }
+      ],
+      "pyramidFallback": "suites"
+    }
+  },
+  "telegram": {
+    "token": "0:stage-d-no-send",
+    "chat": "0",
+    "templatePath": "/templates/telegram.ftl"
+  }
+}

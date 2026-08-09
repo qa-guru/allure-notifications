@@ -75,6 +75,10 @@ export const ChartConfigSchema = z
     pyramidFallback: z.string().optional(),
     historyPath: z.string().optional().nullable(),
     historyLimit: z.number().int().positive().optional().nullable(),
+    /** Kit AQG payload (`KitQualityGateData`) or report widget override path. */
+    allureQualityGatePath: z.string().min(1).optional(),
+    /** Sonar `projectStatus` JSON path (mapped via kit runtime). */
+    sonarProjectStatusPath: z.string().min(1).optional(),
   })
   .passthrough()
   .superRefine((chart, ctx) => {
