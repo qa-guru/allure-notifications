@@ -31,6 +31,7 @@
   "dependencies": {
     "@qa-guru/allure-notifications-config": "workspace:*",
     "@qa-guru/allure-notifications-pyramid": "workspace:*",
+    "@qa-guru/allure-report-kit": "file:../../../../allure-report-kit-home/allure-report-kit",
     "@napi-rs/canvas": "^0.1.70"
   },
   "devDependencies": {

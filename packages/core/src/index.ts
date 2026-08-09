@@ -67,6 +67,11 @@ export {
   renderEmptyPanel,
 } from "./collage/panels/empty.js";
 export {
+  QUALITY_GATE_TOKEN_PALETTE,
+  renderQualityGatePng,
+} from "./collage/panels/qualityGate.js";
+export type { RenderQualityGatePngOptions } from "./collage/panels/qualityGate.js";
+export {
   PYRAMID_GEOMETRY,
   layerBreakdownFrom,
 } from "./collage/panels/pyramid.js";
