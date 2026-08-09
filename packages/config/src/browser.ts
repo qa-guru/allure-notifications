@@ -23,6 +23,21 @@ export {
 } from "./catalog.js";
 
 export {
+  CHART_PROFILE_DEFAULT,
+  KIT_ONLY_PANEL_KIND,
+  KIT_ONLY_PANEL_IDS,
+  KIT_ONLY_PANEL_KINDS,
+  KIT_ONLY_PANEL_ID_SET,
+  normalizeChartProfile,
+  isKitOnlyPanelType,
+  isKitOnlyPanelId,
+  isKitOnlyChartItem,
+  shouldSilentSkipKitOnlyItem,
+  type ChartProfile,
+  type KitOnlyPanelId,
+} from "./kit-only.js";
+
+export {
   CANVAS_PRESETS,
   DEFAULT_CANVAS,
   GRID_COLS,

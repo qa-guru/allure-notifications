@@ -15,18 +15,24 @@ declareSuite({
 
 import {
   CANVAS_PRESETS,
+  CHART_PROFILE_DEFAULT,
   DEFAULT_CANVAS,
   DEFAULT_CARD_GAP,
   DEFAULT_HEADER_HEIGHT,
   DEFAULT_ITEMS,
   DEFAULT_TILE_PAD,
+  KIT_ONLY_PANEL_IDS,
+  KIT_ONLY_PANEL_KIND,
   PANEL_CATALOG,
   createDefaultConfig,
   createSq1080Config,
+  isKitOnlyChartItem,
   isValidConfig,
+  normalizeChartProfile,
   parseConfig,
   resolvePanelMeta,
   safeParseConfig,
+  shouldSilentSkipKitOnlyItem,
 } from "../src/index.js";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
@@ -39,10 +45,16 @@ function loadJson(name: string): unknown {
 }
 
 describe("@qa-guru/allure-notifications-config catalog", () => {
-  it("exposes 17 panel catalog slots", () => {
-    assert.equal(PANEL_CATALOG.length, 17);
+  it("exposes 19 panel catalog slots (17 analytics + 2 quality gates)", () => {
+    assert.equal(PANEL_CATALOG.length, 19);
     const ids = new Set(PANEL_CATALOG.map((p) => p.id));
-    assert.equal(ids.size, 17);
+    assert.equal(ids.size, 19);
+  });
+
+  it("includes kit quality-gate ids with stable type qualityGate", () => {
+    assert.equal(resolvePanelMeta({ id: "allureQualityGate" })?.type, "qualityGate");
+    assert.equal(resolvePanelMeta({ id: "sonarQualityGate" })?.type, "qualityGate");
+    assert.equal(resolvePanelMeta({ type: "qualityGate", id: "allureQualityGate" })?.id, "allureQualityGate");
   });
 
   it("resolves currentStatus and groupBy variants", () => {
@@ -229,5 +241,95 @@ describe("@qa-guru/allure-notifications-config schema vs repo fixtures", () => {
     if (result.success) {
       assert.equal(result.data.base.language, "morse");
     }
+  });
+});
+
+describe("@qa-guru/allure-notifications-config chart.profile + kit-only QG", () => {
+  const qgItems = [
+    { id: "allureQualityGate", type: "qualityGate", x: 0, y: 0, w: 6, h: 3 },
+    { id: "sonarQualityGate", type: "qualityGate", x: 6, y: 0, w: 6, h: 3 },
+  ];
+
+  it("defaults chart.profile to default when omitted", () => {
+    const parsed = parseConfig({
+      base: {
+        chart: {
+          layout: "free",
+          width: 870,
+          height: 1080,
+          items: [{ type: "currentStatus", x: 0, y: 0, w: 2, h: 2 }],
+        },
+      },
+    });
+    assert.equal(parsed.base.chart?.profile, "default");
+    assert.equal(CHART_PROFILE_DEFAULT, "default");
+    assert.equal(normalizeChartProfile(undefined), "default");
+  });
+
+  it("accepts profile kit and rejects unknown profile values", () => {
+    const kit = safeParseConfig({
+      base: {
+        chart: {
+          profile: "kit",
+          layout: "free",
+          width: 870,
+          height: 1080,
+          items: qgItems,
+        },
+      },
+    });
+    assert.equal(kit.success, true, kit.success ? "" : JSON.stringify(kit.error.format()));
+    if (kit.success) {
+      assert.equal(kit.data.base.chart?.profile, "kit");
+    }
+
+    const bad = safeParseConfig({
+      base: {
+        chart: {
+          profile: "auto",
+          layout: "free",
+          width: 870,
+          height: 1080,
+          items: [{ type: "currentStatus", x: 0, y: 0, w: 2, h: 2 }],
+        },
+      },
+    });
+    assert.equal(bad.success, false);
+  });
+
+  it("parses qualityGate items under profile=default (no parse fail)", () => {
+    const result = safeParseConfig({
+      base: {
+        chart: {
+          profile: "default",
+          layout: "free",
+          width: 870,
+          height: 1080,
+          items: qgItems,
+        },
+      },
+    });
+    assert.equal(result.success, true, result.success ? "" : JSON.stringify(result.error.format()));
+    if (result.success) {
+      assert.equal(result.data.base.chart?.items?.length, 2);
+      assert.equal(result.data.base.chart?.profile, "default");
+    }
+  });
+
+  it("exports kit-only kind/id set for T6 silent-skip", () => {
+    assert.equal(KIT_ONLY_PANEL_KIND, "qualityGate");
+    assert.deepEqual([...KIT_ONLY_PANEL_IDS], ["allureQualityGate", "sonarQualityGate"]);
+    assert.equal(isKitOnlyChartItem({ type: "qualityGate" }), true);
+    assert.equal(isKitOnlyChartItem({ id: "sonarQualityGate", type: "qualityGate" }), true);
+    assert.equal(isKitOnlyChartItem({ type: "currentStatus" }), false);
+    assert.equal(
+      shouldSilentSkipKitOnlyItem("default", { type: "qualityGate", id: "allureQualityGate" }),
+      true,
+    );
+    assert.equal(
+      shouldSilentSkipKitOnlyItem("kit", { type: "qualityGate", id: "allureQualityGate" }),
+      false,
+    );
+    assert.equal(shouldSilentSkipKitOnlyItem("default", { type: "currentStatus" }), false);
   });
 });

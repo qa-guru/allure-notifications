@@ -34,6 +34,8 @@ export const ChartItemSchema = z
     y: z.number().int().nonnegative(),
     w: z.number().int().positive(),
     h: z.number().int().positive(),
+    /** Catalog id — e.g. `allureQualityGate` / `sonarQualityGate` for `type: qualityGate`. */
+    id: z.string().min(1).optional(),
     by: z.string().min(1).optional(),
     groupBy: z.string().min(1).optional(),
   })
@@ -47,8 +49,15 @@ export const PanelsSchema = z.union([
   z.array(z.array(z.string().min(1))),
 ]);
 
+export const ChartProfileSchema = z.enum(["default", "kit"]);
+
 export const ChartConfigSchema = z
   .object({
+    /**
+     * Collage visual profile — manual toggle (no autodetect from withKit).
+     * Kit-only panel kinds parse always; runtime silent-skip when `"default"`.
+     */
+    profile: ChartProfileSchema.optional().default("default"),
     mode: z.enum(["pie", "collage"]).optional(),
     layout: z.enum(["grid", "stacked", "row", "free"]).optional(),
     panels: PanelsSchema.optional(),

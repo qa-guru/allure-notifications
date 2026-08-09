@@ -20,6 +20,8 @@ export type ChartItem = {
   y: number;
   w: number;
   h: number;
+  /** Catalog id — required to distinguish AQG vs SQG when `type` is `qualityGate`. */
+  id?: string;
   groupBy?: string;
   by?: string;
 };
@@ -103,6 +105,16 @@ export const PANEL_CATALOG: ReadonlyArray<PanelMeta> = Object.freeze([
     type: "stabilityDistribution",
     groupBy: "story",
     title: "Stability by story",
+  }),
+  panel({
+    id: "allureQualityGate",
+    type: "qualityGate",
+    title: "Allure quality gate",
+  }),
+  panel({
+    id: "sonarQualityGate",
+    type: "qualityGate",
+    title: "Sonar quality gate",
   }),
 ]);
 

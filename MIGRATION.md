@@ -110,7 +110,9 @@ See [docs/ci-cookbook.md](docs/ci-cookbook.md): **primary** = `allure generate` 
 `@qa-guru/allure-notifications-config` (`packages/config/`):
 
 - zod `ConfigSchema` — `base.chart` free layout + chrome knobs (`headerHeight` / `cardGap` / `tilePad`)
-- `PANEL_CATALOG` (17), `DEFAULT_ITEMS` (SQ-1080 4-tile compact-hero), `CANVAS_PRESETS` (870/1080/1410×1080), `createDefaultConfig()`
+- `PANEL_CATALOG` (19 — incl. `allureQualityGate` / `sonarQualityGate` with `type: qualityGate`), `DEFAULT_ITEMS` (SQ-1080 4-tile compact-hero), `CANVAS_PRESETS` (870/1080/1410×1080), `createDefaultConfig()`
+- `base.chart.profile`: `"default"` | `"kit"` (default `"default"`; manual — not tied to HTML `withKit`)
+- Quality-gate items parse under any profile; collage silent-skips kit-only kinds when `profile !== "kit"` (`shouldSilentSkipKitOnlyItem`)
 - Extracted from hub builder `allure-notifications-builder/js/app.js` (builder still has a local copy until Phase 4 / `apps/builder/` merge)
 - Verify: `pnpm --filter @qa-guru/allure-notifications-config test`
 
