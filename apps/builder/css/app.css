@@ -1058,23 +1058,90 @@ html.theme-light .anb-zone--terminal .ch-theme--vscode .ch-tok-cmd { color: #795
 
 .anb-panel__tile .anb-kit-mock.quality-gate,
 .anb-panel__tile .anb-kit-mock.tests-table-panel {
-  font-size: 0.72rem;
+  font-size: 0.46rem;
+  line-height: 1.1;
+}
+
+.anb-panel__tile .anb-kit-mock.tests-table-panel {
+  overflow: hidden;
+}
+
+.anb-panel__tile .anb-kit-mock.tests-table-panel .tests-table-panel__table {
+  width: 100%;
+  table-layout: fixed;
+  font-size: inherit;
+  line-height: inherit;
+  border-collapse: collapse;
 }
 
 .anb-panel__tile .anb-kit-mock.tests-table-panel .tests-table-panel__table th,
 .anb-panel__tile .anb-kit-mock.tests-table-panel .tests-table-panel__table td {
-  padding: 4px 6px;
+  padding: 0 2px;
+  line-height: 1.1;
+  vertical-align: middle;
+}
+
+.anb-panel__tile .anb-kit-mock.tests-table-panel .tests-table-panel__table th {
+  font-size: 0.4rem;
+  font-weight: 600;
+  padding-top: 1px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.anb-panel__tile .anb-kit-mock.tests-table-panel .tests-table-panel__name {
+  width: 34%;
+  max-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.anb-panel__tile .anb-kit-mock.tests-table-panel .tests-table-panel__status {
+  width: 20%;
+  text-align: center;
+}
+
+.anb-panel__tile .anb-kit-mock.tests-table-panel .tests-table-panel__trend {
+  width: 26%;
+}
+
+.anb-panel__tile .anb-kit-mock.tests-table-panel .tests-table-panel__stability {
+  width: 20%;
 }
 
 .anb-panel__tile .anb-kit-mock.tests-table-panel .badge {
-  padding: 0 0.35rem;
-  font-size: 0.62rem;
+  padding: 0 0.15rem;
+  font-size: 0.36rem;
+  line-height: 1.1;
 }
 
 .anb-panel__tile .anb-kit-mock.tests-table-panel .sparkline {
+  display: block;
   width: 100%;
-  max-width: 4.5rem;
-  height: auto;
+  max-width: none;
+  height: 7px;
+}
+
+.anb-panel__tile .anb-kit-mock.tests-table-panel .tests-table-panel__stability .stability-cell {
+  gap: 2px;
+  min-height: 0;
+}
+
+.anb-panel__tile .anb-kit-mock.tests-table-panel .stability-dots {
+  gap: 2px;
+}
+
+.anb-panel__tile .anb-kit-mock.tests-table-panel .stability-dot {
+  width: 4px;
+  height: 4px;
+}
+
+.anb-panel__tile .anb-kit-mock.tests-table-panel .badge--flaky {
+  font-size: 0.34rem;
+  padding: 0 0.12rem;
+  min-width: 0;
 }
 
 /* Palette thumb — body-only kit mock; macOS dots live in widget-tile__bar. */
@@ -1201,16 +1268,24 @@ html.theme-light .anb-zone--terminal .ch-theme--vscode .ch-tok-cmd { color: #795
   border: 1px solid var(--color-border);
   background: var(--color-surface);
   padding: 0;
+  overflow: hidden;
 }
 
 .anb-palette__tile .anb-kit-mock--palette.tests-table-panel .tests-table-panel__table {
-  font-size: 0.46rem;
+  font-size: 0.38rem;
   table-layout: fixed;
+  line-height: 1;
+  width: 100%;
+}
+
+.anb-palette__tile .anb-kit-mock--palette.tests-table-panel .tests-table-panel__table tbody tr {
+  height: 1.1em;
 }
 
 .anb-palette__tile .anb-kit-mock--palette.tests-table-panel .tests-table-panel__table td {
-  padding: 1px 2px;
-  border-bottom: 1px solid color-mix(in srgb, var(--color-border) 70%, transparent);
+  padding: 0 1px;
+  border-bottom: 1px solid color-mix(in srgb, var(--color-border) 60%, transparent);
+  vertical-align: middle;
 }
 
 .anb-palette__tile .anb-kit-mock--palette.tests-table-panel .tests-table-panel__table tbody tr:last-child td {
@@ -1218,33 +1293,51 @@ html.theme-light .anb-zone--terminal .ch-theme--vscode .ch-tok-cmd { color: #795
 }
 
 .anb-palette__tile .anb-kit-mock--palette.tests-table-panel .tests-table-panel__name {
-  max-width: 0;
+  width: 34%;
+  max-width: 34%;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+  word-break: normal;
 }
 
 .anb-palette__tile .anb-kit-mock--palette.tests-table-panel .tests-table-panel__status {
-  width: 26%;
+  width: 10%;
   text-align: center;
 }
 
+.anb-palette__tile .anb-kit-mock--palette.tests-table-panel .tests-table-panel__status .indicator {
+  --indicator-size: 4px;
+}
+
 .anb-palette__tile .anb-kit-mock--palette.tests-table-panel .tests-table-panel__trend {
-  width: 32%;
+  width: 34%;
   padding-right: 1px;
 }
 
-.anb-palette__tile .anb-kit-mock--palette.tests-table-panel .badge {
-  padding: 0 0.18rem;
-  font-size: 0.38rem;
-  line-height: 1.2;
+.anb-palette__tile .anb-kit-mock--palette.tests-table-panel .tests-table-panel__stability {
+  width: 22%;
+}
+
+.anb-palette__tile .anb-kit-mock--palette.tests-table-panel .stability-cell {
+  gap: 1px;
+  min-height: 0;
+}
+
+.anb-palette__tile .anb-kit-mock--palette.tests-table-panel .stability-dots {
+  gap: 1px;
+}
+
+.anb-palette__tile .anb-kit-mock--palette.tests-table-panel .stability-dot {
+  width: 3px;
+  height: 3px;
 }
 
 .anb-palette__tile .anb-kit-mock--palette.tests-table-panel .sparkline {
   display: block;
   width: 100%;
   max-width: none;
-  height: 10px;
+  height: 5px;
 }
 
 .anb-palette__tile .widget-tile__bar:not(:empty) {

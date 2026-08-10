@@ -458,7 +458,10 @@ test.describe('allure-notifications-builder smoke', () => {
               qgRuleCount,
               hasVerdict,
               hasTable: Boolean(mock?.querySelector('.tests-table-panel__table tbody tr')),
+              tableRowCount: mock?.querySelectorAll('.tests-table-panel__table tbody tr').length ?? 0,
+              tableColCount: mock?.querySelector('.tests-table-panel__table tbody tr')?.children.length ?? 0,
               hasTrend: Boolean(mock?.querySelector('.tests-table-panel__trend .sparkline')),
+              hasStability: Boolean(mock?.querySelector('.tests-table-panel__stability .stability-dots')),
               hasQgRules: Boolean(mock?.querySelector('.quality-gate__rules')),
             },
           ];
@@ -485,11 +488,21 @@ test.describe('allure-notifications-builder smoke', () => {
     expect(kitMocks.allureQualityGate.qgDots).toBe(0);
     expect(kitMocks.testsTable.barDots).toBeGreaterThan(0);
     expect(kitMocks.testsTable.hasTable).toBe(true);
+    expect(kitMocks.testsTable.tableRowCount).toBe(5);
+    expect(kitMocks.testsTable.tableColCount).toBe(4);
     expect(kitMocks.testsTable.hasTrend).toBe(true);
+    expect(kitMocks.testsTable.hasStability).toBe(true);
 
     await page.getByTestId('anb-palette-allureQualityGate').click();
     await page.getByTestId('anb-palette-sonarQualityGate').click();
     await page.getByTestId('anb-palette-testsTable').click();
+
+    const canvasTestsTable = page.locator('.anb-canvas [data-testid="anb-kit-mock-testsTable"]');
+    await expect(canvasTestsTable.locator('thead th')).toHaveCount(4);
+    await expect(canvasTestsTable.locator('thead th').nth(3)).toHaveText('Stability');
+    await expect(canvasTestsTable.locator('.tests-table-panel__name').first()).toHaveText('shouldLogin…');
+    await expect(canvasTestsTable.locator('.tests-table-panel__stability').first()).toBeVisible();
+    await expect(canvasTestsTable.locator('tbody tr')).toHaveCount(5);
 
     await expect
       .poll(async () => {
