@@ -590,7 +590,8 @@ html.theme-light .anb-canvas--chart-off::after {
 }
 
 .grid-stack-item.is-selected > .grid-stack-item-content {
-  box-shadow: inset 0 0 0 2px var(--anb-selection-ring, rgba(108, 182, 255, 0.82));
+  outline: 2px solid var(--color-accent, #2563eb);
+  outline-offset: -2px;
 }
 
 .anb-panel__bar {
@@ -727,7 +728,6 @@ html.theme-light .anb-canvas--chart-off::after {
   /* Stay inside scaled half-gap — never a fixed 6px floor that digs into the card. */
   --anb-resize-mark: max(0px, calc(var(--anb-half-gap) - 1px));
   --anb-resize-ink: rgba(255, 255, 255, 0.48);
-  --anb-selection-ring: rgba(108, 182, 255, 0.82);
 }
 
 .anb-canvas .grid-stack-item > .ui-resizable-handle {
@@ -739,15 +739,31 @@ html.theme-light .anb-canvas--chart-off::after {
   box-sizing: border-box;
 }
 
-/* Edges stay invisible hit targets; corner L-brackets only on hover / resize. */
+/* Edges stay invisible hit targets; corners show L-brackets. */
 .anb-canvas .grid-stack-item > .ui-resizable-ne,
 .anb-canvas .grid-stack-item > .ui-resizable-nw,
 .anb-canvas .grid-stack-item > .ui-resizable-se,
 .anb-canvas .grid-stack-item > .ui-resizable-sw {
   width: var(--anb-resize-size);
   height: var(--anb-resize-size);
+  opacity: 0.7;
   /* Above edge strips + title bar so corners keep diagonal resize. */
   z-index: 5;
+}
+
+.anb-canvas .grid-stack-item:hover > .ui-resizable-ne,
+.anb-canvas .grid-stack-item:hover > .ui-resizable-nw,
+.anb-canvas .grid-stack-item:hover > .ui-resizable-se,
+.anb-canvas .grid-stack-item:hover > .ui-resizable-sw,
+.anb-canvas .grid-stack-item.is-selected > .ui-resizable-ne,
+.anb-canvas .grid-stack-item.is-selected > .ui-resizable-nw,
+.anb-canvas .grid-stack-item.is-selected > .ui-resizable-se,
+.anb-canvas .grid-stack-item.is-selected > .ui-resizable-sw,
+.anb-canvas .grid-stack-item.ui-resizable-resizing > .ui-resizable-ne,
+.anb-canvas .grid-stack-item.ui-resizable-resizing > .ui-resizable-nw,
+.anb-canvas .grid-stack-item.ui-resizable-resizing > .ui-resizable-se,
+.anb-canvas .grid-stack-item.ui-resizable-resizing > .ui-resizable-sw {
+  opacity: 1;
 }
 
 /* !important — GridStack injects .gs-id-* { top: 0 } after our sheet. */
@@ -803,7 +819,7 @@ html.theme-light .anb-canvas--chart-off::after {
   height: 8px;
 }
 
-/* Crop-mark stroke: gutter L-arms via gradients (no border-corner pixel blob). */
+/* Crop-mark stroke: only the outer gutter, anchored to the cell corner. */
 .anb-canvas .grid-stack-item > .ui-resizable-ne::after,
 .anb-canvas .grid-stack-item > .ui-resizable-nw::after,
 .anb-canvas .grid-stack-item > .ui-resizable-se::after,
@@ -814,51 +830,34 @@ html.theme-light .anb-canvas--chart-off::after {
   height: var(--anb-resize-mark);
   pointer-events: none;
   box-sizing: border-box;
-  opacity: 0;
-  transition: opacity 0.12s ease;
-}
-
-.anb-canvas .grid-stack-item:hover > .ui-resizable-ne::after,
-.anb-canvas .grid-stack-item:hover > .ui-resizable-nw::after,
-.anb-canvas .grid-stack-item:hover > .ui-resizable-se::after,
-.anb-canvas .grid-stack-item:hover > .ui-resizable-sw::after,
-.anb-canvas .grid-stack-item.ui-resizable-resizing > .ui-resizable-ne::after,
-.anb-canvas .grid-stack-item.ui-resizable-resizing > .ui-resizable-nw::after,
-.anb-canvas .grid-stack-item.ui-resizable-resizing > .ui-resizable-se::after,
-.anb-canvas .grid-stack-item.ui-resizable-resizing > .ui-resizable-sw::after {
-  opacity: 1;
 }
 
 .anb-canvas .grid-stack-item > .ui-resizable-nw::after {
   top: 0;
   left: 0;
-  background:
-    linear-gradient(var(--anb-resize-ink), var(--anb-resize-ink)) left top / 1px var(--anb-resize-mark) no-repeat,
-    linear-gradient(var(--anb-resize-ink), var(--anb-resize-ink)) left top / var(--anb-resize-mark) 1px no-repeat;
+  border-left: 1.5px solid var(--anb-resize-ink);
+  border-top: 1.5px solid var(--anb-resize-ink);
 }
 
 .anb-canvas .grid-stack-item > .ui-resizable-ne::after {
   top: 0;
   right: 0;
-  background:
-    linear-gradient(var(--anb-resize-ink), var(--anb-resize-ink)) right top / 1px var(--anb-resize-mark) no-repeat,
-    linear-gradient(var(--anb-resize-ink), var(--anb-resize-ink)) right top / var(--anb-resize-mark) 1px no-repeat;
+  border-right: 1.5px solid var(--anb-resize-ink);
+  border-top: 1.5px solid var(--anb-resize-ink);
 }
 
 .anb-canvas .grid-stack-item > .ui-resizable-sw::after {
   bottom: 0;
   left: 0;
-  background:
-    linear-gradient(var(--anb-resize-ink), var(--anb-resize-ink)) left bottom / 1px var(--anb-resize-mark) no-repeat,
-    linear-gradient(var(--anb-resize-ink), var(--anb-resize-ink)) left bottom / var(--anb-resize-mark) 1px no-repeat;
+  border-left: 1.5px solid var(--anb-resize-ink);
+  border-bottom: 1.5px solid var(--anb-resize-ink);
 }
 
 .anb-canvas .grid-stack-item > .ui-resizable-se::after {
   bottom: 0;
   right: 0;
-  background:
-    linear-gradient(var(--anb-resize-ink), var(--anb-resize-ink)) right bottom / 1px var(--anb-resize-mark) no-repeat,
-    linear-gradient(var(--anb-resize-ink), var(--anb-resize-ink)) right bottom / var(--anb-resize-mark) 1px no-repeat;
+  border-right: 1.5px solid var(--anb-resize-ink);
+  border-bottom: 1.5px solid var(--anb-resize-ink);
 }
 
 .anb-group + .anb-group {
@@ -1064,97 +1063,6 @@ html.theme-light .anb-zone--terminal .ch-theme--vscode .ch-tok-cmd { color: #795
 .anb-panel__tile .anb-kit-mock.tests-table-panel {
   font-size: 0.46rem;
   line-height: 1.1;
-}
-
-/* Canvas QG body-only (no nested quality-gate__bar — editor owns anb-panel__bar). */
-.anb-panel__tile .anb-kit-mock.quality-gate {
-  display: flex;
-  flex-direction: column;
-  border: none;
-  background: transparent;
-}
-
-.anb-panel__tile .anb-kit-mock.quality-gate .quality-gate__body {
-  display: flex;
-  flex-direction: column;
-  flex: 1;
-  min-height: 0;
-  height: 100%;
-  padding: 0;
-}
-
-.anb-panel__tile .anb-kit-mock.quality-gate--passed .quality-gate__body {
-  align-items: center;
-  justify-content: center;
-  min-height: 0;
-  padding: 2px;
-}
-
-.anb-panel__tile .anb-kit-mock.quality-gate--passed .quality-gate__verdict {
-  font-size: 0.58rem;
-}
-
-.anb-panel__tile .anb-kit-mock.quality-gate--failed .quality-gate__rules {
-  display: grid;
-  grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr);
-  align-items: stretch;
-  flex: 1;
-  margin: 0;
-  padding: 0;
-  list-style: none;
-}
-
-.anb-panel__tile .anb-kit-mock.quality-gate--failed .quality-gate__rule {
-  display: contents;
-}
-
-.anb-panel__tile .anb-kit-mock.quality-gate--failed .quality-gate__rule-id {
-  box-sizing: border-box;
-  display: flex;
-  align-items: center;
-  min-width: 0;
-  padding: 1px 3px;
-  overflow: hidden;
-  font-family: ui-monospace, "SF Mono", Menlo, monospace;
-  font-size: 0.42rem;
-  font-weight: 600;
-  line-height: 1.1;
-  color: var(--color-danger);
-  background: color-mix(in srgb, var(--color-danger) 12%, var(--color-surface-soft));
-  border-right: 1px solid var(--color-border);
-  white-space: nowrap;
-  text-overflow: ellipsis;
-}
-
-.anb-panel__tile .anb-kit-mock.quality-gate--failed .quality-gate__rule-detail {
-  display: flex;
-  align-items: center;
-  min-width: 0;
-  padding: 1px 3px;
-  overflow: hidden;
-}
-
-.anb-panel__tile .anb-kit-mock.quality-gate--failed .quality-gate__rule + .quality-gate__rule .quality-gate__rule-id,
-.anb-panel__tile .anb-kit-mock.quality-gate--failed .quality-gate__rule + .quality-gate__rule .quality-gate__rule-detail {
-  border-top: 1px solid var(--color-border);
-}
-
-.anb-panel__tile .anb-kit-mock.quality-gate--failed .quality-gate__message {
-  display: none;
-}
-
-.anb-panel__tile .anb-kit-mock.quality-gate--failed .quality-gate__formula {
-  margin: 0;
-  width: 100%;
-  min-width: 0;
-  font-family: ui-monospace, "SF Mono", Menlo, monospace;
-  font-size: 0.42rem;
-  font-weight: 600;
-  line-height: 1.1;
-  color: var(--color-danger);
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
 }
 
 .anb-panel__tile .anb-kit-mock.tests-table-panel {

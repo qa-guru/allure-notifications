@@ -916,11 +916,18 @@ function kitOnlyPaletteBodyHtml(panelId, chartType) {
         `<p class="quality-gate__verdict quality-gate__verdict--ok">Passed</p>` +
         `</div></div>`);
 }
-/**
- * Builder kit tile body — DS quality-gate / tests-table-panel; not collage IR.
- * QG is body-only: editor already has `anb-panel__bar`, TG preview has
- * `widget-tile__bar`. A nested `quality-gate__bar` = header-in-header.
- */
+function qgInfoTriggerHtml() {
+    return (`<div class="qg-info" data-testid="qg-info-mock">` +
+        `<span class="icon-btn qg-info__trigger" aria-hidden="true">` +
+        `<span class="icon" aria-hidden="true">` +
+        `<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">` +
+        `<circle cx="8" cy="8" r="6.25"/>` +
+        `<path d="M8 7.25v3.5"/>` +
+        `<circle cx="8" cy="5.15" r="0.65" fill="currentColor" stroke="none"/>` +
+        `</svg>` +
+        `</span></span></div>`);
+}
+/** Builder-only kit tile body — DS quality-gate / tests-table-panel; not collage IR. */
 function kitOnlyPanelMockHtml(panelId, chartType) {
     const testId = `anb-kit-mock-${panelId}`;
     if (chartType === 'testsTable') {
@@ -933,14 +940,30 @@ function kitOnlyPanelMockHtml(panelId, chartType) {
     }
     if (panelId === 'sonarQualityGate') {
         return (`<div class="quality-gate quality-gate--sonar quality-gate--failed anb-kit-mock" data-anb-kit-mock="${escapeHtml(panelId)}" data-testid="${testId}" role="status" aria-hidden="true">` +
+            `<div class="quality-gate__bar">` +
+            `<div class="quality-gate__bar-start">` +
+            `<span class="indicator indicator--failed indicator--solid" aria-hidden="true"></span>` +
+            `<span class="quality-gate__bar-title">Sonar QG</span>` +
+            `</div>` +
+            qgInfoTriggerHtml() +
+            `</div>` +
             `<div class="quality-gate__body">` +
-            paletteQgRulesHtml([
-                { id: 'cov', formula: '72&lt;80' },
-                { id: 'bugs', formula: '3&gt;0' },
-            ]) +
-            `</div></div>`);
+            `<ul class="quality-gate__rules">` +
+            `<li class="quality-gate__rule">` +
+            `<div class="quality-gate__rule-id">coverage</div>` +
+            `<div class="quality-gate__rule-detail">` +
+            `<p class="quality-gate__message">coverage 72.4 is below the required 80</p>` +
+            `<p class="quality-gate__formula">FAIL: 72.4 &lt; 80</p>` +
+            `</div></li></ul></div></div>`);
     }
     return (`<div class="quality-gate quality-gate--allure quality-gate--passed anb-kit-mock" data-anb-kit-mock="${escapeHtml(panelId)}" data-testid="${testId}" role="status" aria-hidden="true">` +
+        `<div class="quality-gate__bar">` +
+        `<div class="quality-gate__bar-start">` +
+        `<span class="indicator indicator--passed indicator--solid" aria-hidden="true"></span>` +
+        `<span class="quality-gate__bar-title">Allure QG</span>` +
+        `</div>` +
+        qgInfoTriggerHtml() +
+        `</div>` +
         `<div class="quality-gate__body">` +
         `<p class="quality-gate__verdict quality-gate__verdict--ok">Passed</p>` +
         `</div></div>`);
