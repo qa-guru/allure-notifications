@@ -23,7 +23,7 @@ const MANIFEST = [
   },
   {
     "url": "/js/app.js",
-    "revision": "51f8b9dee19ffd22"
+    "revision": "eea54c3b9ae81231"
   },
   {
     "url": "/js/phrases.js",
@@ -219,7 +219,7 @@ const MANIFEST = [
   },
   {
     "url": "/vendor/design-system/js/widget-tile-mocks.js",
-    "revision": "dd27cc8f9277106d"
+    "revision": "eaf573bc057e26e1"
   },
   {
     "url": "/vendor/design-system/templates/header.html",

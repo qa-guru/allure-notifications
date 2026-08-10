@@ -572,7 +572,7 @@ test.describe('allure-notifications-builder smoke', () => {
         panelHasEditorBar: /anb-panel__bar/.test(panel),
         panelHasQgBar: /quality-gate__bar/.test(panel),
         previewHasProductBar: /widget-tile__bar/.test(preview),
-        previewHasQgBar: /quality-gate__rule-id/.test(preview) || /quality-gate__bar/.test(preview),
+        previewHasQgBar: /quality-gate__bar/.test(preview),
         canvasHasQgBar: Boolean(aqgEl?.querySelector('.quality-gate__bar')),
         canvasHasEditorBar: Boolean(
           aqgEl?.closest('.anb-panel')?.querySelector('.anb-panel__bar'),
@@ -603,11 +603,11 @@ test.describe('allure-notifications-builder smoke', () => {
         })(),
       };
     });
-    // LOCKED: collage QG bar = title only (no status indicator, no qg-info).
+    // LOCKED: jar/TG = product bar (dots); editor = hybrid title-only (no QG status indicator/info).
     expect(canvasQgChrome.panelHasEditorBar).toBe(false);
     expect(canvasQgChrome.panelHasQgBar).toBe(true);
-    expect(canvasQgChrome.previewHasProductBar).toBe(false);
-    expect(canvasQgChrome.previewHasQgBar).toBe(true);
+    expect(canvasQgChrome.previewHasProductBar).toBe(true);
+    expect(canvasQgChrome.previewHasQgBar).toBe(false);
     expect(canvasQgChrome.canvasHasEditorBar).toBe(false);
     expect(canvasQgChrome.canvasHasQgBar).toBe(true);
     expect(canvasQgChrome.canvasHasDelete).toBe(true);

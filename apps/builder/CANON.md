@@ -95,13 +95,17 @@ Logical `cardGap` / `headerHeight` / `tilePad` are jar canvas px. TG stage draws
 
 ## Quality-gate chrome (LOCKED — do not regress)
 
-**Accepted visual:** one hybrid bar + body. Collage/editor/TG bar = **title only** — **no** status indicator, **no** `(i)`/qg-info. Editor delete lives **inside** `quality-gate__bar` (same flex slot as `anb-panel__actions` — not absolute overlay). Palette add = **2×2** (same as all panels). SQG compact `cov|72<80` + `bugs|3>0`, bar height = `--anb-bar-h`. Debug: [`debug-qg.html`](./debug-qg.html). Goldens: [`fixtures/qg-locked/`](./fixtures/qg-locked/). Guard: smoke `chart.profile kit`.
+**Accepted visual:**
+- **Jar / TG preview:** same product chrome as other tiles — macOS dots + title (`drawCard` / `widget-tile__bar`) + **body-only** QG (no second `quality-gate__bar`).
+- **Editor:** hybrid `quality-gate__bar` + body (no `anb-panel__bar`); delete inside bar; **no** QG status indicator / `(i)`.
+- Palette add = **2×2**. SQG compact `cov|72<80` + `bugs|3>0`. Editor bar height = `--anb-bar-h`.
+- Debug: [`debug-qg.html`](./debug-qg.html). Goldens: [`fixtures/qg-locked/`](./fixtures/qg-locked/). Guard: smoke `chart.profile kit`.
 
 | Surface | Chrome | Forbidden |
 |---------|--------|-----------|
-| Jar collage PNG | Hybrid PNG full cell; title-only bar | macOS `drawCard`; indicator; info glyph |
-| Editor canvas | Hybrid full-bleed; title-only; delete in `quality-gate__bar`; **2×2** add | `anb-panel__bar`; indicator; `(i)`; absolute delete overlay; raw `31px` bar; non-2×2 default footprint |
-| TG / export preview | Hybrid title-only | outer `widget-tile__bar`; indicator; `(i)` |
+| Jar collage PNG | macOS `drawCard` + body-only QG PNG | hybrid QG bar under drawCard; QG status indicator; info glyph |
+| Editor canvas | Hybrid full-bleed; title-only; delete in `quality-gate__bar`; **2×2** add | `anb-panel__bar`; QG status indicator; `(i)`; absolute delete overlay; raw `31px` bar; non-2×2 default footprint |
+| TG / export preview | `widget-tile__bar` (dots + title) + body-only QG | hybrid `quality-gate__bar` under product bar; QG status indicator; `(i)` |
 
 Palette thumbs: micro `widget-tile__bar` + body-only QG (unchanged).
 

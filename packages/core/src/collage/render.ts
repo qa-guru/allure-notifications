@@ -358,7 +358,7 @@ function renderPanelPng(
     if (!data) {
       throw new Error(`quality gate data not loaded for ${qgId}`);
     }
-    return renderQualityGatePng(data, { width, height });
+    return renderQualityGatePng(data, { width, height, chrome: "body" });
   }
   if (key === PANEL_TESTS_TABLE) {
     if (!testsTable) {
@@ -571,13 +571,9 @@ export async function renderCollagePng(
       y + h === rows ? collageHeight - cardGap : rawBottom - half;
     const cellWidth = Math.max(1, cellRight - cellLeft);
     const cellHeight = Math.max(1, cellBottom - cellTop);
-    // quality-gate PNG already paints hybrid bar+body — do not reserve collage header.
-    // LOCKED: skip macOS drawCard chrome for PANEL_QUALITY_GATE (CANON / anb-qg-chrome-lock).
-    const skipCardHeader = key === PANEL_QUALITY_GATE;
-    const tileHeaderHeight = skipCardHeader ? 0 : headerHeight;
-    const panelHeight = skipCardHeader
-      ? cellHeight
-      : Math.max(1, cellHeight - headerHeight);
+    // QG body PNG under macOS drawCard (dots + title) — same chrome as other tiles.
+    const tileHeaderHeight = headerHeight;
+    const panelHeight = Math.max(1, cellHeight - headerHeight);
 
     const panelPng = renderPanelPng(
       key,

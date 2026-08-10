@@ -2,8 +2,8 @@
  * Kit quality-gate layout IR → @napi-rs/canvas PNG (T4 collage Profile path).
  *
  * Consumes kit contract/IR only — no duplicated layout metrics/tokens.
- * Paints quality-gate hybrid chrome (bar + body); does NOT draw ordinary
- * collage/widget-tile bar chrome (kit W1 drops widget-tile__bar for QG).
+ * Collage/TG: `chrome: "body"` under macOS `drawCard` / `widget-tile__bar`.
+ * Standalone/tests: `chrome: "hybrid"` paints quality-gate__bar + body.
  */
 
 import { createCanvas, type SKRSContext2D } from "@napi-rs/canvas";
@@ -46,6 +46,11 @@ export type RenderQualityGatePngOptions = {
   rem?: number;
   /** Override kit token palette (tests). */
   palette?: Readonly<Record<string, Rgb>>;
+  /**
+   * `hybrid` — own bar+body (standalone / tests).
+   * `body` — body only under collage macOS `drawCard` / TG `widget-tile__bar` (default for jar).
+   */
+  chrome?: "hybrid" | "body";
 };
 
 function isQualityGateLayout(value: unknown): value is QualityGateLayout {
@@ -215,48 +220,57 @@ export function renderQualityGatePng(
   const surface = lookupToken(tokens.surface, palette);
   const status = layout.passed ? "passed" : "failed";
   const radius = metrics.borderRadiusMd;
+  const chrome = options.chrome ?? "hybrid";
+  const paintBar = chrome === "hybrid";
 
-  // Root card (standalone hybrid tile — not widget-tile chrome).
-  roundRectPath(ctx, 0, 0, width, height, radius);
-  ctx.fillStyle = rgbCss(surface);
-  ctx.fill();
-  ctx.save();
-  roundRectPath(ctx, 0, 0, width, height, radius);
-  ctx.clip();
+  // Root fill — under drawCard the parent clips; body chrome is a flat body tile.
+  if (paintBar) {
+    roundRectPath(ctx, 0, 0, width, height, radius);
+    ctx.fillStyle = rgbCss(surface);
+    ctx.fill();
+    ctx.save();
+    roundRectPath(ctx, 0, 0, width, height, radius);
+    ctx.clip();
 
-  // Root border
-  roundRectPath(ctx, 0.5, 0.5, width - 1, height - 1, radius);
-  ctx.strokeStyle = cssColor(tokens.rootBorder[status], palette, surface);
-  ctx.lineWidth = 1;
-  ctx.stroke();
+    roundRectPath(ctx, 0.5, 0.5, width - 1, height - 1, radius);
+    ctx.strokeStyle = cssColor(tokens.rootBorder[status], palette, surface);
+    ctx.lineWidth = 1;
+    ctx.stroke();
+  } else {
+    ctx.fillStyle = rgbCss(surface);
+    ctx.fillRect(0, 0, width, height);
+    ctx.save();
+  }
 
-  // quality-gate__bar (IR) — replaces widget-tile__bar for QG.
-  const barH = metrics.barHeight;
-  const barBg = cssColor(tokens.barBackground, palette, surface);
-  ctx.fillStyle = barBg;
-  ctx.fillRect(0, 0, width, barH);
+  let bodyTop = 0;
+  if (paintBar) {
+    // quality-gate__bar (IR) — standalone hybrid only (not under macOS drawCard).
+    const barH = metrics.barHeight;
+    const barBg = cssColor(tokens.barBackground, palette, surface);
+    ctx.fillStyle = barBg;
+    ctx.fillRect(0, 0, width, barH);
 
-  ctx.beginPath();
-  ctx.moveTo(0, barH + 0.5);
-  ctx.lineTo(width, barH + 0.5);
-  ctx.strokeStyle = cssColor(tokens.barBorderBottom[status], palette, surface);
-  ctx.lineWidth = 1;
-  ctx.stroke();
+    ctx.beginPath();
+    ctx.moveTo(0, barH + 0.5);
+    ctx.lineTo(width, barH + 0.5);
+    ctx.strokeStyle = cssColor(tokens.barBorderBottom[status], palette, surface);
+    ctx.lineWidth = 1;
+    ctx.stroke();
 
-  const inset = metrics.barInset;
-  // Collage QG bar: title only — no status indicator, no info glyph (LOCKED).
-  const titleSize = remPx(metrics.barTitleSizeRem, rem);
-  ctx.font = `600 ${titleSize}px sans-serif`;
-  ctx.fillStyle = cssColor(tokens.textMuted, palette, surface);
-  ctx.textBaseline = "middle";
-  ctx.textAlign = "left";
+    const inset = metrics.barInset;
+    // Hybrid bar: title only — no status indicator, no info glyph.
+    const titleSize = remPx(metrics.barTitleSizeRem, rem);
+    ctx.font = `600 ${titleSize}px sans-serif`;
+    ctx.fillStyle = cssColor(tokens.textMuted, palette, surface);
+    ctx.textBaseline = "middle";
+    ctx.textAlign = "left";
 
-  const titleMaxW = Math.max(24, width - 2 * inset - 4);
-  const title = ellipsize(ctx, layout.bar.title, titleMaxW);
-  ctx.fillText(title, inset, barH / 2);
+    const titleMaxW = Math.max(24, width - 2 * inset - 4);
+    const title = ellipsize(ctx, layout.bar.title, titleMaxW);
+    ctx.fillText(title, inset, barH / 2);
+    bodyTop = barH;
+  }
 
-  // Body
-  const bodyTop = barH;
   const bodyH = height - bodyTop;
   const bodyFont = remPx(metrics.bodyFontSizeRem, rem);
 

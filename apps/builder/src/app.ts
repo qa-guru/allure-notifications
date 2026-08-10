@@ -1147,8 +1147,8 @@ function kitOnlyQgBodyInnerHtml(panelId: string) {
 }
 
 /**
- * Kit QG mock: `hybrid` = quality-gate__bar + body (jar / TG / editor parity);
- * `body` = body only (legacy; do not use under anb-panel__bar — double chrome).
+ * Kit QG mock: `hybrid` = quality-gate__bar + body (editor);
+ * `body` = body only under TG/jar product chrome (`widget-tile__bar` / drawCard).
  * `barTrailingHtml` — editor delete actions inside the bar (same slot as anb-panel__actions).
  */
 function kitOnlyQgMockHtml(
@@ -1222,7 +1222,8 @@ function tileTier(item: ChartItem): string {
  * Chrome: headerHeight → `--wt-bar-height` (+ proportional title/dots);
  * cardGap → jar free-grid half-gap inset; tilePad → `--wt-pad`;
  * tier → `widget-tile--tier-*` (parity with editor `panelInnerHtml`).
- * Kit QG: hybrid mock only (no outer widget-tile__bar) — jar collage parity.
+ * Kit QG: body-only under product `widget-tile__bar` (macOS dots + title) —
+ * same chrome as other TG tiles. Editor keeps hybrid `quality-gate__bar`.
  * @param {ChartItem} item
  */
 function previewItemHtml(item: ChartItem) {
@@ -1245,14 +1246,13 @@ function previewItemHtml(item: ChartItem) {
   const isQg = chartType === 'qualityGate';
   const body =
     isKitOnlyPanelType(chartType) && panelId
-      ? kitOnlyPanelMockHtml(panelId, chartType, 'hybrid')
+      ? kitOnlyPanelMockHtml(panelId, chartType, isQg ? 'body' : 'hybrid')
       : '';
   const kitTileMod = isQg ? ' widget-tile--quality-gate' : '';
-  const productBar = isQg
-    ? ''
-    : `<div class="widget-tile__bar">` +
-      `<span class="widget-tile__title">${escapeHtml(title)}</span>` +
-      `</div>`;
+  const productBar =
+    `<div class="widget-tile__bar">` +
+    `<span class="widget-tile__title">${escapeHtml(title)}</span>` +
+    `</div>`;
   return (
     `<figure class="widget-tile widget-tile--tier-${tier} anb-tg__widget${kitTileMod}" ${attrs} ` +
     `style="left:${rect.left}px;top:${rect.top}px;width:${rect.width}px;height:${rect.height}px;${chrome}">` +

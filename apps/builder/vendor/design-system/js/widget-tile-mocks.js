@@ -1559,6 +1559,9 @@
     },
     { type: "durationDynamics", title: "Duration dynamics", dots: ["blue"] },
     { type: "statusAgePyramid", title: "Status age pyramid", dots: ["red", "yellow", "gray", "purple"] },
+    // Kit QG — product bar dots (TG/preview); body mock is prefilled by builder.
+    { type: "qualityGate", id: "allureQualityGate", title: "Allure Quality Gate", dots: ["green"] },
+    { type: "qualityGate", id: "sonarQualityGate", title: "Sonar Quality Gate", dots: ["red"] },
   ];
 
   function readVariant(tile, body) {
@@ -1571,21 +1574,26 @@
     };
   }
 
-  /** Match CATALOG slot for a tile (type + optional groupBy / by). */
-  function catalogSlot(kind, variant) {
+  /** Match CATALOG slot for a tile (type + optional groupBy / by / id). */
+  function catalogSlot(kind, variant, panelId) {
     var resolved = resolveKind(kind, variant);
     var key = resolved.key;
     var groupBy = (variant && variant.groupBy) || "";
     var by = (variant && variant.by) || "";
+    var id = (panelId || "").trim();
     var i;
     var slot;
     for (i = 0; i < CATALOG.length; i++) {
       slot = CATALOG[i];
       if (slot.type !== key) continue;
+      if (slot.id && slot.id !== id) continue;
       if (slot.groupBy && slot.groupBy !== groupBy) continue;
       if (slot.by && slot.by !== by) continue;
       if (!slot.groupBy && groupBy && key === "durations") continue;
       return slot;
+    }
+    for (i = 0; i < CATALOG.length; i++) {
+      if (CATALOG[i].type === key && !CATALOG[i].id) return CATALOG[i];
     }
     for (i = 0; i < CATALOG.length; i++) {
       if (CATALOG[i].type === key) return CATALOG[i];
@@ -1598,8 +1606,10 @@
     if (!tile || !tile.querySelector) return;
     var bar = tile.querySelector(".widget-tile__bar");
     if (!bar) return;
-    var slot = catalogSlot(kind, variant);
-    var names = slot && Array.isArray(slot.dots) ? slot.dots : [];
+    var panelId = (tile.getAttribute("data-panel-id") || "").trim();
+    var slot = catalogSlot(kind, variant, panelId);
+    if (!slot || !Array.isArray(slot.dots)) return;
+    var names = slot.dots;
     var row = bar.querySelector(":scope > .indicator-row");
     if (!row) {
       row = document.createElement("div");
@@ -1626,7 +1636,14 @@
       var kind = (body.getAttribute("data-mock") || (tile && tile.getAttribute("data-chart")) || "").trim();
       var variant = readVariant(tile, body);
       var resolved = resolveKind(kind, variant);
-      if (!resolved.render) return;
+      // Kit QG / prefilled bodies: no chart renderer — still sync product-bar dots.
+      if (!resolved.render) {
+        if (tile && tile.querySelector(".widget-tile__bar")) {
+          syncIndicators(tile, kind, variant);
+          body.setAttribute("data-mock-filled", "1");
+        }
+        return;
+      }
       body.innerHTML = resolved.render(body, resolved.variant);
       body.setAttribute("data-mock-filled", "1");
       syncIndicators(tile, kind, variant);

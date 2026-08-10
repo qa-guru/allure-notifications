@@ -132,7 +132,7 @@ describe("quality-gate collage wire", () => {
     assert.ok(green >= 30, `expected QG success indicator pixels, got ${green}`);
   });
 
-  it("collage skips macOS card dots over quality-gate tiles", async () => {
+  it("collage paints macOS card dots on quality-gate tiles", async () => {
     // Dark theme card chrome mixes DOT_CLOSE (#ff5f57) with headerBg (60,60,60) @ 0.55.
     const macCloseMixed = { r: 167, g: 79, b: 75 };
     const config = kitConfig();
@@ -142,7 +142,7 @@ describe("quality-gate collage wire", () => {
     const qualityGates = await loadQualityGateCollageData(config);
     const png = await renderCollagePng(config, analytics, qualityGates);
     const dots = await countNearColor(png, macCloseMixed, 8, 1);
-    assert.equal(dots, 0, `expected no macOS close-dot chrome over QG, got ${dots}`);
+    assert.ok(dots >= 20, `expected macOS close-dot chrome on QG tiles, got ${dots}`);
   });
 
   it("profile=default silent-skips QG items (no throw, smaller PNG)", async () => {
