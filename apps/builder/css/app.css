@@ -1050,20 +1050,240 @@ html.theme-light .anb-zone--terminal .ch-theme--vscode .ch-tok-cmd { color: #795
 .anb-qg-mock {
   display: flex;
   flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 0.35rem;
+  gap: 3px;
   width: 100%;
   height: 100%;
-  min-height: 2.5rem;
+  min-height: 0;
   box-sizing: border-box;
-  font-size: 0.7rem;
-  line-height: 1.2;
-  color: var(--color-text-muted, #8a8a8a);
+  padding: 2px 0;
 }
 
+/* ---- Quality gate mock (palette + canvas) ---- */
+
+.anb-qg-mock--qg {
+  justify-content: flex-start;
+}
+
+.anb-qg-mock__head {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  width: 100%;
+  min-height: 0;
+}
+
+.anb-qg-mock__pill {
+  flex-shrink: 0;
+  width: 14px;
+  height: 6px;
+  border-radius: 999px;
+}
+
+.anb-qg-mock__pill--pass {
+  background: color-mix(in srgb, var(--color-status-passed-chart, #2e7d32) 85%, transparent);
+}
+
+.anb-qg-mock__pill--warn {
+  background: color-mix(in srgb, var(--color-status-broken, #f9a825) 90%, transparent);
+}
+
+.anb-qg-mock__meter {
+  flex: 1 1 auto;
+  min-width: 0;
+  height: 5px;
+  border-radius: 999px;
+  overflow: hidden;
+  background: color-mix(in srgb, var(--color-border) 55%, transparent);
+}
+
+.anb-qg-mock__meter > i {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+}
+
+.anb-qg-mock__meter--allure > i {
+  width: 88%;
+  background: linear-gradient(
+    90deg,
+    var(--color-status-passed-chart, #43a047),
+    color-mix(in srgb, var(--color-info, #1e88e5) 70%, var(--color-status-passed-chart, #43a047))
+  );
+}
+
+.anb-qg-mock__meter--sonar > i {
+  width: 62%;
+  background: linear-gradient(
+    90deg,
+    var(--color-status-failed, #e53935),
+    var(--color-status-broken, #fb8c00)
+  );
+}
+
+.anb-qg-mock__rules {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  width: 100%;
+  min-height: 0;
+  flex: 1 1 auto;
+}
+
+.anb-qg-mock__rule {
+  display: block;
+  width: 100%;
+  height: 4px;
+  border-radius: 2px;
+  background: color-mix(in srgb, var(--color-border) 40%, transparent);
+}
+
+.anb-qg-mock__rule--pass {
+  box-shadow: inset 3px 0 0 var(--color-status-passed-chart, #43a047);
+}
+
+.anb-qg-mock__rule--warn {
+  box-shadow: inset 3px 0 0 var(--color-status-broken, #fb8c00);
+}
+
+.anb-qg-mock__rule--fail {
+  box-shadow: inset 3px 0 0 var(--color-status-failed, #e53935);
+}
+
+.anb-qg-mock--sonar .anb-qg-mock__rule:nth-child(2) {
+  width: 78%;
+}
+
+.anb-qg-mock--allure .anb-qg-mock__rule:nth-child(3) {
+  width: 86%;
+}
+
+/* ---- Tests table mock ---- */
+
+.anb-qg-mock--tests-table {
+  justify-content: center;
+  padding: 1px 0;
+}
+
+.anb-tt-mock {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  width: 100%;
+}
+
+.anb-tt-mock__row {
+  display: grid;
+  grid-template-columns: 1fr 10px 14px;
+  align-items: center;
+  gap: 3px;
+  min-height: 0;
+}
+
+.anb-tt-mock__name {
+  display: block;
+  height: 3px;
+  border-radius: 2px;
+  background: color-mix(in srgb, var(--color-text-muted) 55%, transparent);
+}
+
+.anb-tt-mock__name--short {
+  width: 72%;
+}
+
+.anb-tt-mock__name--mid {
+  width: 58%;
+}
+
+.anb-tt-mock__badge {
+  display: block;
+  width: 8px;
+  height: 8px;
+  margin-inline: auto;
+  border-radius: 50%;
+}
+
+.anb-tt-mock__badge--pass {
+  background: var(--color-status-passed-chart, #43a047);
+}
+
+.anb-tt-mock__badge--fail {
+  background: var(--color-status-failed, #e53935);
+}
+
+.anb-tt-mock__badge--broken {
+  background: var(--color-status-broken, #fb8c00);
+}
+
+.anb-tt-mock__spark {
+  display: block;
+  height: 6px;
+  border-radius: 2px;
+  background: linear-gradient(
+    135deg,
+    transparent 42%,
+    var(--color-info, #1e88e5) 42%,
+    var(--color-info, #1e88e5) 58%,
+    transparent 58%
+  );
+  opacity: 0.75;
+}
+
+.anb-tt-mock__spark--down {
+  background: linear-gradient(
+    135deg,
+    var(--color-status-failed, #e53935) 42%,
+    var(--color-status-failed, #e53935) 58%
+  );
+  opacity: 0.55;
+}
+
+.anb-tt-mock__spark--flat {
+  background: color-mix(in srgb, var(--color-text-muted) 35%, transparent);
+  opacity: 0.65;
+}
+
+/* Palette micro density — kit mocks fill 2×2 thumb body */
+.anb-palette__tile .anb-qg-mock {
+  padding: 1px 2px;
+  gap: 2px;
+}
+
+.anb-palette__tile .anb-qg-mock__pill {
+  width: 11px;
+  height: 5px;
+}
+
+.anb-palette__tile .anb-qg-mock__meter {
+  height: 4px;
+}
+
+.anb-palette__tile .anb-qg-mock__rule {
+  height: 3px;
+}
+
+.anb-palette__tile .anb-tt-mock__row {
+  grid-template-columns: 1fr 8px 12px;
+  gap: 2px;
+}
+
+.anb-palette__tile .anb-tt-mock__badge {
+  width: 6px;
+  height: 6px;
+}
+
+.anb-palette__tile .anb-tt-mock__spark {
+  height: 5px;
+}
+
+.anb-palette__tile .widget-tile__bar:not(:empty) {
+  display: flex;
+}
+
+/* Legacy label/status — kept for debug exports */
 .anb-qg-mock__label {
   font-weight: 600;
+  font-size: 0.7rem;
+  line-height: 1.2;
   color: var(--color-text, #1a1a1a);
 }
 
@@ -1073,6 +1293,7 @@ html.theme-light .anb-zone--terminal .ch-theme--vscode .ch-tok-cmd { color: #795
   background: color-mix(in srgb, #2e7d32 18%, transparent);
   color: #2e7d32;
   font-weight: 600;
+  font-size: 0.65rem;
   text-transform: uppercase;
   letter-spacing: 0.04em;
 }

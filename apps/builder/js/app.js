@@ -675,18 +675,53 @@ function buildTgCaptionHtml() {
     });
     return lines.join('\n');
 }
+/** Status-family dots for kit-only palette thumbs (chart tiles use WidgetTileMocks.syncIndicators). */
+function kitOnlyPaletteBarHtml(panelId, chartType) {
+    let dots;
+    if (chartType === 'testsTable') {
+        dots = ['green', 'red', 'yellow'];
+    }
+    else if (panelId === 'sonarQualityGate') {
+        dots = ['red', 'orange', 'green'];
+    }
+    else {
+        dots = ['green', 'yellow', 'red'];
+    }
+    return (`<div class="indicator-row" aria-hidden="true">` +
+        dots.map((d) => `<span class="indicator indicator--status-${d}"></span>`).join('') +
+        `</div>`);
+}
 /** Builder-only kit tile body — not collage IR; avoids Allure HTML screenshot. */
 function kitOnlyPanelMockHtml(panelId, chartType) {
+    const testId = `anb-kit-mock-${panelId}`;
     if (chartType === 'testsTable') {
-        return (`<div class="anb-qg-mock anb-qg-mock--tests-table" data-anb-kit-mock="${escapeHtml(panelId)}">` +
-            `<span class="anb-qg-mock__label">Tests table</span>` +
-            `<span class="anb-qg-mock__status">3 tests</span>` +
+        return (`<div class="anb-qg-mock anb-qg-mock--tests-table" data-anb-kit-mock="${escapeHtml(panelId)}" data-testid="${testId}">` +
+            `<div class="anb-tt-mock" aria-hidden="true">` +
+            `<span class="anb-tt-mock__row"><i class="anb-tt-mock__name"></i><i class="anb-tt-mock__badge anb-tt-mock__badge--pass"></i><i class="anb-tt-mock__spark"></i></span>` +
+            `<span class="anb-tt-mock__row"><i class="anb-tt-mock__name anb-tt-mock__name--short"></i><i class="anb-tt-mock__badge anb-tt-mock__badge--fail"></i><i class="anb-tt-mock__spark anb-tt-mock__spark--down"></i></span>` +
+            `<span class="anb-tt-mock__row"><i class="anb-tt-mock__name anb-tt-mock__name--mid"></i><i class="anb-tt-mock__badge anb-tt-mock__badge--broken"></i><i class="anb-tt-mock__spark anb-tt-mock__spark--flat"></i></span>` +
+            `</div>` +
             `</div>`);
     }
-    const label = panelId === 'sonarQualityGate' ? 'Sonar QG' : 'Allure QG';
-    return (`<div class="anb-qg-mock" data-anb-qg-mock="${escapeHtml(panelId)}">` +
-        `<span class="anb-qg-mock__label">${escapeHtml(label)}</span>` +
-        `<span class="anb-qg-mock__status">passed</span>` +
+    const qgMod = panelId === 'sonarQualityGate' ? 'sonar' : 'allure';
+    const pillClass = panelId === 'sonarQualityGate' ? 'anb-qg-mock__pill--warn' : 'anb-qg-mock__pill--pass';
+    const meterClass = panelId === 'sonarQualityGate' ? 'anb-qg-mock__meter--sonar' : 'anb-qg-mock__meter--allure';
+    const rule2 = panelId === 'sonarQualityGate'
+        ? 'anb-qg-mock__rule anb-qg-mock__rule--fail'
+        : 'anb-qg-mock__rule anb-qg-mock__rule--pass';
+    const rule3 = panelId === 'sonarQualityGate'
+        ? 'anb-qg-mock__rule anb-qg-mock__rule--warn'
+        : 'anb-qg-mock__rule anb-qg-mock__rule--pass';
+    return (`<div class="anb-qg-mock anb-qg-mock--qg anb-qg-mock--${qgMod}" data-anb-qg-mock="${escapeHtml(panelId)}" data-testid="${testId}">` +
+        `<div class="anb-qg-mock__head" aria-hidden="true">` +
+        `<span class="anb-qg-mock__pill ${pillClass}"></span>` +
+        `<span class="anb-qg-mock__meter ${meterClass}"><i></i></span>` +
+        `</div>` +
+        `<div class="anb-qg-mock__rules" aria-hidden="true">` +
+        `<span class="anb-qg-mock__rule anb-qg-mock__rule--pass"></span>` +
+        `<span class="${rule2}"></span>` +
+        `<span class="${rule3}"></span>` +
+        `</div>` +
         `</div>`);
 }
 /** @deprecated use kitOnlyPanelMockHtml — kept for debug exports */
@@ -1400,17 +1435,20 @@ function clearAll() {
  */
 function paletteItemHtml(item) {
     const chartType = item.type;
+    const isKit = isKitOnlyPanelType(chartType) && Boolean(item.id);
     let attrs = `data-chart="${escapeHtml(chartType)}"`;
     if (item.groupBy)
         attrs += ` data-group-by="${escapeHtml(item.groupBy)}"`;
     if (item.by)
         attrs += ` data-by="${escapeHtml(item.by)}"`;
+    const bar = isKit ? kitOnlyPaletteBarHtml(item.id, chartType) : '';
+    const body = isKit ? kitOnlyPanelMockHtml(item.id, chartType) : '';
     /* Palette thumbs are always 2×2 — caption = title; grid footprints stay on canvas / DEFAULT_ITEMS. */
     return (`<button type="button" class="anb-palette__item" data-anb-panel-id="${escapeHtml(item.id)}" ` +
         `data-testid="anb-palette-${escapeHtml(item.id)}" draggable="true" title="${escapeHtml(item.title)}">` +
         `<div class="widget-tile widget-tile--tier-micro widget-tile--span-2x2 anb-palette__tile" ${attrs}>` +
-        `<div class="widget-tile__bar"></div>` +
-        `<div class="widget-tile__body"></div>` +
+        `<div class="widget-tile__bar">${bar}</div>` +
+        `<div class="widget-tile__body">${body}</div>` +
         `</div>` +
         `<span class="anb-palette__hint">${escapeHtml(item.title)}</span>` +
         `</button>`);

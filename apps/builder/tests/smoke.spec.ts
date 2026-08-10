@@ -436,6 +436,37 @@ test.describe('allure-notifications-builder smoke', () => {
     await expect(page.getByTestId('anb-palette-sonarQualityGate')).toBeVisible();
     await expect(page.getByTestId('anb-palette-testsTable')).toBeVisible();
 
+    const kitMocks = await palette.evaluate(() => {
+      const ids = ['allureQualityGate', 'sonarQualityGate', 'testsTable'] as const;
+      return Object.fromEntries(
+        ids.map((id) => {
+          const btn = document.querySelector(`[data-testid="anb-palette-${id}"]`);
+          const body = btn?.querySelector('.widget-tile__body');
+          const mock = body?.querySelector('[data-testid^="anb-kit-mock-"]');
+          const barDots = btn?.querySelectorAll('.widget-tile__bar .indicator').length ?? 0;
+          return [
+            id,
+            {
+              bodyChildCount: body?.childElementCount ?? 0,
+              mockTestId: mock?.getAttribute('data-testid') ?? '',
+              mockClass: mock?.className ?? '',
+              barDots,
+            },
+          ];
+        }),
+      );
+    });
+    for (const id of ['allureQualityGate', 'sonarQualityGate', 'testsTable'] as const) {
+      const snap = kitMocks[id];
+      expect(snap.bodyChildCount, `${id} palette body`).toBeGreaterThan(0);
+      expect(snap.mockTestId).toBe(`anb-kit-mock-${id}`);
+      expect(snap.barDots).toBeGreaterThan(0);
+    }
+    expect(kitMocks.allureQualityGate.mockClass).toContain('anb-qg-mock--allure');
+    expect(kitMocks.sonarQualityGate.mockClass).toContain('anb-qg-mock--sonar');
+    expect(kitMocks.testsTable.mockClass).toContain('anb-qg-mock--tests-table');
+    expect(kitMocks.allureQualityGate.mockClass).not.toBe(kitMocks.sonarQualityGate.mockClass);
+
     await page.getByTestId('anb-palette-allureQualityGate').click();
     await page.getByTestId('anb-palette-sonarQualityGate').click();
     await page.getByTestId('anb-palette-testsTable').click();
