@@ -312,15 +312,11 @@ function chromeCssVars(chart: {
     chart.tilePad != null && Number.isFinite(Number(chart.tilePad))
       ? Math.max(0, Number(chart.tilePad))
       : DEFAULT_TILE_PAD;
-  const cardGap =
-    chart.cardGap != null && Number.isFinite(Number(chart.cardGap))
-      ? Math.max(0, Number(chart.cardGap))
-      : DEFAULT_CARD_GAP;
   const chartW =
     chart.width != null && Number.isFinite(Number(chart.width)) ? Number(chart.width) : 870;
   const chartH =
     chart.height != null && Number.isFinite(Number(chart.height)) ? Number(chart.height) : 1080;
-  const radius = cardCornerRadiusLogical(cardGap, chartW, chartH);
+  const radius = cardCornerRadiusLogical(chartW, chartH);
   const scale = headerHeight / WT_BAR_BASELINE;
   return (
     `--wt-bar-height:${headerHeight}px;` +
@@ -411,7 +407,7 @@ const DS_CARD_RADIUS_CANVAS = 1080;
  * Jar canvas logical px — scales `--radius-md` with canvas size.
  * 870×1080 → 10px · 1080×1080 → 12px · 1024×1280 → 11px.
  */
-function cardCornerRadiusLogical(_cardGap: number, chartW: number, chartH: number): number {
+function cardCornerRadiusLogical(chartW: number, chartH: number): number {
   if (!(chartW > 0) || !(chartH > 0)) {
     return DS_CARD_RADIUS_MD;
   }
@@ -450,7 +446,7 @@ function syncEditorChrome() {
     chart.width != null && Number.isFinite(Number(chart.width)) ? Number(chart.width) : 870;
   const chartH =
     chart.height != null && Number.isFinite(Number(chart.height)) ? Number(chart.height) : 1080;
-  const logicalR = cardCornerRadiusLogical(cardGap, chartW, chartH);
+  const logicalR = cardCornerRadiusLogical(chartW, chartH);
   // Scale with preview, clamp so corners stay visible but never pill-like on small tiles.
   const radiusCss = Math.max(5, Math.min(10, Math.round(logicalR * displayScale)));
   canvas.style.setProperty('--anb-card-gap', `${gapCss}px`);
@@ -1305,11 +1301,6 @@ function kitOnlyPanelMockHtml(
     );
   }
   return kitOnlyQgMockHtml(panelId, qgChrome, barTrailingHtml);
-}
-
-/** @deprecated use kitOnlyPanelMockHtml — kept for debug exports */
-function qualityGateMockHtml(panelId: string) {
-  return kitOnlyPanelMockHtml(panelId, 'qualityGate', 'hybrid');
 }
 
 /**
@@ -2181,7 +2172,6 @@ function onPanelAction(e: Event) {
       if (!(item instanceof HTMLElement)) return;
       const action = actionBtn.getAttribute('data-anb-action');
       selectItem(item);
-      if (action === 'copy') copyItem(item);
       if (action === 'delete') deleteItem(item);
     }
     /* pointerdown beats GridStack drag start */
@@ -2393,7 +2383,6 @@ init();
   canvasTestsTableRowsHtml,
   canvasTestsTableMaxRows,
   syncCanvasTestsTables,
-  qualityGateMockHtml,
   applyCanvasPreset,
   applySnap,
   loadVectorRegistry,
