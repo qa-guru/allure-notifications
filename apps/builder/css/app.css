@@ -1077,91 +1077,104 @@ html.theme-light .anb-zone--terminal .ch-theme--vscode .ch-tok-cmd { color: #795
   height: auto;
 }
 
-/* QG palette thumb — inner bar replaces outer widget-tile bar */
-.anb-palette__tile--kit-qg > .widget-tile__bar {
-  display: none;
-}
-
-.anb-palette__tile--kit-qg > .widget-tile__body {
-  padding: 0;
-  aspect-ratio: auto;
-}
-
-.anb-palette__tile .anb-kit-mock.quality-gate {
-  --wt-bar-height: 18px;
-  --wt-title-size: 0.5rem;
-  --indicator-size: 7px;
-  font-size: 0.48rem;
-  line-height: 1.25;
+/* Palette thumb — body-only kit mock; macOS dots live in widget-tile__bar. */
+.anb-palette__tile .anb-kit-mock--palette {
   border: none;
   border-radius: 0;
+  background: transparent;
+  overflow: hidden;
 }
 
-.anb-palette__tile .anb-kit-mock.quality-gate .quality-gate__bar > .qg-info {
-  display: none;
+.anb-palette__tile .anb-kit-mock--palette.quality-gate {
+  font-size: 0.5rem;
+  line-height: 1.2;
+  padding: 0;
+  border: none;
+  background: transparent;
 }
 
-.anb-palette__tile .anb-kit-mock.quality-gate.quality-gate--passed .quality-gate__body {
+.anb-palette__tile .anb-kit-mock--palette .quality-gate__rules {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  align-items: stretch;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.anb-palette__tile .anb-kit-mock--palette .quality-gate__rule {
+  display: contents;
+}
+
+.anb-palette__tile .anb-kit-mock--palette .quality-gate__rule-id {
+  box-sizing: border-box;
+  padding: 2px 4px;
+  font-family: ui-monospace, "SF Mono", Menlo, monospace;
+  font-size: 0.46rem;
+  font-weight: 600;
+  color: var(--color-danger);
+  background: color-mix(in srgb, var(--color-danger) 12%, var(--color-surface-soft));
+  border-right: 1px solid var(--color-border);
+}
+
+.anb-palette__tile .anb-kit-mock--palette.quality-gate--passed .quality-gate__rule-id {
+  color: var(--color-success);
+  background: color-mix(in srgb, var(--color-success) 12%, var(--color-surface-soft));
+}
+
+.anb-palette__tile .anb-kit-mock--palette.quality-gate .quality-gate__body {
   min-height: 0;
+  height: 100%;
+  padding: 0;
+}
+
+.anb-palette__tile .anb-kit-mock--palette.quality-gate--passed .quality-gate__body {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 0;
+}
+
+.anb-palette__tile .anb-kit-mock--palette .quality-gate__verdict {
+  margin: 0;
+  font-size: 0.58rem;
+  font-weight: 700;
+}
+
+.anb-palette__tile .anb-kit-mock--palette .quality-gate__rule-id,
+.anb-palette__tile .anb-kit-mock--palette .quality-gate__rule-detail {
   padding: 2px 4px;
 }
 
-.anb-palette__tile .anb-kit-mock.quality-gate .quality-gate__verdict {
-  font-size: 0.55rem;
-}
-
-.anb-palette__tile .anb-kit-mock.quality-gate .quality-gate__rule-id,
-.anb-palette__tile .anb-kit-mock.quality-gate .quality-gate__rule-detail {
-  padding: 2px 4px;
-}
-
-.anb-palette__tile .anb-kit-mock.quality-gate .quality-gate__rule-id {
-  min-width: 3.2rem;
+.anb-palette__tile .anb-kit-mock--palette .quality-gate__rule-id {
+  min-width: 2.6rem;
   font-size: 0.46rem;
 }
 
-.anb-palette__tile .anb-kit-mock.quality-gate .quality-gate__message {
-  display: -webkit-box;
-  -webkit-line-clamp: 2;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
-}
-
-.anb-palette__tile .anb-kit-mock.quality-gate .quality-gate__formula {
-  margin-top: 1px;
+.anb-palette__tile .anb-kit-mock--palette .quality-gate__formula {
+  margin: 0;
   font-size: 0.44rem;
-}
-
-/* Tests table palette thumb */
-.anb-palette__tile .anb-kit-mock.tests-table-panel {
+  white-space: nowrap;
   overflow: hidden;
-  padding: 1px 0;
+  text-overflow: ellipsis;
 }
 
-.anb-palette__tile .anb-kit-mock.tests-table-panel .tests-table-panel__table {
+.anb-palette__tile .anb-kit-mock--palette.tests-table-panel {
+  padding: 0;
+}
+
+.anb-palette__tile .anb-kit-mock--palette.tests-table-panel .tests-table-panel__table {
   font-size: 0.46rem;
 }
 
-.anb-palette__tile .anb-kit-mock.tests-table-panel .tests-table-panel__table th,
-.anb-palette__tile .anb-kit-mock.tests-table-panel .tests-table-panel__table td {
+.anb-palette__tile .anb-kit-mock--palette.tests-table-panel .tests-table-panel__table td {
   padding: 1px 3px;
 }
 
-.anb-palette__tile .anb-kit-mock.tests-table-panel .tests-table-panel__table th {
-  font-size: 0.42rem;
-  letter-spacing: 0.02em;
-}
-
-.anb-palette__tile .anb-kit-mock.tests-table-panel .badge {
+.anb-palette__tile .anb-kit-mock--palette.tests-table-panel .badge {
   padding: 0 0.2rem;
   font-size: 0.4rem;
   line-height: 1.2;
-}
-
-.anb-palette__tile .anb-kit-mock.tests-table-panel .sparkline {
-  width: 100%;
-  max-width: 2rem;
-  height: 8px;
 }
 
 .anb-palette__tile .widget-tile__bar:not(:empty) {

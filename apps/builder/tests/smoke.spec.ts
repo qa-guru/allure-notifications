@@ -471,8 +471,10 @@ test.describe('allure-notifications-builder smoke', () => {
     expect(kitMocks.sonarQualityGate.mockClass).toContain('quality-gate--failed');
     expect(kitMocks.testsTable.mockClass).toContain('tests-table-panel');
     expect(kitMocks.allureQualityGate.mockClass).not.toBe(kitMocks.sonarQualityGate.mockClass);
-    expect(kitMocks.allureQualityGate.qgDots).toBeGreaterThan(0);
+    expect(kitMocks.allureQualityGate.barDots).toBeGreaterThan(0);
+    expect(kitMocks.sonarQualityGate.barDots).toBeGreaterThan(0);
     expect(kitMocks.sonarQualityGate.hasQgRules).toBe(true);
+    expect(kitMocks.allureQualityGate.qgDots).toBe(0);
     expect(kitMocks.testsTable.barDots).toBeGreaterThan(0);
     expect(kitMocks.testsTable.hasTable).toBe(true);
 

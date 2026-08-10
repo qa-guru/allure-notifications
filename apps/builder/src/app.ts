@@ -786,14 +786,53 @@ function buildTgCaptionHtml() {
   return lines.join('\n');
 }
 
-/** Status-family dots for tests-table palette thumbs (QG has its own bar chrome). */
+/** Status-family dots — same chrome as chart palette tiles. */
 function kitOnlyPaletteBarHtml(panelId: string, chartType: string) {
-  if (chartType !== 'testsTable') return '';
-  const dots = ['green', 'red', 'yellow'];
+  let dots: string[];
+  if (chartType === 'testsTable') {
+    dots = ['green', 'red', 'yellow'];
+  } else if (panelId === 'sonarQualityGate') {
+    dots = ['red', 'orange', 'green'];
+  } else {
+    dots = ['green', 'yellow', 'red'];
+  }
   return (
     `<div class="indicator-row" aria-hidden="true">` +
     dots.map((d) => `<span class="indicator indicator--status-${d}"></span>`).join('') +
     `</div>`
+  );
+}
+
+/** Palette thumb body — body-only QG / compact table; bar = widget-tile dots above. */
+function kitOnlyPaletteBodyHtml(panelId: string, chartType: string) {
+  const testId = `anb-kit-mock-${panelId}`;
+  if (chartType === 'testsTable') {
+    return (
+      `<div class="tests-table-panel anb-kit-mock anb-kit-mock--palette" data-anb-kit-mock="${escapeHtml(panelId)}" data-testid="${testId}">` +
+      `<table class="tests-table-panel__table" aria-hidden="true">` +
+      `<tbody>` +
+      `<tr><td class="tests-table-panel__name">shouldLogin…</td><td class="tests-table-panel__status"><span class="badge badge--status-passed">passed</span></td></tr>` +
+      `<tr><td class="tests-table-panel__name">shouldReject…</td><td class="tests-table-panel__status"><span class="badge badge--status-failed">failed</span></td></tr>` +
+      `<tr><td class="tests-table-panel__name">checkoutFlow…</td><td class="tests-table-panel__status"><span class="badge badge--status-broken">broken</span></td></tr>` +
+      `</tbody></table></div>`
+    );
+  }
+  if (panelId === 'sonarQualityGate') {
+    return (
+      `<div class="quality-gate quality-gate--sonar quality-gate--failed anb-kit-mock anb-kit-mock--palette" data-anb-kit-mock="${escapeHtml(panelId)}" data-testid="${testId}" role="status" aria-hidden="true">` +
+      `<div class="quality-gate__body">` +
+      `<ul class="quality-gate__rules">` +
+      `<li class="quality-gate__rule">` +
+      `<div class="quality-gate__rule-id">coverage</div>` +
+      `<div class="quality-gate__rule-detail"><p class="quality-gate__formula">FAIL: 72.4 &lt; 80</p></div>` +
+      `</li></ul></div></div>`
+    );
+  }
+  return (
+    `<div class="quality-gate quality-gate--allure quality-gate--passed anb-kit-mock anb-kit-mock--palette" data-anb-kit-mock="${escapeHtml(panelId)}" data-testid="${testId}" role="status" aria-hidden="true">` +
+    `<div class="quality-gate__body">` +
+    `<p class="quality-gate__verdict quality-gate__verdict--ok">Passed</p>` +
+    `</div></div>`
   );
 }
 
@@ -1609,14 +1648,12 @@ function paletteItemHtml(item: PanelMeta): string {
   if (item.groupBy) attrs += ` data-group-by="${escapeHtml(item.groupBy)}"`;
   if (item.by) attrs += ` data-by="${escapeHtml(item.by)}"`;
   const bar = isKit ? kitOnlyPaletteBarHtml(item.id, chartType) : '';
-  const body = isKit ? kitOnlyPanelMockHtml(item.id, chartType) : '';
-  const kitTileMod =
-    chartType === 'qualityGate' ? ' widget-tile--quality-gate anb-palette__tile--kit-qg' : '';
+  const body = isKit ? kitOnlyPaletteBodyHtml(item.id, chartType) : '';
   /* Palette thumbs are always 2×2 — caption = title; grid footprints stay on canvas / DEFAULT_ITEMS. */
   return (
     `<button type="button" class="anb-palette__item" data-anb-panel-id="${escapeHtml(item.id)}" ` +
     `data-testid="anb-palette-${escapeHtml(item.id)}" draggable="true" title="${escapeHtml(item.title)}">` +
-    `<div class="widget-tile widget-tile--tier-micro widget-tile--span-2x2 anb-palette__tile${kitTileMod}" ${attrs}>` +
+    `<div class="widget-tile widget-tile--tier-micro widget-tile--span-2x2 anb-palette__tile" ${attrs}>` +
     `<div class="widget-tile__bar">${bar}</div>` +
     `<div class="widget-tile__body">${body}</div>` +
     `</div>` +
