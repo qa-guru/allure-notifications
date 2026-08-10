@@ -956,10 +956,11 @@ function kitOnlyQgBodyInnerHtml(panelId) {
         `</div>`);
 }
 /**
- * Kit QG mock: `hybrid` = quality-gate__bar + body (jar / TG preview parity);
- * `body` = body only (editor already has anb-panel__bar).
+ * Kit QG mock: `hybrid` = quality-gate__bar + body (jar / TG / editor parity);
+ * `body` = body only (legacy; do not use under anb-panel__bar — double chrome).
+ * `barTrailingHtml` — editor delete actions inside the bar (same slot as anb-panel__actions).
  */
-function kitOnlyQgMockHtml(panelId, chrome) {
+function kitOnlyQgMockHtml(panelId, chrome, barTrailingHtml = '') {
     const testId = `anb-kit-mock-${panelId}`;
     const isSonar = panelId === 'sonarQualityGate';
     const kind = isSonar ? 'sonar' : 'allure';
@@ -969,6 +970,7 @@ function kitOnlyQgMockHtml(panelId, chrome) {
     const bar = chrome === 'hybrid'
         ? `<div class="quality-gate__bar">` +
             `<span class="quality-gate__bar-title">${title}</span>` +
+            barTrailingHtml +
             `</div>`
         : '';
     return (`<div class="quality-gate quality-gate--${kind} quality-gate--${status} anb-kit-mock" data-anb-kit-mock="${escapeHtml(panelId)}" data-testid="${testId}" role="status" aria-hidden="true">` +
@@ -978,9 +980,9 @@ function kitOnlyQgMockHtml(panelId, chrome) {
 }
 /**
  * Builder kit tile mock — DS quality-gate / tests-table-panel; not collage IR.
- * QG chrome: editor → body-only; TG/export preview → hybrid (see callers).
+ * QG chrome: hybrid (quality-gate__bar); editor may pass barTrailingHtml for delete.
  */
-function kitOnlyPanelMockHtml(panelId, chartType, qgChrome = 'hybrid') {
+function kitOnlyPanelMockHtml(panelId, chartType, qgChrome = 'hybrid', barTrailingHtml = '') {
     const testId = `anb-kit-mock-${panelId}`;
     if (chartType === 'testsTable') {
         return (`<div class="tests-table-panel anb-kit-mock" data-anb-kit-mock="${escapeHtml(panelId)}" data-testid="${testId}">` +
@@ -990,7 +992,7 @@ function kitOnlyPanelMockHtml(panelId, chartType, qgChrome = 'hybrid') {
             canvasTestsTableRowsHtml() +
             `</tbody></table></div>`);
     }
-    return kitOnlyQgMockHtml(panelId, qgChrome);
+    return kitOnlyQgMockHtml(panelId, qgChrome, barTrailingHtml);
 }
 /** @deprecated use kitOnlyPanelMockHtml — kept for debug exports */
 function qualityGateMockHtml(panelId) {
@@ -1503,11 +1505,12 @@ function panelInnerHtml(item) {
         `<svg viewBox="0 0 16 16" width="9" height="9" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" aria-hidden="true"><path d="m4 4 8 8M12 4l-8 8"/></svg>` +
         `</button>`;
     // QG owns hybrid chrome — LOCKED 2026-08-10 (CANON § Quality-gate chrome).
-    // Do not wrap in anb-panel__bar; do not switch to body-only under editor chrome.
+    // Do not wrap in anb-panel__bar. Delete lives inside quality-gate__bar
+    // (same flex slot as anb-panel__actions) — not an absolute overlay.
     if (chartType === 'qualityGate' && panelId) {
-        const hybrid = kitOnlyPanelMockHtml(panelId, chartType, 'hybrid');
+        const deleteActions = `<span class="anb-panel__actions">${deleteBtn}</span>`;
+        const hybrid = kitOnlyPanelMockHtml(panelId, chartType, 'hybrid', deleteActions);
         return (`<div class="anb-panel__body anb-panel__body--qg-hybrid">` +
-            `<span class="anb-panel__actions anb-panel__actions--qg-overlay">${deleteBtn}</span>` +
             `<div class="widget-tile widget-tile--tier-${tier} anb-panel__tile widget-tile--quality-gate" ${attrs}>` +
             `<div class="widget-tile__body">${hybrid}</div>` +
             `</div>` +

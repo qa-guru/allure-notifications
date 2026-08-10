@@ -1036,14 +1036,14 @@ html.theme-light .anb-zone--terminal .ch-theme--vscode .ch-tok-cmd { color: #795
   flex: 1;
   min-height: 0;
   height: 100%;
+  /* Full-bleed: bar must sit at panel top like anb-panel__bar (no --wt-pad inset). */
+  padding: 0;
 }
 
-.anb-panel__actions--qg-overlay {
-  position: absolute;
-  top: 4px;
-  right: 4px;
-  z-index: 6;
-  margin: 0;
+/* Editor delete is inside quality-gate__bar (parity with anb-panel__bar actions). */
+.anb-panel__tile .anb-kit-mock.quality-gate .quality-gate__bar .anb-panel__actions {
+  margin-left: auto;
+  flex-shrink: 0;
 }
 
 .anb-panel__body--qg-hybrid .anb-panel__tile,
