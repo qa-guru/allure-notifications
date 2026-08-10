@@ -941,17 +941,15 @@ function qgInfoTriggerHtml() {
         `</svg>` +
         `</span></span></div>`);
 }
-/** QG body content (verdict / rules) — shared by editor body-only and TG hybrid. */
+/** QG body content (verdict / compact rules) — readable at palette 2×2. */
 function kitOnlyQgBodyInnerHtml(panelId) {
     if (panelId === 'sonarQualityGate') {
         return (`<div class="quality-gate__body">` +
-            `<ul class="quality-gate__rules">` +
-            `<li class="quality-gate__rule">` +
-            `<div class="quality-gate__rule-id">coverage</div>` +
-            `<div class="quality-gate__rule-detail">` +
-            `<p class="quality-gate__message">coverage 72.4 is below the required 80</p>` +
-            `<p class="quality-gate__formula">FAIL: 72.4 &lt; 80</p>` +
-            `</div></li></ul></div>`);
+            paletteQgRulesHtml([
+                { id: 'cov', formula: '72&lt;80' },
+                { id: 'bugs', formula: '3&gt;0' },
+            ]) +
+            `</div>`);
     }
     return (`<div class="quality-gate__body">` +
         `<p class="quality-gate__verdict quality-gate__verdict--ok">Passed</p>` +

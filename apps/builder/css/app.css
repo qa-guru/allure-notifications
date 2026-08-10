@@ -1008,15 +1008,25 @@ html.theme-light .anb-zone--terminal .ch-theme--vscode .ch-tok-cmd { color: #795
   box-sizing: border-box;
 }
 
-.anb-panel__tile .anb-kit-mock.quality-gate,
 .anb-panel__tile .anb-kit-mock.tests-table-panel {
   font-size: 0.46rem;
   line-height: 1.1;
 }
 
-/* Editor QG: hybrid fills the card (no anb-panel__bar). Delete overlays QG bar. */
+/*
+ * Editor + TG preview QG: hybrid full-bleed (jar parity).
+ * Scale editor bar to --anb-bar-h; kill DS 6.5rem floors so 2×2 stays readable (2a5de3d).
+ */
 .anb-panel--qualityGate {
   position: relative;
+  --wt-bar-height: var(--anb-bar-h, 31px);
+  --wt-bar-inset: 6px;
+}
+
+.anb-panel--qualityGate .widget-tile,
+.anb-panel--qualityGate .anb-kit-mock.quality-gate {
+  --wt-bar-height: var(--anb-bar-h, 31px);
+  --wt-bar-inset: 6px;
 }
 
 .anb-panel__body--qg-hybrid {
@@ -1028,8 +1038,8 @@ html.theme-light .anb-zone--terminal .ch-theme--vscode .ch-tok-cmd { color: #795
 
 .anb-panel__actions--qg-overlay {
   position: absolute;
-  top: 6px;
-  right: 6px;
+  top: 4px;
+  right: 4px;
   z-index: 6;
   margin: 0;
 }
@@ -1039,6 +1049,132 @@ html.theme-light .anb-zone--terminal .ch-theme--vscode .ch-tok-cmd { color: #795
 .anb-panel__body--qg-hybrid .anb-kit-mock.quality-gate {
   height: 100%;
   min-height: 0;
+}
+
+.anb-panel__tile .anb-kit-mock.quality-gate,
+.anb-tg__widget.widget-tile--quality-gate .anb-kit-mock.quality-gate {
+  display: flex;
+  flex-direction: column;
+  border: none;
+  background: transparent;
+  font-size: 0.62rem;
+  line-height: 1.15;
+}
+
+.anb-panel__tile .anb-kit-mock.quality-gate .quality-gate__bar,
+.anb-tg__widget.widget-tile--quality-gate .anb-kit-mock.quality-gate .quality-gate__bar {
+  height: var(--anb-bar-h, var(--wt-bar-height, 31px));
+  min-height: 0;
+  padding-left: 4px;
+}
+
+.anb-panel__tile .anb-kit-mock.quality-gate .quality-gate__bar-title,
+.anb-tg__widget.widget-tile--quality-gate .anb-kit-mock.quality-gate .quality-gate__bar-title {
+  font-size: 0.58rem;
+  text-align: left;
+}
+
+.anb-panel__tile .anb-kit-mock.quality-gate .quality-gate__bar > .qg-info {
+  display: none; /* 2×2: keep title+indicator readable; delete overlay remains */
+}
+
+.anb-panel__tile .anb-kit-mock.quality-gate .quality-gate__bar > .qg-info .qg-info__trigger,
+.anb-tg__widget.widget-tile--quality-gate .anb-kit-mock.quality-gate .quality-gate__bar > .qg-info .qg-info__trigger {
+  width: 0.85rem;
+  height: 0.85rem;
+  min-width: 0.85rem;
+  min-height: 0.85rem;
+}
+
+.anb-panel__tile .anb-kit-mock.quality-gate .quality-gate__body,
+.anb-tg__widget.widget-tile--quality-gate .anb-kit-mock.quality-gate .quality-gate__body {
+  flex: 1;
+  min-height: 0;
+  min-width: 0;
+}
+
+.anb-panel__tile .anb-kit-mock.quality-gate--passed .quality-gate__body,
+.anb-tg__widget.widget-tile--quality-gate .anb-kit-mock.quality-gate--passed .quality-gate__body {
+  align-items: center;
+  justify-content: center;
+  padding: 2px;
+}
+
+.anb-panel__tile .anb-kit-mock.quality-gate--passed .quality-gate__verdict,
+.anb-tg__widget.widget-tile--quality-gate .anb-kit-mock.quality-gate--passed .quality-gate__verdict {
+  font-size: 0.72rem;
+}
+
+.anb-panel__tile .anb-kit-mock.quality-gate--failed .quality-gate__rules,
+.anb-tg__widget.widget-tile--quality-gate .anb-kit-mock.quality-gate--failed .quality-gate__rules {
+  display: grid;
+  grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr);
+  align-items: stretch;
+  flex: 1;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.anb-panel__tile .anb-kit-mock.quality-gate--failed .quality-gate__rule,
+.anb-tg__widget.widget-tile--quality-gate .anb-kit-mock.quality-gate--failed .quality-gate__rule {
+  display: contents;
+}
+
+.anb-panel__tile .anb-kit-mock.quality-gate--failed .quality-gate__rule-id,
+.anb-tg__widget.widget-tile--quality-gate .anb-kit-mock.quality-gate--failed .quality-gate__rule-id {
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  min-width: 0 !important;
+  width: auto;
+  padding: 1px 3px;
+  overflow: hidden;
+  font-family: ui-monospace, "SF Mono", Menlo, monospace;
+  font-size: 0.5rem;
+  font-weight: 600;
+  line-height: 1.1;
+  color: var(--color-danger);
+  background: color-mix(in srgb, var(--color-danger) 12%, var(--color-surface-soft));
+  border-right: 1px solid var(--color-border);
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.anb-panel__tile .anb-kit-mock.quality-gate--failed .quality-gate__rule-detail,
+.anb-tg__widget.widget-tile--quality-gate .anb-kit-mock.quality-gate--failed .quality-gate__rule-detail {
+  display: flex;
+  align-items: center;
+  min-width: 0;
+  padding: 1px 3px;
+  overflow: hidden;
+}
+
+.anb-panel__tile .anb-kit-mock.quality-gate--failed .quality-gate__rule + .quality-gate__rule .quality-gate__rule-id,
+.anb-panel__tile .anb-kit-mock.quality-gate--failed .quality-gate__rule + .quality-gate__rule .quality-gate__rule-detail,
+.anb-tg__widget.widget-tile--quality-gate .anb-kit-mock.quality-gate--failed .quality-gate__rule + .quality-gate__rule .quality-gate__rule-id,
+.anb-tg__widget.widget-tile--quality-gate .anb-kit-mock.quality-gate--failed .quality-gate__rule + .quality-gate__rule .quality-gate__rule-detail {
+  border-top: 1px solid var(--color-border);
+}
+
+.anb-panel__tile .anb-kit-mock.quality-gate--failed .quality-gate__message,
+.anb-tg__widget.widget-tile--quality-gate .anb-kit-mock.quality-gate--failed .quality-gate__message {
+  display: none;
+}
+
+.anb-panel__tile .anb-kit-mock.quality-gate--failed .quality-gate__formula,
+.anb-tg__widget.widget-tile--quality-gate .anb-kit-mock.quality-gate--failed .quality-gate__formula {
+  margin: 0;
+  width: 100%;
+  min-width: 0;
+  font-family: ui-monospace, "SF Mono", Menlo, monospace;
+  font-size: 0.5rem;
+  font-weight: 600;
+  line-height: 1.1;
+  color: var(--color-danger);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .anb-panel__tile .anb-kit-mock.tests-table-panel {
