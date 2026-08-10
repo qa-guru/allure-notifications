@@ -1116,6 +1116,8 @@ function kitOnlyPanelMockHtml(panelId: string, chartType: string) {
     );
   }
   if (panelId === 'sonarQualityGate') {
+    // Compact rules (same density as palette) — full hybrid message/formula
+    // cannot fit DEFAULT_TILE 2×2; DS rule-id min-width:6.5rem would clip to "coverage" only.
     return (
       `<div class="quality-gate quality-gate--sonar quality-gate--failed anb-kit-mock" data-anb-kit-mock="${escapeHtml(panelId)}" data-testid="${testId}" role="status" aria-hidden="true">` +
       `<div class="quality-gate__bar">` +
@@ -1126,13 +1128,11 @@ function kitOnlyPanelMockHtml(panelId: string, chartType: string) {
       qgInfoTriggerHtml() +
       `</div>` +
       `<div class="quality-gate__body">` +
-      `<ul class="quality-gate__rules">` +
-      `<li class="quality-gate__rule">` +
-      `<div class="quality-gate__rule-id">coverage</div>` +
-      `<div class="quality-gate__rule-detail">` +
-      `<p class="quality-gate__message">coverage 72.4 is below the required 80</p>` +
-      `<p class="quality-gate__formula">FAIL: 72.4 &lt; 80</p>` +
-      `</div></li></ul></div></div>`
+      paletteQgRulesHtml([
+        { id: 'cov', formula: '72&lt;80' },
+        { id: 'bugs', formula: '3&gt;0' },
+      ]) +
+      `</div></div>`
     );
   }
   return (
