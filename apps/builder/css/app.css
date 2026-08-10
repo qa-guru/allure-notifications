@@ -1116,8 +1116,10 @@ html.theme-light .anb-zone--terminal .ch-theme--vscode .ch-tok-cmd { color: #795
   min-width: 0;
 }
 
+/* Body-only QG under product bar: same Passed hero as hybrid (:has(__bar) in DS). */
 .anb-panel__tile .anb-kit-mock.quality-gate--passed .quality-gate__body,
 .anb-tg__widget.widget-tile--quality-gate .anb-kit-mock.quality-gate--passed .quality-gate__body {
+  display: flex;
   align-items: center;
   justify-content: center;
   padding: 2px;
@@ -1125,7 +1127,14 @@ html.theme-light .anb-zone--terminal .ch-theme--vscode .ch-tok-cmd { color: #795
 
 .anb-panel__tile .anb-kit-mock.quality-gate--passed .quality-gate__verdict,
 .anb-tg__widget.widget-tile--quality-gate .anb-kit-mock.quality-gate--passed .quality-gate__verdict {
+  margin: 0;
   font-size: 0.72rem;
+  font-weight: 600;
+}
+
+.anb-panel__tile .anb-kit-mock.quality-gate--passed .quality-gate__verdict--ok,
+.anb-tg__widget.widget-tile--quality-gate .anb-kit-mock.quality-gate--passed .quality-gate__verdict--ok {
+  color: var(--color-success);
 }
 
 .anb-panel__tile .anb-kit-mock.quality-gate--failed .quality-gate__rules,

@@ -568,6 +568,43 @@ test.describe('allure-notifications-builder smoke', () => {
       );
       const aqgBar = aqgEl?.querySelector('.quality-gate__bar');
       const barH = aqgBar ? parseFloat(getComputedStyle(aqgBar).height) : 0;
+
+      // Mount preview HTML to assert body-only Passed = success + centered (no hybrid bar).
+      const mount = document.createElement('div');
+      mount.style.cssText = 'position:fixed;left:-9999px;top:0;width:240px;height:160px;';
+      mount.innerHTML = preview;
+      document.body.appendChild(mount);
+      const previewMock = mount.querySelector(
+        '[data-testid="anb-kit-mock-allureQualityGate"]',
+      ) as HTMLElement | null;
+      const previewBody = previewMock?.querySelector('.quality-gate__body') as HTMLElement | null;
+      const previewVerdict = previewMock?.querySelector(
+        '.quality-gate__verdict--ok',
+      ) as HTMLElement | null;
+      const probe = document.createElement('span');
+      probe.style.color = 'var(--color-success)';
+      document.body.appendChild(probe);
+      const successColor = getComputedStyle(probe).color;
+      probe.remove();
+      const previewBodyCs = previewBody ? getComputedStyle(previewBody) : null;
+      const previewVerdictCs = previewVerdict ? getComputedStyle(previewVerdict) : null;
+      const previewPassed = {
+        color: previewVerdictCs?.color ?? '',
+        successColor,
+        colorMatchesSuccess: Boolean(
+          previewVerdictCs && successColor && previewVerdictCs.color === successColor,
+        ),
+        display: previewBodyCs?.display ?? '',
+        justifyContent: previewBodyCs?.justifyContent ?? '',
+        alignItems: previewBodyCs?.alignItems ?? '',
+      };
+      mount.remove();
+
+      const canvasVerdict = aqgEl?.querySelector(
+        '.quality-gate__verdict--ok',
+      ) as HTMLElement | null;
+      const canvasVerdictColor = canvasVerdict ? getComputedStyle(canvasVerdict).color : '';
+
       return {
         panelHasEditorBar: /anb-panel__bar/.test(panel),
         panelHasQgBar: /quality-gate__bar/.test(panel),
@@ -594,6 +631,10 @@ test.describe('allure-notifications-builder smoke', () => {
           : '',
         hasInfo: Boolean(aqgEl?.querySelector('.quality-gate__bar .qg-info')),
         hasIndicator: Boolean(aqgEl?.querySelector('.quality-gate__bar .indicator')),
+        previewPassed,
+        canvasVerdictMatchesSuccess: Boolean(
+          canvasVerdictColor && successColor && canvasVerdictColor === successColor,
+        ),
         qgFootprint: (() => {
           const el = aqgEl?.closest('.grid-stack-item');
           return {
@@ -622,6 +663,12 @@ test.describe('allure-notifications-builder smoke', () => {
     expect(canvasQgChrome.hasIndicator).toBe(false);
     expect(canvasQgChrome.qgFootprint.w).toBe(2);
     expect(canvasQgChrome.qgFootprint.h).toBe(2);
+    // Body-only TG preview: Passed = success + centered (not gated on hybrid __bar).
+    expect(canvasQgChrome.previewPassed.colorMatchesSuccess).toBe(true);
+    expect(canvasQgChrome.previewPassed.display).toBe('flex');
+    expect(canvasQgChrome.previewPassed.justifyContent).toBe('center');
+    expect(canvasQgChrome.previewPassed.alignItems).toBe('center');
+    expect(canvasQgChrome.canvasVerdictMatchesSuccess).toBe(true);
 
     const canvasTestsTable = page.locator('.anb-canvas [data-testid="anb-kit-mock-testsTable"]');
     await expect(canvasTestsTable.locator('thead th')).toHaveCount(4);
