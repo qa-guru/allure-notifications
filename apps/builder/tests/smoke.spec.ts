@@ -445,6 +445,7 @@ test.describe('allure-notifications-builder smoke', () => {
           const mock = body?.querySelector('[data-testid^="anb-kit-mock-"]');
           const barDots = btn?.querySelectorAll('.widget-tile__bar .indicator').length ?? 0;
           const qgDots = btn?.querySelectorAll('.quality-gate__bar .indicator').length ?? 0;
+          const qgRuleCount = mock?.querySelectorAll('.quality-gate__rule').length ?? 0;
           return [
             id,
             {
@@ -453,7 +454,9 @@ test.describe('allure-notifications-builder smoke', () => {
               mockClass: mock?.className ?? '',
               barDots,
               qgDots,
+              qgRuleCount,
               hasTable: Boolean(mock?.querySelector('.tests-table-panel__table tbody tr')),
+              hasTrend: Boolean(mock?.querySelector('.tests-table-panel__trend .sparkline')),
               hasQgRules: Boolean(mock?.querySelector('.quality-gate__rules')),
             },
           ];
@@ -473,10 +476,14 @@ test.describe('allure-notifications-builder smoke', () => {
     expect(kitMocks.allureQualityGate.mockClass).not.toBe(kitMocks.sonarQualityGate.mockClass);
     expect(kitMocks.allureQualityGate.barDots).toBeGreaterThan(0);
     expect(kitMocks.sonarQualityGate.barDots).toBeGreaterThan(0);
+    expect(kitMocks.allureQualityGate.hasQgRules).toBe(true);
     expect(kitMocks.sonarQualityGate.hasQgRules).toBe(true);
+    expect(kitMocks.allureQualityGate.qgRuleCount).toBeGreaterThanOrEqual(2);
+    expect(kitMocks.sonarQualityGate.qgRuleCount).toBeGreaterThanOrEqual(2);
     expect(kitMocks.allureQualityGate.qgDots).toBe(0);
     expect(kitMocks.testsTable.barDots).toBeGreaterThan(0);
     expect(kitMocks.testsTable.hasTable).toBe(true);
+    expect(kitMocks.testsTable.hasTrend).toBe(true);
 
     await page.getByTestId('anb-palette-allureQualityGate').click();
     await page.getByTestId('anb-palette-sonarQualityGate').click();

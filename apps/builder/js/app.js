@@ -675,6 +675,28 @@ function buildTgCaptionHtml() {
     });
     return lines.join('\n');
 }
+function sparklineMockSvg(points, stroke = 'var(--color-info)') {
+    return (`<svg class="sparkline sparkline--duration" viewBox="0 0 40 12" width="40" height="12" aria-hidden="true">` +
+        `<polyline class="sparkline__line" fill="none" stroke="${stroke}" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" points="${points}"/>` +
+        `</svg>`);
+}
+function testsTableRowMock(name, status, trendPoints, trendStroke) {
+    return (`<tr>` +
+        `<td class="tests-table-panel__name">${escapeHtml(name)}</td>` +
+        `<td class="tests-table-panel__status"><span class="badge badge--status-${status}">${status}</span></td>` +
+        `<td class="tests-table-panel__trend">${sparklineMockSvg(trendPoints, trendStroke)}</td>` +
+        `</tr>`);
+}
+function paletteQgRulesHtml(rules) {
+    return (`<ul class="quality-gate__rules">` +
+        rules
+            .map((rule) => `<li class="quality-gate__rule">` +
+            `<div class="quality-gate__rule-id">${escapeHtml(rule.id)}</div>` +
+            `<div class="quality-gate__rule-detail"><p class="quality-gate__formula">${rule.formula}</p></div>` +
+            `</li>`)
+            .join('') +
+        `</ul>`);
+}
 /** Status-family dots — same chrome as chart palette tiles. */
 function kitOnlyPaletteBarHtml(panelId, chartType) {
     let dots;
@@ -698,23 +720,26 @@ function kitOnlyPaletteBodyHtml(panelId, chartType) {
         return (`<div class="tests-table-panel anb-kit-mock anb-kit-mock--palette" data-anb-kit-mock="${escapeHtml(panelId)}" data-testid="${testId}">` +
             `<table class="tests-table-panel__table" aria-hidden="true">` +
             `<tbody>` +
-            `<tr><td class="tests-table-panel__name">shouldLogin…</td><td class="tests-table-panel__status"><span class="badge badge--status-passed">passed</span></td></tr>` +
-            `<tr><td class="tests-table-panel__name">shouldReject…</td><td class="tests-table-panel__status"><span class="badge badge--status-failed">failed</span></td></tr>` +
-            `<tr><td class="tests-table-panel__name">checkoutFlow…</td><td class="tests-table-panel__status"><span class="badge badge--status-broken">broken</span></td></tr>` +
+            testsTableRowMock('shouldLogin…', 'passed', '2,9 8,7 14,6 20,8 26,5 32,6 38,4') +
+            testsTableRowMock('shouldReject…', 'failed', '2,4 8,6 14,8 20,7 26,9 32,10 38,11', 'var(--color-danger)') +
+            testsTableRowMock('checkoutFlow…', 'broken', '2,6 8,6 14,7 20,6 26,6 32,6 38,6', 'var(--color-warning)') +
             `</tbody></table></div>`);
     }
     if (panelId === 'sonarQualityGate') {
         return (`<div class="quality-gate quality-gate--sonar quality-gate--failed anb-kit-mock anb-kit-mock--palette" data-anb-kit-mock="${escapeHtml(panelId)}" data-testid="${testId}" role="status" aria-hidden="true">` +
             `<div class="quality-gate__body">` +
-            `<ul class="quality-gate__rules">` +
-            `<li class="quality-gate__rule">` +
-            `<div class="quality-gate__rule-id">coverage</div>` +
-            `<div class="quality-gate__rule-detail"><p class="quality-gate__formula">FAIL: 72.4 &lt; 80</p></div>` +
-            `</li></ul></div></div>`);
+            paletteQgRulesHtml([
+                { id: 'coverage', formula: '72.4 &lt; 80' },
+                { id: 'bugs', formula: '3 &gt; 0' },
+            ]) +
+            `</div></div>`);
     }
     return (`<div class="quality-gate quality-gate--allure quality-gate--passed anb-kit-mock anb-kit-mock--palette" data-anb-kit-mock="${escapeHtml(panelId)}" data-testid="${testId}" role="status" aria-hidden="true">` +
         `<div class="quality-gate__body">` +
-        `<p class="quality-gate__verdict quality-gate__verdict--ok">Passed</p>` +
+        paletteQgRulesHtml([
+            { id: 'maxF', formula: '0 ≤ 0' },
+            { id: 'newF', formula: '0 ≤ 0' },
+        ]) +
         `</div></div>`);
 }
 function qgInfoTriggerHtml() {
@@ -727,18 +752,6 @@ function qgInfoTriggerHtml() {
         `<circle cx="8" cy="5.15" r="0.65" fill="currentColor" stroke="none"/>` +
         `</svg>` +
         `</span></span></div>`);
-}
-function sparklineMockSvg(points, stroke = 'var(--color-info)') {
-    return (`<svg class="sparkline sparkline--duration" viewBox="0 0 40 12" width="40" height="12" aria-hidden="true">` +
-        `<polyline class="sparkline__line" fill="none" stroke="${stroke}" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" points="${points}"/>` +
-        `</svg>`);
-}
-function testsTableRowMock(name, status, trendPoints, trendStroke) {
-    return (`<tr>` +
-        `<td class="tests-table-panel__name">${escapeHtml(name)}</td>` +
-        `<td class="tests-table-panel__status"><span class="badge badge--status-${status}">${status}</span></td>` +
-        `<td class="tests-table-panel__trend">${sparklineMockSvg(trendPoints, trendStroke)}</td>` +
-        `</tr>`);
 }
 /** Builder-only kit tile body — DS quality-gate / tests-table-panel; not collage IR. */
 function kitOnlyPanelMockHtml(panelId, chartType) {
