@@ -313,7 +313,12 @@ function syncEditorChrome() {
     canvas.style.setProperty('--anb-card-gap', `${cardGap}px`);
     canvas.style.setProperty('--anb-bar-h', `${headerHeight}px`);
     canvas.style.setProperty('--anb-title-size', `${(0.75 * scale).toFixed(3)}rem`);
+    /* Same --wt-* chrome as previewItemHtml / chromeCssVars — editor = product tile. */
+    canvas.style.setProperty('--wt-bar-height', `${headerHeight}px`);
     canvas.style.setProperty('--wt-pad', `${tilePad}px`);
+    canvas.style.setProperty('--wt-title-size', `${(0.75 * scale).toFixed(3)}rem`);
+    canvas.style.setProperty('--indicator-size', `${Math.max(6, Math.round(10 * scale))}px`);
+    canvas.style.setProperty('--wt-dot-gap', `${Math.max(2, Math.round(5 * scale))}px`);
 }
 /**
  * Drive `--layer-*` + geometry ratios from `@pyramid` (SSOT over DS token pin).
@@ -930,10 +935,20 @@ function qualityGateMockHtml(panelId) {
     return kitOnlyPanelMockHtml(panelId, 'qualityGate');
 }
 /**
+ * Content tier for a free-grid footprint — same SSOT for editor + TG preview.
+ * @param {ChartItem} item
+ */
+function tileTier(item) {
+    return typeof WidgetTileMocks !== 'undefined' && WidgetTileMocks.tierForSpan
+        ? WidgetTileMocks.tierForSpan(GRID_COLS, item.w, item.h)
+        : 'regular';
+}
+/**
  * Mini-render of free-layout items into TG photo stage (logical canvas px → scale).
  * Uses DS widget-tile + WidgetTileMocks (not anb-tg__tile placeholder).
  * Chrome: headerHeight → `--wt-bar-height` (+ proportional title/dots);
- * cardGap → jar free-grid half-gap inset; tilePad → `--wt-pad` (preview-only).
+ * cardGap → jar free-grid half-gap inset; tilePad → `--wt-pad`;
+ * tier → `widget-tile--tier-*` (parity with editor `panelInnerHtml`).
  * @param {ChartItem} item
  */
 function previewItemHtml(item) {
@@ -945,6 +960,7 @@ function previewItemHtml(item) {
     const groupBy = item.groupBy || meta?.groupBy || '';
     const by = item.by || meta?.by || '';
     const panelId = item.id || meta?.id || '';
+    const tier = tileTier(item);
     let attrs = `data-chart="${escapeHtml(chartType)}"`;
     if (panelId)
         attrs += ` data-panel-id="${escapeHtml(panelId)}"`;
@@ -956,7 +972,7 @@ function previewItemHtml(item) {
     const body = isKitOnlyPanelType(chartType) && panelId
         ? kitOnlyPanelMockHtml(panelId, chartType)
         : '';
-    return (`<figure class="widget-tile anb-tg__widget" ${attrs} ` +
+    return (`<figure class="widget-tile widget-tile--tier-${tier} anb-tg__widget" ${attrs} ` +
         `style="left:${rect.left}px;top:${rect.top}px;width:${rect.width}px;height:${rect.height}px;${chrome}">` +
         `<div class="widget-tile__bar">` +
         `<span class="widget-tile__title">${escapeHtml(title)}</span>` +
@@ -1393,6 +1409,8 @@ function clearSelection() {
     selectItem(null);
 }
 /**
+ * Editor card = same product widget-tile chrome as TG preview (bar + tier + body).
+ * Copy/delete sit in an overlay — not a second header.
  * @param {ChartItem} item
  */
 function panelInnerHtml(item) {
@@ -1400,9 +1418,7 @@ function panelInnerHtml(item) {
     const title = meta ? meta.title : item.type;
     const chartType = item.type;
     const panelId = item.id || meta?.id || '';
-    const tier = typeof WidgetTileMocks !== 'undefined' && WidgetTileMocks.tierForSpan
-        ? WidgetTileMocks.tierForSpan(GRID_COLS, item.w, item.h)
-        : 'regular';
+    const tier = tileTier(item);
     let attrs = `data-chart="${escapeHtml(chartType)}"`;
     if (panelId)
         attrs += ` data-panel-id="${escapeHtml(panelId)}"`;
@@ -1418,17 +1434,15 @@ function panelInnerHtml(item) {
         ? kitOnlyPanelMockHtml(panelId, chartType)
         : '';
     const kitTileMod = chartType === 'qualityGate' ? ' widget-tile--quality-gate' : '';
-    return (`<div class="anb-panel__bar">` +
-        `<span class="anb-panel__title">${escapeHtml(title)}</span>` +
-        `<span class="anb-panel__actions">` +
+    return (`<div class="anb-panel__actions">` +
         `<button type="button" class="anb-panel__action" data-anb-action="copy" title="Copy" aria-label="Copy">⎘</button>` +
         `<button type="button" class="anb-panel__action" data-anb-action="delete" title="Delete" aria-label="Delete">×</button>` +
-        `</span>` +
         `</div>` +
-        `<div class="anb-panel__body">` +
         `<div class="widget-tile widget-tile--tier-${tier} anb-panel__tile${kitTileMod}" ${attrs}>` +
-        `<div class="widget-tile__body">${kitBody}</div>` +
+        `<div class="widget-tile__bar">` +
+        `<span class="widget-tile__title">${escapeHtml(title)}</span>` +
         `</div>` +
+        `<div class="widget-tile__body">${kitBody}</div>` +
         `</div>`);
 }
 /**
@@ -1968,6 +1982,7 @@ globalThis.__ANB__ = {
     canvasDisplayHeight,
     panelInnerHtml,
     previewItemHtml,
+    tileTier,
     makeWidgetEl,
     getGrid: () => grid,
     wireVectorInput,

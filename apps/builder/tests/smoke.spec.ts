@@ -365,7 +365,7 @@ test.describe('allure-notifications-builder smoke', () => {
     await expect(item).toBeVisible();
     const pos = await item.evaluate((el) => {
       const card = el.querySelector('.grid-stack-item-content');
-      const bar = el.querySelector('.widget-tile__header, .anb-panel__bar');
+      const bar = el.querySelector('.widget-tile__bar, .widget-tile__header, .anb-panel__bar');
       const nw = el.querySelector('.ui-resizable-nw');
       const ne = el.querySelector('.ui-resizable-ne');
       const sw = el.querySelector('.ui-resizable-sw');
@@ -410,6 +410,41 @@ test.describe('allure-notifications-builder smoke', () => {
     expect(pos.radius).toBe(10);
     // Regression: merge once parked NE/NW under the title bar.
     expect(pos.nwBelowBar).toBe(false);
+  });
+
+  test('editor tile chrome matches TG preview (tier + product bar)', async ({ page }) => {
+    await page.goto('/');
+    await page.getByTestId('anb-btn-reset').click();
+    const snap = await page.evaluate(() => {
+      const A = globalThis.__ANB__;
+      const item = { type: 'currentStatus', x: 0, y: 0, w: 4, h: 4 };
+      const panel = A.panelInnerHtml(item);
+      const preview = A.previewItemHtml(item);
+      const tier = A.tileTier(item);
+      const panelTier = (panel.match(/widget-tile--tier-(\w+)/) || [])[1];
+      const previewTier = (preview.match(/widget-tile--tier-(\w+)/) || [])[1];
+      return {
+        tier,
+        panelTier,
+        previewTier,
+        panelHasBar: panel.includes('widget-tile__bar'),
+        previewHasBar: preview.includes('widget-tile__bar'),
+        panelHasEditorBar: panel.includes('anb-panel__bar'),
+        panelHasActions: panel.includes('anb-panel__actions'),
+      };
+    });
+    expect(snap.tier).toBe('hero');
+    expect(snap.panelTier).toBe('hero');
+    expect(snap.previewTier).toBe('hero');
+    expect(snap.panelHasBar).toBe(true);
+    expect(snap.previewHasBar).toBe(true);
+    expect(snap.panelHasEditorBar).toBe(false);
+    expect(snap.panelHasActions).toBe(true);
+
+    const gridTile = page.locator('#anb-grid .widget-tile[data-chart="currentStatus"]').first();
+    await expect(gridTile).toHaveClass(/widget-tile--tier-hero/);
+    await expect(gridTile.locator('.widget-tile__bar .indicator-row')).toBeVisible();
+    await expect(gridTile.locator('.widget-tile__title')).toHaveText('Current status');
   });
 
   test('chart.profile kit shows kit palette slots; export includes profile + kit ids', async ({

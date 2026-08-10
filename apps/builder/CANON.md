@@ -20,7 +20,7 @@
 |-------|---------|------|
 | `headerHeight` | **22** | Card title-bar height (px). Jar **5.0.3+**. TG preview sets `--wt-bar-height` (+ proportional title/dots from DS baseline 28). |
 | `cardGap` | **14** | Gap around/between cards (px) — equal edge & between (Allure / `widget-mosaic--post`). Jar **5.0.4+**. Editor: grid half-inset + content half-inset; TG preview = `CollageRenderer.renderFree`. |
-| `tilePad` | **6** | Inner body pad → `--wt-pad`. **Preview-only** — jar has no field yet; exported JSON keeps it for builder/preview parity. |
+| `tilePad` | **6** | Inner body pad → `--wt-pad` on editor + TG preview. Jar has no field yet; exported JSON keeps it for builder/preview parity. |
 
 Reset / `vector#default` → default vector (`applyDefaultVector`) = these three defaults + CB-870 canvas + `DEFAULT_ITEMS`.
 
@@ -89,6 +89,9 @@ Smoke: `header tool links` — site has `.icon svg`, zero `.icon img`.
 
 NE/NW/SE/SW parked at the **cell edge** (`top/bottom/left/right: 0`). The visible crop-mark (`::after`) is sized to `--anb-resize-mark ≈ half-gap − 1px` so the stroke stays in the cardGap gutter **outside** the rounded card — never under the title bar (`half-gap + bar-h`) and never digging into the chart. Editor card radius is **10px** — **do not** mirror core collage `CARD_ARC` (18px in `packages/core`, export-only). Guard: smoke `resize L-brackets sit in gutter outside card`.
 
+## Editor ↔ TG preview tile identity
+
+Same product chrome on grid and export stage: DS `widget-tile__bar` (status dots + title) + `widget-tile--tier-*` from `tierForSpan(10, w, h)` + `--wt-bar-height` / `--wt-pad` from `headerHeight` / `tilePad`. Editor-only: hover/selected copy·delete overlay (`.anb-panel__actions`) and GridStack L-brackets — not a second header.
 ## Terminal bar (builder canon)
 
 | | |

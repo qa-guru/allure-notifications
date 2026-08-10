@@ -621,10 +621,22 @@ html.theme-light .anb-canvas--chart-off::after {
 }
 
 .anb-panel__actions {
+  position: absolute;
+  top: 2px;
+  right: 2px;
+  z-index: 3;
   display: inline-flex;
   gap: 2px;
   flex-shrink: 0;
-  margin-left: auto;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.12s ease;
+}
+
+.grid-stack-item:hover > .grid-stack-item-content > .anb-panel__actions,
+.grid-stack-item.is-selected > .grid-stack-item-content > .anb-panel__actions {
+  opacity: 1;
+  pointer-events: auto;
 }
 
 .anb-panel__action {
@@ -663,7 +675,7 @@ html.theme-light .anb-canvas--chart-off::after {
   display: flex;
   flex-direction: column;
   min-height: 0;
-  padding: var(--wt-pad, 6px);
+  padding: 0;
   position: relative;
 }
 
@@ -680,17 +692,18 @@ html.theme-light .anb-canvas--chart-off::after {
   pointer-events: none;
   display: flex;
   flex-direction: column;
-  --wt-pad: 0; /* body already applies tilePad */
 }
 
+/* Product bar — same DS chrome as TG preview (dots + title right). */
 .anb-panel__tile .widget-tile__bar {
-  display: none;
+  pointer-events: none;
 }
 
 .anb-panel__tile .widget-tile__body {
   flex: 1;
   width: 100%;
   height: 100%;
+  min-height: 0;
   aspect-ratio: auto;
 }
 
