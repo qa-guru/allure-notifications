@@ -786,16 +786,10 @@ function buildTgCaptionHtml() {
   return lines.join('\n');
 }
 
-/** Status-family dots for kit-only palette thumbs (chart tiles use WidgetTileMocks.syncIndicators). */
+/** Status-family dots for tests-table palette thumbs (QG has its own bar chrome). */
 function kitOnlyPaletteBarHtml(panelId: string, chartType: string) {
-  let dots: string[];
-  if (chartType === 'testsTable') {
-    dots = ['green', 'red', 'yellow'];
-  } else if (panelId === 'sonarQualityGate') {
-    dots = ['red', 'orange', 'green'];
-  } else {
-    dots = ['green', 'yellow', 'red'];
-  }
+  if (chartType !== 'testsTable') return '';
+  const dots = ['green', 'red', 'yellow'];
   return (
     `<div class="indicator-row" aria-hidden="true">` +
     dots.map((d) => `<span class="indicator indicator--status-${d}"></span>`).join('') +
@@ -803,43 +797,90 @@ function kitOnlyPaletteBarHtml(panelId: string, chartType: string) {
   );
 }
 
-/** Builder-only kit tile body — not collage IR; avoids Allure HTML screenshot. */
+function qgInfoTriggerHtml() {
+  return (
+    `<div class="qg-info" data-testid="qg-info-mock">` +
+    `<span class="icon-btn qg-info__trigger" aria-hidden="true">` +
+    `<span class="icon" aria-hidden="true">` +
+    `<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">` +
+    `<circle cx="8" cy="8" r="6.25"/>` +
+    `<path d="M8 7.25v3.5"/>` +
+    `<circle cx="8" cy="5.15" r="0.65" fill="currentColor" stroke="none"/>` +
+    `</svg>` +
+    `</span></span></div>`
+  );
+}
+
+function sparklineMockSvg(points: string, stroke = 'var(--color-info)') {
+  return (
+    `<svg class="sparkline sparkline--duration" viewBox="0 0 40 12" width="40" height="12" aria-hidden="true">` +
+    `<polyline class="sparkline__line" fill="none" stroke="${stroke}" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" points="${points}"/>` +
+    `</svg>`
+  );
+}
+
+function testsTableRowMock(
+  name: string,
+  status: 'passed' | 'failed' | 'broken',
+  trendPoints: string,
+  trendStroke?: string,
+) {
+  return (
+    `<tr>` +
+    `<td class="tests-table-panel__name">${escapeHtml(name)}</td>` +
+    `<td class="tests-table-panel__status"><span class="badge badge--status-${status}">${status}</span></td>` +
+    `<td class="tests-table-panel__trend">${sparklineMockSvg(trendPoints, trendStroke)}</td>` +
+    `</tr>`
+  );
+}
+
+/** Builder-only kit tile body — DS quality-gate / tests-table-panel; not collage IR. */
 function kitOnlyPanelMockHtml(panelId: string, chartType: string) {
   const testId = `anb-kit-mock-${panelId}`;
   if (chartType === 'testsTable') {
     return (
-      `<div class="anb-qg-mock anb-qg-mock--tests-table" data-anb-kit-mock="${escapeHtml(panelId)}" data-testid="${testId}">` +
-      `<div class="anb-tt-mock" aria-hidden="true">` +
-      `<span class="anb-tt-mock__row"><i class="anb-tt-mock__name"></i><i class="anb-tt-mock__badge anb-tt-mock__badge--pass"></i><i class="anb-tt-mock__spark"></i></span>` +
-      `<span class="anb-tt-mock__row"><i class="anb-tt-mock__name anb-tt-mock__name--short"></i><i class="anb-tt-mock__badge anb-tt-mock__badge--fail"></i><i class="anb-tt-mock__spark anb-tt-mock__spark--down"></i></span>` +
-      `<span class="anb-tt-mock__row"><i class="anb-tt-mock__name anb-tt-mock__name--mid"></i><i class="anb-tt-mock__badge anb-tt-mock__badge--broken"></i><i class="anb-tt-mock__spark anb-tt-mock__spark--flat"></i></span>` +
-      `</div>` +
-      `</div>`
+      `<div class="tests-table-panel anb-kit-mock" data-anb-kit-mock="${escapeHtml(panelId)}" data-testid="${testId}">` +
+      `<table class="tests-table-panel__table" aria-hidden="true">` +
+      `<thead><tr><th>Test</th><th>Status</th><th>Trend</th></tr></thead>` +
+      `<tbody>` +
+      testsTableRowMock('shouldLogin…', 'passed', '2,9 8,7 14,6 20,8 26,5 32,6 38,4') +
+      testsTableRowMock('shouldReject…', 'failed', '2,4 8,6 14,8 20,7 26,9 32,10 38,11', 'var(--color-danger)') +
+      testsTableRowMock('checkoutFlow…', 'broken', '2,6 8,6 14,7 20,6 26,6 32,6 38,6', 'var(--color-warning)') +
+      `</tbody></table></div>`
     );
   }
-  const qgMod = panelId === 'sonarQualityGate' ? 'sonar' : 'allure';
-  const pillClass = panelId === 'sonarQualityGate' ? 'anb-qg-mock__pill--warn' : 'anb-qg-mock__pill--pass';
-  const meterClass = panelId === 'sonarQualityGate' ? 'anb-qg-mock__meter--sonar' : 'anb-qg-mock__meter--allure';
-  const rule2 =
-    panelId === 'sonarQualityGate'
-      ? 'anb-qg-mock__rule anb-qg-mock__rule--fail'
-      : 'anb-qg-mock__rule anb-qg-mock__rule--pass';
-  const rule3 =
-    panelId === 'sonarQualityGate'
-      ? 'anb-qg-mock__rule anb-qg-mock__rule--warn'
-      : 'anb-qg-mock__rule anb-qg-mock__rule--pass';
+  if (panelId === 'sonarQualityGate') {
+    return (
+      `<div class="quality-gate quality-gate--sonar quality-gate--failed anb-kit-mock" data-anb-kit-mock="${escapeHtml(panelId)}" data-testid="${testId}" role="status" aria-hidden="true">` +
+      `<div class="quality-gate__bar">` +
+      `<div class="quality-gate__bar-start">` +
+      `<span class="indicator indicator--failed indicator--solid" aria-hidden="true"></span>` +
+      `<span class="quality-gate__bar-title">Sonar QG</span>` +
+      `</div>` +
+      qgInfoTriggerHtml() +
+      `</div>` +
+      `<div class="quality-gate__body">` +
+      `<ul class="quality-gate__rules">` +
+      `<li class="quality-gate__rule">` +
+      `<div class="quality-gate__rule-id">coverage</div>` +
+      `<div class="quality-gate__rule-detail">` +
+      `<p class="quality-gate__message">coverage 72.4 is below the required 80</p>` +
+      `<p class="quality-gate__formula">FAIL: 72.4 &lt; 80</p>` +
+      `</div></li></ul></div></div>`
+    );
+  }
   return (
-    `<div class="anb-qg-mock anb-qg-mock--qg anb-qg-mock--${qgMod}" data-anb-qg-mock="${escapeHtml(panelId)}" data-testid="${testId}">` +
-    `<div class="anb-qg-mock__head" aria-hidden="true">` +
-    `<span class="anb-qg-mock__pill ${pillClass}"></span>` +
-    `<span class="anb-qg-mock__meter ${meterClass}"><i></i></span>` +
+    `<div class="quality-gate quality-gate--allure quality-gate--passed anb-kit-mock" data-anb-kit-mock="${escapeHtml(panelId)}" data-testid="${testId}" role="status" aria-hidden="true">` +
+    `<div class="quality-gate__bar">` +
+    `<div class="quality-gate__bar-start">` +
+    `<span class="indicator indicator--passed indicator--solid" aria-hidden="true"></span>` +
+    `<span class="quality-gate__bar-title">Allure QG</span>` +
     `</div>` +
-    `<div class="anb-qg-mock__rules" aria-hidden="true">` +
-    `<span class="anb-qg-mock__rule anb-qg-mock__rule--pass"></span>` +
-    `<span class="${rule2}"></span>` +
-    `<span class="${rule3}"></span>` +
+    qgInfoTriggerHtml() +
     `</div>` +
-    `</div>`
+    `<div class="quality-gate__body">` +
+    `<p class="quality-gate__verdict quality-gate__verdict--ok">Passed</p>` +
+    `</div></div>`
   );
 }
 
@@ -1348,6 +1389,7 @@ function panelInnerHtml(item: ChartItem) {
     isKitOnlyPanelType(chartType) && panelId
       ? kitOnlyPanelMockHtml(panelId, chartType)
       : '';
+  const kitTileMod = chartType === 'qualityGate' ? ' widget-tile--quality-gate' : '';
   return (
     `<div class="anb-panel__bar">` +
     `<span class="anb-panel__title">${escapeHtml(title)}</span>` +
@@ -1357,7 +1399,7 @@ function panelInnerHtml(item: ChartItem) {
     `</span>` +
     `</div>` +
     `<div class="anb-panel__body">` +
-    `<div class="widget-tile widget-tile--tier-${tier} anb-panel__tile" ${attrs}>` +
+    `<div class="widget-tile widget-tile--tier-${tier} anb-panel__tile${kitTileMod}" ${attrs}>` +
     `<div class="widget-tile__body">${kitBody}</div>` +
     `</div>` +
     `</div>`
@@ -1568,11 +1610,13 @@ function paletteItemHtml(item: PanelMeta): string {
   if (item.by) attrs += ` data-by="${escapeHtml(item.by)}"`;
   const bar = isKit ? kitOnlyPaletteBarHtml(item.id, chartType) : '';
   const body = isKit ? kitOnlyPanelMockHtml(item.id, chartType) : '';
+  const kitTileMod =
+    chartType === 'qualityGate' ? ' widget-tile--quality-gate anb-palette__tile--kit-qg' : '';
   /* Palette thumbs are always 2×2 — caption = title; grid footprints stay on canvas / DEFAULT_ITEMS. */
   return (
     `<button type="button" class="anb-palette__item" data-anb-panel-id="${escapeHtml(item.id)}" ` +
     `data-testid="anb-palette-${escapeHtml(item.id)}" draggable="true" title="${escapeHtml(item.title)}">` +
-    `<div class="widget-tile widget-tile--tier-micro widget-tile--span-2x2 anb-palette__tile" ${attrs}>` +
+    `<div class="widget-tile widget-tile--tier-micro widget-tile--span-2x2 anb-palette__tile${kitTileMod}" ${attrs}>` +
     `<div class="widget-tile__bar">${bar}</div>` +
     `<div class="widget-tile__body">${body}</div>` +
     `</div>` +

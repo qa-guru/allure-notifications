@@ -1,0 +1,87 @@
+/* Tests table panel — kit `testsTable` (name | status | trend | stability) */
+
+@import url("sparkline.css");
+@import url("stability-cell.css");
+
+.tests-table-panel {
+  overflow: auto;
+  max-height: 100%;
+}
+
+.tests-table-panel__table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: var(--font-size-sm);
+}
+
+.tests-table-panel__table th,
+.tests-table-panel__table td {
+  padding: 6px var(--space-2);
+  border-bottom: 1px solid var(--color-border);
+  vertical-align: middle;
+}
+
+.tests-table-panel__table th {
+  font-size: var(--font-size-xs);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--color-text-muted);
+  text-align: left;
+}
+
+.tests-table-panel__table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.tests-table-panel__table tbody tr:hover td {
+  background: color-mix(in srgb, var(--color-border) 35%, transparent);
+}
+
+.tests-table-panel__name {
+  max-width: 14rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.tests-table-panel__status {
+  width: 5.5rem;
+}
+
+.tests-table-panel__trend {
+  width: 6rem;
+}
+
+.tests-table-panel__stability {
+  width: 5.5rem;
+}
+
+.tests-table-panel__empty {
+  margin: 0;
+  padding: var(--space-4);
+  text-align: center;
+  color: var(--color-text-muted);
+  font-size: var(--font-size-sm);
+}
+
+.tests-table-panel .badge--status-passed {
+  background: color-mix(in srgb, var(--color-success) 22%, transparent);
+  color: var(--color-success);
+}
+
+.tests-table-panel .badge--status-failed {
+  background: color-mix(in srgb, var(--color-danger) 22%, transparent);
+  color: var(--color-danger);
+}
+
+.tests-table-panel .badge--status-broken {
+  background: color-mix(in srgb, var(--color-warning) 22%, transparent);
+  color: var(--color-warning);
+}
+
+.tests-table-panel .badge--status-skipped,
+.tests-table-panel .badge--status-unknown {
+  background: color-mix(in srgb, var(--color-text-muted) 18%, transparent);
+  color: var(--color-text-muted);
+}

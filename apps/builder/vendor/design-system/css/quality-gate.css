@@ -1,0 +1,278 @@
+/* Quality gate — callout (legacy) + hybrid tile (bar + split rules + qg-info). */
+
+.quality-gate:empty,
+.quality-gate[hidden] {
+  display: none;
+}
+
+/* ---- Callout (no bar) — variant A baseline, kit legacy ---- */
+
+.quality-gate:not(:has(.quality-gate__bar)) {
+  padding: var(--space-2) var(--space-3);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  background: var(--color-surface-soft);
+  font-size: var(--font-size-sm);
+  line-height: 1.45;
+}
+
+.quality-gate:not(:has(.quality-gate__bar)).quality-gate--passed {
+  border-color: var(--color-success);
+  background: color-mix(in srgb, var(--color-success) 10%, var(--color-surface));
+}
+
+.quality-gate:not(:has(.quality-gate__bar)).quality-gate--failed {
+  border-color: var(--color-warning);
+  background: color-mix(in srgb, var(--color-warning) 10%, var(--color-surface));
+}
+
+.quality-gate:not(:has(.quality-gate__bar)) .quality-gate__title {
+  margin: 0;
+  font-weight: 600;
+  color: var(--color-text);
+}
+
+.quality-gate:not(:has(.quality-gate__bar)) .quality-gate__rules {
+  margin: var(--space-2) 0 0;
+  padding-left: 1.25rem;
+}
+
+.quality-gate:not(:has(.quality-gate__bar)) .quality-gate__rule {
+  margin: 0;
+}
+
+.quality-gate:not(:has(.quality-gate__bar)) .quality-gate__rule + .quality-gate__rule {
+  margin-top: var(--space-1);
+}
+
+.quality-gate:not(:has(.quality-gate__bar)) .quality-gate__message {
+  color: var(--color-text);
+}
+
+.quality-gate:not(:has(.quality-gate__bar)) .quality-gate__rule-id {
+  font-size: 0.85em;
+  color: var(--color-text-muted);
+}
+
+.quality-gate:not(:has(.quality-gate__bar)) .quality-gate__rule-id::before {
+  content: "·";
+  margin: 0 0.35em;
+}
+
+/* ---- Hybrid tile (D bar + H split id + C message + L formula) ---- */
+
+.quality-gate:has(.quality-gate__bar) {
+  /* Same chrome tokens as widget-tile (bar 28 · title 0.75rem · inset from indicator). */
+  --wt-bar-height: 28px;
+  --wt-title-size: 0.75rem;
+  --indicator-size: 10px;
+  --wt-bar-inset: calc((var(--wt-bar-height) - var(--indicator-size)) / 2);
+
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  min-height: 0;
+  overflow: hidden;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  background: var(--color-surface);
+  font-size: var(--font-size-sm);
+  line-height: 1.45;
+}
+
+/*
+ * Inside widget-tile: one chrome only. Tile owns the frame; QG is body content
+ * (its __bar plays the role of widget-tile__bar). Standalone demos keep the card.
+ *
+ * Do not combine `:has(...:has(...))` with other selectors in one rule — nested
+ * :has() can invalidate the whole comma list in Chromium.
+ */
+.widget-tile--quality-gate > .widget-tile__body {
+  align-items: stretch;
+  justify-content: stretch;
+  padding: 0;
+  aspect-ratio: auto;
+  flex: 1 1 auto;
+  min-height: 0;
+}
+
+.widget-tile--quality-gate > .widget-tile__body > .quality-gate {
+  flex: 1 1 auto;
+  align-self: stretch;
+  width: 100%;
+  height: 100%;
+  min-height: 0;
+  border: none;
+  border-radius: 0;
+  background: transparent;
+}
+
+.quality-gate:has(.quality-gate__bar).quality-gate--failed {
+  border-color: color-mix(in srgb, var(--color-danger) 40%, var(--color-border));
+}
+
+.quality-gate:has(.quality-gate__bar).quality-gate--passed {
+  border-color: color-mix(in srgb, var(--color-success) 40%, var(--color-border));
+}
+
+.widget-tile--quality-gate > .widget-tile__body > .quality-gate.quality-gate--failed,
+.widget-tile--quality-gate > .widget-tile__body > .quality-gate.quality-gate--passed {
+  border: none;
+  background: transparent;
+}
+
+.quality-gate:has(.quality-gate__bar) .quality-gate__bar {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 6px;
+  box-sizing: border-box;
+  flex-shrink: 0;
+  height: var(--wt-bar-height);
+  min-height: var(--wt-bar-height);
+  padding: 0;
+  padding-left: var(--wt-bar-inset);
+  border-bottom: 1px solid var(--color-border);
+  background: color-mix(in srgb, var(--color-text) 3%, transparent);
+  border-radius: var(--radius-md) var(--radius-md) 0 0;
+  overflow: hidden;
+}
+
+/* Tile already clips corners — bar must not paint a second rounded card top. */
+.widget-tile--quality-gate > .widget-tile__body > .quality-gate > .quality-gate__bar {
+  border-radius: 0;
+}
+
+.quality-gate:has(.quality-gate__bar).quality-gate--failed .quality-gate__bar {
+  border-bottom-color: color-mix(in srgb, var(--color-danger) 25%, var(--color-border));
+}
+
+.quality-gate:has(.quality-gate__bar).quality-gate--passed .quality-gate__bar {
+  border-bottom-color: color-mix(in srgb, var(--color-success) 25%, var(--color-border));
+}
+
+.quality-gate:has(.quality-gate__bar) .quality-gate__bar-start {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  min-width: 0;
+}
+
+.quality-gate:has(.quality-gate__bar) .quality-gate__bar .indicator {
+  flex-shrink: 0;
+}
+
+.quality-gate:has(.quality-gate__bar) .quality-gate__bar > .qg-info {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  align-self: stretch;
+  flex-shrink: 0;
+  box-sizing: border-box;
+  line-height: 0;
+  /* Trailing inset only — top/bottom center in the 28px bar (trigger > indicator). */
+  padding: 0 var(--wt-bar-inset) 0 0;
+}
+
+.quality-gate:has(.quality-gate__bar) .quality-gate__bar > .qg-info .qg-info__trigger {
+  /* Readable vs 10px status dot; still fits in --wt-bar-height 28. */
+  width: 1.125rem;
+  height: 1.125rem;
+  min-width: 1.125rem;
+  min-height: 1.125rem;
+}
+
+.quality-gate:has(.quality-gate__bar) .quality-gate__bar > .qg-info .qg-info__trigger .icon {
+  --icon-size-md: 1rem;
+}
+
+.quality-gate:has(.quality-gate__bar) .quality-gate__bar-title {
+  flex: 1 1 auto;
+  min-width: 0;
+  font-size: var(--wt-title-size, 0.75rem);
+  font-weight: 600;
+  line-height: 1.2;
+  text-align: right;
+  color: var(--color-text-muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.quality-gate:has(.quality-gate__bar) .quality-gate__body {
+  padding: 0;
+}
+
+.quality-gate:has(.quality-gate__bar).quality-gate--passed .quality-gate__body {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 4.5rem;
+  padding: var(--space-3);
+}
+
+.quality-gate:has(.quality-gate__bar) .quality-gate__verdict {
+  margin: 0;
+  font-size: var(--font-size-md, 1rem);
+  font-weight: 600;
+}
+
+.quality-gate:has(.quality-gate__bar) .quality-gate__verdict--ok {
+  color: var(--color-success);
+}
+
+.quality-gate:has(.quality-gate__bar) .quality-gate__rules {
+  display: grid;
+  /* id col grows with longest key; fit-content cap = 3× base (19.5rem). */
+  grid-template-columns: fit-content(19.5rem) 1fr;
+  align-items: stretch;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.quality-gate:has(.quality-gate__bar) .quality-gate__rule {
+  display: contents;
+}
+
+.quality-gate:has(.quality-gate__bar) .quality-gate__rule + .quality-gate__rule .quality-gate__rule-id,
+.quality-gate:has(.quality-gate__bar) .quality-gate__rule + .quality-gate__rule .quality-gate__rule-detail {
+  border-top: 1px solid var(--color-border);
+}
+
+.quality-gate:has(.quality-gate__bar) .quality-gate__rule-id {
+  box-sizing: border-box;
+  min-width: 6.5rem;
+  padding: var(--space-2) var(--space-3);
+  font-family: ui-monospace, "SF Mono", Menlo, monospace;
+  font-size: 0.8em;
+  font-weight: 600;
+  line-height: 1.25;
+  color: var(--color-danger);
+  background: color-mix(in srgb, var(--color-danger) 12%, var(--color-surface-soft));
+  border-right: 1px solid var(--color-border);
+  overflow-wrap: break-word;
+}
+
+.quality-gate:has(.quality-gate__bar).quality-gate--passed .quality-gate__rule-id {
+  color: var(--color-success);
+  background: color-mix(in srgb, var(--color-success) 12%, var(--color-surface-soft));
+}
+
+.quality-gate:has(.quality-gate__bar) .quality-gate__rule-detail {
+  min-width: 0;
+  padding: var(--space-2) var(--space-3);
+}
+
+.quality-gate:has(.quality-gate__bar) .quality-gate__message {
+  margin: 0;
+  color: var(--color-text);
+}
+
+.quality-gate:has(.quality-gate__bar) .quality-gate__formula {
+  margin: var(--space-1) 0 0;
+  font-family: ui-monospace, "SF Mono", Menlo, monospace;
+  font-size: 0.8em;
+  font-weight: 500;
+  color: var(--color-danger);
+}

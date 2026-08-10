@@ -1,0 +1,22 @@
+/* Sparkline — duration trend cell primitive (phase 8.3) */
+
+.sparkline {
+  display: block;
+}
+
+.sparkline--empty {
+  font-size: 0.72rem;
+  color: var(--color-text-muted);
+}
+
+.sparkline--duration {
+  overflow: visible;
+}
+
+.sparkline__area {
+  transition: fill 0.3s ease, fill-opacity 0.3s ease;
+}
+
+.sparkline__line {
+  transition: stroke 0.3s ease;
+}
