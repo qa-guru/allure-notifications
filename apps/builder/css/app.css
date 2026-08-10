@@ -500,6 +500,8 @@ html.theme-light .anb-canvas--chart-off::after {
   /* Jar free-grid chrome — synced from base.chart.* via JS */
   --anb-card-gap: 14px;
   --anb-half-gap: calc(var(--anb-card-gap) / 2);
+  /* r = round(min(gutter, min(w,h)*0.04)); 870×1080 / 10×10 / gap14 → 3 */
+  --anb-card-radius: 3px;
   --anb-bar-h: 22px;
   --anb-title-size: 0.75rem;
   --wt-pad: 6px;
@@ -579,7 +581,7 @@ html.theme-light .anb-canvas--chart-off::after {
   inset: var(--anb-half-gap) !important;
   margin: 0 !important;
   overflow: hidden;
-  border-radius: 10px;
+  border-radius: var(--anb-card-radius);
   background: var(--color-surface, #323232);
   color: var(--color-text, #dcdcdc);
   box-shadow: inset 0 0 0 1px var(--color-border, rgba(96, 96, 96, 0.9));

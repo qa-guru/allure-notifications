@@ -305,12 +305,31 @@ function canvasDisplayScale(canvas) {
     return displayW / chart.width;
 }
 /**
+ * Editor card corner radius from local geometry (not a magic px).
+ * r = round(min(gutter, min(tileW,tileH)*0.04)), clamp [2, 8].
+ * Uses interior 1×1 cell as the shared grid language (all sibling tiles).
+ * @param {number} cardGap
+ * @param {number} chartW
+ * @param {number} chartH
+ */
+function cardCornerRadiusLogical(cardGap, chartW, chartH) {
+    const gap = Math.max(0, cardGap);
+    if (!(chartW > 0) || !(chartH > 0)) {
+        return Math.max(2, Math.min(8, Math.round(Math.min(gap, gap * 0.5))));
+    }
+    const cellMin = Math.min(chartW / GRID_COLS, chartH / GRID_ROWS);
+    const tileMin = Math.max(0, cellMin - gap);
+    // r = round(min(gutter, min(w,h)*0.04)); e.g. 870×1080 / 10×10 / gap14 → 3
+    const raw = Math.min(gap, tileMin * 0.04);
+    return Math.max(2, Math.min(8, Math.round(raw)));
+}
+/**
  * Push jar chrome knobs onto the editor canvas (cardGap · headerHeight · tilePad).
  * Values are logical canvas px, converted to CSS px via canvasDisplayScale so
  * gutters/pads match TG preview proportions at any shell width.
  */
 function syncEditorChrome() {
-    const chart = /** @type {{ cardGap?: number, headerHeight?: number, tilePad?: number }} */ (state.base.chart);
+    const chart = /** @type {{ width?: number, height?: number, cardGap?: number, headerHeight?: number, tilePad?: number }} */ (state.base.chart);
     const cardGap = chart.cardGap != null && Number.isFinite(Number(chart.cardGap))
         ? Math.max(0, Number(chart.cardGap))
         : DEFAULT_CARD_GAP;
@@ -328,11 +347,15 @@ function syncEditorChrome() {
     const gapCss = cardGap * displayScale;
     const barCss = headerHeight * displayScale;
     const padCss = tilePad * displayScale;
+    const chartW = chart.width != null && Number.isFinite(Number(chart.width)) ? Number(chart.width) : 870;
+    const chartH = chart.height != null && Number.isFinite(Number(chart.height)) ? Number(chart.height) : 1080;
+    const radiusCss = cardCornerRadiusLogical(cardGap, chartW, chartH) * displayScale;
     canvas.style.setProperty('--anb-card-gap', `${gapCss}px`);
     canvas.style.setProperty('--anb-bar-h', `${barCss}px`);
     canvas.style.setProperty('--anb-title-size', `${(0.75 * barScale * displayScale).toFixed(4)}rem`);
     canvas.style.setProperty('--wt-pad', `${padCss}px`);
     canvas.style.setProperty('--anb-resize-size', `${Math.max(8, 14 * displayScale)}px`);
+    canvas.style.setProperty('--anb-card-radius', `${radiusCss}px`);
 }
 /**
  * Drive `--layer-*` + geometry ratios from `@pyramid` (SSOT over DS token pin).
