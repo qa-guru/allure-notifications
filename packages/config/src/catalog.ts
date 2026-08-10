@@ -116,6 +116,11 @@ export const PANEL_CATALOG: ReadonlyArray<PanelMeta> = Object.freeze([
     type: "qualityGate",
     title: "Sonar quality gate",
   }),
+  panel({
+    id: "testsTable",
+    type: "testsTable",
+    title: "Tests table",
+  }),
 ]);
 
 export const PANEL_META: Readonly<Record<string, PanelMeta>> = Object.freeze(

@@ -675,13 +675,23 @@ function buildTgCaptionHtml() {
     });
     return lines.join('\n');
 }
-/** Builder-only QG tile body — not collage IR; avoids Allure HTML screenshot. */
-function qualityGateMockHtml(panelId) {
+/** Builder-only kit tile body — not collage IR; avoids Allure HTML screenshot. */
+function kitOnlyPanelMockHtml(panelId, chartType) {
+    if (chartType === 'testsTable') {
+        return (`<div class="anb-qg-mock anb-qg-mock--tests-table" data-anb-kit-mock="${escapeHtml(panelId)}">` +
+            `<span class="anb-qg-mock__label">Tests table</span>` +
+            `<span class="anb-qg-mock__status">3 tests</span>` +
+            `</div>`);
+    }
     const label = panelId === 'sonarQualityGate' ? 'Sonar QG' : 'Allure QG';
     return (`<div class="anb-qg-mock" data-anb-qg-mock="${escapeHtml(panelId)}">` +
         `<span class="anb-qg-mock__label">${escapeHtml(label)}</span>` +
         `<span class="anb-qg-mock__status">passed</span>` +
         `</div>`);
+}
+/** @deprecated use kitOnlyPanelMockHtml — kept for debug exports */
+function qualityGateMockHtml(panelId) {
+    return kitOnlyPanelMockHtml(panelId, 'qualityGate');
 }
 /**
  * Mini-render of free-layout items into TG photo stage (logical canvas px → scale).
@@ -708,7 +718,7 @@ function previewItemHtml(item) {
         attrs += ` data-by="${escapeHtml(by)}"`;
     const chrome = chromeCssVars(chart);
     const body = isKitOnlyPanelType(chartType) && panelId
-        ? qualityGateMockHtml(panelId)
+        ? kitOnlyPanelMockHtml(panelId, chartType)
         : '';
     return (`<figure class="widget-tile anb-tg__widget" ${attrs} ` +
         `style="left:${rect.left}px;top:${rect.top}px;width:${rect.width}px;height:${rect.height}px;${chrome}">` +
@@ -1168,7 +1178,9 @@ function panelInnerHtml(item) {
         attrs += ` data-by="${escapeHtml(item.by)}"`;
     else if (meta?.by)
         attrs += ` data-by="${escapeHtml(meta.by)}"`;
-    const qgBody = isKitOnlyPanelType(chartType) && panelId ? qualityGateMockHtml(panelId) : '';
+    const kitBody = isKitOnlyPanelType(chartType) && panelId
+        ? kitOnlyPanelMockHtml(panelId, chartType)
+        : '';
     return (`<div class="anb-panel__bar">` +
         `<span class="anb-panel__title">${escapeHtml(title)}</span>` +
         `<span class="anb-panel__actions">` +
@@ -1178,7 +1190,7 @@ function panelInnerHtml(item) {
         `</div>` +
         `<div class="anb-panel__body">` +
         `<div class="widget-tile widget-tile--tier-${tier} anb-panel__tile" ${attrs}>` +
-        `<div class="widget-tile__body">${qgBody}</div>` +
+        `<div class="widget-tile__body">${kitBody}</div>` +
         `</div>` +
         `</div>`);
 }
@@ -1693,6 +1705,7 @@ globalThis.__ANB__ = {
     canAddPalettePanel,
     onChartProfileChange,
     renderPaletteItems,
+    kitOnlyPanelMockHtml,
     qualityGateMockHtml,
     applyCanvasPreset,
     applySnap,

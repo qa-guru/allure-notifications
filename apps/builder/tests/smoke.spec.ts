@@ -412,7 +412,7 @@ test.describe('allure-notifications-builder smoke', () => {
     expect(pos.nwBelowBar).toBe(false);
   });
 
-  test('chart.profile kit shows QG palette slots; export includes profile + QG ids', async ({
+  test('chart.profile kit shows kit palette slots; export includes profile + kit ids', async ({
     page,
   }) => {
     const errors: string[] = [];
@@ -428,14 +428,17 @@ test.describe('allure-notifications-builder smoke', () => {
     await expect(palette.locator('.anb-palette__item')).toHaveCount(17);
     await expect(page.getByTestId('anb-palette-allureQualityGate')).toHaveCount(0);
     await expect(page.getByTestId('anb-palette-sonarQualityGate')).toHaveCount(0);
+    await expect(page.getByTestId('anb-palette-testsTable')).toHaveCount(0);
 
     await page.getByTestId('anb-chart-profile').selectOption('kit');
-    await expect(palette.locator('.anb-palette__item')).toHaveCount(19);
+    await expect(palette.locator('.anb-palette__item')).toHaveCount(20);
     await expect(page.getByTestId('anb-palette-allureQualityGate')).toBeVisible();
     await expect(page.getByTestId('anb-palette-sonarQualityGate')).toBeVisible();
+    await expect(page.getByTestId('anb-palette-testsTable')).toBeVisible();
 
     await page.getByTestId('anb-palette-allureQualityGate').click();
     await page.getByTestId('anb-palette-sonarQualityGate').click();
+    await page.getByTestId('anb-palette-testsTable').click();
 
     await expect
       .poll(async () => {
@@ -447,12 +450,14 @@ test.describe('allure-notifications-builder smoke', () => {
         items: expect.arrayContaining([
           expect.objectContaining({ id: 'allureQualityGate', type: 'qualityGate' }),
           expect.objectContaining({ id: 'sonarQualityGate', type: 'qualityGate' }),
+          expect.objectContaining({ id: 'testsTable', type: 'testsTable' }),
         ]),
       });
 
     await page.getByTestId('anb-chart-profile').selectOption('default');
     await expect(palette.locator('.anb-palette__item')).toHaveCount(17);
     await expect(page.getByTestId('anb-palette-allureQualityGate')).toHaveCount(0);
+    await expect(page.getByTestId('anb-palette-testsTable')).toHaveCount(0);
 
     await expect
       .poll(async () => {
@@ -463,9 +468,12 @@ test.describe('allure-notifications-builder smoke', () => {
           qgCount: chart.items.filter(
             (item: { type?: string }) => item.type === 'qualityGate',
           ).length,
+          testsTableCount: chart.items.filter(
+            (item: { type?: string }) => item.type === 'testsTable',
+          ).length,
         };
       })
-      .toEqual({ profile: 'default', qgCount: 2 });
+      .toEqual({ profile: 'default', qgCount: 2, testsTableCount: 1 });
 
     expect(errors, errors.join('\n')).toEqual([]);
   });

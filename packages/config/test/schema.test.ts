@@ -45,10 +45,15 @@ function loadJson(name: string): unknown {
 }
 
 describe("@qa-guru/allure-notifications-config catalog", () => {
-  it("exposes 19 panel catalog slots (17 analytics + 2 quality gates)", () => {
-    assert.equal(PANEL_CATALOG.length, 19);
+  it("exposes 20 panel catalog slots (17 analytics + 2 quality gates + tests table)", () => {
+    assert.equal(PANEL_CATALOG.length, 20);
     const ids = new Set(PANEL_CATALOG.map((p) => p.id));
-    assert.equal(ids.size, 19);
+    assert.equal(ids.size, 20);
+  });
+
+  it("includes testsTable with stable id and type", () => {
+    assert.equal(resolvePanelMeta({ id: "testsTable" })?.type, "testsTable");
+    assert.equal(resolvePanelMeta({ type: "testsTable" })?.id, "testsTable");
   });
 
   it("includes kit quality-gate ids with stable type qualityGate", () => {
@@ -318,19 +323,52 @@ describe("@qa-guru/allure-notifications-config chart.profile + kit-only QG", () 
 
   it("exports kit-only kind/id set for T6 silent-skip", () => {
     assert.equal(KIT_ONLY_PANEL_KIND, "qualityGate");
-    assert.deepEqual([...KIT_ONLY_PANEL_IDS], ["allureQualityGate", "sonarQualityGate"]);
+    assert.deepEqual([...KIT_ONLY_PANEL_IDS], [
+      "allureQualityGate",
+      "sonarQualityGate",
+      "testsTable",
+    ]);
     assert.equal(isKitOnlyChartItem({ type: "qualityGate" }), true);
+    assert.equal(isKitOnlyChartItem({ type: "testsTable" }), true);
     assert.equal(isKitOnlyChartItem({ id: "sonarQualityGate", type: "qualityGate" }), true);
+    assert.equal(isKitOnlyChartItem({ id: "testsTable", type: "testsTable" }), true);
     assert.equal(isKitOnlyChartItem({ type: "currentStatus" }), false);
     assert.equal(
       shouldSilentSkipKitOnlyItem("default", { type: "qualityGate", id: "allureQualityGate" }),
       true,
     );
     assert.equal(
+      shouldSilentSkipKitOnlyItem("default", { type: "testsTable", id: "testsTable" }),
+      true,
+    );
+    assert.equal(
       shouldSilentSkipKitOnlyItem("kit", { type: "qualityGate", id: "allureQualityGate" }),
       false,
     );
+    assert.equal(
+      shouldSilentSkipKitOnlyItem("kit", { type: "testsTable", id: "testsTable" }),
+      false,
+    );
     assert.equal(shouldSilentSkipKitOnlyItem("default", { type: "currentStatus" }), false);
+  });
+
+  it("parses testsTable items under profile=default (no parse fail)", () => {
+    const result = safeParseConfig({
+      base: {
+        chart: {
+          profile: "default",
+          layout: "free",
+          width: 870,
+          height: 1080,
+          items: [{ id: "testsTable", type: "testsTable", x: 0, y: 0, w: 6, h: 4 }],
+        },
+      },
+    });
+    assert.equal(result.success, true, result.success ? "" : JSON.stringify(result.error.format()));
+    if (result.success) {
+      assert.equal(result.data.base.chart?.items?.length, 1);
+      assert.equal(result.data.base.chart?.profile, "default");
+    }
   });
 
   it("accepts optional QG data path fields on chart", () => {

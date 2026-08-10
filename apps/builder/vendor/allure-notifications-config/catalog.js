@@ -88,6 +88,11 @@ export const PANEL_CATALOG = Object.freeze([
         type: "qualityGate",
         title: "Sonar quality gate",
     }),
+    panel({
+        id: "testsTable",
+        type: "testsTable",
+        title: "Tests table",
+    }),
 ]);
 export const PANEL_META = Object.freeze(Object.fromEntries(PANEL_CATALOG.map((p) => [p.id, p])));
 /** Chart types known to the catalog (unique `type` values). */

@@ -8,15 +8,23 @@ import type { ChartItem } from "./catalog.js";
 export const CHART_PROFILE_DEFAULT = "default" as const;
 export type ChartProfile = "default" | "kit";
 
-/** Stable kind from kit `PanelKind` / Allure custom panel contract. */
-export const KIT_ONLY_PANEL_KIND = "qualityGate" as const;
+/** Kit-only kinds from `PanelKind` / Allure custom panel contract. */
+export const KIT_ONLY_PANEL_KINDS_LIST = ["qualityGate", "testsTable"] as const;
+export type KitOnlyPanelKind = (typeof KIT_ONLY_PANEL_KINDS_LIST)[number];
 
-/** Stable catalog ids from kit overview preset (`allureQualityGate`, `sonarQualityGate`). */
-export const KIT_ONLY_PANEL_IDS = ["allureQualityGate", "sonarQualityGate"] as const;
+/** First kit-only kind — backward-compatible export. */
+export const KIT_ONLY_PANEL_KIND: KitOnlyPanelKind = "qualityGate";
+
+/** Stable catalog ids from kit overview preset. */
+export const KIT_ONLY_PANEL_IDS = [
+  "allureQualityGate",
+  "sonarQualityGate",
+  "testsTable",
+] as const;
 export type KitOnlyPanelId = (typeof KIT_ONLY_PANEL_IDS)[number];
 
 export const KIT_ONLY_PANEL_KINDS: ReadonlySet<string> = Object.freeze(
-  new Set<string>([KIT_ONLY_PANEL_KIND]),
+  new Set<string>(KIT_ONLY_PANEL_KINDS_LIST),
 );
 
 export const KIT_ONLY_PANEL_ID_SET: ReadonlySet<string> = Object.freeze(
@@ -33,7 +41,7 @@ export function isKitOnlyPanelType(type: string | undefined | null): boolean {
   if (!type) {
     return false;
   }
-  return type.trim() === KIT_ONLY_PANEL_KIND;
+  return KIT_ONLY_PANEL_KINDS.has(type.trim());
 }
 
 export function isKitOnlyPanelId(id: string | undefined | null): boolean {
