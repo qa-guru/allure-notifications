@@ -1065,13 +1065,17 @@ html.theme-light .anb-zone--terminal .ch-theme--vscode .ch-tok-cmd { color: #795
 
 .anb-panel__tile .anb-kit-mock.quality-gate .quality-gate__bar,
 .anb-tg__widget.widget-tile--quality-gate .anb-kit-mock.quality-gate .quality-gate__bar {
-  height: var(--anb-bar-h, var(--wt-bar-height, 31px));
-  min-height: 0;
-  padding: 0 14px 0 8px; /* right pad for delete overlay */
+  /* Match anb-panel__bar exactly — same height band + solid chrome (not DS 3% wash / status border). */
+  height: var(--anb-bar-h, 31px);
+  min-height: var(--anb-bar-h, 31px);
+  padding: 0 6px 0 8px;
   display: flex;
   align-items: center;
   width: 100%;
   box-sizing: border-box;
+  border-radius: 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  background: var(--color-surface-soft, #3c3c3c);
 }
 
 /* Collage QG bar: title only — no indicator, no qg-info (LOCKED). */
@@ -1079,8 +1083,23 @@ html.theme-light .anb-zone--terminal .ch-theme--vscode .ch-tok-cmd { color: #795
 .anb-tg__widget.widget-tile--quality-gate .anb-kit-mock.quality-gate .quality-gate__bar-title {
   flex: 1 1 auto;
   min-width: 0;
-  font-size: 0.58rem;
+  font-size: var(--anb-title-size, 0.8125rem);
+  font-weight: 600;
+  line-height: 1.15;
+  letter-spacing: 0.01em;
   text-align: left;
+  color: var(--color-text-muted, #b4b4b4);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Kill DS passed/failed colored bar underline — same mute border as anb-panel__bar. */
+.anb-panel__tile .anb-kit-mock.quality-gate--passed .quality-gate__bar,
+.anb-panel__tile .anb-kit-mock.quality-gate--failed .quality-gate__bar,
+.anb-tg__widget.widget-tile--quality-gate .anb-kit-mock.quality-gate--passed .quality-gate__bar,
+.anb-tg__widget.widget-tile--quality-gate .anb-kit-mock.quality-gate--failed .quality-gate__bar {
+  border-bottom-color: rgba(255, 255, 255, 0.1);
 }
 
 .anb-panel__tile .anb-kit-mock.quality-gate .quality-gate__bar > .indicator,
