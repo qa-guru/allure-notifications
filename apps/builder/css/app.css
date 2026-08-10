@@ -1014,8 +1014,10 @@ html.theme-light .anb-zone--terminal .ch-theme--vscode .ch-tok-cmd { color: #795
 }
 
 /*
- * Editor + TG preview QG: hybrid full-bleed (jar parity).
- * Scale editor bar to --anb-bar-h; kill DS 6.5rem floors so 2×2 stays readable (2a5de3d).
+ * LOCKED 2026-08-10 — hybrid QG full-bleed (CANON § Quality-gate chrome).
+ * Editor + TG: one quality-gate__bar; bar height follows --anb-bar-h on editor;
+ * kill DS 6.5rem floors; compact SQG rules. Do not reintroduce anb-panel__bar
+ * over QG or font-size:0.46rem crush on canvas QG.
  */
 .anb-panel--qualityGate {
   position: relative;

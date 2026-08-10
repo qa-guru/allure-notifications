@@ -1723,7 +1723,8 @@ function panelInnerHtml(item: ChartItem) {
     `<svg viewBox="0 0 16 16" width="9" height="9" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" aria-hidden="true"><path d="m4 4 8 8M12 4l-8 8"/></svg>` +
     `</button>`;
 
-  // QG owns hybrid chrome — same as jar collage / TG preview (one bar).
+  // QG owns hybrid chrome — LOCKED 2026-08-10 (CANON § Quality-gate chrome).
+  // Do not wrap in anb-panel__bar; do not switch to body-only under editor chrome.
   if (chartType === 'qualityGate' && panelId) {
     const hybrid = kitOnlyPanelMockHtml(panelId, chartType, 'hybrid');
     return (

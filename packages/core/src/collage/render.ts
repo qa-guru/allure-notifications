@@ -572,6 +572,7 @@ export async function renderCollagePng(
     const cellWidth = Math.max(1, cellRight - cellLeft);
     const cellHeight = Math.max(1, cellBottom - cellTop);
     // quality-gate PNG already paints hybrid bar+body — do not reserve collage header.
+    // LOCKED: skip macOS drawCard chrome for PANEL_QUALITY_GATE (CANON / anb-qg-chrome-lock).
     const skipCardHeader = key === PANEL_QUALITY_GATE;
     const tileHeaderHeight = skipCardHeader ? 0 : headerHeight;
     const panelHeight = skipCardHeader

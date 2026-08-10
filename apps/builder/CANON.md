@@ -93,15 +93,19 @@ NE/NW/SE/SW parked at the **cell edge** (`top/bottom/left/right: 0`). The visibl
 
 Logical `cardGap` / `headerHeight` / `tilePad` are jar canvas px. TG stage draws at full logical size then `transform: scale`. Editor must multiply the same values by `displayW / chart.width` into `--anb-card-gap` / `--anb-bar-h` / `--wt-pad` (and GridStack cellHeight inset) — never raw logical px as CSS px. Chart mocks share `tierForSpan(10, w, h)`. Editor header stays `anb-panel__bar` (title + copy/delete); product dots only on TG/export.
 
-## Quality-gate chrome (one bar)
+## Quality-gate chrome (LOCKED — do not regress)
 
-| Surface | Chrome |
-|---------|--------|
-| Jar collage PNG | QG hybrid PNG full cell — **no** macOS `drawCard` header |
-| Editor canvas | Full hybrid QG tile (no `anb-panel__bar`) — delete overlays |
-| TG / export preview | Hybrid QG only — **no** outer `widget-tile__bar` |
+**Accepted visual (2026-08-10):** one hybrid bar + body. Editor 2×2 shows full titles `Allure QG` / `Sonar QG`, SQG compact `cov|72<80` + `bugs|3>0`, bar height = `--anb-bar-h` (display-scaled). Debug: [`debug-qg.html`](./debug-qg.html). Guard: smoke `chart.profile kit` QG chrome asserts.
 
-Palette thumbs keep micro `widget-tile__bar` + body-only QG (unchanged).
+| Surface | Chrome | Forbidden |
+|---------|--------|-----------|
+| Jar collage PNG | Hybrid PNG full cell | macOS `drawCard` header / dots |
+| Editor canvas | Hybrid full-bleed; delete overlay | `anb-panel__bar`; nested second bar; raw `31px` bar on scaled canvas; `font-size: 0.46rem` crush on QG |
+| TG / export preview | Hybrid only | outer `widget-tile__bar` |
+
+Palette thumbs: micro `widget-tile__bar` + body-only QG (unchanged).
+
+Do **not** reintroduce body-only editor QG under `anb-panel__bar` (looks like empty/blue inset). Do **not** put full DS message/formula SQG into 2×2 without compact rules + `min-width: 0` overrides (DS `6.5rem` floors).
 
 ## Terminal bar (builder canon)
 

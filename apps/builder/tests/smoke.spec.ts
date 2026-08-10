@@ -556,23 +556,42 @@ test.describe('allure-notifications-builder smoke', () => {
       };
       const panel = A.panelInnerHtml(aqg);
       const preview = A.previewItemHtml(aqg);
-      const canvasMock = document.querySelector(
+      const aqgEl = document.querySelector(
         '.anb-canvas [data-testid="anb-kit-mock-allureQualityGate"]',
       );
+      const sqgEl = document.querySelector(
+        '.anb-canvas [data-testid="anb-kit-mock-sonarQualityGate"]',
+      );
+      const canvas = document.getElementById('anb-canvas');
+      const anbBar = parseFloat(
+        getComputedStyle(canvas!).getPropertyValue('--anb-bar-h') || '0',
+      );
+      const aqgBar = aqgEl?.querySelector('.quality-gate__bar');
+      const barH = aqgBar ? parseFloat(getComputedStyle(aqgBar).height) : 0;
       return {
         panelHasEditorBar: /anb-panel__bar/.test(panel),
         panelHasQgBar: /quality-gate__bar/.test(panel),
         previewHasProductBar: /widget-tile__bar/.test(preview),
-        previewHasQgBar: /quality-gate__bar/.test(preview),
-        canvasHasQgBar: Boolean(canvasMock?.querySelector('.quality-gate__bar')),
+        previewHasQgBar: /quality-gate__rule-id/.test(preview) || /quality-gate__bar/.test(preview),
+        canvasHasQgBar: Boolean(aqgEl?.querySelector('.quality-gate__bar')),
         canvasHasEditorBar: Boolean(
-          canvasMock?.closest('.anb-panel')?.querySelector('.anb-panel__bar'),
+          aqgEl?.closest('.anb-panel')?.querySelector('.anb-panel__bar'),
         ),
         canvasHasDelete: Boolean(
-          canvasMock?.closest('.anb-panel')?.querySelector('[data-anb-action="delete"]'),
+          aqgEl?.closest('.anb-panel')?.querySelector('[data-anb-action="delete"]'),
         ),
+        aqgTitle: aqgEl?.querySelector('.quality-gate__bar-title')?.textContent ?? '',
+        sqgTitle: sqgEl?.querySelector('.quality-gate__bar-title')?.textContent ?? '',
+        sqgFormulas: [
+          ...(sqgEl?.querySelectorAll('.quality-gate__formula') ?? []),
+        ].map((n) => n.textContent?.trim() ?? ''),
+        aqgVerdict: aqgEl?.querySelector('.quality-gate__verdict')?.textContent?.trim() ?? '',
+        qgBarCount: aqgEl?.querySelectorAll('.quality-gate__bar').length ?? 0,
+        anbBar,
+        barH,
       };
     });
+    // LOCKED hybrid QG (2026-08-10) — do not weaken these asserts.
     expect(canvasQgChrome.panelHasEditorBar).toBe(false);
     expect(canvasQgChrome.panelHasQgBar).toBe(true);
     expect(canvasQgChrome.previewHasProductBar).toBe(false);
@@ -580,6 +599,12 @@ test.describe('allure-notifications-builder smoke', () => {
     expect(canvasQgChrome.canvasHasEditorBar).toBe(false);
     expect(canvasQgChrome.canvasHasQgBar).toBe(true);
     expect(canvasQgChrome.canvasHasDelete).toBe(true);
+    expect(canvasQgChrome.qgBarCount).toBe(1);
+    expect(canvasQgChrome.aqgTitle).toBe('Allure QG');
+    expect(canvasQgChrome.sqgTitle).toBe('Sonar QG');
+    expect(canvasQgChrome.aqgVerdict).toBe('Passed');
+    expect(canvasQgChrome.sqgFormulas).toEqual(['72<80', '3>0']);
+    expect(Math.abs(canvasQgChrome.barH - canvasQgChrome.anbBar)).toBeLessThan(1.5);
 
     const canvasTestsTable = page.locator('.anb-canvas [data-testid="anb-kit-mock-testsTable"]');
     await expect(canvasTestsTable.locator('thead th')).toHaveCount(4);
