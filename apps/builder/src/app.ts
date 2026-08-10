@@ -325,7 +325,7 @@ function chromeCssVars(chart: {
   return (
     `--wt-bar-height:${headerHeight}px;` +
     `--wt-pad:${tilePad}px;` +
-    `--wt-title-size:${(WT_TITLE_BASELINE * scale).toFixed(3)}rem;` +
+    `--wt-title-size:${(WT_TITLE_BASELINE * scale).toFixed(4)}rem;` +
     `--indicator-size:${Math.max(6, Math.round(10 * scale))}px;` +
     `--wt-dot-gap:${Math.max(2, Math.round(5 * scale))}px;` +
     `--anb-card-radius:${radius}px`
@@ -444,7 +444,7 @@ function syncEditorChrome() {
   if (!(canvas instanceof HTMLElement)) return;
   const displayScale = canvasDisplayScale(canvas);
   const gapCss = cardGap * displayScale;
-  const barCss = Math.max(WT_BAR_BASELINE, headerHeight * displayScale);
+  const barCss = headerHeight * displayScale;
   const padCss = tilePad * displayScale;
   const chartW =
     chart.width != null && Number.isFinite(Number(chart.width)) ? Number(chart.width) : 870;
@@ -638,7 +638,8 @@ function migrateChromeKnobs() {
   const chart = /** @type {{ headerHeight?: number }} */ (state.base.chart);
   if (!chart) return;
   const h = Number(chart.headerHeight);
-  if (Number.isFinite(h) && h > 0 && h < WT_BAR_BASELINE) {
+  if (!Number.isFinite(h) || h <= 0) return;
+  if (h < WT_BAR_BASELINE) {
     chart.headerHeight = WT_BAR_BASELINE;
   }
 }

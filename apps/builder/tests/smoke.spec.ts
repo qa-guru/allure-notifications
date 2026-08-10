@@ -439,7 +439,7 @@ test.describe('allure-notifications-builder smoke', () => {
         barCss,
         padCss,
         gapExpected: 14 * scale,
-        barExpected: Math.max(31, 31 * scale),
+        barExpected: 31 * scale,
         padExpected: 6 * scale,
         panelTier: (panel.match(/widget-tile--tier-(\w+)/) || [])[1],
         previewTier: (preview.match(/widget-tile--tier-(\w+)/) || [])[1],

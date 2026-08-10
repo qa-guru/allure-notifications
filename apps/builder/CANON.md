@@ -18,7 +18,7 @@
 
 | Field | Default | Role |
 |-------|---------|------|
-| `headerHeight` | **31** | Card title-bar height (logical canvas px). Jar **5.0.3+**. TG preview sets `--wt-bar-height` (+ proportional title/dots from DS baseline 31). Editor: `--anb-bar-h` min DS baseline × displayScale. |
+| `headerHeight` | **31** | Card title-bar height (logical canvas px) = DS `--wt-bar-height`. Jar **5.0.3+**. TG/Preview: inline `--wt-bar-height` + title/dots from baseline 31. Editor `anb-panel__bar`: logical × displayScale (no floor). |
 | `cardGap` | **14** | Gap around/between cards (logical canvas px) — equal edge & between. Jar **5.0.4+**. Editor: half-inset × displayScale; TG preview = `freeCellRect` then `transform: scale`. |
 | `tilePad` | **6** | Inner body pad (logical canvas px) → `--wt-pad` × displayScale on editor; full logical on TG stage. Jar has no field yet. |
 
