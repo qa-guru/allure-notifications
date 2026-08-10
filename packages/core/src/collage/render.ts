@@ -379,6 +379,28 @@ async function drawCard(
   headerHeight: number,
   cardArc: number,
 ): Promise<void> {
+  graphics.save();
+  roundRectClip(graphics, rect.x, rect.y, rect.w, rect.h, cardArc);
+
+  const img = await loadImage(panelPng);
+
+  // Hybrid panels (quality-gate) own their chrome — full-bleed PNG, no macOS bar.
+  if (headerHeight <= 0) {
+    graphics.drawImage(img, rect.x, rect.y, rect.w, rect.h);
+    graphics.restore();
+    graphics.strokeStyle = rgbCss(cardBorder(theme));
+    graphics.lineWidth = CARD_BORDER_WIDTH;
+    roundRectStroke(
+      graphics,
+      rect.x + 0.5,
+      rect.y + 0.5,
+      rect.w - 1,
+      rect.h - 1,
+      cardArc,
+    );
+    return;
+  }
+
   const scale = headerHeight / BASE_HEADER_HEIGHT;
   const padX = Math.max(CARD_HEADER_PAD_X, Math.round(CARD_HEADER_PAD_X * scale));
   const dotSize = Math.max(CARD_DOT_SIZE, Math.round(CARD_DOT_SIZE * scale));
@@ -390,11 +412,6 @@ async function drawCard(
   const fontSize = Math.max(CARD_TITLE_FONT, Math.round(CARD_TITLE_FONT * scale));
 
   const bodyHeight = Math.max(1, rect.h - headerHeight);
-
-  graphics.save();
-  roundRectClip(graphics, rect.x, rect.y, rect.w, rect.h, cardArc);
-
-  const img = await loadImage(panelPng);
   graphics.drawImage(img, rect.x, rect.y + headerHeight, rect.w, bodyHeight);
 
   const headerBg = headerBackground(theme);
@@ -554,14 +571,19 @@ export async function renderCollagePng(
       y + h === rows ? collageHeight - cardGap : rawBottom - half;
     const cellWidth = Math.max(1, cellRight - cellLeft);
     const cellHeight = Math.max(1, cellBottom - cellTop);
-    const bodyHeight = Math.max(1, cellHeight - headerHeight);
+    // quality-gate PNG already paints hybrid bar+body — do not reserve collage header.
+    const skipCardHeader = key === PANEL_QUALITY_GATE;
+    const tileHeaderHeight = skipCardHeader ? 0 : headerHeight;
+    const panelHeight = skipCardHeader
+      ? cellHeight
+      : Math.max(1, cellHeight - headerHeight);
 
     const panelPng = renderPanelPng(
       key,
       config,
       theme,
       cellWidth,
-      bodyHeight,
+      panelHeight,
       analytics,
       item.groupBy,
       item.by,
@@ -576,7 +598,7 @@ export async function renderCollagePng(
       { x: cellLeft, y: cellTop, w: cellWidth, h: cellHeight },
       theme,
       title,
-      headerHeight,
+      tileHeaderHeight,
       cardArc,
     );
   }

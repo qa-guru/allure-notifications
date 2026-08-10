@@ -132,6 +132,19 @@ describe("quality-gate collage wire", () => {
     assert.ok(green >= 30, `expected QG success indicator pixels, got ${green}`);
   });
 
+  it("collage skips macOS card dots over quality-gate tiles", async () => {
+    // Dark theme card chrome mixes DOT_CLOSE (#ff5f57) with headerBg (60,60,60) @ 0.55.
+    const macCloseMixed = { r: 167, g: 79, b: 75 };
+    const config = kitConfig();
+    const summary = await readSummary(join(fixtures, "allure3-report/summary.json"));
+    const results = await readAllureResults(join(fixtures, "allure-results"));
+    const analytics = buildAnalytics(summary, results);
+    const qualityGates = await loadQualityGateCollageData(config);
+    const png = await renderCollagePng(config, analytics, qualityGates);
+    const dots = await countNearColor(png, macCloseMixed, 8, 1);
+    assert.equal(dots, 0, `expected no macOS close-dot chrome over QG, got ${dots}`);
+  });
+
   it("profile=default silent-skips QG items (no throw, smaller PNG)", async () => {
     const config = parseConfig({
       base: {

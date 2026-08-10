@@ -544,6 +544,39 @@ test.describe('allure-notifications-builder smoke', () => {
     await page.getByTestId('anb-palette-sonarQualityGate').click();
     await page.getByTestId('anb-palette-testsTable').click();
 
+    const canvasQgChrome = await page.evaluate(() => {
+      const A = globalThis.__ANB__;
+      const aqg = {
+        id: 'allureQualityGate',
+        type: 'qualityGate',
+        x: 0,
+        y: 0,
+        w: 2,
+        h: 2,
+      };
+      const panel = A.panelInnerHtml(aqg);
+      const preview = A.previewItemHtml(aqg);
+      const canvasMock = document.querySelector(
+        '.anb-canvas [data-testid="anb-kit-mock-allureQualityGate"]',
+      );
+      return {
+        panelHasEditorBar: /anb-panel__bar/.test(panel),
+        panelHasQgBar: /quality-gate__bar/.test(panel),
+        previewHasProductBar: /widget-tile__bar/.test(preview),
+        previewHasQgBar: /quality-gate__bar/.test(preview),
+        canvasHasQgBar: Boolean(canvasMock?.querySelector('.quality-gate__bar')),
+        canvasHasEditorBar: Boolean(
+          canvasMock?.closest('.anb-panel')?.querySelector('.anb-panel__bar'),
+        ),
+      };
+    });
+    expect(canvasQgChrome.panelHasEditorBar).toBe(true);
+    expect(canvasQgChrome.panelHasQgBar).toBe(false);
+    expect(canvasQgChrome.previewHasProductBar).toBe(false);
+    expect(canvasQgChrome.previewHasQgBar).toBe(true);
+    expect(canvasQgChrome.canvasHasEditorBar).toBe(true);
+    expect(canvasQgChrome.canvasHasQgBar).toBe(false);
+
     const canvasTestsTable = page.locator('.anb-canvas [data-testid="anb-kit-mock-testsTable"]');
     await expect(canvasTestsTable.locator('thead th')).toHaveCount(4);
     await expect(canvasTestsTable.locator('thead th').nth(3)).toHaveText('Stability');

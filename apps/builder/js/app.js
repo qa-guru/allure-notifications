@@ -941,8 +941,52 @@ function qgInfoTriggerHtml() {
         `</svg>` +
         `</span></span></div>`);
 }
-/** Builder-only kit tile body — DS quality-gate / tests-table-panel; not collage IR. */
-function kitOnlyPanelMockHtml(panelId, chartType) {
+/** QG body content (verdict / rules) — shared by editor body-only and TG hybrid. */
+function kitOnlyQgBodyInnerHtml(panelId) {
+    if (panelId === 'sonarQualityGate') {
+        return (`<div class="quality-gate__body">` +
+            `<ul class="quality-gate__rules">` +
+            `<li class="quality-gate__rule">` +
+            `<div class="quality-gate__rule-id">coverage</div>` +
+            `<div class="quality-gate__rule-detail">` +
+            `<p class="quality-gate__message">coverage 72.4 is below the required 80</p>` +
+            `<p class="quality-gate__formula">FAIL: 72.4 &lt; 80</p>` +
+            `</div></li></ul></div>`);
+    }
+    return (`<div class="quality-gate__body">` +
+        `<p class="quality-gate__verdict quality-gate__verdict--ok">Passed</p>` +
+        `</div>`);
+}
+/**
+ * Kit QG mock: `hybrid` = quality-gate__bar + body (jar / TG preview parity);
+ * `body` = body only (editor already has anb-panel__bar).
+ */
+function kitOnlyQgMockHtml(panelId, chrome) {
+    const testId = `anb-kit-mock-${panelId}`;
+    const isSonar = panelId === 'sonarQualityGate';
+    const kind = isSonar ? 'sonar' : 'allure';
+    const status = isSonar ? 'failed' : 'passed';
+    const indicator = isSonar ? 'failed' : 'passed';
+    const title = isSonar ? 'Sonar QG' : 'Allure QG';
+    const bar = chrome === 'hybrid'
+        ? `<div class="quality-gate__bar">` +
+            `<div class="quality-gate__bar-start">` +
+            `<span class="indicator indicator--${indicator} indicator--solid" aria-hidden="true"></span>` +
+            `<span class="quality-gate__bar-title">${title}</span>` +
+            `</div>` +
+            qgInfoTriggerHtml() +
+            `</div>`
+        : '';
+    return (`<div class="quality-gate quality-gate--${kind} quality-gate--${status} anb-kit-mock" data-anb-kit-mock="${escapeHtml(panelId)}" data-testid="${testId}" role="status" aria-hidden="true">` +
+        bar +
+        kitOnlyQgBodyInnerHtml(panelId) +
+        `</div>`);
+}
+/**
+ * Builder kit tile mock — DS quality-gate / tests-table-panel; not collage IR.
+ * QG chrome: editor → body-only; TG/export preview → hybrid (see callers).
+ */
+function kitOnlyPanelMockHtml(panelId, chartType, qgChrome = 'hybrid') {
     const testId = `anb-kit-mock-${panelId}`;
     if (chartType === 'testsTable') {
         return (`<div class="tests-table-panel anb-kit-mock" data-anb-kit-mock="${escapeHtml(panelId)}" data-testid="${testId}">` +
@@ -952,39 +996,11 @@ function kitOnlyPanelMockHtml(panelId, chartType) {
             canvasTestsTableRowsHtml() +
             `</tbody></table></div>`);
     }
-    if (panelId === 'sonarQualityGate') {
-        return (`<div class="quality-gate quality-gate--sonar quality-gate--failed anb-kit-mock" data-anb-kit-mock="${escapeHtml(panelId)}" data-testid="${testId}" role="status" aria-hidden="true">` +
-            `<div class="quality-gate__bar">` +
-            `<div class="quality-gate__bar-start">` +
-            `<span class="indicator indicator--failed indicator--solid" aria-hidden="true"></span>` +
-            `<span class="quality-gate__bar-title">Sonar QG</span>` +
-            `</div>` +
-            qgInfoTriggerHtml() +
-            `</div>` +
-            `<div class="quality-gate__body">` +
-            `<ul class="quality-gate__rules">` +
-            `<li class="quality-gate__rule">` +
-            `<div class="quality-gate__rule-id">coverage</div>` +
-            `<div class="quality-gate__rule-detail">` +
-            `<p class="quality-gate__message">coverage 72.4 is below the required 80</p>` +
-            `<p class="quality-gate__formula">FAIL: 72.4 &lt; 80</p>` +
-            `</div></li></ul></div></div>`);
-    }
-    return (`<div class="quality-gate quality-gate--allure quality-gate--passed anb-kit-mock" data-anb-kit-mock="${escapeHtml(panelId)}" data-testid="${testId}" role="status" aria-hidden="true">` +
-        `<div class="quality-gate__bar">` +
-        `<div class="quality-gate__bar-start">` +
-        `<span class="indicator indicator--passed indicator--solid" aria-hidden="true"></span>` +
-        `<span class="quality-gate__bar-title">Allure QG</span>` +
-        `</div>` +
-        qgInfoTriggerHtml() +
-        `</div>` +
-        `<div class="quality-gate__body">` +
-        `<p class="quality-gate__verdict quality-gate__verdict--ok">Passed</p>` +
-        `</div></div>`);
+    return kitOnlyQgMockHtml(panelId, qgChrome);
 }
 /** @deprecated use kitOnlyPanelMockHtml — kept for debug exports */
 function qualityGateMockHtml(panelId) {
-    return kitOnlyPanelMockHtml(panelId, 'qualityGate');
+    return kitOnlyPanelMockHtml(panelId, 'qualityGate', 'hybrid');
 }
 /**
  * Content tier for a free-grid footprint — same SSOT for editor + TG preview.
@@ -1001,6 +1017,7 @@ function tileTier(item) {
  * Chrome: headerHeight → `--wt-bar-height` (+ proportional title/dots);
  * cardGap → jar free-grid half-gap inset; tilePad → `--wt-pad`;
  * tier → `widget-tile--tier-*` (parity with editor `panelInnerHtml`).
+ * Kit QG: hybrid mock only (no outer widget-tile__bar) — jar collage parity.
  * @param {ChartItem} item
  */
 function previewItemHtml(item) {
@@ -1021,14 +1038,19 @@ function previewItemHtml(item) {
     if (by)
         attrs += ` data-by="${escapeHtml(by)}"`;
     const chrome = chromeCssVars(chart);
+    const isQg = chartType === 'qualityGate';
     const body = isKitOnlyPanelType(chartType) && panelId
-        ? kitOnlyPanelMockHtml(panelId, chartType)
+        ? kitOnlyPanelMockHtml(panelId, chartType, 'hybrid')
         : '';
-    return (`<figure class="widget-tile widget-tile--tier-${tier} anb-tg__widget" ${attrs} ` +
+    const kitTileMod = isQg ? ' widget-tile--quality-gate' : '';
+    const productBar = isQg
+        ? ''
+        : `<div class="widget-tile__bar">` +
+            `<span class="widget-tile__title">${escapeHtml(title)}</span>` +
+            `</div>`;
+    return (`<figure class="widget-tile widget-tile--tier-${tier} anb-tg__widget${kitTileMod}" ${attrs} ` +
         `style="left:${rect.left}px;top:${rect.top}px;width:${rect.width}px;height:${rect.height}px;${chrome}">` +
-        `<div class="widget-tile__bar">` +
-        `<span class="widget-tile__title">${escapeHtml(title)}</span>` +
-        `</div>` +
+        productBar +
         `<div class="widget-tile__body">${body}</div>` +
         `</figure>`);
 }
@@ -1463,6 +1485,7 @@ function clearSelection() {
 /**
  * Editor card: editor bar (title + copy/delete) + tiered chart body.
  * Product dots live only on TG preview / export stage — not on the grid.
+ * Kit QG: body-only mock (no nested quality-gate__bar — anb-panel__bar owns chrome).
  * @param {ChartItem} item
  */
 function panelInnerHtml(item) {
@@ -1483,7 +1506,7 @@ function panelInnerHtml(item) {
     else if (meta?.by)
         attrs += ` data-by="${escapeHtml(meta.by)}"`;
     const kitBody = isKitOnlyPanelType(chartType) && panelId
-        ? kitOnlyPanelMockHtml(panelId, chartType)
+        ? kitOnlyPanelMockHtml(panelId, chartType, 'body')
         : '';
     const kitTileMod = chartType === 'qualityGate' ? ' widget-tile--quality-gate' : '';
     return (`<div class="anb-panel__bar">` +

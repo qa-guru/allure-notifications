@@ -93,6 +93,16 @@ NE/NW/SE/SW parked at the **cell edge** (`top/bottom/left/right: 0`). The visibl
 
 Logical `cardGap` / `headerHeight` / `tilePad` are jar canvas px. TG stage draws at full logical size then `transform: scale`. Editor must multiply the same values by `displayW / chart.width` into `--anb-card-gap` / `--anb-bar-h` / `--wt-pad` (and GridStack cellHeight inset) — never raw logical px as CSS px. Chart mocks share `tierForSpan(10, w, h)`. Editor header stays `anb-panel__bar` (title + copy/delete); product dots only on TG/export.
 
+## Quality-gate chrome (one bar)
+
+| Surface | Chrome |
+|---------|--------|
+| Jar collage PNG | QG hybrid PNG full cell — **no** macOS `drawCard` header |
+| Editor canvas | `anb-panel__bar` + **body-only** QG mock (no nested `quality-gate__bar`) |
+| TG / export preview | Hybrid QG only — **no** outer `widget-tile__bar` |
+
+Palette thumbs keep micro `widget-tile__bar` + body-only QG (unchanged).
+
 ## Terminal bar (builder canon)
 
 | | |

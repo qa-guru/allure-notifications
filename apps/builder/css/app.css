@@ -1014,6 +1014,30 @@ html.theme-light .anb-zone--terminal .ch-theme--vscode .ch-tok-cmd { color: #795
   line-height: 1.1;
 }
 
+/* Canvas QG body-only (no nested quality-gate__bar — editor owns anb-panel__bar). */
+.anb-panel__tile .anb-kit-mock.quality-gate {
+  display: flex;
+  flex-direction: column;
+  border: none;
+  background: transparent;
+}
+
+.anb-panel__tile .anb-kit-mock.quality-gate .quality-gate__body {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 0;
+  height: 100%;
+  padding: 0;
+}
+
+.anb-panel__tile .anb-kit-mock.quality-gate--passed .quality-gate__body {
+  align-items: center;
+  justify-content: center;
+  min-height: 0;
+  padding: 2px;
+}
+
 .anb-panel__tile .anb-kit-mock.tests-table-panel {
   overflow: hidden;
 }
