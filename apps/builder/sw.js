@@ -23,7 +23,7 @@ const MANIFEST = [
   },
   {
     "url": "/js/app.js",
-    "revision": "4212b1a37c5d900e"
+    "revision": "11f0ef323c0042d9"
   },
   {
     "url": "/js/phrases.js",

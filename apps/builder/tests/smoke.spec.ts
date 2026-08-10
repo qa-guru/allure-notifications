@@ -620,8 +620,8 @@ test.describe('allure-notifications-builder smoke', () => {
     expect(canvasQgChrome.titleAlign).toBe('left');
     expect(canvasQgChrome.hasInfo).toBe(false);
     expect(canvasQgChrome.hasIndicator).toBe(false);
-    expect(canvasQgChrome.qgFootprint.w).toBeGreaterThanOrEqual(4);
-    expect(canvasQgChrome.qgFootprint.h).toBeGreaterThanOrEqual(3);
+    expect(canvasQgChrome.qgFootprint.w).toBe(2);
+    expect(canvasQgChrome.qgFootprint.h).toBe(2);
 
     const canvasTestsTable = page.locator('.anb-canvas [data-testid="anb-kit-mock-testsTable"]');
     await expect(canvasTestsTable.locator('thead th')).toHaveCount(4);
