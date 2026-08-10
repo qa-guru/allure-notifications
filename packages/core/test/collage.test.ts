@@ -18,6 +18,7 @@ import { createCanvas, loadImage } from "@napi-rs/canvas";
 import {
   DEFAULT_HEADER_HEIGHT,
   DEFAULT_ITEMS,
+  DEFAULT_TILE_PAD,
   PANEL_CATALOG,
   createDefaultConfig,
   createSq1080Config,
@@ -42,6 +43,7 @@ import {
   renderEmptyPanel,
   resolveCardTitle,
   resolveHeaderHeight,
+  resolveTilePad,
   themeFromDarkMode,
 } from "../src/index.js";
 import { panelContext } from "../src/collage/context.js";
@@ -125,6 +127,7 @@ function cb870Config(opts: {
   height: number;
   allureFolder: string;
   allureResultsFolder: string;
+  tilePad?: number;
 }) {
   return parseConfig({
     base: {
@@ -142,6 +145,7 @@ function cb870Config(opts: {
         height: opts.height,
         headerHeight: 68,
         cardGap: 14,
+        tilePad: opts.tilePad ?? 0,
         gridCols: 10,
         gridRows: 10,
         items: [
@@ -327,6 +331,87 @@ describe("@qa-guru/allure-notifications-core collage", () => {
     });
     assert.equal(omit.base.chart?.headerHeight, undefined);
     assert.equal(resolveHeaderHeight(omit), DEFAULT_HEADER_HEIGHT);
+  });
+
+  it("resolveTilePad: createDefaultConfig and omit tilePad → DEFAULT_TILE_PAD", () => {
+    assert.equal(DEFAULT_TILE_PAD, 6);
+    const fromDefault = parseConfig(createDefaultConfig());
+    assert.equal(resolveTilePad(fromDefault), 6);
+    assert.equal(fromDefault.base.chart?.tilePad, 6);
+
+    const omit = parseConfig({
+      base: {
+        project: "omit-tile-pad",
+        allureFolder: "a",
+        allureResultsFolder: "r",
+        enableChart: true,
+        chart: {
+          mode: "collage",
+          layout: "free",
+          width: 870,
+          height: 1080,
+          items: [{ type: "currentStatus", x: 0, y: 0, w: 1, h: 1 }],
+        },
+      },
+    });
+    assert.equal(omit.base.chart?.tilePad, undefined);
+    assert.equal(resolveTilePad(omit), DEFAULT_TILE_PAD);
+  });
+
+  it("tilePad 0 vs 12 changes chart body inset in PNG", async () => {
+    const summary = await readSummary(
+      join(fixtures, "allure3-report/summary.json"),
+    );
+    const results = await readAllureResults(join(fixtures, "allure-results"));
+    const analytics = buildAnalytics(summary, results);
+
+    const baseChart = {
+      mode: "collage" as const,
+      layout: "free" as const,
+      width: 400,
+      height: 400,
+      headerHeight: 68,
+      cardGap: 14,
+      gridCols: 10,
+      gridRows: 10,
+      items: [{ type: "currentStatus", x: 0, y: 0, w: 10, h: 10 }],
+    };
+
+    const pad0 = parseConfig({
+      base: {
+        project: "pad0",
+        allureFolder: join(fixtures, "allure3-report"),
+        allureResultsFolder: join(fixtures, "allure-results"),
+        enableChart: true,
+        darkMode: true,
+        chart: { ...baseChart, tilePad: 0 },
+      },
+    });
+    const pad12 = parseConfig({
+      base: {
+        project: "pad12",
+        allureFolder: join(fixtures, "allure3-report"),
+        allureResultsFolder: join(fixtures, "allure-results"),
+        enableChart: true,
+        darkMode: true,
+        chart: { ...baseChart, tilePad: 12 },
+      },
+    });
+
+    const png0 = await renderCollagePng(pad0, analytics);
+    const png12 = await renderCollagePng(pad12, analytics);
+    const digest0 = createHash("sha256").update(png0).digest("hex");
+    const digest12 = createHash("sha256").update(png12).digest("hex");
+    assert.notEqual(digest0, digest12);
+
+    const green0 = await countNearColor(png0, { r: 0x94, g: 0xca, b: 0x66 });
+    const green12 = await countNearColor(png12, { r: 0x94, g: 0xca, b: 0x66 });
+    assert.ok(green0 > 50, `tilePad=0: expected pie green, got ${green0}`);
+    assert.ok(green12 > 50, `tilePad=12: expected pie green, got ${green12}`);
+    assert.ok(
+      green0 > green12,
+      `tilePad=12 shrinks chart body inset vs tilePad=0 (${green0} vs ${green12})`,
+    );
   });
 
   it("wires CORNER_RATIO / TIER_GAP_RATIO from @pyramid", () => {

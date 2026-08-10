@@ -16,7 +16,7 @@ export const GRID_ROWS = 10;
 /** Jar / collage chrome defaults (CollageRenderer + widget-tile canon in builder). */
 export const DEFAULT_HEADER_HEIGHT = 31;
 export const DEFAULT_CARD_GAP = 14;
-/** Preview-only — maps to `--wt-pad`; jar parses but does not apply yet. */
+/** Inner body pad (px) — jar collage + builder `--wt-pad`. */
 export const DEFAULT_TILE_PAD = 6;
 /**
  * Default layout — 4-tile on full 10×10 substrate.

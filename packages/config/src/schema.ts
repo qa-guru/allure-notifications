@@ -70,7 +70,7 @@ export const ChartConfigSchema = z
     headerHeight: z.number().int().positive().optional().nullable(),
     /** Gap around/between cards (px). Default 14. */
     cardGap: z.number().int().nonnegative().optional().nullable(),
-    /** Inner body pad (px) — preview/builder parity; jar parses, may ignore. */
+    /** Inner body pad (px) — widget-tile `--wt-pad` / collage body inset. */
     tilePad: z.number().int().nonnegative().optional().nullable(),
     pyramidFallback: z.string().optional(),
     historyPath: z.string().optional().nullable(),

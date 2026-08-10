@@ -6,6 +6,7 @@
 import { createCanvas, loadImage, type SKRSContext2D } from "@napi-rs/canvas";
 import {
   DEFAULT_HEADER_HEIGHT,
+  DEFAULT_TILE_PAD,
   isKitOnlyChartItem,
   normalizeChartProfile,
   resolvePanelMeta,
@@ -183,6 +184,15 @@ function resolveCardGap(config: Config): number {
     return g;
   }
   return CANON_CARD_GAP;
+}
+
+/** Inner chart body pad — omit/null → config SSOT `DEFAULT_TILE_PAD` (6). */
+export function resolveTilePad(config: Config): number {
+  const p = config.base.chart?.tilePad;
+  if (p != null && p >= 0) {
+    return p;
+  }
+  return DEFAULT_TILE_PAD;
 }
 
 function resolveCardArc(collageWidth: number, collageHeight: number): number {
@@ -384,6 +394,7 @@ async function drawCard(
   theme: ChartTheme,
   title: string,
   headerHeight: number,
+  tilePad: number,
   cardArc: number,
 ): Promise<void> {
   graphics.save();
@@ -393,7 +404,10 @@ async function drawCard(
 
   // Hybrid panels (quality-gate) own their chrome — full-bleed PNG, no macOS bar.
   if (headerHeight <= 0) {
-    graphics.drawImage(img, rect.x, rect.y, rect.w, rect.h);
+    const inset = Math.max(0, tilePad);
+    const bodyW = Math.max(1, rect.w - 2 * inset);
+    const bodyH = Math.max(1, rect.h - 2 * inset);
+    graphics.drawImage(img, rect.x + inset, rect.y + inset, bodyW, bodyH);
     graphics.restore();
     graphics.strokeStyle = rgbCss(cardBorder(theme));
     graphics.lineWidth = CARD_BORDER_WIDTH;
@@ -418,8 +432,16 @@ async function drawCard(
   );
   const fontSize = Math.max(CARD_TITLE_FONT, Math.round(CARD_TITLE_FONT * scale));
 
-  const bodyHeight = Math.max(1, rect.h - headerHeight);
-  graphics.drawImage(img, rect.x, rect.y + headerHeight, rect.w, bodyHeight);
+  const inset = Math.max(0, tilePad);
+  const bodyHeight = Math.max(1, rect.h - headerHeight - 2 * inset);
+  const bodyWidth = Math.max(1, rect.w - 2 * inset);
+  graphics.drawImage(
+    img,
+    rect.x + inset,
+    rect.y + headerHeight + inset,
+    bodyWidth,
+    bodyHeight,
+  );
 
   const headerBg = headerBackground(theme);
   graphics.fillStyle = rgbCss(headerBg);
@@ -528,6 +550,7 @@ export async function renderCollagePng(
     chart?.height && chart.height > 0 ? chart.height : DEFAULT_HEIGHT;
   const headerHeight = resolveHeaderHeight(config);
   const cardGap = resolveCardGap(config);
+  const tilePad = resolveTilePad(config);
   const cols =
     chart?.gridCols && chart.gridCols > 0 ? chart.gridCols : DEFAULT_GRID_COLS;
   const rows =
@@ -580,13 +603,15 @@ export async function renderCollagePng(
     const cellHeight = Math.max(1, cellBottom - cellTop);
     // QG body PNG under macOS drawCard (dots + title) — same chrome as other tiles.
     const tileHeaderHeight = headerHeight;
-    const panelHeight = Math.max(1, cellHeight - headerHeight);
+    const inset = Math.max(0, tilePad);
+    const panelWidth = Math.max(1, cellWidth - 2 * inset);
+    const panelHeight = Math.max(1, cellHeight - headerHeight - 2 * inset);
 
     const panelPng = renderPanelPng(
       key,
       config,
       theme,
-      cellWidth,
+      panelWidth,
       panelHeight,
       analytics,
       item.groupBy,
@@ -603,6 +628,7 @@ export async function renderCollagePng(
       theme,
       title,
       tileHeaderHeight,
+      tilePad,
       cardArc,
     );
   }

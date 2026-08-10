@@ -65,6 +65,7 @@ export {
   renderCollagePng,
   resolveCardTitle,
   resolveHeaderHeight,
+  resolveTilePad,
 } from "./collage/render.js";
 export {
   loadQualityGateCollageData,
