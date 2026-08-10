@@ -1810,9 +1810,9 @@ function clearSelection() {
 }
 
 /**
- * Editor card: editor bar (title + copy/delete) + tiered chart body.
+ * Editor card: non-QG → anb-panel__bar (title + delete) + tiered body.
  * Product dots live only on TG preview / export stage — not on the grid.
- * Kit QG: full hybrid tile (jar parity) — no anb-panel__bar; delete overlays.
+ * Kit QG: hybrid quality-gate__bar (no anb-panel__bar); delete inside bar.
  * @param {ChartItem} item
  */
 function panelInnerHtml(item: ChartItem) {

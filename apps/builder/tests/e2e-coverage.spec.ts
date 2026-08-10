@@ -348,7 +348,7 @@ test.describe('formats', () => {
 });
 
 test.describe('panels', () => {
-  test('panel bar copy/delete actions + toolbar copy + keyboard', async ({
+  test('panel bar delete + toolbar copy + keyboard', async ({
     page,
   }) => {
     await page.goto('/');

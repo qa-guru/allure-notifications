@@ -91,7 +91,7 @@ NE/NW/SE/SW parked at the **cell edge** (`top/bottom/left/right: 0`). The visibl
 
 ## Editor ↔ TG preview proportions
 
-Logical `cardGap` / `headerHeight` / `tilePad` are collage canvas px (`packages/core`). TG stage draws at full logical size then `transform: scale`. Editor must multiply the same values by `displayW / chart.width` into `--anb-card-gap` / `--anb-bar-h` / `--wt-pad` (and GridStack cellHeight inset) — never raw logical px as CSS px. Chart mocks share `tierForSpan(10, w, h)`. Editor header stays `anb-panel__bar` (title + copy/delete); product dots only on TG/export.
+Logical `cardGap` / `headerHeight` / `tilePad` are collage canvas px (`packages/core`). TG stage draws at full logical size then `transform: scale`. Editor must multiply the same values by `displayW / chart.width` into `--anb-card-gap` / `--anb-bar-h` / `--wt-pad` (and GridStack cellHeight inset) — never raw logical px as CSS px. Chart mocks share `tierForSpan(10, w, h)`. Non-QG editor header: `anb-panel__bar` (title + delete only — no copy on the bar; toolbar/keyboard copy stays). QG editor chrome → § Quality-gate chrome. Product dots only on TG/export.
 
 ## Quality-gate chrome (LOCKED — do not regress)
 
