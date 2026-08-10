@@ -108,6 +108,15 @@ function statusSparkColor(status: string | undefined, theme: SparklineTheme): Rg
   return theme.skip;
 }
 
+/** Trend stroke — passed keeps accent; other statuses use status-family colors. */
+function trendSparkColor(status: string | undefined, theme: SparklineTheme): Rgb {
+  const normalized = (status || "unknown").toLowerCase();
+  if (normalized === "failed") return theme.fail;
+  if (normalized === "broken") return theme.broken;
+  if (normalized === "skipped" || normalized === "unknown") return theme.skip;
+  return theme.accent;
+}
+
 function statusLabel(status: string, lang: "ru" | "en"): string {
   const normalized = (status || "unknown").toLowerCase();
   const table = STATUS_LABELS[lang];
@@ -182,6 +191,7 @@ function paintSparkline(
   h: number,
   theme: SparklineTheme,
   lang: "ru" | "en",
+  stroke: Rgb = theme.accent,
 ): void {
   const points = (history ?? []).filter((point) => typeof point.durationSec === "number");
   if (points.length < 2) {
@@ -216,7 +226,7 @@ function paintSparkline(
   }
   ctx.lineTo(ox + width - pad, oy + height - pad);
   ctx.closePath();
-  ctx.fillStyle = `rgba(${theme.accent.r},${theme.accent.g},${theme.accent.b},0.14)`;
+  ctx.fillStyle = `rgba(${stroke.r},${stroke.g},${stroke.b},0.14)`;
   ctx.fill();
 
   ctx.beginPath();
@@ -224,7 +234,7 @@ function paintSparkline(
   for (let i = 1; i < coords.length; i++) {
     ctx.lineTo(ox + coords[i]!.x, oy + coords[i]!.y);
   }
-  ctx.strokeStyle = rgbCss(theme.accent);
+  ctx.strokeStyle = rgbCss(stroke);
   ctx.lineWidth = 1.5;
   ctx.lineCap = "round";
   ctx.lineJoin = "round";
@@ -433,6 +443,7 @@ export function renderTestsTablePng(
       rowH,
       sparkTheme,
       lang,
+      trendSparkColor(row.status, sparkTheme),
     );
 
     paintStabilityCell(ctx, row, colX.stability, y, stabilityW, rowH, sparkTheme, palette);

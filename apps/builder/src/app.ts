@@ -859,8 +859,10 @@ function buildTgCaptionHtml() {
 }
 
 function sparklineMockSvg(points: string, stroke = 'var(--color-info)') {
+  const areaPoints = `2,12 ${points} 38,12`;
   return (
     `<svg class="sparkline sparkline--duration" viewBox="0 0 40 12" width="40" height="12" aria-hidden="true">` +
+    `<polygon class="sparkline__area" points="${areaPoints}" fill="${stroke}" fill-opacity="0.14"/>` +
     `<polyline class="sparkline__line" fill="none" stroke="${stroke}" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" points="${points}"/>` +
     `</svg>`
   );
