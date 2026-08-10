@@ -776,9 +776,9 @@ function testsTableRowMock(opts) {
     }
     return row + `</tr>`;
 }
-/** Canvas tests-table — fixture-aligned rows, full names + stability column. */
-function canvasTestsTableRowsHtml() {
-    return (testsTableRowMock({
+/** Canvas tests-table mock pool — cycle with `#2`/`#3`… when height needs more rows. */
+const CANVAS_TESTS_TABLE_POOL = [
+    {
         name: 'shouldLogin…',
         title: 'auth.LoginTests.shouldLoginWithValidCredentials',
         status: 'passed',
@@ -786,46 +786,148 @@ function canvasTestsTableRowsHtml() {
         flakyFlips: 0,
         stabilityStatuses: ['passed', 'passed', 'passed', 'passed', 'passed'],
         withStability: true,
-    }) +
-        testsTableRowMock({
-            name: 'shouldReject…',
-            title: 'auth.LoginTests.shouldRejectInvalidPassword',
-            status: 'passed',
-            trendPoints: '2,4 8,6 14,5 20,7 26,5 32,6 38,5',
-            flakyFlips: 2,
-            stabilityStatuses: ['failed', 'passed', 'failed', 'passed', 'passed'],
-            withStability: true,
-        }) +
-        testsTableRowMock({
-            name: 'checkoutFlow…',
-            title: 'e2e.CheckoutTests.checkoutFlowCompletes',
-            status: 'failed',
-            trendPoints: '2,6 8,5 14,4 20,6 26,7 32,8 38,9',
-            trendStroke: 'var(--color-danger)',
-            flakyFlips: 1,
-            stabilityStatuses: ['passed', 'passed', 'failed', 'failed'],
-            withStability: true,
-        }) +
-        testsTableRowMock({
-            name: 'apiHealth…',
-            title: 'api.HealthTests.apiHealthReturns200',
-            status: 'broken',
-            trendPoints: '2,6 8,6 14,7 20,6 26,6 32,6 38,6',
-            trendStroke: 'var(--color-warning)',
-            flakyFlips: 0,
-            stabilityStatuses: ['passed', 'broken'],
-            withStability: true,
-        }) +
-        testsTableRowMock({
-            name: 'legacyImport…',
-            title: 'unit.LegacyTests.legacyImportSkipped',
-            status: 'skipped',
-            trendPoints: '2,6 8,6 14,6 20,6 26,6 32,6 38,6',
-            trendStroke: 'var(--color-text-muted)',
-            flakyFlips: 0,
-            stabilityStatuses: ['skipped'],
-            withStability: true,
+    },
+    {
+        name: 'shouldReject…',
+        title: 'auth.LoginTests.shouldRejectInvalidPassword',
+        status: 'passed',
+        trendPoints: '2,4 8,6 14,5 20,7 26,5 32,6 38,5',
+        flakyFlips: 2,
+        stabilityStatuses: ['failed', 'passed', 'failed', 'passed', 'passed'],
+        withStability: true,
+    },
+    {
+        name: 'checkoutFlow…',
+        title: 'e2e.CheckoutTests.checkoutFlowCompletes',
+        status: 'failed',
+        trendPoints: '2,6 8,5 14,4 20,6 26,7 32,8 38,9',
+        trendStroke: 'var(--color-danger)',
+        flakyFlips: 1,
+        stabilityStatuses: ['passed', 'passed', 'failed', 'failed'],
+        withStability: true,
+    },
+    {
+        name: 'apiHealth…',
+        title: 'api.HealthTests.apiHealthReturns200',
+        status: 'broken',
+        trendPoints: '2,6 8,6 14,7 20,6 26,6 32,6 38,6',
+        trendStroke: 'var(--color-warning)',
+        flakyFlips: 0,
+        stabilityStatuses: ['passed', 'broken'],
+        withStability: true,
+    },
+    {
+        name: 'legacyImport…',
+        title: 'unit.LegacyTests.legacyImportSkipped',
+        status: 'skipped',
+        trendPoints: '2,6 8,6 14,6 20,6 26,6 32,6 38,6',
+        trendStroke: 'var(--color-text-muted)',
+        flakyFlips: 0,
+        stabilityStatuses: ['skipped'],
+        withStability: true,
+    },
+];
+/**
+ * Canvas tests-table rows — height-sliced from pool (not palette’s fixed 5).
+ * @param count visible tbody rows (default = pool length for SSR/string snapshots)
+ */
+function canvasTestsTableRowsHtml(count = CANVAS_TESTS_TABLE_POOL.length) {
+    const n = Math.max(0, Math.floor(count));
+    const parts = [];
+    for (let i = 0; i < n; i += 1) {
+        const base = CANVAS_TESTS_TABLE_POOL[i % CANVAS_TESTS_TABLE_POOL.length];
+        const cycle = Math.floor(i / CANVAS_TESTS_TABLE_POOL.length);
+        if (cycle === 0) {
+            parts.push(testsTableRowMock(base));
+            continue;
+        }
+        const suffix = `#${cycle + 1}`;
+        parts.push(testsTableRowMock({
+            ...base,
+            name: `${base.name}${suffix}`,
+            title: base.title ? `${base.title}${suffix}` : undefined,
         }));
+    }
+    return parts.join('');
+}
+/** Collage parity: `max(1, floor((hostH - theadH) / rowH))` — metrics measured, not hardcoded. */
+function canvasTestsTableMaxRows(hostH, headerH, rowH) {
+    if (!(hostH > 0) || !(rowH > 0))
+        return 1;
+    return Math.max(1, Math.floor((hostH - Math.max(0, headerH)) / rowH));
+}
+function measureCanvasTestsTableMetrics(host) {
+    const theadTr = host.querySelector('thead tr');
+    const tbody = host.querySelector('tbody');
+    const headerH = theadTr ? theadTr.getBoundingClientRect().height : 0;
+    let rowEl = tbody?.querySelector('tr') ?? null;
+    let probe = null;
+    if (!rowEl && tbody) {
+        tbody.innerHTML = canvasTestsTableRowsHtml(1);
+        rowEl = tbody.querySelector('tr');
+        probe = rowEl;
+    }
+    const rowH = rowEl ? rowEl.getBoundingClientRect().height : 0;
+    if (probe && tbody) {
+        /* Probe only for metrics — syncRows replaces with the real slice. */
+        tbody.replaceChildren();
+    }
+    return { headerH, rowH };
+}
+const canvasTestsTableTeardown = new WeakMap();
+function disconnectCanvasTestsTableHost(host) {
+    canvasTestsTableTeardown.get(host)?.();
+    canvasTestsTableTeardown.delete(host);
+}
+function syncCanvasTestsTableHost(host) {
+    if (host.classList.contains('anb-kit-mock--palette'))
+        return;
+    const tbody = host.querySelector('tbody');
+    if (!tbody)
+        return;
+    const hostH = host.clientHeight || host.getBoundingClientRect().height;
+    const { headerH, rowH } = measureCanvasTestsTableMetrics(host);
+    const maxRows = canvasTestsTableMaxRows(hostH, headerH, rowH);
+    const prev = tbody.dataset.maxRows;
+    const prevCount = tbody.querySelectorAll('tr').length;
+    if (prev === String(maxRows) && prevCount === maxRows)
+        return;
+    tbody.dataset.maxRows = String(maxRows);
+    tbody.innerHTML = canvasTestsTableRowsHtml(maxRows);
+}
+function observeCanvasTestsTableHost(host) {
+    if (host.classList.contains('anb-kit-mock--palette'))
+        return;
+    disconnectCanvasTestsTableHost(host);
+    syncCanvasTestsTableHost(host);
+    if (typeof ResizeObserver === 'undefined')
+        return;
+    let frame = 0;
+    const observer = new ResizeObserver(() => {
+        if (!host.isConnected) {
+            disconnectCanvasTestsTableHost(host);
+            return;
+        }
+        cancelAnimationFrame(frame);
+        frame = requestAnimationFrame(() => {
+            frame = 0;
+            syncCanvasTestsTableHost(host);
+        });
+    });
+    observer.observe(host);
+    canvasTestsTableTeardown.set(host, () => {
+        cancelAnimationFrame(frame);
+        observer.disconnect();
+    });
+}
+/** Wire height-fill row sync for canvas / TG kit tests-table mocks (not palette). */
+function syncCanvasTestsTables(root) {
+    const scope = root || document;
+    const nodes = scope.querySelectorAll('.anb-kit-mock.tests-table-panel:not(.anb-kit-mock--palette)');
+    nodes.forEach((node) => {
+        if (node instanceof HTMLElement)
+            observeCanvasTestsTableHost(node);
+    });
 }
 /** Palette tests-table — 5 micro rows, 4 cols (name · dot · trend · stability). */
 function paletteTestsTableRowMock(opts) {
@@ -987,12 +1089,11 @@ function kitOnlyQgMockHtml(panelId, chrome, barTrailingHtml = '') {
 function kitOnlyPanelMockHtml(panelId, chartType, qgChrome = 'hybrid', barTrailingHtml = '') {
     const testId = `anb-kit-mock-${panelId}`;
     if (chartType === 'testsTable') {
+        /* tbody filled by syncCanvasTestsTables (height-slice); not a fixed 5. */
         return (`<div class="tests-table-panel anb-kit-mock" data-anb-kit-mock="${escapeHtml(panelId)}" data-testid="${testId}">` +
             `<table class="tests-table-panel__table" aria-hidden="true">` +
             `<thead><tr><th>Test</th><th>Status</th><th>Trend</th><th>Stability</th></tr></thead>` +
-            `<tbody>` +
-            canvasTestsTableRowsHtml() +
-            `</tbody></table></div>`);
+            `<tbody></tbody></table></div>`);
     }
     return kitOnlyQgMockHtml(panelId, qgChrome, barTrailingHtml);
 }
@@ -1064,6 +1165,7 @@ function renderCollageStage(stage, mode) {
     if (typeof window.WidgetTileMocks !== 'undefined' && window.WidgetTileMocks.fill) {
         window.WidgetTileMocks.fill(stage, { force: true });
     }
+    syncCanvasTestsTables(stage);
     const popover = document.getElementById('anb-export-popover');
     let scale = 1;
     if (mode === 'tg') {
@@ -1540,6 +1642,7 @@ function fillEditorMocks(root) {
     if (typeof window.WidgetTileMocks !== 'undefined' && window.WidgetTileMocks.fill) {
         window.WidgetTileMocks.fill(scope, { force: true });
     }
+    syncCanvasTestsTables(scope);
 }
 /**
  * @param {ChartItem} item
@@ -2047,6 +2150,9 @@ globalThis.__ANB__ = {
     onChartProfileChange,
     renderPaletteItems,
     kitOnlyPanelMockHtml,
+    canvasTestsTableRowsHtml,
+    canvasTestsTableMaxRows,
+    syncCanvasTestsTables,
     qualityGateMockHtml,
     applyCanvasPreset,
     applySnap,

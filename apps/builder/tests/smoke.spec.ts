@@ -628,7 +628,72 @@ test.describe('allure-notifications-builder smoke', () => {
     await expect(canvasTestsTable.locator('thead th').nth(3)).toHaveText('Stability');
     await expect(canvasTestsTable.locator('.tests-table-panel__name').first()).toHaveText('shouldLogin…');
     await expect(canvasTestsTable.locator('.tests-table-panel__stability').first()).toBeVisible();
-    await expect(canvasTestsTable.locator('tbody tr')).toHaveCount(5);
+
+    // Height-fill: visible rows === measured maxRows; no void ≥ rowH under last row.
+    await expect
+      .poll(async () => {
+        return canvasTestsTable.evaluate((host) => {
+          const thead = host.querySelector('thead tr');
+          const rows = [...host.querySelectorAll('tbody tr')];
+          const hostBox = host.getBoundingClientRect();
+          const headerH = thead?.getBoundingClientRect().height ?? 0;
+          const rowH = rows[0]?.getBoundingClientRect().height ?? 0;
+          const maxRows =
+            rowH > 0 ? Math.max(1, Math.floor((hostBox.height - headerH) / rowH)) : 0;
+          const lastBottom = rows[rows.length - 1]?.getBoundingClientRect().bottom ?? hostBox.top;
+          const voidBelow = hostBox.bottom - lastBottom;
+          return {
+            rowCount: rows.length,
+            maxRows,
+            voidBelow,
+            rowH,
+            overflowY: getComputedStyle(host).overflowY,
+          };
+        });
+      })
+      .toMatchObject({
+        overflowY: 'hidden',
+      });
+    const fillSnap = await canvasTestsTable.evaluate((host) => {
+      const thead = host.querySelector('thead tr');
+      const rows = [...host.querySelectorAll('tbody tr')];
+      const hostBox = host.getBoundingClientRect();
+      const headerH = thead?.getBoundingClientRect().height ?? 0;
+      const rowH = rows[0]?.getBoundingClientRect().height ?? 0;
+      const maxRows = Math.max(1, Math.floor((hostBox.height - headerH) / rowH));
+      const lastBottom = rows[rows.length - 1]?.getBoundingClientRect().bottom ?? hostBox.top;
+      return {
+        rowCount: rows.length,
+        maxRows,
+        voidBelow: hostBox.bottom - lastBottom,
+        rowH,
+      };
+    });
+    expect(fillSnap.rowCount).toBe(fillSnap.maxRows);
+    expect(fillSnap.rowCount).toBeGreaterThanOrEqual(1);
+    expect(fillSnap.voidBelow).toBeLessThan(fillSnap.rowH);
+
+    const rowCountBeforeGrow = fillSnap.rowCount;
+    await page.evaluate(() => {
+      const item = document.querySelector(
+        '.anb-canvas .grid-stack-item[data-panel-id="testsTable"]',
+      );
+      const host = document.querySelector(
+        '.anb-canvas [data-testid="anb-kit-mock-testsTable"]',
+      );
+      if (!(item instanceof HTMLElement) || !(host instanceof HTMLElement)) {
+        throw new Error('testsTable tile/host missing');
+      }
+      const row = host.querySelector('tbody tr');
+      if (!row) throw new Error('testsTable has no rows');
+      const rowH = row.getBoundingClientRect().height;
+      const newH = Math.ceil(item.getBoundingClientRect().height + rowH * 4);
+      item.style.height = `${newH}px`;
+      item.style.minHeight = `${newH}px`;
+    });
+    await expect
+      .poll(async () => canvasTestsTable.locator('tbody tr').count(), { timeout: 1500 })
+      .toBeGreaterThan(rowCountBeforeGrow);
 
     await expect
       .poll(async () => {
