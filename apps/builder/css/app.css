@@ -267,13 +267,19 @@ body {
 }
 
 .anb-canvas[data-anb-dark="false"] .anb-panel__action {
-  border-color: rgba(26, 26, 26, 0.2);
-  background: rgba(26, 26, 26, 0.06);
-  color: #1a1a1a;
+  color: rgba(26, 26, 26, 0.45);
+  background: transparent;
+  border: 0;
 }
 
 .anb-canvas[data-anb-dark="false"] .anb-panel__action:hover {
-  background: rgba(26, 26, 26, 0.12);
+  color: #1a1a1a;
+  background: transparent;
+}
+
+.anb-canvas[data-anb-dark="false"] .anb-panel__action[data-anb-action="delete"]:hover {
+  color: #dc2626;
+  background: transparent;
 }
 
 .anb-canvas[data-anb-dark="false"] .anb-empty__title {
@@ -631,19 +637,17 @@ html.theme-light .anb-canvas--chart-off::after {
 
 .anb-panel__action {
   box-sizing: border-box;
-  min-width: 11px;
-  min-height: 11px;
-  width: 11px;
-  height: 11px;
+  width: 16px;
+  height: 16px;
+  min-width: 16px;
+  min-height: 16px;
   padding: 0;
-  border: 1px solid rgba(255, 255, 255, 0.18);
+  border: 0;
   border-radius: 2px;
-  background: rgba(0, 0, 0, 0.25);
-  color: #fff;
-  opacity: 1;
+  background: transparent;
+  color: var(--color-text-muted, #b4b4b4);
+  opacity: 0.72;
   cursor: pointer;
-  font-size: 0.5rem;
-  line-height: 1;
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -652,14 +656,21 @@ html.theme-light .anb-canvas--chart-off::after {
   z-index: 5;
 }
 
+.anb-panel__action svg {
+  display: block;
+  flex-shrink: 0;
+}
+
 .anb-panel__action:hover {
-  background: rgba(0, 0, 0, 0.45);
+  opacity: 1;
+  color: #fff;
+  background: transparent;
 }
 
 .anb-panel__action[data-anb-action="delete"]:hover {
-  background: #dc2626;
-  border-color: #dc2626;
-  color: #fff;
+  color: #f87171;
+  background: transparent;
+  border-color: transparent;
 }
 
 .anb-panel__body {

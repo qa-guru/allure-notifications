@@ -1696,7 +1696,9 @@ function panelInnerHtml(item: ChartItem) {
     `<div class="anb-panel__bar">` +
     `<span class="anb-panel__title">${escapeHtml(title)}</span>` +
     `<span class="anb-panel__actions">` +
-    `<button type="button" class="anb-panel__action" data-anb-action="delete" title="Delete" aria-label="Delete">×</button>` +
+    `<button type="button" class="anb-panel__action" data-anb-action="delete" title="Delete" aria-label="Delete">` +
+    `<svg viewBox="0 0 16 16" width="9" height="9" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" aria-hidden="true"><path d="m4 4 8 8M12 4l-8 8"/></svg>` +
+    `</button>` +
     `</span>` +
     `</div>` +
     `<div class="anb-panel__body">` +
