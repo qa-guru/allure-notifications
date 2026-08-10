@@ -64,7 +64,13 @@
   text-overflow: ellipsis;
 }
 
-/* Fluid name column — percentage widths; name keeps remainder of row width. */
+/*
+ * Adaptive column ladder (container widths mirror preview/tests-table-adaptive.html):
+ *   ≤196px (#1–3)  TEST + STATUS
+ *   197–251px (#4) + TREND
+ *   252–559px (#5–9) all four — name may ellipsis
+ *   ≥560px (#10) prefer full name; status/trend/stability shrink
+ */
 .tests-table-panel__table col.tests-table-panel__name {
   width: 30%;
 }
@@ -79,6 +85,63 @@
 
 .tests-table-panel__table col.tests-table-panel__stability {
   width: 20%;
+}
+
+/* #1–3 / ≤196px — TEST + STATUS only */
+@container tests-table (max-width: 196px) {
+  .tests-table-panel__table th.tests-table-panel__trend,
+  .tests-table-panel__table td.tests-table-panel__trend,
+  .tests-table-panel__table th.tests-table-panel__stability,
+  .tests-table-panel__table td.tests-table-panel__stability {
+    display: none;
+  }
+
+  .tests-table-panel__table col.tests-table-panel__name {
+    width: 68%;
+  }
+
+  .tests-table-panel__table col.tests-table-panel__status {
+    width: 32%;
+  }
+}
+
+/* #4 / 197–249px — + TREND (252px tile → ~250px panel; nsts from 250px panel) */
+@container tests-table (min-width: 197px) and (max-width: 249px) {
+  .tests-table-panel__table th.tests-table-panel__stability,
+  .tests-table-panel__table td.tests-table-panel__stability {
+    display: none;
+  }
+
+  .tests-table-panel__table col.tests-table-panel__name {
+    width: 42%;
+  }
+
+  .tests-table-panel__table col.tests-table-panel__status {
+    width: 22%;
+  }
+
+  .tests-table-panel__table col.tests-table-panel__trend {
+    width: 36%;
+  }
+}
+
+/* #10 / ≥480px panel — prefer full name (480 = WIDTH step before 560; panel ≈ tile − 2px) */
+@container tests-table (min-width: 480px) {
+  .tests-table-panel__table col.tests-table-panel__name {
+    width: 42%;
+  }
+
+  .tests-table-panel__table col.tests-table-panel__status {
+    width: 14%;
+  }
+
+  .tests-table-panel__table col.tests-table-panel__trend {
+    width: 20%;
+  }
+
+  .tests-table-panel__table col.tests-table-panel__stability {
+    width: 24%;
+  }
 }
 
 .tests-table-panel__table tbody tr:last-child td {
@@ -127,24 +190,8 @@
   overflow: hidden;
 }
 
-/* Narrow tile (e.g. collage 2×2 ~140px): widen status, shrink type — matches compact tier. */
+/* Narrow tile (e.g. collage 2×2 ~140px): compact type — column ladder above owns widths. */
 @container tests-table (max-width: 220px) {
-  .tests-table-panel__table col.tests-table-panel__name {
-    width: 14%;
-  }
-
-  .tests-table-panel__table col.tests-table-panel__status {
-    width: 42%;
-  }
-
-  .tests-table-panel__table col.tests-table-panel__trend {
-    width: 26%;
-  }
-
-  .tests-table-panel__table col.tests-table-panel__stability {
-    width: 18%;
-  }
-
   .tests-table-panel__table {
     font-size: 0.625rem;
     line-height: 1.15;
