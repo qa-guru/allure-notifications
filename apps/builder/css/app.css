@@ -1101,53 +1101,8 @@ html.theme-light .anb-zone--terminal .ch-theme--vscode .ch-tok-cmd { color: #795
 }
 
 .anb-palette__tile .anb-kit-mock--palette.quality-gate--failed {
-  border-color: color-mix(in srgb, var(--color-warning) 55%, var(--color-border));
-  background: color-mix(in srgb, var(--color-warning) 10%, var(--color-surface));
-}
-
-.anb-palette__tile .anb-kit-mock--palette .quality-gate__rules {
-  display: flex;
-  flex-direction: column;
-  flex: 1;
-  margin: 0;
-  padding: 0;
-  list-style: none;
-}
-
-.anb-palette__tile .anb-kit-mock--palette .quality-gate__rule {
-  display: grid;
-  grid-template-columns: 38% 62%;
-  align-items: stretch;
-  flex: 1;
-  min-height: 0;
-  border-top: 1px solid var(--color-border);
-}
-
-.anb-palette__tile .anb-kit-mock--palette .quality-gate__rule:first-child {
-  border-top: none;
-}
-
-.anb-palette__tile .anb-kit-mock--palette .quality-gate__rule-id::before {
-  content: none;
-  display: none;
-}
-
-.anb-palette__tile .anb-kit-mock--palette .quality-gate__rule-id {
-  box-sizing: border-box;
-  display: flex;
-  align-items: center;
-  padding: 1px 3px;
-  font-family: ui-monospace, "SF Mono", Menlo, monospace;
-  font-size: 0.48rem;
-  font-weight: 600;
-  color: var(--color-danger);
-  background: color-mix(in srgb, var(--color-danger) 14%, var(--color-surface-soft));
-  border-right: 1px solid var(--color-border);
-}
-
-.anb-palette__tile .anb-kit-mock--palette.quality-gate--passed .quality-gate__rule-id {
-  color: var(--color-success);
-  background: color-mix(in srgb, var(--color-success) 14%, var(--color-surface-soft));
+  border-color: color-mix(in srgb, var(--color-danger) 65%, var(--color-border));
+  background: color-mix(in srgb, var(--color-danger) 22%, #141414);
 }
 
 .anb-palette__tile .anb-kit-mock--palette.quality-gate .quality-gate__body {
@@ -1159,29 +1114,80 @@ html.theme-light .anb-zone--terminal .ch-theme--vscode .ch-tok-cmd { color: #795
   padding: 0;
 }
 
-.anb-palette__tile .anb-kit-mock--palette .quality-gate__rule-detail {
+.anb-palette__tile .anb-kit-mock--palette.quality-gate--passed .quality-gate__body {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: 1;
+  min-height: 0;
+  padding: 0;
+}
+
+.anb-palette__tile .anb-kit-mock--palette .quality-gate__verdict {
+  margin: 0;
+  font-size: 0.58rem;
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+.anb-palette__tile .anb-kit-mock--palette.quality-gate--passed .quality-gate__verdict--ok {
+  color: var(--color-success);
+}
+
+.anb-palette__tile .anb-kit-mock--palette.quality-gate--failed .quality-gate__rules {
+  display: grid;
+  grid-template-columns: 38% 62%;
+  align-items: stretch;
+  flex: 1;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.anb-palette__tile .anb-kit-mock--palette.quality-gate--failed .quality-gate__rule {
+  display: contents;
+}
+
+.anb-palette__tile .anb-kit-mock--palette.quality-gate--failed .quality-gate__rule-id::before {
+  content: none;
+  display: none;
+}
+
+.anb-palette__tile .anb-kit-mock--palette.quality-gate--failed .quality-gate__rule-id {
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  padding: 1px 3px;
+  font-family: ui-monospace, "SF Mono", Menlo, monospace;
+  font-size: 0.48rem;
+  font-weight: 600;
+  color: #fff;
+  background: color-mix(in srgb, var(--color-danger) 48%, #141414);
+  border-right: 1px solid color-mix(in srgb, #fff 22%, transparent);
+}
+
+.anb-palette__tile .anb-kit-mock--palette.quality-gate--failed .quality-gate__rule-detail {
   display: flex;
   align-items: center;
   min-width: 0;
   padding: 1px 3px;
+  background: color-mix(in srgb, var(--color-danger) 30%, #141414);
 }
 
-.anb-palette__tile .anb-kit-mock--palette .quality-gate__formula {
+.anb-palette__tile .anb-kit-mock--palette.quality-gate--failed .quality-gate__rule + .quality-gate__rule .quality-gate__rule-id,
+.anb-palette__tile .anb-kit-mock--palette.quality-gate--failed .quality-gate__rule + .quality-gate__rule .quality-gate__rule-detail {
+  border-top: 1px solid color-mix(in srgb, #fff 20%, transparent);
+}
+
+.anb-palette__tile .anb-kit-mock--palette.quality-gate--failed .quality-gate__formula {
   margin: 0;
   font-family: ui-monospace, "SF Mono", Menlo, monospace;
   font-size: 0.46rem;
   font-weight: 600;
+  color: #fff;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-}
-
-.anb-palette__tile .anb-kit-mock--palette.quality-gate--passed .quality-gate__formula {
-  color: var(--color-success);
-}
-
-.anb-palette__tile .anb-kit-mock--palette.quality-gate--failed .quality-gate__formula {
-  color: var(--color-danger);
 }
 
 .anb-palette__tile .anb-kit-mock--palette.tests-table-panel {

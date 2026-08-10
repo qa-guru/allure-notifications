@@ -446,6 +446,7 @@ test.describe('allure-notifications-builder smoke', () => {
           const barDots = btn?.querySelectorAll('.widget-tile__bar .indicator').length ?? 0;
           const qgDots = btn?.querySelectorAll('.quality-gate__bar .indicator').length ?? 0;
           const qgRuleCount = mock?.querySelectorAll('.quality-gate__rule').length ?? 0;
+          const hasVerdict = Boolean(mock?.querySelector('.quality-gate__verdict'));
           return [
             id,
             {
@@ -455,6 +456,7 @@ test.describe('allure-notifications-builder smoke', () => {
               barDots,
               qgDots,
               qgRuleCount,
+              hasVerdict,
               hasTable: Boolean(mock?.querySelector('.tests-table-panel__table tbody tr')),
               hasTrend: Boolean(mock?.querySelector('.tests-table-panel__trend .sparkline')),
               hasQgRules: Boolean(mock?.querySelector('.quality-gate__rules')),
@@ -476,9 +478,9 @@ test.describe('allure-notifications-builder smoke', () => {
     expect(kitMocks.allureQualityGate.mockClass).not.toBe(kitMocks.sonarQualityGate.mockClass);
     expect(kitMocks.allureQualityGate.barDots).toBeGreaterThan(0);
     expect(kitMocks.sonarQualityGate.barDots).toBeGreaterThan(0);
-    expect(kitMocks.allureQualityGate.hasQgRules).toBe(true);
+    expect(kitMocks.allureQualityGate.hasVerdict).toBe(true);
+    expect(kitMocks.allureQualityGate.hasQgRules).toBe(false);
     expect(kitMocks.sonarQualityGate.hasQgRules).toBe(true);
-    expect(kitMocks.allureQualityGate.qgRuleCount).toBeGreaterThanOrEqual(2);
     expect(kitMocks.sonarQualityGate.qgRuleCount).toBeGreaterThanOrEqual(2);
     expect(kitMocks.allureQualityGate.qgDots).toBe(0);
     expect(kitMocks.testsTable.barDots).toBeGreaterThan(0);

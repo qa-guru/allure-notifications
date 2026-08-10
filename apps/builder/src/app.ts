@@ -870,10 +870,7 @@ function kitOnlyPaletteBodyHtml(panelId: string, chartType: string) {
   return (
     `<div class="quality-gate quality-gate--allure quality-gate--passed anb-kit-mock anb-kit-mock--palette" data-anb-kit-mock="${escapeHtml(panelId)}" data-testid="${testId}" role="status" aria-hidden="true">` +
     `<div class="quality-gate__body">` +
-    paletteQgRulesHtml([
-        { id: 'maxF', formula: '0 ≤ 0' },
-        { id: 'newF', formula: '0 ≤ 0' },
-      ]) +
+    `<p class="quality-gate__verdict quality-gate__verdict--ok">Passed</p>` +
     `</div></div>`
   );
 }
