@@ -5,6 +5,7 @@
 
 import { createCanvas, loadImage, type SKRSContext2D } from "@napi-rs/canvas";
 import {
+  DEFAULT_HEADER_HEIGHT,
   isKitOnlyChartItem,
   normalizeChartProfile,
   resolvePanelMeta,
@@ -65,8 +66,8 @@ const CANON_CARD_GAP = 14;
 const DS_CARD_RADIUS_MD = 12;
 const DS_CARD_RADIUS_CANVAS = 1080;
 const CARD_BORDER_WIDTH = 1.5;
-const BASE_HEADER_HEIGHT = 34;
-const CANON_HEADER_HEIGHT = 68;
+/** DS widget-tile bar baseline — scales title/dots with `headerHeight` (builder `WT_BAR_BASELINE`). */
+const BASE_HEADER_HEIGHT = DEFAULT_HEADER_HEIGHT;
 const CARD_HEADER_PAD_X = 14;
 const CARD_DOT_SIZE = 8;
 const CARD_DOT_GAP = 5;
@@ -167,12 +168,13 @@ function resolvePanelKey(item: ChartItem): string | null {
   return normalize(item.type);
 }
 
-function resolveHeaderHeight(config: Config): number {
+/** Collage card bar height — omit/null → config SSOT `DEFAULT_HEADER_HEIGHT` (31). */
+export function resolveHeaderHeight(config: Config): number {
   const h = config.base.chart?.headerHeight;
   if (h != null && h > 0) {
     return h;
   }
-  return CANON_HEADER_HEIGHT;
+  return DEFAULT_HEADER_HEIGHT;
 }
 
 function resolveCardGap(config: Config): number {

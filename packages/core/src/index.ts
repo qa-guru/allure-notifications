@@ -61,7 +61,11 @@ export {
   loadReportAnalytics,
 } from "./report/analytics.js";
 
-export { renderCollagePng, resolveCardTitle } from "./collage/render.js";
+export {
+  renderCollagePng,
+  resolveCardTitle,
+  resolveHeaderHeight,
+} from "./collage/render.js";
 export {
   loadQualityGateCollageData,
   resolveQualityGatePanelId,

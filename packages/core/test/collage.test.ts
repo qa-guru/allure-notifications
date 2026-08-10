@@ -16,8 +16,10 @@ declareSuite({
 
 import { createCanvas, loadImage } from "@napi-rs/canvas";
 import {
+  DEFAULT_HEADER_HEIGHT,
   DEFAULT_ITEMS,
   PANEL_CATALOG,
+  createDefaultConfig,
   createSq1080Config,
   parseConfig,
   resolvePanelMeta,
@@ -39,6 +41,7 @@ import {
   renderCollagePng,
   renderEmptyPanel,
   resolveCardTitle,
+  resolveHeaderHeight,
   themeFromDarkMode,
 } from "../src/index.js";
 import { panelContext } from "../src/collage/context.js";
@@ -299,6 +302,31 @@ async function regionMatchRatio(
 describe("@qa-guru/allure-notifications-core collage", () => {
   it("locks PNG backend to @napi-rs/canvas", () => {
     assert.equal(PNG_BACKEND, "@napi-rs/canvas");
+  });
+
+  it("resolveHeaderHeight: createDefaultConfig and omit headerHeight → DEFAULT_HEADER_HEIGHT", () => {
+    assert.equal(DEFAULT_HEADER_HEIGHT, 31);
+    const fromDefault = parseConfig(createDefaultConfig());
+    assert.equal(resolveHeaderHeight(fromDefault), 31);
+    assert.equal(fromDefault.base.chart?.headerHeight, 31);
+
+    const omit = parseConfig({
+      base: {
+        project: "omit-header",
+        allureFolder: "a",
+        allureResultsFolder: "r",
+        enableChart: true,
+        chart: {
+          mode: "collage",
+          layout: "free",
+          width: 870,
+          height: 1080,
+          items: [{ type: "currentStatus", x: 0, y: 0, w: 1, h: 1 }],
+        },
+      },
+    });
+    assert.equal(omit.base.chart?.headerHeight, undefined);
+    assert.equal(resolveHeaderHeight(omit), DEFAULT_HEADER_HEIGHT);
   });
 
   it("wires CORNER_RATIO / TIER_GAP_RATIO from @pyramid", () => {
