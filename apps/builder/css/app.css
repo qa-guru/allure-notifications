@@ -1092,17 +1092,15 @@ html.theme-light .anb-zone--terminal .ch-theme--vscode .ch-tok-cmd { color: #795
   line-height: 1.15;
   padding: 0;
   border: 1px solid var(--color-border);
-  background: var(--color-surface-soft);
+  background: var(--color-surface);
 }
 
 .anb-palette__tile .anb-kit-mock--palette.quality-gate--passed {
-  border-color: color-mix(in srgb, var(--color-success) 55%, var(--color-border));
-  background: color-mix(in srgb, var(--color-success) 10%, var(--color-surface));
+  border-color: color-mix(in srgb, var(--color-success) 40%, var(--color-border));
 }
 
 .anb-palette__tile .anb-kit-mock--palette.quality-gate--failed {
-  border-color: color-mix(in srgb, var(--color-danger) 65%, var(--color-border));
-  background: color-mix(in srgb, var(--color-danger) 22%, #141414);
+  border-color: color-mix(in srgb, var(--color-danger) 40%, var(--color-border));
 }
 
 .anb-palette__tile .anb-kit-mock--palette.quality-gate .quality-gate__body {
@@ -1161,9 +1159,9 @@ html.theme-light .anb-zone--terminal .ch-theme--vscode .ch-tok-cmd { color: #795
   font-family: ui-monospace, "SF Mono", Menlo, monospace;
   font-size: 0.48rem;
   font-weight: 600;
-  color: #fff;
-  background: color-mix(in srgb, var(--color-danger) 48%, #141414);
-  border-right: 1px solid color-mix(in srgb, #fff 22%, transparent);
+  color: var(--color-danger);
+  background: color-mix(in srgb, var(--color-danger) 12%, var(--color-surface-soft));
+  border-right: 1px solid var(--color-border);
 }
 
 .anb-palette__tile .anb-kit-mock--palette.quality-gate--failed .quality-gate__rule-detail {
@@ -1171,12 +1169,12 @@ html.theme-light .anb-zone--terminal .ch-theme--vscode .ch-tok-cmd { color: #795
   align-items: center;
   min-width: 0;
   padding: 1px 3px;
-  background: color-mix(in srgb, var(--color-danger) 30%, #141414);
+  background: transparent;
 }
 
 .anb-palette__tile .anb-kit-mock--palette.quality-gate--failed .quality-gate__rule + .quality-gate__rule .quality-gate__rule-id,
 .anb-palette__tile .anb-kit-mock--palette.quality-gate--failed .quality-gate__rule + .quality-gate__rule .quality-gate__rule-detail {
-  border-top: 1px solid color-mix(in srgb, #fff 20%, transparent);
+  border-top: 1px solid var(--color-border);
 }
 
 .anb-palette__tile .anb-kit-mock--palette.quality-gate--failed .quality-gate__formula {
@@ -1184,7 +1182,7 @@ html.theme-light .anb-zone--terminal .ch-theme--vscode .ch-tok-cmd { color: #795
   font-family: ui-monospace, "SF Mono", Menlo, monospace;
   font-size: 0.46rem;
   font-weight: 600;
-  color: #fff;
+  color: var(--color-danger);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
