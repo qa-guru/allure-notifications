@@ -1258,6 +1258,14 @@ html.theme-light .anb-zone--terminal .ch-theme--vscode .ch-tok-cmd { color: #795
   width: 20%;
 }
 
+/* Kit canvas mock — keep 4 cols at 2×2; container ladder hides trend/stability ≤249px. */
+.anb-panel__tile .anb-kit-mock.tests-table-panel:not(.anb-kit-mock--palette) .tests-table-panel__table th.tests-table-panel__trend,
+.anb-panel__tile .anb-kit-mock.tests-table-panel:not(.anb-kit-mock--palette) .tests-table-panel__table td.tests-table-panel__trend,
+.anb-panel__tile .anb-kit-mock.tests-table-panel:not(.anb-kit-mock--palette) .tests-table-panel__table th.tests-table-panel__stability,
+.anb-panel__tile .anb-kit-mock.tests-table-panel:not(.anb-kit-mock--palette) .tests-table-panel__table td.tests-table-panel__stability {
+  display: table-cell;
+}
+
 .anb-panel__tile .anb-kit-mock.tests-table-panel .badge {
   padding: 0 0.15rem;
   font-size: 0.36rem;

@@ -25,6 +25,10 @@ import {
   TIER_GAP_RATIO,
 } from '@qa-guru/allure-notifications-pyramid';
 import { mountHighlightedOutput } from '../vendor/design-system/js/code-highlight.js';
+import {
+  canvasTestsTableRowsHtml,
+  paletteTestsTableRowsHtml,
+} from './tests-table-mock.js';
 
 /**
  * apps/builder — TypeScript source (emit → `js/` for Pages / stand).
@@ -854,152 +858,6 @@ function buildTgCaptionHtml() {
   return lines.join('\n');
 }
 
-function sparklineMockSvg(points: string, stroke = 'var(--color-info)') {
-  const areaPoints = `2,12 ${points} 38,12`;
-  return (
-    `<svg class="sparkline sparkline--duration" viewBox="0 0 40 12" width="40" height="12" aria-hidden="true">` +
-    `<polygon class="sparkline__area" points="${areaPoints}" fill="${stroke}" fill-opacity="0.14"/>` +
-    `<polyline class="sparkline__line" fill="none" stroke="${stroke}" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" points="${points}"/>` +
-    `</svg>`
-  );
-}
-
-function stabilityStatusColor(status: string): string {
-  switch (status) {
-    case 'passed':
-      return 'var(--color-success)';
-    case 'failed':
-      return 'var(--color-danger)';
-    case 'broken':
-      return 'var(--color-warning)';
-    case 'skipped':
-      return 'var(--color-text-muted)';
-    default:
-      return 'var(--color-text-muted)';
-  }
-}
-
-function stabilityCellMockHtml(flakyFlips: number, statuses: string[]) {
-  const badge =
-    flakyFlips > 0
-      ? `<span class="badge badge--flaky" title="Flaky flips: ${flakyFlips}">${flakyFlips}</span>`
-      : '';
-  const dots = statuses
-    .map(
-      (status) =>
-        `<span class="stability-dot stability-dot--${escapeHtml(status)}" style="background:${stabilityStatusColor(status)}"></span>`,
-    )
-    .join('');
-  return (
-    `<td class="tests-table-panel__stability">` +
-    `<div class="stability-cell">${badge}` +
-    `<span class="stability-dots" aria-hidden="true">${dots}</span>` +
-    `</div></td>`
-  );
-}
-
-type TestsTableRowMockOpts = {
-  name: string;
-  title?: string;
-  status: 'passed' | 'failed' | 'broken' | 'skipped';
-  trendPoints: string;
-  trendStroke?: string;
-  flakyFlips?: number;
-  stabilityStatuses?: string[];
-  withStability?: boolean;
-};
-
-function testsTableRowMock(opts: TestsTableRowMockOpts) {
-  const titleAttr = opts.title ? ` title="${escapeHtml(opts.title)}"` : '';
-  let row =
-    `<tr>` +
-    `<td class="tests-table-panel__name"${titleAttr}>${escapeHtml(opts.name)}</td>` +
-    `<td class="tests-table-panel__status"><span class="badge badge--status-${opts.status}">${opts.status}</span></td>` +
-    `<td class="tests-table-panel__trend">${sparklineMockSvg(opts.trendPoints, opts.trendStroke)}</td>`;
-  if (opts.withStability) {
-    row += stabilityCellMockHtml(opts.flakyFlips ?? 0, opts.stabilityStatuses ?? []);
-  }
-  return row + `</tr>`;
-}
-
-/** Canvas tests-table mock pool — cycle with `#2`/`#3`… when height needs more rows. */
-const CANVAS_TESTS_TABLE_POOL: TestsTableRowMockOpts[] = [
-  {
-    name: 'shouldLogin…',
-    title: 'auth.LoginTests.shouldLoginWithValidCredentials',
-    status: 'passed',
-    trendPoints: '2,9 8,7 14,6 20,8 26,5 32,6 38,4',
-    flakyFlips: 0,
-    stabilityStatuses: ['passed', 'passed', 'passed', 'passed', 'passed'],
-    withStability: true,
-  },
-  {
-    name: 'shouldReject…',
-    title: 'auth.LoginTests.shouldRejectInvalidPassword',
-    status: 'passed',
-    trendPoints: '2,4 8,6 14,5 20,7 26,5 32,6 38,5',
-    flakyFlips: 2,
-    stabilityStatuses: ['failed', 'passed', 'failed', 'passed', 'passed'],
-    withStability: true,
-  },
-  {
-    name: 'checkoutFlow…',
-    title: 'e2e.CheckoutTests.checkoutFlowCompletes',
-    status: 'failed',
-    trendPoints: '2,6 8,5 14,4 20,6 26,7 32,8 38,9',
-    trendStroke: 'var(--color-danger)',
-    flakyFlips: 1,
-    stabilityStatuses: ['passed', 'passed', 'failed', 'failed'],
-    withStability: true,
-  },
-  {
-    name: 'apiHealth…',
-    title: 'api.HealthTests.apiHealthReturns200',
-    status: 'broken',
-    trendPoints: '2,6 8,6 14,7 20,6 26,6 32,6 38,6',
-    trendStroke: 'var(--color-warning)',
-    flakyFlips: 0,
-    stabilityStatuses: ['passed', 'broken'],
-    withStability: true,
-  },
-  {
-    name: 'legacyImport…',
-    title: 'unit.LegacyTests.legacyImportSkipped',
-    status: 'skipped',
-    trendPoints: '2,6 8,6 14,6 20,6 26,6 32,6 38,6',
-    trendStroke: 'var(--color-text-muted)',
-    flakyFlips: 0,
-    stabilityStatuses: ['skipped'],
-    withStability: true,
-  },
-];
-
-/**
- * Canvas tests-table rows — height-sliced from pool (not palette’s fixed 5).
- * @param count visible tbody rows (default = pool length for SSR/string snapshots)
- */
-function canvasTestsTableRowsHtml(count = CANVAS_TESTS_TABLE_POOL.length) {
-  const n = Math.max(0, Math.floor(count));
-  const parts: string[] = [];
-  for (let i = 0; i < n; i += 1) {
-    const base = CANVAS_TESTS_TABLE_POOL[i % CANVAS_TESTS_TABLE_POOL.length]!;
-    const cycle = Math.floor(i / CANVAS_TESTS_TABLE_POOL.length);
-    if (cycle === 0) {
-      parts.push(testsTableRowMock(base));
-      continue;
-    }
-    const suffix = `#${cycle + 1}`;
-    parts.push(
-      testsTableRowMock({
-        ...base,
-        name: `${base.name}${suffix}`,
-        title: base.title ? `${base.title}${suffix}` : undefined,
-      }),
-    );
-  }
-  return parts.join('');
-}
-
 /** Collage parity: `max(1, floor((hostH - theadH) / rowH))` — metrics measured, not hardcoded. */
 function canvasTestsTableMaxRows(hostH: number, headerH: number, rowH: number): number {
   if (!(hostH > 0) || !(rowH > 0)) return 1;
@@ -1079,77 +937,6 @@ function syncCanvasTestsTables(root?: ParentNode | null): void {
   nodes.forEach((node) => {
     if (node instanceof HTMLElement) observeCanvasTestsTableHost(node);
   });
-}
-
-/** Palette tests-table — 5 micro rows, 4 cols (name · dot · trend · stability). */
-function paletteTestsTableRowMock(opts: {
-  name: string;
-  status: 'passed' | 'failed' | 'broken' | 'skipped';
-  trendPoints: string;
-  trendStroke?: string;
-  stabilityStatuses: string[];
-}) {
-  const statusIndicator =
-    opts.status === 'passed'
-      ? 'passed'
-      : opts.status === 'failed'
-        ? 'failed'
-        : opts.status === 'broken'
-          ? 'broken'
-          : 'skipped';
-  const stabDots = opts.stabilityStatuses
-    .slice(0, 4)
-    .map(
-      (status) =>
-        `<span class="stability-dot stability-dot--${escapeHtml(status)}" style="background:${stabilityStatusColor(status)}"></span>`,
-    )
-    .join('');
-  return (
-    `<tr>` +
-    `<td class="tests-table-panel__name">${escapeHtml(opts.name)}</td>` +
-    `<td class="tests-table-panel__status"><span class="indicator indicator--${statusIndicator} indicator--solid" aria-hidden="true"></span></td>` +
-    `<td class="tests-table-panel__trend">${sparklineMockSvg(opts.trendPoints, opts.trendStroke)}</td>` +
-    `<td class="tests-table-panel__stability"><div class="stability-cell"><span class="stability-dots" aria-hidden="true">${stabDots}</span></div></td>` +
-    `</tr>`
-  );
-}
-
-function paletteTestsTableRowsHtml() {
-  return (
-    paletteTestsTableRowMock({
-      name: 'login',
-      status: 'passed',
-      trendPoints: '2,9 8,7 14,6 20,8 26,5 32,6 38,4',
-      stabilityStatuses: ['passed', 'passed', 'passed', 'passed'],
-    }) +
-    paletteTestsTableRowMock({
-      name: 'reject',
-      status: 'failed',
-      trendPoints: '2,4 8,6 14,8 20,7 26,9 32,10 38,11',
-      trendStroke: 'var(--color-danger)',
-      stabilityStatuses: ['failed', 'passed', 'failed', 'passed'],
-    }) +
-    paletteTestsTableRowMock({
-      name: 'checkout',
-      status: 'broken',
-      trendPoints: '2,6 8,6 14,7 20,6 26,6 32,6 38,6',
-      trendStroke: 'var(--color-warning)',
-      stabilityStatuses: ['passed', 'passed', 'failed', 'failed'],
-    }) +
-    paletteTestsTableRowMock({
-      name: 'api',
-      status: 'passed',
-      trendPoints: '2,5 8,5 14,5 20,5 26,5 32,5 38,5',
-      stabilityStatuses: ['passed', 'broken'],
-    }) +
-    paletteTestsTableRowMock({
-      name: 'legacy',
-      status: 'skipped',
-      trendPoints: '2,6 8,6 14,6 20,6 26,6 32,6 38,6',
-      trendStroke: 'var(--color-text-muted)',
-      stabilityStatuses: ['skipped'],
-    })
-  );
 }
 
 function paletteQgRulesHtml(rules: Array<{ id: string; formula: string }>) {

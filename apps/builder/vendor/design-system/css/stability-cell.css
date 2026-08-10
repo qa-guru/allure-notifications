@@ -22,6 +22,12 @@
   flex-shrink: 0;
 }
 
+.stability-dot--passed { background: var(--color-success); }
+.stability-dot--failed { background: var(--color-danger); }
+.stability-dot--broken { background: var(--color-warning); }
+.stability-dot--skipped { background: var(--color-text-muted); }
+.stability-dot--unknown { background: var(--color-text-muted); }
+
 .stability-cell .badge--flaky,
 .tests-table .badge--flaky {
   min-width: 1.25rem;
