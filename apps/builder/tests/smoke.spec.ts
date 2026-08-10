@@ -589,6 +589,21 @@ test.describe('allure-notifications-builder smoke', () => {
         qgBarCount: aqgEl?.querySelectorAll('.quality-gate__bar').length ?? 0,
         anbBar,
         barH,
+        titleAlign: aqgEl
+          ? getComputedStyle(aqgEl.querySelector('.quality-gate__bar-title')!).textAlign
+          : '',
+        hasInfo: Boolean(aqgEl?.querySelector('.quality-gate__bar > .qg-info')),
+        titleNearRight: (() => {
+          const bar = aqgEl?.querySelector('.quality-gate__bar');
+          const title = aqgEl?.querySelector('.quality-gate__bar-title');
+          const ind = aqgEl?.querySelector('.quality-gate__bar .indicator');
+          if (!bar || !title || !ind) return false;
+          const b = bar.getBoundingClientRect();
+          const t = title.getBoundingClientRect();
+          const i = ind.getBoundingClientRect();
+          // title sits to the right of indicator; title's right edge in right half of bar
+          return t.left > i.right && t.right > b.left + b.width * 0.45;
+        })(),
       };
     });
     // LOCKED hybrid QG (2026-08-10) — do not weaken these asserts.
@@ -600,11 +615,15 @@ test.describe('allure-notifications-builder smoke', () => {
     expect(canvasQgChrome.canvasHasQgBar).toBe(true);
     expect(canvasQgChrome.canvasHasDelete).toBe(true);
     expect(canvasQgChrome.qgBarCount).toBe(1);
-    expect(canvasQgChrome.aqgTitle).toBe('Allure QG');
-    expect(canvasQgChrome.sqgTitle).toBe('Sonar QG');
+    expect(canvasQgChrome.aqgTitle).toBe('Allure Quality Gate');
+    expect(canvasQgChrome.sqgTitle).toBe('Sonar Quality Gate');
     expect(canvasQgChrome.aqgVerdict).toBe('Passed');
     expect(canvasQgChrome.sqgFormulas).toEqual(['72<80', '3>0']);
     expect(Math.abs(canvasQgChrome.barH - canvasQgChrome.anbBar)).toBeLessThan(1.5);
+    // DS/jar bar: status indicator LEFT, title RIGHT (not macOS-packed left).
+    expect(canvasQgChrome.titleAlign).toBe('right');
+    expect(canvasQgChrome.titleNearRight).toBe(true);
+    expect(canvasQgChrome.hasInfo).toBe(true);
 
     const canvasTestsTable = page.locator('.anb-canvas [data-testid="anb-kit-mock-testsTable"]');
     await expect(canvasTestsTable.locator('thead th')).toHaveCount(4);

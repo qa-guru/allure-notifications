@@ -965,7 +965,7 @@ function kitOnlyQgMockHtml(panelId, chrome) {
     const kind = isSonar ? 'sonar' : 'allure';
     const status = isSonar ? 'failed' : 'passed';
     const indicator = isSonar ? 'failed' : 'passed';
-    const title = isSonar ? 'Sonar QG' : 'Allure QG';
+    const title = isSonar ? 'Sonar Quality Gate' : 'Allure Quality Gate';
     const bar = chrome === 'hybrid'
         ? `<div class="quality-gate__bar">` +
             `<div class="quality-gate__bar-start">` +

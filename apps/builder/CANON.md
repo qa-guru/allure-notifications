@@ -95,12 +95,12 @@ Logical `cardGap` / `headerHeight` / `tilePad` are jar canvas px. TG stage draws
 
 ## Quality-gate chrome (LOCKED — do not regress)
 
-**Accepted visual (2026-08-10):** one hybrid bar + body. Editor 2×2 shows full titles `Allure QG` / `Sonar QG`, SQG compact `cov|72<80` + `bugs|3>0`, bar height = `--anb-bar-h` (display-scaled). Debug: [`debug-qg.html`](./debug-qg.html). Goldens: [`fixtures/qg-locked/`](./fixtures/qg-locked/). Guard: smoke `chart.profile kit` QG chrome asserts.
+**Accepted visual (2026-08-10):** one hybrid bar + body. Bar = DS/jar layout: **status indicator LEFT**, **title RIGHT** (`text-align: right`) + info — not macOS-packed left. Editor 2×2: titles `Allure Quality Gate` / `Sonar Quality Gate` (ellipsis OK), SQG compact `cov|72<80` + `bugs|3>0`, bar height = `--anb-bar-h`. Debug: [`debug-qg.html`](./debug-qg.html). Goldens: [`fixtures/qg-locked/`](./fixtures/qg-locked/). Guard: smoke `chart.profile kit` QG chrome asserts.
 
 | Surface | Chrome | Forbidden |
 |---------|--------|-----------|
 | Jar collage PNG | Hybrid PNG full cell | macOS `drawCard` header / dots |
-| Editor canvas | Hybrid full-bleed; delete overlay | `anb-panel__bar`; nested second bar; raw `31px` bar on scaled canvas; `font-size: 0.46rem` crush on QG |
+| Editor canvas | Hybrid full-bleed; delete overlay; indicator← title→ + info | `anb-panel__bar`; nested second bar; raw `31px` bar; `0.46rem` crush; **left-packed title** (reads as macOS chrome) |
 | TG / export preview | Hybrid only | outer `widget-tile__bar` |
 
 Palette thumbs: micro `widget-tile__bar` + body-only QG (unchanged).
