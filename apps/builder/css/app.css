@@ -744,8 +744,8 @@ html.theme-light .anb-canvas--chart-off::after {
   width: var(--anb-resize-size);
   height: var(--anb-resize-size);
   opacity: 0.7;
-  /* Above .anb-panel__bar so NE is not hidden under Copy / × */
-  z-index: 3;
+  /* Above edge strips + title bar so corners keep diagonal resize. */
+  z-index: 5;
 }
 
 .anb-canvas .grid-stack-item:hover > .ui-resizable-ne,
@@ -789,8 +789,8 @@ html.theme-light .anb-canvas--chart-off::after {
 
 .anb-canvas .grid-stack-item > .ui-resizable-n {
   top: var(--anb-resize-inset) !important;
-  left: var(--anb-resize-inset);
-  right: var(--anb-resize-inset);
+  left: calc(var(--anb-resize-inset) + var(--anb-resize-size));
+  right: calc(var(--anb-resize-inset) + var(--anb-resize-size));
   height: 8px;
 }
 
@@ -810,8 +810,8 @@ html.theme-light .anb-canvas--chart-off::after {
 }
 
 .anb-canvas .grid-stack-item > .ui-resizable-s {
-  left: var(--anb-resize-inset);
-  right: var(--anb-resize-inset);
+  left: calc(var(--anb-resize-inset) + var(--anb-resize-size));
+  right: calc(var(--anb-resize-inset) + var(--anb-resize-size));
   bottom: var(--anb-resize-inset);
   height: 8px;
 }
