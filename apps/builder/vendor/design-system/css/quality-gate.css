@@ -62,9 +62,9 @@
 /* ---- Hybrid tile (D bar + H split id + C message + L formula) ---- */
 
 .quality-gate:has(.quality-gate__bar) {
-  /* Same chrome tokens as widget-tile (bar 28 · title 0.75rem · inset from indicator). */
-  --wt-bar-height: 28px;
-  --wt-title-size: 0.75rem;
+  /* Same chrome tokens as widget-tile (bar 31 · title 0.8125rem · inset from indicator). */
+  --wt-bar-height: 31px;
+  --wt-title-size: 0.8125rem;
   --indicator-size: 10px;
   --wt-bar-inset: calc((var(--wt-bar-height) - var(--indicator-size)) / 2);
 
@@ -170,12 +170,12 @@
   flex-shrink: 0;
   box-sizing: border-box;
   line-height: 0;
-  /* Trailing inset only — top/bottom center in the 28px bar (trigger > indicator). */
+  /* Trailing inset only — top/bottom center in the 31px bar (trigger > indicator). */
   padding: 0 var(--wt-bar-inset) 0 0;
 }
 
 .quality-gate:has(.quality-gate__bar) .quality-gate__bar > .qg-info .qg-info__trigger {
-  /* Readable vs 10px status dot; still fits in --wt-bar-height 28. */
+  /* Readable vs 10px status dot; still fits in --wt-bar-height 31. */
   width: 1.125rem;
   height: 1.125rem;
   min-width: 1.125rem;

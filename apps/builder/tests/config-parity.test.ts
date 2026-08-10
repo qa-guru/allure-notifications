@@ -50,7 +50,7 @@ test("@qa-guru/allure-notifications-config CANVAS_PRESETS are CB-870 / SQ-1080 /
 });
 
 test("@qa-guru/allure-notifications-config chrome defaults + PANEL_CATALOG size", () => {
-  assert.equal(DEFAULT_HEADER_HEIGHT, 22);
+  assert.equal(DEFAULT_HEADER_HEIGHT, 31);
   assert.equal(DEFAULT_CARD_GAP, 14);
   assert.equal(DEFAULT_TILE_PAD, 6);
   assert.equal(PANEL_CATALOG.length, 20);

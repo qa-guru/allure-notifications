@@ -67,7 +67,7 @@ test.describe('allure-notifications-builder smoke', () => {
         profile: 'default',
         width: 870,
         height: 1080,
-        headerHeight: 22,
+        headerHeight: 31,
         cardGap: 14,
         tilePad: 6,
         gridCols: 10,
@@ -228,7 +228,7 @@ test.describe('allure-notifications-builder smoke', () => {
     expect(cfg.base.chart.items).toEqual(SQ1080_ITEMS);
     expect(cfg.base.chart.width).toBe(870);
     expect(cfg.base.chart.height).toBe(1080);
-    expect(cfg.base.chart.headerHeight).toBe(22);
+    expect(cfg.base.chart.headerHeight).toBe(31);
     expect(cfg.base.chart.cardGap).toBe(14);
     expect(cfg.base.chart.tilePad).toBe(6);
     expect(cfg.vector).toMatch(/^vector#[0-9a-f]{8}$/);
@@ -376,7 +376,7 @@ test.describe('allure-notifications-builder smoke', () => {
       const nwR = nw.getBoundingClientRect();
       const neR = ne.getBoundingClientRect();
       const swR = sw.getBoundingClientRect();
-      const barBottom = bar ? bar.getBoundingClientRect().bottom : c.top + 22;
+      const barBottom = bar ? bar.getBoundingClientRect().bottom : c.top + 31;
       const cs = getComputedStyle(el.closest('.anb-canvas'));
       const halfGap = parseFloat(cs.getPropertyValue('--anb-card-gap')) / 2;
       // Custom props may stay as calc()/max(); read used ::after size instead.
@@ -407,7 +407,8 @@ test.describe('allure-notifications-builder smoke', () => {
     expect(pos.dSwBottom).toBeLessThan(-2);
     expect(Math.abs(pos.dNwTop + pos.halfGap)).toBeLessThan(2);
     expect(Math.abs(pos.dNeTop + pos.halfGap)).toBeLessThan(2);
-    expect(pos.radius).toBe(10);
+    expect(pos.radius).toBeGreaterThanOrEqual(5);
+    expect(pos.radius).toBeLessThanOrEqual(10);
     // Regression: merge once parked NE/NW under the title bar.
     expect(pos.nwBelowBar).toBe(false);
   });
@@ -438,7 +439,7 @@ test.describe('allure-notifications-builder smoke', () => {
         barCss,
         padCss,
         gapExpected: 14 * scale,
-        barExpected: 22 * scale,
+        barExpected: Math.max(31, 31 * scale),
         padExpected: 6 * scale,
         panelTier: (panel.match(/widget-tile--tier-(\w+)/) || [])[1],
         previewTier: (preview.match(/widget-tile--tier-(\w+)/) || [])[1],

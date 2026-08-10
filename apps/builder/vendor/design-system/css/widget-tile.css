@@ -3,7 +3,7 @@
  * Canon (all ChartTypes):
  *   1×1 → hard-square __body (подложка); equal --wt-pad on all sides; bar outside ratio.
  *   Square layouts (cols===rows) keep the same hard-square body — never stretch to portrait.
- *   One chrome: bar 28 · pad 6 · marks 1.12 (dashboard + Telegram collage).
+ *   One chrome: bar 31 · pad 6 · marks 1.12 (dashboard + Telegram collage).
  *   Bar inset: --wt-bar-inset = (bar-height − indicator-size) / 2 — first indicator has
  *   equal distance to top / left / bottom of the bar (trailing chrome uses the same inset).
  * Format: __body aspect-ratio from --layout-WxH (default 1×1).
@@ -15,9 +15,9 @@
  */
 
 .widget-tile {
-  --wt-bar-height: 28px;
+  --wt-bar-height: 31px;
   --wt-pad: 6px;
-  --wt-title-size: 0.75rem;
+  --wt-title-size: 0.8125rem;
   --wt-dot-gap: 5px;
   --wt-mark-scale: 1.12;
   --wt-font-scale: 1.08;

@@ -113,7 +113,7 @@ describe("@qa-guru/allure-notifications-config presets", () => {
       { type: "testingPyramid", x: 0, y: 4, w: 3, h: 3 },
       { type: "durations", x: 3, y: 4, w: 4, h: 3, groupBy: "layer" },
     ]);
-    assert.equal(DEFAULT_HEADER_HEIGHT, 22);
+    assert.equal(DEFAULT_HEADER_HEIGHT, 31);
     assert.equal(DEFAULT_CARD_GAP, 14);
     assert.equal(DEFAULT_TILE_PAD, 6);
   });
@@ -127,7 +127,7 @@ describe("@qa-guru/allure-notifications-config presets", () => {
     assert.equal(parsed.base.chart?.layout, "free");
     assert.equal(parsed.base.chart?.width, 870);
     assert.equal(parsed.base.chart?.height, 1080);
-    assert.equal(parsed.base.chart?.headerHeight, 22);
+    assert.equal(parsed.base.chart?.headerHeight, 31);
     assert.equal(parsed.base.chart?.cardGap, 14);
     assert.equal(parsed.base.chart?.tilePad, 6);
     assert.equal(parsed.base.chart?.items?.length, 4);

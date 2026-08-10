@@ -14,7 +14,7 @@ export const DEFAULT_CANVAS = "870x1080";
 export const GRID_COLS = 10;
 export const GRID_ROWS = 10;
 /** Jar / collage chrome defaults (CollageRenderer + widget-tile canon in builder). */
-export const DEFAULT_HEADER_HEIGHT = 22;
+export const DEFAULT_HEADER_HEIGHT = 31;
 export const DEFAULT_CARD_GAP = 14;
 /** Preview-only — maps to `--wt-pad`; jar parses but does not apply yet. */
 export const DEFAULT_TILE_PAD = 6;

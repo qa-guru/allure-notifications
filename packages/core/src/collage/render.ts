@@ -61,7 +61,9 @@ const DEFAULT_HEIGHT = 600;
 const DEFAULT_GRID_COLS = 10;
 const DEFAULT_GRID_ROWS = 10;
 const CANON_CARD_GAP = 14;
-const CARD_ARC = 18;
+/** DS `--radius-md` (12px) @ 1080 canvas — same baseline as builder `cardCornerRadiusLogical`. */
+const DS_CARD_RADIUS_MD = 12;
+const DS_CARD_RADIUS_CANVAS = 1080;
 const CARD_BORDER_WIDTH = 1.5;
 const BASE_HEADER_HEIGHT = 34;
 const CANON_HEADER_HEIGHT = 68;
@@ -179,6 +181,14 @@ function resolveCardGap(config: Config): number {
     return g;
   }
   return CANON_CARD_GAP;
+}
+
+function resolveCardArc(collageWidth: number, collageHeight: number): number {
+  if (!(collageWidth > 0) || !(collageHeight > 0)) {
+    return DS_CARD_RADIUS_MD;
+  }
+  const scale = Math.min(collageWidth, collageHeight) / DS_CARD_RADIUS_CANVAS;
+  return Math.max(8, Math.min(12, Math.round(DS_CARD_RADIUS_MD * scale)));
 }
 
 function clamp(value: number | undefined, min: number, max: number): number {
@@ -367,6 +377,7 @@ async function drawCard(
   theme: ChartTheme,
   title: string,
   headerHeight: number,
+  cardArc: number,
 ): Promise<void> {
   const scale = headerHeight / BASE_HEADER_HEIGHT;
   const padX = Math.max(CARD_HEADER_PAD_X, Math.round(CARD_HEADER_PAD_X * scale));
@@ -378,11 +389,13 @@ async function drawCard(
   );
   const fontSize = Math.max(CARD_TITLE_FONT, Math.round(CARD_TITLE_FONT * scale));
 
+  const bodyHeight = Math.max(1, rect.h - headerHeight);
+
   graphics.save();
-  roundRectClip(graphics, rect.x, rect.y, rect.w, rect.h, CARD_ARC);
+  roundRectClip(graphics, rect.x, rect.y, rect.w, rect.h, cardArc);
 
   const img = await loadImage(panelPng);
-  graphics.drawImage(img, rect.x, rect.y + headerHeight);
+  graphics.drawImage(img, rect.x, rect.y + headerHeight, rect.w, bodyHeight);
 
   const headerBg = headerBackground(theme);
   graphics.fillStyle = rgbCss(headerBg);
@@ -432,7 +445,7 @@ async function drawCard(
     rect.y + 0.5,
     rect.w - 1,
     rect.h - 1,
-    CARD_ARC,
+    cardArc,
   );
 }
 
@@ -498,6 +511,7 @@ export async function renderCollagePng(
   const items = selectedFreeItems(config);
   const profile = normalizeChartProfile(chart?.profile);
   const half = Math.floor(cardGap / 2);
+  const cardArc = resolveCardArc(collageWidth, collageHeight);
   const cellW = Math.floor(collageWidth / cols);
   const cellH = Math.floor(collageHeight / rows);
 
@@ -563,6 +577,7 @@ export async function renderCollagePng(
       theme,
       title,
       headerHeight,
+      cardArc,
     );
   }
 

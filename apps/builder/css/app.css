@@ -165,6 +165,8 @@ body {
   position: absolute;
   margin: 0;
   box-sizing: border-box;
+  overflow: hidden;
+  border-radius: var(--anb-card-radius, 10px);
 }
 
 .anb-export-popover__stage .anb-tg__widget .widget-tile__body {
@@ -500,10 +502,10 @@ html.theme-light .anb-canvas--chart-off::after {
   /* Jar free-grid chrome — synced from base.chart.* via JS */
   --anb-card-gap: 14px;
   --anb-half-gap: calc(var(--anb-card-gap) / 2);
-  /* r = round(min(gutter, min(w,h)*0.04)); 870×1080 / 10×10 / gap14 → 3 */
-  --anb-card-radius: 3px;
-  --anb-bar-h: 22px;
-  --anb-title-size: 0.75rem;
+  /* Editor shell radius — synced in JS, clamped [5, 10]px (pre-regression ~10px) */
+  --anb-card-radius: 10px;
+  --anb-bar-h: 31px;
+  --anb-title-size: 0.8125rem;
   --wt-pad: 6px;
   font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", sans-serif;
 }
@@ -581,7 +583,7 @@ html.theme-light .anb-canvas--chart-off::after {
   inset: var(--anb-half-gap) !important;
   margin: 0 !important;
   overflow: hidden;
-  border-radius: var(--anb-card-radius);
+  border-radius: var(--anb-card-radius, 10px);
   background: var(--color-surface, #323232);
   color: var(--color-text, #dcdcdc);
   box-shadow: inset 0 0 0 1px var(--color-border, rgba(96, 96, 96, 0.9));
@@ -599,8 +601,8 @@ html.theme-light .anb-canvas--chart-off::after {
   align-items: center;
   gap: 6px;
   box-sizing: border-box;
-  height: var(--anb-bar-h, 22px);
-  min-height: var(--anb-bar-h, 22px);
+  height: var(--anb-bar-h, 31px);
+  min-height: var(--anb-bar-h, 31px);
   padding: 0 6px 0 8px;
   border-bottom: 1px solid rgba(255, 255, 255, 0.1);
   background: var(--color-surface-soft, #3c3c3c);
@@ -612,7 +614,7 @@ html.theme-light .anb-canvas--chart-off::after {
 .anb-panel__title {
   flex: 1;
   min-width: 0;
-  font-size: var(--anb-title-size, 0.75rem);
+  font-size: var(--anb-title-size, 0.8125rem);
   font-weight: 600;
   line-height: 1.15;
   letter-spacing: 0.01em;

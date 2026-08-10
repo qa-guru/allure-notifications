@@ -8,7 +8,9 @@ const DEFAULT_TILE_H = 2;
 const PACK_COLS = 5;
 const PACK_X = Object.freeze([0, 2, 4, 6, 8]);
 /** DS `.widget-tile` baseline bar — used to scale title/dots with headerHeight. */
-const WT_BAR_BASELINE = 28;
+const WT_BAR_BASELINE = 31;
+/** DS `.widget-tile` title at baseline bar (rem). */
+const WT_TITLE_BASELINE = 0.8125;
 function createDefaultState() {
     return createDefaultConfig();
 }
@@ -221,9 +223,6 @@ function freeCellRect(chart, item) {
         height: Math.max(1, bottom - top),
     };
 }
-/**
- * @param {{ headerHeight?: number, tilePad?: number }} chart
- */
 function chromeCssVars(chart) {
     const headerHeight = chart.headerHeight != null && Number.isFinite(Number(chart.headerHeight))
         ? Math.max(1, Number(chart.headerHeight))
@@ -231,12 +230,19 @@ function chromeCssVars(chart) {
     const tilePad = chart.tilePad != null && Number.isFinite(Number(chart.tilePad))
         ? Math.max(0, Number(chart.tilePad))
         : DEFAULT_TILE_PAD;
+    const cardGap = chart.cardGap != null && Number.isFinite(Number(chart.cardGap))
+        ? Math.max(0, Number(chart.cardGap))
+        : DEFAULT_CARD_GAP;
+    const chartW = chart.width != null && Number.isFinite(Number(chart.width)) ? Number(chart.width) : 870;
+    const chartH = chart.height != null && Number.isFinite(Number(chart.height)) ? Number(chart.height) : 1080;
+    const radius = cardCornerRadiusLogical(cardGap, chartW, chartH);
     const scale = headerHeight / WT_BAR_BASELINE;
     return (`--wt-bar-height:${headerHeight}px;` +
         `--wt-pad:${tilePad}px;` +
-        `--wt-title-size:${(0.75 * scale).toFixed(3)}rem;` +
+        `--wt-title-size:${(WT_TITLE_BASELINE * scale).toFixed(3)}rem;` +
         `--indicator-size:${Math.max(6, Math.round(10 * scale))}px;` +
-        `--wt-dot-gap:${Math.max(2, Math.round(5 * scale))}px`);
+        `--wt-dot-gap:${Math.max(2, Math.round(5 * scale))}px;` +
+        `--anb-card-radius:${radius}px`);
 }
 /**
  * @param {string} path
@@ -304,24 +310,19 @@ function canvasDisplayScale(canvas) {
         return 1;
     return displayW / chart.width;
 }
+/** DS `tokens.css` `--radius-md` @ 1080 canvas baseline — shared with collage export. */
+const DS_CARD_RADIUS_MD = 12;
+const DS_CARD_RADIUS_CANVAS = 1080;
 /**
- * Editor card corner radius from local geometry (not a magic px).
- * r = round(min(gutter, min(tileW,tileH)*0.04)), clamp [2, 8].
- * Uses interior 1×1 cell as the shared grid language (all sibling tiles).
- * @param {number} cardGap
- * @param {number} chartW
- * @param {number} chartH
+ * Jar canvas logical px — scales `--radius-md` with canvas size.
+ * 870×1080 → 10px · 1080×1080 → 12px · 1024×1280 → 11px.
  */
-function cardCornerRadiusLogical(cardGap, chartW, chartH) {
-    const gap = Math.max(0, cardGap);
+function cardCornerRadiusLogical(_cardGap, chartW, chartH) {
     if (!(chartW > 0) || !(chartH > 0)) {
-        return Math.max(2, Math.min(8, Math.round(Math.min(gap, gap * 0.5))));
+        return DS_CARD_RADIUS_MD;
     }
-    const cellMin = Math.min(chartW / GRID_COLS, chartH / GRID_ROWS);
-    const tileMin = Math.max(0, cellMin - gap);
-    // r = round(min(gutter, min(w,h)*0.04)); e.g. 870×1080 / 10×10 / gap14 → 3
-    const raw = Math.min(gap, tileMin * 0.04);
-    return Math.max(2, Math.min(8, Math.round(raw)));
+    const scale = Math.min(chartW, chartH) / DS_CARD_RADIUS_CANVAS;
+    return Math.max(8, Math.min(12, Math.round(DS_CARD_RADIUS_MD * scale)));
 }
 /**
  * Push jar chrome knobs onto the editor canvas (cardGap · headerHeight · tilePad).
@@ -343,16 +344,17 @@ function syncEditorChrome() {
     if (!(canvas instanceof HTMLElement))
         return;
     const displayScale = canvasDisplayScale(canvas);
-    const barScale = headerHeight / WT_BAR_BASELINE;
     const gapCss = cardGap * displayScale;
-    const barCss = headerHeight * displayScale;
+    const barCss = Math.max(WT_BAR_BASELINE, headerHeight * displayScale);
     const padCss = tilePad * displayScale;
     const chartW = chart.width != null && Number.isFinite(Number(chart.width)) ? Number(chart.width) : 870;
     const chartH = chart.height != null && Number.isFinite(Number(chart.height)) ? Number(chart.height) : 1080;
-    const radiusCss = cardCornerRadiusLogical(cardGap, chartW, chartH) * displayScale;
+    const logicalR = cardCornerRadiusLogical(cardGap, chartW, chartH);
+    // Scale with preview, clamp so corners stay visible but never pill-like on small tiles.
+    const radiusCss = Math.max(5, Math.min(10, Math.round(logicalR * displayScale)));
     canvas.style.setProperty('--anb-card-gap', `${gapCss}px`);
     canvas.style.setProperty('--anb-bar-h', `${barCss}px`);
-    canvas.style.setProperty('--anb-title-size', `${(0.75 * barScale * displayScale).toFixed(4)}rem`);
+    canvas.style.setProperty('--anb-title-size', `${(WT_TITLE_BASELINE * barCss / WT_BAR_BASELINE).toFixed(4)}rem`);
     canvas.style.setProperty('--wt-pad', `${padCss}px`);
     canvas.style.setProperty('--anb-resize-size', `${Math.max(8, 14 * displayScale)}px`);
     canvas.style.setProperty('--anb-card-radius', `${radiusCss}px`);
@@ -526,6 +528,15 @@ function renderTerminal() {
     if (vectorDraft == null)
         renderVectorInput();
 }
+function migrateChromeKnobs() {
+    const chart = /** @type {{ headerHeight?: number }} */ (state.base.chart);
+    if (!chart)
+        return;
+    const h = Number(chart.headerHeight);
+    if (Number.isFinite(h) && h > 0 && h < WT_BAR_BASELINE) {
+        chart.headerHeight = WT_BAR_BASELINE;
+    }
+}
 /**
  * Apply a caps snap to controls + grid. Grid footprints always come from
  * `snap.base.chart.items` (vector state) — never from palette catalog defaults.
@@ -537,6 +548,7 @@ function applySnap(snap) {
     state.telegram = /** @type {Record<string, unknown>} */ (next.telegram);
     setPath('base.chart.profile', normalizeChartProfile(
     /** @type {{ profile?: string }} */ (state.base.chart)?.profile));
+    migrateChromeKnobs();
     const chartState = /** @type {{ items?: ChartItem[] }} */ (state.base.chart);
     vectorDraft = null;
     vectorMiss = false;

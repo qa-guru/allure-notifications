@@ -18,7 +18,7 @@
 
 | Field | Default | Role |
 |-------|---------|------|
-| `headerHeight` | **22** | Card title-bar height (logical canvas px). Jar **5.0.3+**. TG preview sets `--wt-bar-height` (+ proportional title/dots from DS baseline 28). Editor: `--anb-bar-h` × displayScale. |
+| `headerHeight` | **31** | Card title-bar height (logical canvas px). Jar **5.0.3+**. TG preview sets `--wt-bar-height` (+ proportional title/dots from DS baseline 31). Editor: `--anb-bar-h` min DS baseline × displayScale. |
 | `cardGap` | **14** | Gap around/between cards (logical canvas px) — equal edge & between. Jar **5.0.4+**. Editor: half-inset × displayScale; TG preview = `freeCellRect` then `transform: scale`. |
 | `tilePad` | **6** | Inner body pad (logical canvas px) → `--wt-pad` × displayScale on editor; full logical on TG stage. Jar has no field yet. |
 
@@ -58,7 +58,7 @@ Terminal exports full `config.json`. Chart block for jar free-grid (CB-870 defau
   "layout": "free",
   "width": 870,
   "height": 1080,
-  "headerHeight": 22,
+  "headerHeight": 31,
   "cardGap": 14,
   "tilePad": 6,
   "gridCols": 10,
@@ -87,7 +87,7 @@ Smoke: `header tool links` — site has `.icon svg`, zero `.icon img`.
 
 ## Resize L-brackets (editor chrome)
 
-NE/NW/SE/SW parked at the **cell edge** (`top/bottom/left/right: 0`). The visible crop-mark (`::after`) is sized to `--anb-resize-mark ≈ half-gap − 1px` so the stroke stays in the cardGap gutter **outside** the rounded card — never under the title bar (`half-gap + bar-h`) and never digging into the chart. Editor card radius is **computed** (`--anb-card-radius`): `r = round(min(cardGap, min(1×1 cell) * 0.04))` clamp `[2, 8]` — e.g. 870×1080 / 10×10 / gap14 → **3px**. Do **not** hardcode; do **not** mirror core collage `CARD_ARC` (18px in `packages/core`, export-only). Guard: smoke `resize L-brackets sit in gutter outside card`.
+NE/NW/SE/SW parked at the **cell edge** (`top/bottom/left/right: 0`). The visible crop-mark (`::after`) is sized to `--anb-resize-mark ≈ half-gap − 1px` so the stroke stays in the cardGap gutter **outside** the rounded card — never under the title bar (`half-gap + bar-h`) and never digging into the chart. **Editor** `--anb-card-radius`: `round(logical × displayScale)` clamp **`[5, 10]px`** (logical = `round(12 × min(W,H)/1080)` clamp `[8,12]`). Pre-regression editor used **10px**. **TG export popover** + **collage PNG** use logical radius only (no displayScale). Guard: smoke `resize L-brackets sit in gutter outside card`.
 
 ## Editor ↔ TG preview proportions
 

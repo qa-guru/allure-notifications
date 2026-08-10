@@ -3,7 +3,7 @@ const PRECACHE = 'anb-shell';
 const MANIFEST = [
   {
     "url": "/css/app.css",
-    "revision": "5f553984186e80b6"
+    "revision": "38748dbc187cc7f0"
   },
   {
     "url": "/icons/pwa-192.png",
@@ -19,15 +19,15 @@ const MANIFEST = [
   },
   {
     "url": "/index.html",
-    "revision": "aebcf723f301525d"
+    "revision": "af68ee38ec2924a4"
   },
   {
     "url": "/js/app.js",
-    "revision": "3679d5593cee9398"
+    "revision": "b186b8318358d17e"
   },
   {
     "url": "/js/phrases.js",
-    "revision": "12a223011d1b7903"
+    "revision": "7a6ecd0d2fcdbf4d"
   },
   {
     "url": "/manifest.webmanifest",
@@ -35,11 +35,15 @@ const MANIFEST = [
   },
   {
     "url": "/vendor/allure-notifications-config/browser.js",
-    "revision": "f150fd7579f02b06"
+    "revision": "d0b0819a7e8a0f4c"
   },
   {
     "url": "/vendor/allure-notifications-config/catalog.js",
-    "revision": "f36ec85dcd4230da"
+    "revision": "9714f1a7e06ee2a8"
+  },
+  {
+    "url": "/vendor/allure-notifications-config/kit-only.js",
+    "revision": "55431d1225ee2163"
   },
   {
     "url": "/vendor/allure-notifications-config/phrases.js",
@@ -47,7 +51,7 @@ const MANIFEST = [
   },
   {
     "url": "/vendor/allure-notifications-config/presets.js",
-    "revision": "51bd4c5b29ab80a4"
+    "revision": "bd4ce48144ee7fee"
   },
   {
     "url": "/vendor/allure-notifications-pyramid/browser.js",
@@ -67,7 +71,11 @@ const MANIFEST = [
   },
   {
     "url": "/vendor/design-system/assets/qa-guru-logo.svg",
-    "revision": "eac710d62e7574a2"
+    "revision": "7503122a5250d584"
+  },
+  {
+    "url": "/vendor/design-system/css/badge.css",
+    "revision": "fc54b2c74d9868fc"
   },
   {
     "url": "/vendor/design-system/css/button.css",
@@ -142,12 +150,32 @@ const MANIFEST = [
     "revision": "bd90607d1bc2ec12"
   },
   {
+    "url": "/vendor/design-system/css/qg-info.css",
+    "revision": "4390159da7672f6c"
+  },
+  {
+    "url": "/vendor/design-system/css/quality-gate.css",
+    "revision": "e0fbf0fda4323cc3"
+  },
+  {
+    "url": "/vendor/design-system/css/sparkline.css",
+    "revision": "934db011899702a4"
+  },
+  {
+    "url": "/vendor/design-system/css/stability-cell.css",
+    "revision": "e38d20525ee675b4"
+  },
+  {
     "url": "/vendor/design-system/css/stack.css",
     "revision": "9cfb470a3e1b4c3e"
   },
   {
     "url": "/vendor/design-system/css/sticky.css",
     "revision": "fd1818fff8d54383"
+  },
+  {
+    "url": "/vendor/design-system/css/tests-table-panel.css",
+    "revision": "3ad21fb01c0e4b03"
   },
   {
     "url": "/vendor/design-system/css/text.css",
@@ -159,7 +187,7 @@ const MANIFEST = [
   },
   {
     "url": "/vendor/design-system/css/widget-tile.css",
-    "revision": "b4037f9e71099cf4"
+    "revision": "1f63177c7dfd51a0"
   },
   {
     "url": "/vendor/design-system/js/code-highlight.js",
@@ -183,7 +211,7 @@ const MANIFEST = [
   },
   {
     "url": "/vendor/design-system/js/pwa-register.js",
-    "revision": "0b77428f5286f42d"
+    "revision": "ea7a3123deb6ce08"
   },
   {
     "url": "/vendor/design-system/js/theme-icons.js",
@@ -191,7 +219,7 @@ const MANIFEST = [
   },
   {
     "url": "/vendor/design-system/js/widget-tile-mocks.js",
-    "revision": "eb505b5fa92482df"
+    "revision": "dd27cc8f9277106d"
   },
   {
     "url": "/vendor/design-system/templates/header.html",
