@@ -98,7 +98,7 @@ Logical `cardGap` / `headerHeight` / `tilePad` are jar canvas px. TG stage draws
 | Surface | Chrome |
 |---------|--------|
 | Jar collage PNG | QG hybrid PNG full cell — **no** macOS `drawCard` header |
-| Editor canvas | `anb-panel__bar` + **body-only** QG mock (no nested `quality-gate__bar`) |
+| Editor canvas | Full hybrid QG tile (no `anb-panel__bar`) — delete overlays |
 | TG / export preview | Hybrid QG only — **no** outer `widget-tile__bar` |
 
 Palette thumbs keep micro `widget-tile__bar` + body-only QG (unchanged).

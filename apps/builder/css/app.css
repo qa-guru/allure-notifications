@@ -1014,28 +1014,31 @@ html.theme-light .anb-zone--terminal .ch-theme--vscode .ch-tok-cmd { color: #795
   line-height: 1.1;
 }
 
-/* Canvas QG body-only (no nested quality-gate__bar — editor owns anb-panel__bar). */
-.anb-panel__tile .anb-kit-mock.quality-gate {
-  display: flex;
-  flex-direction: column;
-  border: none;
-  background: transparent;
+/* Editor QG: hybrid fills the card (no anb-panel__bar). Delete overlays QG bar. */
+.anb-panel--qualityGate {
+  position: relative;
 }
 
-.anb-panel__tile .anb-kit-mock.quality-gate .quality-gate__body {
-  display: flex;
-  flex-direction: column;
+.anb-panel__body--qg-hybrid {
+  position: relative;
   flex: 1;
   min-height: 0;
   height: 100%;
-  padding: 0;
 }
 
-.anb-panel__tile .anb-kit-mock.quality-gate--passed .quality-gate__body {
-  align-items: center;
-  justify-content: center;
+.anb-panel__actions--qg-overlay {
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  z-index: 6;
+  margin: 0;
+}
+
+.anb-panel__body--qg-hybrid .anb-panel__tile,
+.anb-panel__body--qg-hybrid .widget-tile__body,
+.anb-panel__body--qg-hybrid .anb-kit-mock.quality-gate {
+  height: 100%;
   min-height: 0;
-  padding: 2px;
 }
 
 .anb-panel__tile .anb-kit-mock.tests-table-panel {

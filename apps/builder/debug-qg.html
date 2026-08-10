@@ -234,24 +234,25 @@
     </section>
 
     <section>
-      <h2>2. Editor canvas — anb-panel__bar + body-only (без nested quality-gate__bar)</h2>
+      <h2>2. Editor canvas — hybrid full-bleed (no anb-panel__bar; delete overlay)</h2>
       <div class="row">
         <div class="cell">
           <label>editor · Allure QG</label>
-          <div class="editor-frame" data-testid="dbg-editor-aqg">
-            <div class="anb-panel__bar">
-              <span>Allure QG</span>
-              <button type="button" aria-label="Delete" tabindex="-1">
-                <svg viewBox="0 0 16 16" width="9" height="9" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="m4 4 8 8M12 4l-8 8"/></svg>
-              </button>
-            </div>
-            <div class="anb-panel__body">
-              <div class="widget-tile widget-tile--quality-gate">
-                <div class="widget-tile__body">
-                  <div class="quality-gate quality-gate--allure quality-gate--passed" role="status">
-                    <div class="quality-gate__body">
-                      <p class="quality-gate__verdict quality-gate__verdict--ok">Passed</p>
+          <div class="tile-frame" data-testid="dbg-editor-aqg" style="position:relative">
+            <button type="button" aria-label="Delete" tabindex="-1" style="position:absolute;top:8px;right:8px;z-index:2;border:0;background:transparent;color:#a8a29e;line-height:0">
+              <svg viewBox="0 0 16 16" width="9" height="9" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="m4 4 8 8M12 4l-8 8"/></svg>
+            </button>
+            <div class="widget-tile widget-tile--quality-gate" style="height:100%">
+              <div class="widget-tile__body">
+                <div class="quality-gate quality-gate--allure quality-gate--passed" role="status">
+                  <div class="quality-gate__bar">
+                    <div class="quality-gate__bar-start">
+                      <span class="indicator indicator--passed indicator--solid" aria-hidden="true"></span>
+                      <span class="quality-gate__bar-title">Allure QG</span>
                     </div>
+                  </div>
+                  <div class="quality-gate__body">
+                    <p class="quality-gate__verdict quality-gate__verdict--ok">Passed</p>
                   </div>
                 </div>
               </div>
@@ -260,28 +261,29 @@
         </div>
         <div class="cell">
           <label>editor · Sonar QG</label>
-          <div class="editor-frame" data-testid="dbg-editor-sqg">
-            <div class="anb-panel__bar">
-              <span>Sonar QG</span>
-              <button type="button" aria-label="Delete" tabindex="-1">
-                <svg viewBox="0 0 16 16" width="9" height="9" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="m4 4 8 8M12 4l-8 8"/></svg>
-              </button>
-            </div>
-            <div class="anb-panel__body">
-              <div class="widget-tile widget-tile--quality-gate">
-                <div class="widget-tile__body">
-                  <div class="quality-gate quality-gate--sonar quality-gate--failed" role="status">
-                    <div class="quality-gate__body">
-                      <ul class="quality-gate__rules">
-                        <li class="quality-gate__rule">
-                          <div class="quality-gate__rule-id">coverage</div>
-                          <div class="quality-gate__rule-detail">
-                            <p class="quality-gate__message">coverage 72.4 is below the required 80</p>
-                            <p class="quality-gate__formula">FAIL: 72.4 &lt; 80</p>
-                          </div>
-                        </li>
-                      </ul>
+          <div class="tile-frame" data-testid="dbg-editor-sqg" style="position:relative">
+            <button type="button" aria-label="Delete" tabindex="-1" style="position:absolute;top:8px;right:8px;z-index:2;border:0;background:transparent;color:#a8a29e;line-height:0">
+              <svg viewBox="0 0 16 16" width="9" height="9" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="m4 4 8 8M12 4l-8 8"/></svg>
+            </button>
+            <div class="widget-tile widget-tile--quality-gate" style="height:100%">
+              <div class="widget-tile__body">
+                <div class="quality-gate quality-gate--sonar quality-gate--failed" role="status">
+                  <div class="quality-gate__bar">
+                    <div class="quality-gate__bar-start">
+                      <span class="indicator indicator--failed indicator--solid" aria-hidden="true"></span>
+                      <span class="quality-gate__bar-title">Sonar QG</span>
                     </div>
+                  </div>
+                  <div class="quality-gate__body">
+                    <ul class="quality-gate__rules">
+                      <li class="quality-gate__rule">
+                        <div class="quality-gate__rule-id">coverage</div>
+                        <div class="quality-gate__rule-detail">
+                          <p class="quality-gate__message">coverage 72.4 is below the required 80</p>
+                          <p class="quality-gate__formula">FAIL: 72.4 &lt; 80</p>
+                        </div>
+                      </li>
+                    </ul>
                   </div>
                 </div>
               </div>

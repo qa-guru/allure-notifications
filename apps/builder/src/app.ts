@@ -1704,7 +1704,7 @@ function clearSelection() {
 /**
  * Editor card: editor bar (title + copy/delete) + tiered chart body.
  * Product dots live only on TG preview / export stage — not on the grid.
- * Kit QG: body-only mock (no nested quality-gate__bar — anb-panel__bar owns chrome).
+ * Kit QG: full hybrid tile (jar parity) — no anb-panel__bar; delete overlays.
  * @param {ChartItem} item
  */
 function panelInnerHtml(item: ChartItem) {
@@ -1719,22 +1719,36 @@ function panelInnerHtml(item: ChartItem) {
   else if (meta?.groupBy) attrs += ` data-group-by="${escapeHtml(meta.groupBy)}"`;
   if (item.by) attrs += ` data-by="${escapeHtml(item.by)}"`;
   else if (meta?.by) attrs += ` data-by="${escapeHtml(meta.by)}"`;
+
+  const deleteBtn =
+    `<button type="button" class="anb-panel__action" data-anb-action="delete" title="Delete" aria-label="Delete">` +
+    `<svg viewBox="0 0 16 16" width="9" height="9" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" aria-hidden="true"><path d="m4 4 8 8M12 4l-8 8"/></svg>` +
+    `</button>`;
+
+  // QG owns hybrid chrome — same as jar collage / TG preview (one bar).
+  if (chartType === 'qualityGate' && panelId) {
+    const hybrid = kitOnlyPanelMockHtml(panelId, chartType, 'hybrid');
+    return (
+      `<div class="anb-panel__body anb-panel__body--qg-hybrid">` +
+      `<span class="anb-panel__actions anb-panel__actions--qg-overlay">${deleteBtn}</span>` +
+      `<div class="widget-tile widget-tile--tier-${tier} anb-panel__tile widget-tile--quality-gate" ${attrs}>` +
+      `<div class="widget-tile__body">${hybrid}</div>` +
+      `</div>` +
+      `</div>`
+    );
+  }
+
   const kitBody =
     isKitOnlyPanelType(chartType) && panelId
-      ? kitOnlyPanelMockHtml(panelId, chartType, 'body')
+      ? kitOnlyPanelMockHtml(panelId, chartType, 'hybrid')
       : '';
-  const kitTileMod = chartType === 'qualityGate' ? ' widget-tile--quality-gate' : '';
   return (
     `<div class="anb-panel__bar">` +
     `<span class="anb-panel__title">${escapeHtml(title)}</span>` +
-    `<span class="anb-panel__actions">` +
-    `<button type="button" class="anb-panel__action" data-anb-action="delete" title="Delete" aria-label="Delete">` +
-    `<svg viewBox="0 0 16 16" width="9" height="9" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" aria-hidden="true"><path d="m4 4 8 8M12 4l-8 8"/></svg>` +
-    `</button>` +
-    `</span>` +
+    `<span class="anb-panel__actions">${deleteBtn}</span>` +
     `</div>` +
     `<div class="anb-panel__body">` +
-    `<div class="widget-tile widget-tile--tier-${tier} anb-panel__tile${kitTileMod}" ${attrs}>` +
+    `<div class="widget-tile widget-tile--tier-${tier} anb-panel__tile" ${attrs}>` +
     `<div class="widget-tile__body">${kitBody}</div>` +
     `</div>` +
     `</div>`

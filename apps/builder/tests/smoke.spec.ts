@@ -568,14 +568,18 @@ test.describe('allure-notifications-builder smoke', () => {
         canvasHasEditorBar: Boolean(
           canvasMock?.closest('.anb-panel')?.querySelector('.anb-panel__bar'),
         ),
+        canvasHasDelete: Boolean(
+          canvasMock?.closest('.anb-panel')?.querySelector('[data-anb-action="delete"]'),
+        ),
       };
     });
-    expect(canvasQgChrome.panelHasEditorBar).toBe(true);
-    expect(canvasQgChrome.panelHasQgBar).toBe(false);
+    expect(canvasQgChrome.panelHasEditorBar).toBe(false);
+    expect(canvasQgChrome.panelHasQgBar).toBe(true);
     expect(canvasQgChrome.previewHasProductBar).toBe(false);
     expect(canvasQgChrome.previewHasQgBar).toBe(true);
-    expect(canvasQgChrome.canvasHasEditorBar).toBe(true);
-    expect(canvasQgChrome.canvasHasQgBar).toBe(false);
+    expect(canvasQgChrome.canvasHasEditorBar).toBe(false);
+    expect(canvasQgChrome.canvasHasQgBar).toBe(true);
+    expect(canvasQgChrome.canvasHasDelete).toBe(true);
 
     const canvasTestsTable = page.locator('.anb-canvas [data-testid="anb-kit-mock-testsTable"]');
     await expect(canvasTestsTable.locator('thead th')).toHaveCount(4);
