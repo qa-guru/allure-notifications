@@ -204,15 +204,17 @@ function paintSparkline(
   }
 
   const values = points.map((point) => point.durationSec as number);
-  const width = Math.min(88, w);
+  /* Fill the trend column — do not leave an intrinsic 88px island. */
+  const width = Math.max(1, w);
   const height = Math.min(28, h);
-  const pad = 2;
+  const padX = 0;
+  const padY = 2;
   const min = Math.min(...values);
   const max = Math.max(...values);
   const range = max - min || 1;
   const coords: Array<{ x: number; y: number }> = values.map((value, index) => ({
-    x: pad + (index / (values.length - 1)) * (width - pad * 2),
-    y: pad + (1 - (value - min) / range) * (height - pad * 2),
+    x: padX + (index / (values.length - 1)) * (width - padX * 2),
+    y: padY + (1 - (value - min) / range) * (height - padY * 2),
   }));
 
   const ox = x;
@@ -220,11 +222,11 @@ function paintSparkline(
 
   ctx.save();
   ctx.beginPath();
-  ctx.moveTo(ox + pad, oy + height - pad);
+  ctx.moveTo(ox + padX, oy + height - padY);
   for (const point of coords) {
     ctx.lineTo(ox + point.x, oy + point.y);
   }
-  ctx.lineTo(ox + width - pad, oy + height - pad);
+  ctx.lineTo(ox + width - padX, oy + height - padY);
   ctx.closePath();
   ctx.fillStyle = `rgba(${stroke.r},${stroke.g},${stroke.b},0.14)`;
   ctx.fill();

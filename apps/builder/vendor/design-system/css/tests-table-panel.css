@@ -3,14 +3,25 @@
 @import url("sparkline.css");
 @import url("stability-cell.css");
 
+/* Fill tile body (widget-tile__body centers children by default). */
+.widget-tile__body > .tests-table-panel {
+  align-self: stretch;
+  width: 100%;
+  height: 100%;
+  min-height: 0;
+}
+
 .tests-table-panel {
-  overflow: auto;
-  max-height: 100%;
+  overflow: hidden;
+  box-sizing: border-box;
+  container-type: inline-size;
+  container-name: tests-table;
 }
 
 .tests-table-panel__table {
   width: 100%;
   border-collapse: collapse;
+  table-layout: fixed;
   font-size: var(--font-size-sm);
 }
 
@@ -19,6 +30,28 @@
   padding: 6px var(--space-2);
   border-bottom: 1px solid var(--color-border);
   vertical-align: middle;
+  overflow: hidden;
+  text-align: left;
+}
+
+/* One alignment per column — th and td share the same track + start edge. */
+.tests-table-panel__table th.tests-table-panel__name,
+.tests-table-panel__table td.tests-table-panel__name,
+.tests-table-panel__table th.tests-table-panel__status,
+.tests-table-panel__table td.tests-table-panel__status,
+.tests-table-panel__table th.tests-table-panel__trend,
+.tests-table-panel__table td.tests-table-panel__trend,
+.tests-table-panel__table th.tests-table-panel__stability,
+.tests-table-panel__table td.tests-table-panel__stability {
+  text-align: left;
+}
+
+.tests-table-panel__table thead tr {
+  height: 28px;
+}
+
+.tests-table-panel__table tbody tr {
+  height: 32px;
 }
 
 .tests-table-panel__table th {
@@ -27,7 +60,25 @@
   text-transform: uppercase;
   letter-spacing: 0.04em;
   color: var(--color-text-muted);
-  text-align: left;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Fluid name column — percentage widths; name keeps remainder of row width. */
+.tests-table-panel__table col.tests-table-panel__name {
+  width: 30%;
+}
+
+.tests-table-panel__table col.tests-table-panel__status {
+  width: 24%;
+}
+
+.tests-table-panel__table col.tests-table-panel__trend {
+  width: 26%;
+}
+
+.tests-table-panel__table col.tests-table-panel__stability {
+  width: 20%;
 }
 
 .tests-table-panel__table tbody tr:last-child td {
@@ -38,23 +89,278 @@
   background: color-mix(in srgb, var(--color-border) 35%, transparent);
 }
 
-.tests-table-panel__name {
-  max-width: 14rem;
+/* Name column: ellipsis on overflow (no max-width:0 — collapses column in table-layout:fixed). */
+.tests-table-panel__table th.tests-table-panel__name,
+.tests-table-panel__table td.tests-table-panel__name {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  min-width: 0;
+}
+
+/* Trend sparkline fills the content box (preserveAspectRatio=none on the SVG). */
+.tests-table-panel__trend .sparkline.sparkline--duration {
+  display: block;
+  box-sizing: border-box;
+  width: 100%;
+  max-width: 100%;
+  height: auto;
+  margin: 0;
+}
+
+/* Cell content must stay inside its column (badge/sparkline were visually breaking the grid). */
+.tests-table-panel__status .badge {
+  display: inline-block;
+  box-sizing: border-box;
+  max-width: 100%;
+  margin: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  vertical-align: middle;
+}
+
+.tests-table-panel__stability .stability-cell {
+  justify-content: flex-start;
+  width: max-content;
+  max-width: 100%;
+  margin: 0;
+  overflow: hidden;
+}
+
+/* Narrow tile (e.g. collage 2×2 ~140px): widen status, shrink type — matches compact tier. */
+@container tests-table (max-width: 220px) {
+  .tests-table-panel__table col.tests-table-panel__name {
+    width: 14%;
+  }
+
+  .tests-table-panel__table col.tests-table-panel__status {
+    width: 42%;
+  }
+
+  .tests-table-panel__table col.tests-table-panel__trend {
+    width: 26%;
+  }
+
+  .tests-table-panel__table col.tests-table-panel__stability {
+    width: 18%;
+  }
+
+  .tests-table-panel__table {
+    font-size: 0.625rem;
+    line-height: 1.15;
+  }
+
+  .tests-table-panel__table thead tr {
+    height: 18px;
+  }
+
+  .tests-table-panel__table tbody tr {
+    height: 20px;
+  }
+
+  .tests-table-panel__table th,
+  .tests-table-panel__table td {
+    padding: 2px 4px;
+  }
+
+  .tests-table-panel .badge {
+    font-size: 0.55rem;
+    padding: 0 3px;
+    line-height: 1.1;
+    font-weight: 600;
+  }
+}
+
+/* —— Footprint tiers (palette micro = builder anb-palette__tile canon) —— */
+.widget-tile--tier-micro {
+  --wt-pad: 4px;
+  --wt-bar-height: 22px;
+}
+
+.widget-tile--tier-micro .tests-table-panel {
+  box-sizing: border-box;
+  height: 100%;
+  overflow: hidden;
+}
+
+/* Tile chrome is the only frame — no nested panel border inside widget-tile. */
+.widget-tile__body > .tests-table-panel,
+.widget-tile__body > .tests-table-panel--palette {
+  border: none;
+  border-radius: 0;
+  background: transparent;
+}
+
+.widget-tile--tier-micro .tests-table-panel__table thead,
+.tests-table-host--tier-micro .tests-table-panel__table thead {
+  display: none;
+}
+
+.widget-tile--tier-micro .tests-table-panel__table,
+.tests-table-host--tier-micro .tests-table-panel__table {
+  font-size: 0.38rem;
+  line-height: 1;
+  table-layout: fixed;
+}
+
+.widget-tile--tier-micro .tests-table-panel__table tbody tr,
+.tests-table-host--tier-micro .tests-table-panel__table tbody tr {
+  height: 1.1em;
+}
+
+.widget-tile--tier-micro .tests-table-panel__table th,
+.widget-tile--tier-micro .tests-table-panel__table td,
+.tests-table-host--tier-micro .tests-table-panel__table td {
+  padding: 0 1px;
+  border-bottom: 1px solid color-mix(in srgb, var(--color-border) 60%, transparent);
+}
+
+.widget-tile--tier-micro .tests-table-panel__table tbody tr:last-child td,
+.tests-table-host--tier-micro .tests-table-panel__table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.widget-tile--tier-micro .tests-table-panel__name,
+.tests-table-panel--palette .tests-table-panel__name {
+  width: 34%;
+  max-width: 34%;
+  color: var(--color-text);
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
 
-.tests-table-panel__status {
-  width: 5.5rem;
+.widget-tile--tier-micro .tests-table-panel__table col.tests-table-panel__name {
+  width: 34%;
 }
 
-.tests-table-panel__trend {
-  width: 6rem;
+.widget-tile--tier-micro .tests-table-panel__table col.tests-table-panel__status {
+  width: 10%;
 }
 
-.tests-table-panel__stability {
-  width: 5.5rem;
+.widget-tile--tier-micro .tests-table-panel__table col.tests-table-panel__trend {
+  width: 34%;
+}
+
+.widget-tile--tier-micro .tests-table-panel__table col.tests-table-panel__stability {
+  width: 22%;
+}
+
+.widget-tile--tier-micro .tests-table-panel__status {
+  width: 10%;
+  text-align: center;
+}
+
+.widget-tile--tier-micro .tests-table-panel__trend {
+  width: 34%;
+  padding-right: 1px;
+}
+
+.widget-tile--tier-micro .tests-table-panel__stability {
+  width: 22%;
+}
+
+.widget-tile--tier-micro .tests-table-panel__status .indicator,
+.tests-table-panel--palette .tests-table-panel__status .indicator {
+  --indicator-size: 4px;
+  display: inline-block;
+  vertical-align: middle;
+}
+
+.widget-tile--tier-micro .tests-table-panel .badge,
+.tests-table-panel--palette .tests-table-panel .badge {
+  display: none;
+}
+
+.widget-tile--tier-micro .sparkline--empty,
+.tests-table-panel--palette .sparkline--empty {
+  display: none;
+}
+
+.widget-tile--tier-micro .tests-table-panel .sparkline {
+  display: block;
+  width: 100%;
+  max-width: none;
+  height: 5px;
+  max-height: 5px;
+}
+
+.widget-tile--tier-micro .tests-table-panel .sparkline.sparkline--duration {
+  overflow: hidden;
+  width: 100%;
+  height: 5px;
+  max-height: 5px;
+}
+
+.widget-tile--tier-micro .tests-table-panel .stability-cell {
+  gap: 1px;
+  min-height: 0;
+}
+
+.widget-tile--tier-micro .tests-table-panel .stability-dots {
+  gap: 1px;
+}
+
+.widget-tile--tier-micro .tests-table-panel .stability-dot {
+  width: 3px;
+  height: 3px;
+}
+
+.widget-tile--tier-micro .tests-table-panel .badge--flaky {
+  font-size: 0.34rem;
+  padding: 0 1px;
+  min-width: 0;
+}
+
+.widget-tile--tier-compact .tests-table-panel__table col.tests-table-panel__name,
+.tests-table-host--tier-compact .tests-table-panel__table col.tests-table-panel__name {
+  width: 30%;
+}
+
+.widget-tile--tier-compact .tests-table-panel__table col.tests-table-panel__status,
+.tests-table-host--tier-compact .tests-table-panel__table col.tests-table-panel__status {
+  width: 18%;
+}
+
+.widget-tile--tier-compact .tests-table-panel__table col.tests-table-panel__trend,
+.tests-table-host--tier-compact .tests-table-panel__table col.tests-table-panel__trend {
+  width: 28%;
+}
+
+.widget-tile--tier-compact .tests-table-panel__table col.tests-table-panel__stability,
+.tests-table-host--tier-compact .tests-table-panel__table col.tests-table-panel__stability {
+  width: 24%;
+}
+
+.widget-tile--tier-compact .tests-table-panel__table,
+.tests-table-host--tier-compact .tests-table-panel__table {
+  font-size: 0.625rem;
+  line-height: 1.15;
+}
+
+.widget-tile--tier-compact .tests-table-panel__table thead tr,
+.tests-table-host--tier-compact .tests-table-panel__table thead tr {
+  height: 18px;
+}
+
+.widget-tile--tier-compact .tests-table-panel__table tbody tr,
+.tests-table-host--tier-compact .tests-table-panel__table tbody tr {
+  height: 20px;
+}
+
+.widget-tile--tier-compact .tests-table-panel__table th,
+.widget-tile--tier-compact .tests-table-panel__table td,
+.tests-table-host--tier-compact .tests-table-panel__table th,
+.tests-table-host--tier-compact .tests-table-panel__table td {
+  padding: 2px 4px;
+}
+
+.widget-tile--tier-compact .tests-table-panel .badge,
+.tests-table-host--tier-compact .tests-table-panel .badge {
+  font-size: 0.55rem;
+  padding: 0 3px;
+  line-height: 1.1;
+  font-weight: 600;
 }
 
 .tests-table-panel__empty {

@@ -2,6 +2,8 @@
 
 .sparkline {
   display: block;
+  margin: 0;
+  padding: 0;
 }
 
 .sparkline--empty {
@@ -9,8 +11,14 @@
   color: var(--color-text-muted);
 }
 
+/*
+ * Fluid cells set width:100% + a fixed height. Default SVG meet (xMidYMid)
+ * letterboxes the 88×28 viewBox and centers the stroke — headers then sit
+ * left of the drawn line. Builders set preserveAspectRatio="none".
+ */
 .sparkline--duration {
-  overflow: visible;
+  overflow: hidden;
+  vertical-align: middle;
 }
 
 .sparkline__area {
