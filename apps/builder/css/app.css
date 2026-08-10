@@ -735,7 +735,7 @@ html.theme-light .anb-canvas--chart-off::after {
 .anb-canvas .grid-stack-item > .ui-resizable-handle {
   background-image: none !important;
   background-color: transparent;
-  opacity: 0;
+  opacity: 0 !important;
   z-index: 1;
   transform: none !important;
   box-sizing: border-box;
