@@ -5,6 +5,9 @@ import { mountHighlightedOutput } from '../vendor/design-system/js/code-highligh
 /** Default tile footprint + flush 5-up packing on 10-col grid (2×2, no gutters). */
 const DEFAULT_TILE_W = 2;
 const DEFAULT_TILE_H = 2;
+/** QG hybrid bar needs width for indicator← title→ + info (DS/jar). */
+const QG_TILE_W = 4;
+const QG_TILE_H = 3;
 const PACK_COLS = 5;
 const PACK_X = Object.freeze([0, 2, 4, 6, 8]);
 /** DS `.widget-tile` baseline bar — used to scale title/dots with headerHeight. */
@@ -966,12 +969,11 @@ function kitOnlyQgMockHtml(panelId, chrome) {
     const status = isSonar ? 'failed' : 'passed';
     const indicator = isSonar ? 'failed' : 'passed';
     const title = isSonar ? 'Sonar Quality Gate' : 'Allure Quality Gate';
+    // Flat bar children (indicator | title→ | info) — same paint order as jar qualityGate.ts.
     const bar = chrome === 'hybrid'
         ? `<div class="quality-gate__bar">` +
-            `<div class="quality-gate__bar-start">` +
             `<span class="indicator indicator--${indicator} indicator--solid" aria-hidden="true"></span>` +
             `<span class="quality-gate__bar-title">${title}</span>` +
-            `</div>` +
             qgInfoTriggerHtml() +
             `</div>`
         : '';
@@ -1613,9 +1615,10 @@ function addItem(panelId, opts = {}) {
         return;
     if (!canAddPalettePanel(meta.id))
         return;
-    /* New tiles from palette → 2×2. Explicit w/h (copy, drop spot) win; grid presets stay in DEFAULT_ITEMS. */
-    const w = Math.max(1, opts.w || DEFAULT_TILE_W);
-    const h = Math.max(1, opts.h || DEFAULT_TILE_H);
+    /* New tiles from palette → 2×2 (QG → 4×3 for DS bar layout). Explicit w/h win. */
+    const isQg = meta.type === 'qualityGate';
+    const w = Math.max(1, opts.w || (isQg ? QG_TILE_W : DEFAULT_TILE_W));
+    const h = Math.max(1, opts.h || (isQg ? QG_TILE_H : DEFAULT_TILE_H));
     const preferX = opts.preferX != null ? opts.preferX : opts.x;
     const preferY = opts.preferY != null ? opts.preferY : opts.y;
     const spot = findFreeSpot(w, h, preferX, preferY);

@@ -1068,13 +1068,17 @@ html.theme-light .anb-zone--terminal .ch-theme--vscode .ch-tok-cmd { color: #795
   height: var(--anb-bar-h, var(--wt-bar-height, 31px));
   min-height: 0;
   padding-left: 4px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  width: 100%;
+  box-sizing: border-box;
 }
 
-/* DS/jar: indicator LEFT, title RIGHT, info trailing — never left-pack like macOS chrome. */
-.anb-panel__tile .anb-kit-mock.quality-gate .quality-gate__bar-start,
-.anb-tg__widget.widget-tile--quality-gate .anb-kit-mock.quality-gate .quality-gate__bar-start {
-  flex: 1 1 auto;
-  min-width: 0;
+/* DS/jar: status indicator LEFT, title RIGHT-aligned, info trailing (flat bar children). */
+.anb-panel__tile .anb-kit-mock.quality-gate .quality-gate__bar > .indicator,
+.anb-tg__widget.widget-tile--quality-gate .anb-kit-mock.quality-gate .quality-gate__bar > .indicator {
+  flex: 0 0 auto;
 }
 
 .anb-panel__tile .anb-kit-mock.quality-gate .quality-gate__bar-title,
@@ -1087,6 +1091,7 @@ html.theme-light .anb-zone--terminal .ch-theme--vscode .ch-tok-cmd { color: #795
 
 .anb-panel__tile .anb-kit-mock.quality-gate .quality-gate__bar > .qg-info {
   display: inline-flex;
+  flex: 0 0 auto;
   padding-right: 14px; /* room for delete overlay */
 }
 

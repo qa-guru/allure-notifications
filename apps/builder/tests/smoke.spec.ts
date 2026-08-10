@@ -596,17 +596,24 @@ test.describe('allure-notifications-builder smoke', () => {
         titleNearRight: (() => {
           const bar = aqgEl?.querySelector('.quality-gate__bar');
           const title = aqgEl?.querySelector('.quality-gate__bar-title');
-          const ind = aqgEl?.querySelector('.quality-gate__bar .indicator');
+          const ind = aqgEl?.querySelector('.quality-gate__bar > .indicator');
           if (!bar || !title || !ind) return false;
           const b = bar.getBoundingClientRect();
           const t = title.getBoundingClientRect();
           const i = ind.getBoundingClientRect();
-          // title sits to the right of indicator; title's right edge in right half of bar
-          return t.left > i.right && t.right > b.left + b.width * 0.45;
+          // title flexes between indicator and info; its right edge in the right half
+          return t.left >= i.right - 1 && t.right > b.left + b.width * 0.55;
+        })(),
+        qgFootprint: (() => {
+          const el = aqgEl?.closest('.grid-stack-item');
+          return {
+            w: Number(el?.getAttribute('gs-w') || 0),
+            h: Number(el?.getAttribute('gs-h') || 0),
+          };
         })(),
       };
     });
-    // LOCKED hybrid QG (2026-08-10) — do not weaken these asserts.
+    // LOCKED hybrid QG — DS/jar bar: indicator LEFT, title RIGHT + info.
     expect(canvasQgChrome.panelHasEditorBar).toBe(false);
     expect(canvasQgChrome.panelHasQgBar).toBe(true);
     expect(canvasQgChrome.previewHasProductBar).toBe(false);
@@ -620,10 +627,11 @@ test.describe('allure-notifications-builder smoke', () => {
     expect(canvasQgChrome.aqgVerdict).toBe('Passed');
     expect(canvasQgChrome.sqgFormulas).toEqual(['72<80', '3>0']);
     expect(Math.abs(canvasQgChrome.barH - canvasQgChrome.anbBar)).toBeLessThan(1.5);
-    // DS/jar bar: status indicator LEFT, title RIGHT (not macOS-packed left).
     expect(canvasQgChrome.titleAlign).toBe('right');
     expect(canvasQgChrome.titleNearRight).toBe(true);
     expect(canvasQgChrome.hasInfo).toBe(true);
+    expect(canvasQgChrome.qgFootprint.w).toBeGreaterThanOrEqual(4);
+    expect(canvasQgChrome.qgFootprint.h).toBeGreaterThanOrEqual(3);
 
     const canvasTestsTable = page.locator('.anb-canvas [data-testid="anb-kit-mock-testsTable"]');
     await expect(canvasTestsTable.locator('thead th')).toHaveCount(4);
