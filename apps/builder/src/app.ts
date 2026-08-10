@@ -861,8 +861,8 @@ function kitOnlyPaletteBodyHtml(panelId: string, chartType: string) {
       `<div class="quality-gate quality-gate--sonar quality-gate--failed anb-kit-mock anb-kit-mock--palette" data-anb-kit-mock="${escapeHtml(panelId)}" data-testid="${testId}" role="status" aria-hidden="true">` +
       `<div class="quality-gate__body">` +
       paletteQgRulesHtml([
-        { id: 'coverage', formula: '72.4 &lt; 80' },
-        { id: 'bugs', formula: '3 &gt; 0' },
+        { id: 'cov', formula: '72&lt;80' },
+        { id: 'bugs', formula: '3&gt;0' },
       ]) +
       `</div></div>`
     );
