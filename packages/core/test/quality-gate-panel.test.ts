@@ -118,7 +118,7 @@ describe("renderQualityGatePng", () => {
     }
   });
 
-  it("passed fixtures paint success indicator pixels; failed paint danger", async () => {
+  it("passed fixtures paint success verdict pixels; failed paint danger", async () => {
     const passedIds: QualityGateFixtureId[] = ["aqg-passed", "sqg-passed"];
     const failedIds: QualityGateFixtureId[] = ["aqg-failed", "sqg-failed", "sqg-long"];
 
@@ -139,6 +139,31 @@ describe("renderQualityGatePng", () => {
       const red = await countNearColor(png, DANGER, 12, 1);
       assert.ok(red >= 20, `${id}: expected danger pixels, got ${red}`);
     }
+  });
+
+  it("collage QG bar has no status-indicator or info glyph pixels in the bar band", async () => {
+    const png = renderQualityGatePng(loadFixture("aqg-passed"), {
+      width: PANEL_W,
+      height: PANEL_H,
+    });
+    // Bar is ~28–34px; status indicator was SUCCESS solid in the left inset — must be gone.
+    const img = await loadImage(png);
+    const canvas = createCanvas(img.width, img.height);
+    const ctx = canvas.getContext("2d");
+    ctx.drawImage(img, 0, 0);
+    const barH = 34;
+    const { data } = ctx.getImageData(0, 0, img.width, barH);
+    let successInBar = 0;
+    for (let i = 0; i < data.length; i += 4) {
+      if (
+        Math.abs(data[i]! - SUCCESS.r) <= 12 &&
+        Math.abs(data[i + 1]! - SUCCESS.g) <= 12 &&
+        Math.abs(data[i + 2]! - SUCCESS.b) <= 12
+      ) {
+        successInBar++;
+      }
+    }
+    assert.equal(successInBar, 0, `bar band must not contain status indicator green, got ${successInBar}`);
   });
 
   it("accepts prebuilt layout IR from buildQualityGateLayout", async () => {

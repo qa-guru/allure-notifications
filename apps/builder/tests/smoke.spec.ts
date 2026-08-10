@@ -592,18 +592,8 @@ test.describe('allure-notifications-builder smoke', () => {
         titleAlign: aqgEl
           ? getComputedStyle(aqgEl.querySelector('.quality-gate__bar-title')!).textAlign
           : '',
-        hasInfo: Boolean(aqgEl?.querySelector('.quality-gate__bar > .qg-info')),
-        titleNearRight: (() => {
-          const bar = aqgEl?.querySelector('.quality-gate__bar');
-          const title = aqgEl?.querySelector('.quality-gate__bar-title');
-          const ind = aqgEl?.querySelector('.quality-gate__bar > .indicator');
-          if (!bar || !title || !ind) return false;
-          const b = bar.getBoundingClientRect();
-          const t = title.getBoundingClientRect();
-          const i = ind.getBoundingClientRect();
-          // title flexes between indicator and info; its right edge in the right half
-          return t.left >= i.right - 1 && t.right > b.left + b.width * 0.55;
-        })(),
+        hasInfo: Boolean(aqgEl?.querySelector('.quality-gate__bar .qg-info')),
+        hasIndicator: Boolean(aqgEl?.querySelector('.quality-gate__bar .indicator')),
         qgFootprint: (() => {
           const el = aqgEl?.closest('.grid-stack-item');
           return {
@@ -613,7 +603,7 @@ test.describe('allure-notifications-builder smoke', () => {
         })(),
       };
     });
-    // LOCKED hybrid QG — DS/jar bar: indicator LEFT, title RIGHT + info.
+    // LOCKED: collage QG bar = title only (no status indicator, no qg-info).
     expect(canvasQgChrome.panelHasEditorBar).toBe(false);
     expect(canvasQgChrome.panelHasQgBar).toBe(true);
     expect(canvasQgChrome.previewHasProductBar).toBe(false);
@@ -627,9 +617,9 @@ test.describe('allure-notifications-builder smoke', () => {
     expect(canvasQgChrome.aqgVerdict).toBe('Passed');
     expect(canvasQgChrome.sqgFormulas).toEqual(['72<80', '3>0']);
     expect(Math.abs(canvasQgChrome.barH - canvasQgChrome.anbBar)).toBeLessThan(1.5);
-    expect(canvasQgChrome.titleAlign).toBe('right');
-    expect(canvasQgChrome.titleNearRight).toBe(true);
-    expect(canvasQgChrome.hasInfo).toBe(true);
+    expect(canvasQgChrome.titleAlign).toBe('left');
+    expect(canvasQgChrome.hasInfo).toBe(false);
+    expect(canvasQgChrome.hasIndicator).toBe(false);
     expect(canvasQgChrome.qgFootprint.w).toBeGreaterThanOrEqual(4);
     expect(canvasQgChrome.qgFootprint.h).toBeGreaterThanOrEqual(3);
 

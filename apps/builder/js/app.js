@@ -967,14 +967,11 @@ function kitOnlyQgMockHtml(panelId, chrome) {
     const isSonar = panelId === 'sonarQualityGate';
     const kind = isSonar ? 'sonar' : 'allure';
     const status = isSonar ? 'failed' : 'passed';
-    const indicator = isSonar ? 'failed' : 'passed';
     const title = isSonar ? 'Sonar Quality Gate' : 'Allure Quality Gate';
-    // Flat bar children (indicator | title→ | info) — same paint order as jar qualityGate.ts.
+    // Collage/editor hybrid bar: title only — no status indicator, no qg-info (LOCKED).
     const bar = chrome === 'hybrid'
         ? `<div class="quality-gate__bar">` +
-            `<span class="indicator indicator--${indicator} indicator--solid" aria-hidden="true"></span>` +
             `<span class="quality-gate__bar-title">${title}</span>` +
-            qgInfoTriggerHtml() +
             `</div>`
         : '';
     return (`<div class="quality-gate quality-gate--${kind} quality-gate--${status} anb-kit-mock" data-anb-kit-mock="${escapeHtml(panelId)}" data-testid="${testId}" role="status" aria-hidden="true">` +

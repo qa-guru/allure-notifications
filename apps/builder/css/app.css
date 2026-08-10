@@ -1067,40 +1067,27 @@ html.theme-light .anb-zone--terminal .ch-theme--vscode .ch-tok-cmd { color: #795
 .anb-tg__widget.widget-tile--quality-gate .anb-kit-mock.quality-gate .quality-gate__bar {
   height: var(--anb-bar-h, var(--wt-bar-height, 31px));
   min-height: 0;
-  padding-left: 4px;
+  padding: 0 14px 0 8px; /* right pad for delete overlay */
   display: flex;
   align-items: center;
-  gap: 4px;
   width: 100%;
   box-sizing: border-box;
 }
 
-/* DS/jar: status indicator LEFT, title RIGHT-aligned, info trailing (flat bar children). */
-.anb-panel__tile .anb-kit-mock.quality-gate .quality-gate__bar > .indicator,
-.anb-tg__widget.widget-tile--quality-gate .anb-kit-mock.quality-gate .quality-gate__bar > .indicator {
-  flex: 0 0 auto;
-}
-
+/* Collage QG bar: title only — no indicator, no qg-info (LOCKED). */
 .anb-panel__tile .anb-kit-mock.quality-gate .quality-gate__bar-title,
 .anb-tg__widget.widget-tile--quality-gate .anb-kit-mock.quality-gate .quality-gate__bar-title {
   flex: 1 1 auto;
   min-width: 0;
   font-size: 0.58rem;
-  text-align: right;
+  text-align: left;
 }
 
-.anb-panel__tile .anb-kit-mock.quality-gate .quality-gate__bar > .qg-info {
-  display: inline-flex;
-  flex: 0 0 auto;
-  padding-right: 14px; /* room for delete overlay */
-}
-
-.anb-panel__tile .anb-kit-mock.quality-gate .quality-gate__bar > .qg-info .qg-info__trigger,
-.anb-tg__widget.widget-tile--quality-gate .anb-kit-mock.quality-gate .quality-gate__bar > .qg-info .qg-info__trigger {
-  width: 0.85rem;
-  height: 0.85rem;
-  min-width: 0.85rem;
-  min-height: 0.85rem;
+.anb-panel__tile .anb-kit-mock.quality-gate .quality-gate__bar > .indicator,
+.anb-panel__tile .anb-kit-mock.quality-gate .quality-gate__bar > .qg-info,
+.anb-tg__widget.widget-tile--quality-gate .anb-kit-mock.quality-gate .quality-gate__bar > .indicator,
+.anb-tg__widget.widget-tile--quality-gate .anb-kit-mock.quality-gate .quality-gate__bar > .qg-info {
+  display: none !important;
 }
 
 .anb-panel__tile .anb-kit-mock.quality-gate .quality-gate__body,

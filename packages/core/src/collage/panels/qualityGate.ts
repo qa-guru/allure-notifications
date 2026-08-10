@@ -244,37 +244,16 @@ export function renderQualityGatePng(
   ctx.stroke();
 
   const inset = metrics.barInset;
-  const indicator = metrics.indicatorSize;
-  const indX = inset;
-  const indY = (barH - indicator) / 2;
-  ctx.fillStyle = rgbCss(lookupToken(tokens.indicator[status], palette));
-  ctx.beginPath();
-  ctx.arc(indX + indicator / 2, indY + indicator / 2, indicator / 2, 0, Math.PI * 2);
-  ctx.fill();
-
+  // Collage QG bar: title only — no status indicator, no info glyph (LOCKED).
   const titleSize = remPx(metrics.barTitleSizeRem, rem);
   ctx.font = `600 ${titleSize}px sans-serif`;
   ctx.fillStyle = cssColor(tokens.textMuted, palette, surface);
   ctx.textBaseline = "middle";
-  ctx.textAlign = "right";
+  ctx.textAlign = "left";
 
-  const infoSlot = layout.bar.info.enabled ? inset + 18 : inset;
-  const titleMaxW = Math.max(
-    24,
-    width - inset - indicator - metrics.barGap - infoSlot - 4,
-  );
+  const titleMaxW = Math.max(24, width - 2 * inset - 4);
   const title = ellipsize(ctx, layout.bar.title, titleMaxW);
-  ctx.fillText(title, width - infoSlot, barH / 2);
-
-  if (layout.bar.info.enabled) {
-    const cx = width - inset - 9;
-    const cy = barH / 2;
-    ctx.beginPath();
-    ctx.arc(cx, cy, 7, 0, Math.PI * 2);
-    ctx.strokeStyle = cssColor(tokens.textMuted, palette, surface);
-    ctx.lineWidth = 1.25;
-    ctx.stroke();
-  }
+  ctx.fillText(title, inset, barH / 2);
 
   // Body
   const bodyTop = barH;

@@ -3,7 +3,7 @@ const PRECACHE = 'anb-shell';
 const MANIFEST = [
   {
     "url": "/css/app.css",
-    "revision": "838c5d17d7dbfb77"
+    "revision": "65c7fd2cc0179885"
   },
   {
     "url": "/icons/pwa-192.png",
@@ -23,7 +23,7 @@ const MANIFEST = [
   },
   {
     "url": "/js/app.js",
-    "revision": "95c08b7d83b8a068"
+    "revision": "4212b1a37c5d900e"
   },
   {
     "url": "/js/phrases.js",
