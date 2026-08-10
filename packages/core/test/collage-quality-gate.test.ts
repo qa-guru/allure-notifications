@@ -19,7 +19,8 @@ declareSuite({
 
 import { createCanvas, loadImage } from "@napi-rs/canvas";
 import { parseConfig, shouldSilentSkipKitOnlyItem } from "@qa-guru/allure-notifications-config";
-import { QUALITY_GATE_TOKEN_PALETTE } from "../src/collage/panels/qualityGate.js";
+import { QUALITY_GATE_TOKEN_PALETTE, renderQualityGatePng } from "../src/collage/panels/qualityGate.js";
+import { KIT_DARK_TOKEN_PALETTE } from "../src/theme.js";
 import {
   QualityGateDataMissingError,
   loadQualityGateCollageData,
@@ -35,6 +36,7 @@ import {
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const fixtures = join(__dirname, "../../test/fixtures");
 const SUCCESS = QUALITY_GATE_TOKEN_PALETTE["--color-success"]!;
+const DARK_SURFACE = KIT_DARK_TOKEN_PALETTE["--color-surface"]!;
 
 const QG_ITEMS = [
   { id: "allureQualityGate", type: "qualityGate", x: 0, y: 0, w: 5, h: 4 },
@@ -95,6 +97,30 @@ async function countNearColor(
   return count;
 }
 
+async function countNearWhite(png: Buffer, tol = 8, step = 2): Promise<number> {
+  return countNearColor(png, { r: 255, g: 255, b: 255 }, tol, step);
+}
+
+async function avgRowRgb(png: Buffer, y: number): Promise<{ r: number; g: number; b: number }> {
+  const img = await loadImage(png);
+  const canvas = createCanvas(img.width, img.height);
+  const ctx = canvas.getContext("2d");
+  ctx.drawImage(img, 0, 0);
+  const row = Math.min(img.height - 1, Math.max(0, y));
+  const { data } = ctx.getImageData(0, row, img.width, 1);
+  let r = 0;
+  let g = 0;
+  let b = 0;
+  const n = img.width;
+  for (let x = 0; x < n; x++) {
+    const i = x * 4;
+    r += data[i]!;
+    g += data[i + 1]!;
+    b += data[i + 2]!;
+  }
+  return { r: r / n, g: g / n, b: b / n };
+}
+
 describe("quality-gate collage wire", () => {
   it("resolveQualityGatePanelId distinguishes AQG vs SQG catalog ids", () => {
     assert.equal(
@@ -143,6 +169,57 @@ describe("quality-gate collage wire", () => {
     const png = await renderCollagePng(config, analytics, qualityGates);
     const dots = await countNearColor(png, macCloseMixed, 8, 1);
     assert.ok(dots >= 20, `expected macOS close-dot chrome on QG tiles, got ${dots}`);
+  });
+
+  it("dark collage QG body uses dark kit surface — not near-white", async () => {
+    const config = kitConfig();
+    const summary = await readSummary(join(fixtures, "allure3-report/summary.json"));
+    const results = await readAllureResults(join(fixtures, "allure-results"));
+    const analytics = buildAnalytics(summary, results);
+    const qualityGates = await loadQualityGateCollageData(config);
+    const png = await renderCollagePng(config, analytics, qualityGates);
+
+    const white = await countNearWhite(png, 8, 1);
+    assert.ok(white < 30, `dark collage must not paint near-white kit bodies, got ${white}`);
+
+    const dark = await countNearColor(png, DARK_SURFACE, 8, 1);
+    assert.ok(dark >= 80, `expected dark kit surface pixels in QG tiles, got ${dark}`);
+  });
+
+  it("collage QG body-only PNG has no second quality-gate title band", async () => {
+    const config = kitConfig();
+    const qualityGates = await loadQualityGateCollageData(config);
+    const data = qualityGates.allureQualityGate!;
+    const bodyPng = renderQualityGatePng(data, {
+      width: 400,
+      height: 160,
+      chrome: "body",
+      dark: true,
+    });
+    const hybridPng = renderQualityGatePng(data, {
+      width: 400,
+      height: 160,
+      chrome: "hybrid",
+      dark: true,
+    });
+
+    const bodyTop = await avgRowRgb(bodyPng, 12);
+    const bodyUpper = await avgRowRgb(bodyPng, 40);
+    assert.ok(
+      Math.abs(bodyTop.r - bodyUpper.r) < 6 &&
+        Math.abs(bodyTop.g - bodyUpper.g) < 6 &&
+        Math.abs(bodyTop.b - bodyUpper.b) < 6,
+      "body chrome must not paint a distinct bar band under macOS header",
+    );
+
+    const hybridBar = await avgRowRgb(hybridPng, 12);
+    const hybridBody = await avgRowRgb(hybridPng, 80);
+    assert.ok(
+      Math.abs(hybridBar.r - hybridBody.r) > 4 ||
+        Math.abs(hybridBar.g - hybridBody.g) > 4 ||
+        Math.abs(hybridBar.b - hybridBody.b) > 4,
+      "hybrid chrome must keep its own bar band for editor path",
+    );
   });
 
   it("profile=default silent-skips QG items (no throw, smaller PNG)", async () => {

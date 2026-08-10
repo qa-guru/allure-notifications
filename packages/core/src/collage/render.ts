@@ -358,7 +358,12 @@ function renderPanelPng(
     if (!data) {
       throw new Error(`quality gate data not loaded for ${qgId}`);
     }
-    return renderQualityGatePng(data, { width, height, chrome: "body" });
+    return renderQualityGatePng(data, {
+      width,
+      height,
+      chrome: "body",
+      dark: darkMode,
+    });
   }
   if (key === PANEL_TESTS_TABLE) {
     if (!testsTable) {

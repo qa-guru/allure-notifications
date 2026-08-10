@@ -17,19 +17,18 @@ import {
   type QualityGateTokenRef,
 } from "@qa-guru/allure-report-kit";
 
-import { hexToRgb, mixRgb, rgbCss, type Rgb } from "../../theme.js";
+import {
+  KIT_LIGHT_TOKEN_PALETTE,
+  hexToRgb,
+  mixRgb,
+  resolveKitPalette,
+  rgbCss,
+  type Rgb,
+} from "../../theme.js";
 
-/** Kit `theme/kit.css` chrome defaults — resolve IR token refs for canvas. */
-export const QUALITY_GATE_TOKEN_PALETTE: Readonly<Record<string, Rgb>> = {
-  "--color-surface": hexToRgb("#ffffff"),
-  "--color-surface-soft": hexToRgb("#f2f2f2"),
-  "--color-text": hexToRgb("#1c1917"),
-  "--color-text-muted": { r: 28, g: 25, b: 23 }, // 55% opacity applied at paint
-  "--color-border": { r: 127, g: 127, b: 127 }, // 22% opacity applied at paint
-  "--color-success": hexToRgb("#49cb68"),
-  "--color-danger": hexToRgb("#fd5a3e"),
-  "--color-status-passed-chart": hexToRgb("#49cb68"),
-};
+/** Kit `theme/kit.css` light chrome defaults — resolve IR token refs for canvas. */
+export const QUALITY_GATE_TOKEN_PALETTE: Readonly<Record<string, Rgb>> =
+  KIT_LIGHT_TOKEN_PALETTE;
 
 const TOKEN_ALPHA: Readonly<Record<string, number>> = {
   "--color-text-muted": 0.55,
@@ -46,6 +45,8 @@ export type RenderQualityGatePngOptions = {
   rem?: number;
   /** Override kit token palette (tests). */
   palette?: Readonly<Record<string, Rgb>>;
+  /** Dark collage theme — kit surface/text/border parity with classic panels. */
+  dark?: boolean;
   /**
    * `hybrid` — own bar+body (standalone / tests).
    * `body` — body only under collage macOS `drawCard` / TG `widget-tile__bar` (default for jar).
@@ -212,10 +213,7 @@ export function renderQualityGatePng(
     return canvas.toBuffer("image/png");
   }
 
-  const palette: Record<string, Rgb> = {
-    ...QUALITY_GATE_TOKEN_PALETTE,
-    ...(options.palette ?? {}),
-  };
+  const palette = resolveKitPalette(options.dark, options.palette);
   const { metrics, tokens } = layout;
   const surface = lookupToken(tokens.surface, palette);
   const status = layout.passed ? "passed" : "failed";

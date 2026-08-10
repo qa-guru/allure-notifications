@@ -12,19 +12,18 @@ import type {
   KitTestsTableRow,
 } from "@qa-guru/allure-report-kit";
 
-import { hexToRgb, mixRgb, rgbCss, type Rgb } from "../../theme.js";
+import {
+  KIT_LIGHT_TOKEN_PALETTE,
+  hexToRgb,
+  mixRgb,
+  resolveKitPalette,
+  rgbCss,
+  type Rgb,
+} from "../../theme.js";
 
-/** Kit `theme/kit.css` defaults — resolve for canvas. */
-export const TESTS_TABLE_TOKEN_PALETTE: Readonly<Record<string, Rgb>> = {
-  "--color-surface": hexToRgb("#ffffff"),
-  "--color-text": hexToRgb("#1c1917"),
-  "--color-text-muted": hexToRgb("#78716c"),
-  "--color-border": hexToRgb("#d6d3d1"),
-  "--color-success": hexToRgb("#49cb68"),
-  "--color-danger": hexToRgb("#fd5a3e"),
-  "--color-warning": hexToRgb("#f59e0b"),
-  "--color-primary": hexToRgb("#20aee3"),
-};
+/** Kit `theme/kit.css` light defaults — resolve for canvas. */
+export const TESTS_TABLE_TOKEN_PALETTE: Readonly<Record<string, Rgb>> =
+  KIT_LIGHT_TOKEN_PALETTE;
 
 const DEFAULT_COLUMNS = {
   ru: ["Тест", "Статус", "Тренд", "Стабильность"],
@@ -191,11 +190,12 @@ function paintSparkline(
   h: number,
   theme: SparklineTheme,
   lang: "ru" | "en",
+  palette: Record<string, Rgb>,
   stroke: Rgb = theme.accent,
 ): void {
   const points = (history ?? []).filter((point) => typeof point.durationSec === "number");
   if (points.length < 2) {
-    ctx.fillStyle = rgbCss(lookupToken("--color-text-muted", TESTS_TABLE_TOKEN_PALETTE));
+    ctx.fillStyle = rgbCss(lookupToken("--color-text-muted", palette));
     ctx.font = "11px sans-serif";
     ctx.textBaseline = "middle";
     ctx.textAlign = "left";
@@ -335,10 +335,7 @@ export function renderTestsTablePng(
 ): Buffer {
   const width = Math.max(1, Math.floor(options.width));
   const height = Math.max(1, Math.floor(options.height));
-  const palette: Record<string, Rgb> = {
-    ...TESTS_TABLE_TOKEN_PALETTE,
-    ...(options.palette ?? {}),
-  };
+  const palette = resolveKitPalette(options.dark, options.palette);
   const surface = lookupToken("--color-surface", palette);
   const text = lookupToken("--color-text", palette);
   const muted = lookupToken("--color-text-muted", palette);
@@ -445,6 +442,7 @@ export function renderTestsTablePng(
       rowH,
       sparkTheme,
       lang,
+      palette,
       trendSparkColor(row.status, sparkTheme),
     );
 

@@ -87,3 +87,45 @@ export function headerText(theme: ChartTheme): Rgb {
     ? { r: 180, g: 180, b: 180 }
     : { r: 90, g: 90, b: 90 };
 }
+
+/** Chromatic kit tokens — shared across light/dark collage kit panels. */
+const KIT_CHROMATIC_TOKENS: Readonly<Record<string, Rgb>> = {
+  "--color-success": hexToRgb("#49cb68"),
+  "--color-danger": hexToRgb("#fd5a3e"),
+  "--color-warning": hexToRgb("#f59e0b"),
+  "--color-primary": hexToRgb("#20aee3"),
+  "--color-status-passed-chart": hexToRgb("#49cb68"),
+};
+
+/**
+ * Kit `theme/kit.css` light chrome — canvas PNG parity with classic panel `theme.background`.
+ */
+export const KIT_LIGHT_TOKEN_PALETTE: Readonly<Record<string, Rgb>> = {
+  ...KIT_CHROMATIC_TOKENS,
+  "--color-surface": hexToRgb("#ffffff"),
+  "--color-surface-soft": hexToRgb("#f2f2f2"),
+  "--color-text": hexToRgb("#1c1917"),
+  "--color-text-muted": { r: 28, g: 25, b: 23 },
+  "--color-border": { r: 127, g: 127, b: 127 },
+};
+
+/**
+ * Dark collage kit chrome — parity with `themeFromDarkMode` card body / DS dark tokens.
+ */
+export const KIT_DARK_TOKEN_PALETTE: Readonly<Record<string, Rgb>> = {
+  ...KIT_CHROMATIC_TOKENS,
+  "--color-surface": { r: 50, g: 50, b: 50 },
+  "--color-surface-soft": { r: 60, g: 60, b: 60 },
+  "--color-text": { r: 220, g: 220, b: 220 },
+  "--color-text-muted": { r: 180, g: 180, b: 180 },
+  "--color-border": { r: 96, g: 96, b: 96 },
+};
+
+/** Resolve kit token palette for collage kit PNG panels (quality-gate, tests-table). */
+export function resolveKitPalette(
+  dark?: boolean,
+  overrides?: Readonly<Record<string, Rgb>>,
+): Record<string, Rgb> {
+  const base = dark ? KIT_DARK_TOKEN_PALETTE : KIT_LIGHT_TOKEN_PALETTE;
+  return { ...base, ...(overrides ?? {}) };
+}

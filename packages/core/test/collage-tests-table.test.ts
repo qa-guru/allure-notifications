@@ -21,6 +21,7 @@ declareSuite({
 import { createCanvas, loadImage } from "@napi-rs/canvas";
 import { parseConfig, shouldSilentSkipKitOnlyItem } from "@qa-guru/allure-notifications-config";
 import { TESTS_TABLE_TOKEN_PALETTE, renderTestsTablePng } from "../src/collage/panels/testsTable.js";
+import { KIT_DARK_TOKEN_PALETTE } from "../src/theme.js";
 import {
   TestsTableDataMissingError,
   loadTestsTableCollageData,
@@ -37,6 +38,7 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 const fixtures = join(__dirname, "../../test/fixtures");
 const TABLE_FIXTURE = join(fixtures, "tests-table/tests-table-panel.json");
 const SUCCESS = TESTS_TABLE_TOKEN_PALETTE["--color-success"]!;
+const DARK_SURFACE = KIT_DARK_TOKEN_PALETTE["--color-surface"]!;
 
 const TABLE_ITEM = {
   id: "testsTable",
@@ -100,6 +102,10 @@ async function countNearColor(
   return count;
 }
 
+async function countNearWhite(png: Buffer, tol = 8, step = 2): Promise<number> {
+  return countNearColor(png, { r: 255, g: 255, b: 255 }, tol, step);
+}
+
 function aHash16(png: Buffer): string {
   return createHash("sha256").update(png).digest("hex").slice(0, 16);
 }
@@ -138,6 +144,29 @@ describe("tests-table collage wire", () => {
     assert.ok(png.length > 2000);
     const green = await countNearColor(png, SUCCESS, 12, 1);
     assert.ok(green >= 5, `expected status badge pixels, got ${green}`);
+  });
+
+  it("dark collage testsTable body uses dark kit surface — not near-white", async () => {
+    const config = kitConfig();
+    const summary = await readSummary(join(fixtures, "allure3-report/summary.json"));
+    const results = await readAllureResults(join(fixtures, "allure-results"));
+    const analytics = buildAnalytics(summary, results);
+    const testsTable = await loadTestsTableCollageData(config);
+    const png = await renderCollagePng(config, analytics, {}, testsTable);
+
+    const white = await countNearWhite(png, 8, 1);
+    assert.ok(white < 30, `dark collage must not paint near-white table body, got ${white}`);
+
+    const dark = await countNearColor(png, DARK_SURFACE, 8, 1);
+    assert.ok(dark >= 120, `expected dark kit surface pixels in table tile, got ${dark}`);
+  });
+
+  it("renderTestsTablePng dark mode paints dark surface in standalone PNG", async () => {
+    const raw = JSON.parse(readFileSync(TABLE_FIXTURE, "utf8"));
+    const data = parseKitTestsTableData(raw);
+    const png = renderTestsTablePng(data, { width: 420, height: 280, dark: true });
+    const white = await countNearWhite(png, 8, 4);
+    assert.ok(white < 5, `standalone dark table must not paint near-white surface, got ${white}`);
   });
 
   it("profile=default silent-skips testsTable item", async () => {
