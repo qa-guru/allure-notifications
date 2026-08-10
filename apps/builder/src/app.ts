@@ -376,8 +376,22 @@ function applyCanvasMetrics() {
 }
 
 /**
+ * Display scale of the editor canvas vs logical chart width.
+ * Preview applies the same ratio via `transform: scale` on the stage —
+ * editor chrome (cardGap / headerHeight / tilePad) must use CSS px × this.
+ * @param {HTMLElement} canvas
+ */
+function canvasDisplayScale(canvas: HTMLElement): number {
+  const chart = /** @type {{ width: number }} */ (state.base.chart);
+  const displayW = canvas.getBoundingClientRect().width;
+  if (!(displayW > 0) || !(chart.width > 0)) return 1;
+  return displayW / chart.width;
+}
+
+/**
  * Push jar chrome knobs onto the editor canvas (cardGap · headerHeight · tilePad).
- * Matches CollageRenderer free-grid half-gap + TG title-bar scale.
+ * Values are logical canvas px, converted to CSS px via canvasDisplayScale so
+ * gutters/pads match TG preview proportions at any shell width.
  */
 function syncEditorChrome() {
   const chart = /** @type {{ cardGap?: number, headerHeight?: number, tilePad?: number }} */ (
@@ -395,18 +409,21 @@ function syncEditorChrome() {
     chart.tilePad != null && Number.isFinite(Number(chart.tilePad))
       ? Math.max(0, Number(chart.tilePad))
       : DEFAULT_TILE_PAD;
-  const scale = headerHeight / WT_BAR_BASELINE;
   const canvas = document.getElementById('anb-canvas');
   if (!(canvas instanceof HTMLElement)) return;
-  canvas.style.setProperty('--anb-card-gap', `${cardGap}px`);
-  canvas.style.setProperty('--anb-bar-h', `${headerHeight}px`);
-  canvas.style.setProperty('--anb-title-size', `${(0.75 * scale).toFixed(3)}rem`);
-  /* Same --wt-* chrome as previewItemHtml / chromeCssVars — editor = product tile. */
-  canvas.style.setProperty('--wt-bar-height', `${headerHeight}px`);
-  canvas.style.setProperty('--wt-pad', `${tilePad}px`);
-  canvas.style.setProperty('--wt-title-size', `${(0.75 * scale).toFixed(3)}rem`);
-  canvas.style.setProperty('--indicator-size', `${Math.max(6, Math.round(10 * scale))}px`);
-  canvas.style.setProperty('--wt-dot-gap', `${Math.max(2, Math.round(5 * scale))}px`);
+  const displayScale = canvasDisplayScale(canvas);
+  const barScale = headerHeight / WT_BAR_BASELINE;
+  const gapCss = cardGap * displayScale;
+  const barCss = headerHeight * displayScale;
+  const padCss = tilePad * displayScale;
+  canvas.style.setProperty('--anb-card-gap', `${gapCss}px`);
+  canvas.style.setProperty('--anb-bar-h', `${barCss}px`);
+  canvas.style.setProperty(
+    '--anb-title-size',
+    `${(0.75 * barScale * displayScale).toFixed(4)}rem`,
+  );
+  canvas.style.setProperty('--wt-pad', `${padCss}px`);
+  canvas.style.setProperty('--anb-resize-size', `${Math.max(8, 14 * displayScale)}px`);
 }
 
 /**
@@ -496,9 +513,9 @@ function resolveCardGap() {
 }
 
 /**
- * Sync GridStack cellHeight to the inset grid box (canvas minus cardGap).
+ * Sync GridStack cellHeight to the inset grid box (canvas minus scaled cardGap).
  * CSS: grid `inset: half-gap` + content `inset: half-gap` → edge = between = cardGap.
- * `cardGap` is applied as CSS px (same as `--anb-card-gap`), not logical-canvas scale.
+ * cardGap is logical canvas px × displayScale (same visual ratio as TG preview).
  */
 function fitEditorScale() {
   const canvas = document.getElementById('anb-canvas');
@@ -506,7 +523,7 @@ function fitEditorScale() {
   if (!canvas || !grid) return;
   const displayH = canvasDisplayHeight(canvas);
   if (!(displayH > 0)) return;
-  const gapPx = resolveCardGap();
+  const gapPx = resolveCardGap() * canvasDisplayScale(canvas);
   const gridH = Math.max(1, displayH - gapPx);
   const cellH = gridH / GRID_ROWS;
   grid.cellHeight(cellH);
@@ -540,6 +557,7 @@ function setGridAnimate(on: boolean) {
 function fitAndFillEditor() {
   if (!grid) return;
   setGridAnimate(false);
+  syncEditorChrome();
   fitEditorScale();
   const gridEl = document.getElementById('anb-grid');
   if (gridEl) void gridEl.offsetHeight;
@@ -1604,8 +1622,8 @@ function clearSelection() {
 }
 
 /**
- * Editor card = same product widget-tile chrome as TG preview (bar + tier + body).
- * Copy/delete sit in an overlay — not a second header.
+ * Editor card: editor bar (title + copy/delete) + tiered chart body.
+ * Product dots live only on TG preview / export stage — not on the grid.
  * @param {ChartItem} item
  */
 function panelInnerHtml(item: ChartItem) {
@@ -1626,15 +1644,17 @@ function panelInnerHtml(item: ChartItem) {
       : '';
   const kitTileMod = chartType === 'qualityGate' ? ' widget-tile--quality-gate' : '';
   return (
-    `<div class="anb-panel__actions">` +
+    `<div class="anb-panel__bar">` +
+    `<span class="anb-panel__title">${escapeHtml(title)}</span>` +
+    `<span class="anb-panel__actions">` +
     `<button type="button" class="anb-panel__action" data-anb-action="copy" title="Copy" aria-label="Copy">⎘</button>` +
     `<button type="button" class="anb-panel__action" data-anb-action="delete" title="Delete" aria-label="Delete">×</button>` +
+    `</span>` +
     `</div>` +
+    `<div class="anb-panel__body">` +
     `<div class="widget-tile widget-tile--tier-${tier} anb-panel__tile${kitTileMod}" ${attrs}>` +
-    `<div class="widget-tile__bar">` +
-    `<span class="widget-tile__title">${escapeHtml(title)}</span>` +
-    `</div>` +
     `<div class="widget-tile__body">${kitBody}</div>` +
+    `</div>` +
     `</div>`
   );
 }
@@ -2072,7 +2092,10 @@ function initGrid() {
   }
   const canvas = document.getElementById('anb-canvas');
   const displayH = canvas instanceof HTMLElement ? canvasDisplayHeight(canvas) : 0;
-  const gapPx = resolveCardGap();
+  const gapPx =
+    canvas instanceof HTMLElement
+      ? resolveCardGap() * canvasDisplayScale(canvas)
+      : resolveCardGap();
   const cellH = displayH > 0 ? Math.max(1, displayH - gapPx) / GRID_ROWS : 40;
   grid = GridStackCtor.init(
     {
@@ -2188,6 +2211,7 @@ init();
   panelInnerHtml,
   previewItemHtml,
   tileTier,
+  canvasDisplayScale,
   makeWidgetEl,
   getGrid: () => grid,
   wireVectorInput,

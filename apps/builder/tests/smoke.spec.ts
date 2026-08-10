@@ -365,7 +365,7 @@ test.describe('allure-notifications-builder smoke', () => {
     await expect(item).toBeVisible();
     const pos = await item.evaluate((el) => {
       const card = el.querySelector('.grid-stack-item-content');
-      const bar = el.querySelector('.widget-tile__bar, .widget-tile__header, .anb-panel__bar');
+      const bar = el.querySelector('.anb-panel__bar, .widget-tile__header, .widget-tile__bar');
       const nw = el.querySelector('.ui-resizable-nw');
       const ne = el.querySelector('.ui-resizable-ne');
       const sw = el.querySelector('.ui-resizable-sw');
@@ -412,39 +412,50 @@ test.describe('allure-notifications-builder smoke', () => {
     expect(pos.nwBelowBar).toBe(false);
   });
 
-  test('editor tile chrome matches TG preview (tier + product bar)', async ({ page }) => {
+  test('editor chrome scales cardGap with canvas display width', async ({ page }) => {
     await page.goto('/');
     await page.getByTestId('anb-btn-reset').click();
     const snap = await page.evaluate(() => {
       const A = globalThis.__ANB__;
+      const canvas = document.getElementById('anb-canvas');
+      if (!(canvas instanceof HTMLElement)) return { ok: false };
+      A.syncEditorChrome();
+      const displayW = canvas.getBoundingClientRect().width;
+      const logicalW = Number(
+        getComputedStyle(canvas).getPropertyValue('--anb-canvas-w') || 870,
+      );
+      const scale = displayW / logicalW;
+      const gapCss = parseFloat(getComputedStyle(canvas).getPropertyValue('--anb-card-gap'));
+      const barCss = parseFloat(getComputedStyle(canvas).getPropertyValue('--anb-bar-h'));
+      const padCss = parseFloat(getComputedStyle(canvas).getPropertyValue('--wt-pad'));
       const item = { type: 'currentStatus', x: 0, y: 0, w: 4, h: 4 };
       const panel = A.panelInnerHtml(item);
       const preview = A.previewItemHtml(item);
-      const tier = A.tileTier(item);
-      const panelTier = (panel.match(/widget-tile--tier-(\w+)/) || [])[1];
-      const previewTier = (preview.match(/widget-tile--tier-(\w+)/) || [])[1];
       return {
-        tier,
-        panelTier,
-        previewTier,
-        panelHasBar: panel.includes('widget-tile__bar'),
-        previewHasBar: preview.includes('widget-tile__bar'),
-        panelHasEditorBar: panel.includes('anb-panel__bar'),
-        panelHasActions: panel.includes('anb-panel__actions'),
+        ok: true,
+        scale,
+        gapCss,
+        barCss,
+        padCss,
+        gapExpected: 14 * scale,
+        barExpected: 22 * scale,
+        padExpected: 6 * scale,
+        panelTier: (panel.match(/widget-tile--tier-(\w+)/) || [])[1],
+        previewTier: (preview.match(/widget-tile--tier-(\w+)/) || [])[1],
+        panelHasDotsBar: /widget-tile__bar/.test(panel) && !/anb-panel__bar/.test(panel),
+        panelHasEditorBar: /anb-panel__bar/.test(panel),
+        previewHasProductBar: /widget-tile__bar/.test(preview),
       };
     });
-    expect(snap.tier).toBe('hero');
-    expect(snap.panelTier).toBe('hero');
-    expect(snap.previewTier).toBe('hero');
-    expect(snap.panelHasBar).toBe(true);
-    expect(snap.previewHasBar).toBe(true);
-    expect(snap.panelHasEditorBar).toBe(false);
-    expect(snap.panelHasActions).toBe(true);
-
-    const gridTile = page.locator('#anb-grid .widget-tile[data-chart="currentStatus"]').first();
-    await expect(gridTile).toHaveClass(/widget-tile--tier-hero/);
-    await expect(gridTile.locator('.widget-tile__bar .indicator-row')).toBeVisible();
-    await expect(gridTile.locator('.widget-tile__title')).toHaveText('Current status');
+    expect(snap.ok).toBe(true);
+    expect(snap.scale).toBeGreaterThan(0);
+    expect(Math.abs(snap.gapCss - snap.gapExpected)).toBeLessThan(0.75);
+    expect(Math.abs(snap.barCss - snap.barExpected)).toBeLessThan(0.75);
+    expect(Math.abs(snap.padCss - snap.padExpected)).toBeLessThan(0.75);
+    expect(snap.panelTier).toBe(snap.previewTier);
+    expect(snap.panelHasEditorBar).toBe(true);
+    expect(snap.panelHasDotsBar).toBe(false);
+    expect(snap.previewHasProductBar).toBe(true);
   });
 
   test('chart.profile kit shows kit palette slots; export includes profile + kit ids', async ({

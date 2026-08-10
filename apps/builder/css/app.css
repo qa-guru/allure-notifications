@@ -621,22 +621,10 @@ html.theme-light .anb-canvas--chart-off::after {
 }
 
 .anb-panel__actions {
-  position: absolute;
-  top: 2px;
-  right: 2px;
-  z-index: 3;
   display: inline-flex;
   gap: 2px;
   flex-shrink: 0;
-  opacity: 0;
-  pointer-events: none;
-  transition: opacity 0.12s ease;
-}
-
-.grid-stack-item:hover > .grid-stack-item-content > .anb-panel__actions,
-.grid-stack-item.is-selected > .grid-stack-item-content > .anb-panel__actions {
-  opacity: 1;
-  pointer-events: auto;
+  margin-left: auto;
 }
 
 .anb-panel__action {
@@ -675,7 +663,7 @@ html.theme-light .anb-canvas--chart-off::after {
   display: flex;
   flex-direction: column;
   min-height: 0;
-  padding: 0;
+  padding: var(--wt-pad, 6px);
   position: relative;
 }
 
@@ -692,18 +680,17 @@ html.theme-light .anb-canvas--chart-off::after {
   pointer-events: none;
   display: flex;
   flex-direction: column;
+  --wt-pad: 0; /* body already applies tilePad */
 }
 
-/* Product bar — same DS chrome as TG preview (dots + title right). */
 .anb-panel__tile .widget-tile__bar {
-  pointer-events: none;
+  display: none;
 }
 
 .anb-panel__tile .widget-tile__body {
   flex: 1;
   width: 100%;
   height: 100%;
-  min-height: 0;
   aspect-ratio: auto;
 }
 
@@ -736,7 +723,8 @@ html.theme-light .anb-canvas--chart-off::after {
 .anb-canvas {
   --anb-resize-size: 14px;
   --anb-resize-inset: 0px;
-  --anb-resize-mark: max(6px, calc(var(--anb-half-gap) - 1px));
+  /* Stay inside scaled half-gap — never a fixed 6px floor that digs into the card. */
+  --anb-resize-mark: max(0px, calc(var(--anb-half-gap) - 1px));
   --anb-resize-ink: rgba(255, 255, 255, 0.48);
 }
 

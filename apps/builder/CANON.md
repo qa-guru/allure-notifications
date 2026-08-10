@@ -18,9 +18,9 @@
 
 | Field | Default | Role |
 |-------|---------|------|
-| `headerHeight` | **22** | Card title-bar height (px). Jar **5.0.3+**. TG preview sets `--wt-bar-height` (+ proportional title/dots from DS baseline 28). |
-| `cardGap` | **14** | Gap around/between cards (px) — equal edge & between (Allure / `widget-mosaic--post`). Jar **5.0.4+**. Editor: grid half-inset + content half-inset; TG preview = `CollageRenderer.renderFree`. |
-| `tilePad` | **6** | Inner body pad → `--wt-pad` on editor + TG preview. Jar has no field yet; exported JSON keeps it for builder/preview parity. |
+| `headerHeight` | **22** | Card title-bar height (logical canvas px). Jar **5.0.3+**. TG preview sets `--wt-bar-height` (+ proportional title/dots from DS baseline 28). Editor: `--anb-bar-h` × displayScale. |
+| `cardGap` | **14** | Gap around/between cards (logical canvas px) — equal edge & between. Jar **5.0.4+**. Editor: half-inset × displayScale; TG preview = `freeCellRect` then `transform: scale`. |
+| `tilePad` | **6** | Inner body pad (logical canvas px) → `--wt-pad` × displayScale on editor; full logical on TG stage. Jar has no field yet. |
 
 Reset / `vector#default` → default vector (`applyDefaultVector`) = these three defaults + CB-870 canvas + `DEFAULT_ITEMS`.
 
@@ -89,9 +89,10 @@ Smoke: `header tool links` — site has `.icon svg`, zero `.icon img`.
 
 NE/NW/SE/SW parked at the **cell edge** (`top/bottom/left/right: 0`). The visible crop-mark (`::after`) is sized to `--anb-resize-mark ≈ half-gap − 1px` so the stroke stays in the cardGap gutter **outside** the rounded card — never under the title bar (`half-gap + bar-h`) and never digging into the chart. Editor card radius is **10px** — **do not** mirror core collage `CARD_ARC` (18px in `packages/core`, export-only). Guard: smoke `resize L-brackets sit in gutter outside card`.
 
-## Editor ↔ TG preview tile identity
+## Editor ↔ TG preview proportions
 
-Same product chrome on grid and export stage: DS `widget-tile__bar` (status dots + title) + `widget-tile--tier-*` from `tierForSpan(10, w, h)` + `--wt-bar-height` / `--wt-pad` from `headerHeight` / `tilePad`. Editor-only: hover/selected copy·delete overlay (`.anb-panel__actions`) and GridStack L-brackets — not a second header.
+Logical `cardGap` / `headerHeight` / `tilePad` are jar canvas px. TG stage draws at full logical size then `transform: scale`. Editor must multiply the same values by `displayW / chart.width` into `--anb-card-gap` / `--anb-bar-h` / `--wt-pad` (and GridStack cellHeight inset) — never raw logical px as CSS px. Chart mocks share `tierForSpan(10, w, h)`. Editor header stays `anb-panel__bar` (title + copy/delete); product dots only on TG/export.
+
 ## Terminal bar (builder canon)
 
 | | |
