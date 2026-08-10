@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>QG debug — Allure + Sonar</title>
+  <link rel="icon" type="image/svg+xml" href="vendor/design-system/assets/qa-guru-logo.svg" />
+  <link rel="stylesheet" href="vendor/design-system/css/tokens.css" />
+  <link rel="stylesheet" href="vendor/design-system/css/icon.css" />
+  <link rel="stylesheet" href="vendor/design-system/css/icon-btn.css" />
+  <link rel="stylesheet" href="vendor/design-system/css/indicator.css" />
+  <link rel="stylesheet" href="vendor/design-system/css/qg-info.css" />
+  <link rel="stylesheet" href="vendor/design-system/css/quality-gate.css" />
+  <link rel="stylesheet" href="vendor/design-system/css/widget-tile.css" />
+  <style>
+    :root {
+      color-scheme: dark;
+      --dbg-bg: #1c1b19;
+      --dbg-panel: #2c2a26;
+      --dbg-line: color-mix(in srgb, #fff 12%, transparent);
+      --wt-bar-height: 31px;
+      --wt-bar-inset: 10px;
+      --wt-pad: 6px;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font: 14px/1.4 ui-sans-serif, system-ui, sans-serif;
+      color: #e7e5e4;
+      background:
+        linear-gradient(var(--dbg-line) 1px, transparent 1px) 0 0 / 24px 24px,
+        linear-gradient(90deg, var(--dbg-line) 1px, transparent 1px) 0 0 / 24px 24px,
+        var(--dbg-bg);
+    }
+    header {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px 20px;
+      align-items: baseline;
+      padding: 16px 20px;
+      border-bottom: 1px solid var(--dbg-line);
+      background: color-mix(in srgb, var(--dbg-panel) 88%, transparent);
+    }
+    header h1 {
+      margin: 0;
+      font-size: 15px;
+      font-weight: 650;
+      letter-spacing: 0.01em;
+    }
+    header p {
+      margin: 0;
+      color: color-mix(in srgb, #e7e5e4 62%, transparent);
+      font-size: 13px;
+    }
+    header a { color: #7dd3fc; }
+    main {
+      display: grid;
+      gap: 28px;
+      padding: 24px 20px 48px;
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+    section h2 {
+      margin: 0 0 12px;
+      font-size: 13px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: color-mix(in srgb, #e7e5e4 55%, transparent);
+    }
+    .row {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 20px;
+    }
+    @media (max-width: 820px) {
+      .row { grid-template-columns: 1fr; }
+    }
+    .cell {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      min-width: 0;
+    }
+    .cell label {
+      font-size: 12px;
+      color: color-mix(in srgb, #e7e5e4 50%, transparent);
+    }
+    /* Jar / TG preview parity: hybrid QG, no outer widget-tile__bar */
+    .tile-frame {
+      width: 100%;
+      height: 220px;
+      border-radius: 10px;
+      overflow: hidden;
+      background: var(--dbg-panel);
+      box-shadow: 0 0 0 1px color-mix(in srgb, #fff 8%, transparent);
+    }
+    .tile-frame .widget-tile {
+      width: 100%;
+      height: 100%;
+      border-radius: 0;
+    }
+    /* Editor chrome model: anb-panel__bar + body-only QG */
+    .editor-frame {
+      width: 100%;
+      height: 220px;
+      display: flex;
+      flex-direction: column;
+      border-radius: 10px;
+      overflow: hidden;
+      background: var(--dbg-panel);
+      box-shadow: 0 0 0 1px color-mix(in srgb, #fff 8%, transparent);
+    }
+    .anb-panel__bar {
+      flex: 0 0 31px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      padding: 0 10px;
+      border-bottom: 1px solid color-mix(in srgb, #fff 10%, transparent);
+      background: color-mix(in srgb, #fff 3%, transparent);
+      font-size: 12px;
+      font-weight: 600;
+    }
+    .anb-panel__bar button {
+      appearance: none;
+      border: 0;
+      background: transparent;
+      color: color-mix(in srgb, #e7e5e4 55%, transparent);
+      padding: 0;
+      line-height: 0;
+      cursor: default;
+    }
+    .anb-panel__body {
+      flex: 1;
+      min-height: 0;
+      display: flex;
+    }
+    .anb-panel__body .widget-tile {
+      width: 100%;
+      height: 100%;
+      border-radius: 0;
+    }
+    .sizes .row { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+    .size-sm { height: 120px; }
+    .size-md { height: 180px; }
+    .size-lg { height: 260px; }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>QG debug</h1>
+    <p>Только Allure + Sonar. Jar hybrid vs editor (anb-panel bar + body-only).</p>
+    <p><a href="./">← builder</a></p>
+  </header>
+
+  <main>
+    <section>
+      <h2>1. Jar / TG preview — hybrid only (один bar = quality-gate__bar)</h2>
+      <div class="row">
+        <div class="cell">
+          <label>allureQualityGate · passed</label>
+          <div class="tile-frame" data-testid="dbg-hybrid-aqg">
+            <div class="widget-tile widget-tile--quality-gate">
+              <div class="widget-tile__body">
+                <div class="quality-gate quality-gate--allure quality-gate--passed" role="status">
+                  <div class="quality-gate__bar">
+                    <div class="quality-gate__bar-start">
+                      <span class="indicator indicator--passed indicator--solid" aria-hidden="true"></span>
+                      <span class="quality-gate__bar-title">Allure QG</span>
+                    </div>
+                    <div class="qg-info" data-testid="qg-info-mock">
+                      <span class="icon-btn qg-info__trigger" aria-hidden="true">
+                        <span class="icon" aria-hidden="true">
+                          <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="8" cy="8" r="6.25"/>
+                            <path d="M8 7.25v3.5"/>
+                            <circle cx="8" cy="5.15" r="0.65" fill="currentColor" stroke="none"/>
+                          </svg>
+                        </span>
+                      </span>
+                    </div>
+                  </div>
+                  <div class="quality-gate__body">
+                    <p class="quality-gate__verdict quality-gate__verdict--ok">Passed</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="cell">
+          <label>sonarQualityGate · failed</label>
+          <div class="tile-frame" data-testid="dbg-hybrid-sqg">
+            <div class="widget-tile widget-tile--quality-gate">
+              <div class="widget-tile__body">
+                <div class="quality-gate quality-gate--sonar quality-gate--failed" role="status">
+                  <div class="quality-gate__bar">
+                    <div class="quality-gate__bar-start">
+                      <span class="indicator indicator--failed indicator--solid" aria-hidden="true"></span>
+                      <span class="quality-gate__bar-title">Sonar QG</span>
+                    </div>
+                    <div class="qg-info" data-testid="qg-info-mock">
+                      <span class="icon-btn qg-info__trigger" aria-hidden="true">
+                        <span class="icon" aria-hidden="true">
+                          <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="8" cy="8" r="6.25"/>
+                            <path d="M8 7.25v3.5"/>
+                            <circle cx="8" cy="5.15" r="0.65" fill="currentColor" stroke="none"/>
+                          </svg>
+                        </span>
+                      </span>
+                    </div>
+                  </div>
+                  <div class="quality-gate__body">
+                    <ul class="quality-gate__rules">
+                      <li class="quality-gate__rule">
+                        <div class="quality-gate__rule-id">coverage</div>
+                        <div class="quality-gate__rule-detail">
+                          <p class="quality-gate__message">coverage 72.4 is below the required 80</p>
+                          <p class="quality-gate__formula">FAIL: 72.4 &lt; 80</p>
+                        </div>
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <h2>2. Editor canvas — anb-panel__bar + body-only (без nested quality-gate__bar)</h2>
+      <div class="row">
+        <div class="cell">
+          <label>editor · Allure QG</label>
+          <div class="editor-frame" data-testid="dbg-editor-aqg">
+            <div class="anb-panel__bar">
+              <span>Allure QG</span>
+              <button type="button" aria-label="Delete" tabindex="-1">
+                <svg viewBox="0 0 16 16" width="9" height="9" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="m4 4 8 8M12 4l-8 8"/></svg>
+              </button>
+            </div>
+            <div class="anb-panel__body">
+              <div class="widget-tile widget-tile--quality-gate">
+                <div class="widget-tile__body">
+                  <div class="quality-gate quality-gate--allure quality-gate--passed" role="status">
+                    <div class="quality-gate__body">
+                      <p class="quality-gate__verdict quality-gate__verdict--ok">Passed</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="cell">
+          <label>editor · Sonar QG</label>
+          <div class="editor-frame" data-testid="dbg-editor-sqg">
+            <div class="anb-panel__bar">
+              <span>Sonar QG</span>
+              <button type="button" aria-label="Delete" tabindex="-1">
+                <svg viewBox="0 0 16 16" width="9" height="9" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="m4 4 8 8M12 4l-8 8"/></svg>
+              </button>
+            </div>
+            <div class="anb-panel__body">
+              <div class="widget-tile widget-tile--quality-gate">
+                <div class="widget-tile__body">
+                  <div class="quality-gate quality-gate--sonar quality-gate--failed" role="status">
+                    <div class="quality-gate__body">
+                      <ul class="quality-gate__rules">
+                        <li class="quality-gate__rule">
+                          <div class="quality-gate__rule-id">coverage</div>
+                          <div class="quality-gate__rule-detail">
+                            <p class="quality-gate__message">coverage 72.4 is below the required 80</p>
+                            <p class="quality-gate__formula">FAIL: 72.4 &lt; 80</p>
+                          </div>
+                        </li>
+                      </ul>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="sizes">
+      <h2>3. Hybrid sizes — sm / md / lg (тот же SQG)</h2>
+      <div class="row">
+        <div class="cell">
+          <label>120px</label>
+          <div class="tile-frame size-sm" data-testid="dbg-size-sm">
+            <div class="widget-tile widget-tile--quality-gate">
+              <div class="widget-tile__body">
+                <div class="quality-gate quality-gate--sonar quality-gate--failed" role="status">
+                  <div class="quality-gate__bar">
+                    <div class="quality-gate__bar-start">
+                      <span class="indicator indicator--failed indicator--solid" aria-hidden="true"></span>
+                      <span class="quality-gate__bar-title">Sonar QG</span>
+                    </div>
+                  </div>
+                  <div class="quality-gate__body">
+                    <ul class="quality-gate__rules">
+                      <li class="quality-gate__rule">
+                        <div class="quality-gate__rule-id">coverage</div>
+                        <div class="quality-gate__rule-detail">
+                          <p class="quality-gate__message">coverage 72.4 is below the required 80</p>
+                          <p class="quality-gate__formula">FAIL: 72.4 &lt; 80</p>
+                        </div>
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="cell">
+          <label>180px</label>
+          <div class="tile-frame size-md" data-testid="dbg-size-md">
+            <div class="widget-tile widget-tile--quality-gate">
+              <div class="widget-tile__body">
+                <div class="quality-gate quality-gate--sonar quality-gate--failed" role="status">
+                  <div class="quality-gate__bar">
+                    <div class="quality-gate__bar-start">
+                      <span class="indicator indicator--failed indicator--solid" aria-hidden="true"></span>
+                      <span class="quality-gate__bar-title">Sonar QG</span>
+                    </div>
+                  </div>
+                  <div class="quality-gate__body">
+                    <ul class="quality-gate__rules">
+                      <li class="quality-gate__rule">
+                        <div class="quality-gate__rule-id">coverage</div>
+                        <div class="quality-gate__rule-detail">
+                          <p class="quality-gate__message">coverage 72.4 is below the required 80</p>
+                          <p class="quality-gate__formula">FAIL: 72.4 &lt; 80</p>
+                        </div>
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="cell">
+          <label>260px</label>
+          <div class="tile-frame size-lg" data-testid="dbg-size-lg">
+            <div class="widget-tile widget-tile--quality-gate">
+              <div class="widget-tile__body">
+                <div class="quality-gate quality-gate--sonar quality-gate--failed" role="status">
+                  <div class="quality-gate__bar">
+                    <div class="quality-gate__bar-start">
+                      <span class="indicator indicator--failed indicator--solid" aria-hidden="true"></span>
+                      <span class="quality-gate__bar-title">Sonar QG</span>
+                    </div>
+                  </div>
+                  <div class="quality-gate__body">
+                    <ul class="quality-gate__rules">
+                      <li class="quality-gate__rule">
+                        <div class="quality-gate__rule-id">coverage</div>
+                        <div class="quality-gate__rule-detail">
+                          <p class="quality-gate__message">coverage 72.4 is below the required 80</p>
+                          <p class="quality-gate__formula">FAIL: 72.4 &lt; 80</p>
+                        </div>
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+</body>
+</html>
