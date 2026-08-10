@@ -1,6 +1,6 @@
 {
   "name": "@qa-guru/allure-notifications-config",
-  "version": "6.1.0",
+  "version": "6.1.1",
   "description": "Shared config schema + PANEL_CATALOG / DEFAULT_ITEMS / canvas presets (Phase 1).",
   "type": "module",
   "exports": {
