@@ -535,9 +535,9 @@ function migrateChromeKnobs() {
     const h = Number(chart.headerHeight);
     if (!Number.isFinite(h) || h <= 0)
         return;
-    // Legacy builder 22/25 → widget-tile SSOT bar (31 logical px on jar canvas).
-    if (h < WT_BAR_BASELINE)
+    if (h < WT_BAR_BASELINE) {
         chart.headerHeight = WT_BAR_BASELINE;
+    }
 }
 /**
  * Apply a caps snap to controls + grid. Grid footprints always come from
@@ -1489,7 +1489,6 @@ function panelInnerHtml(item) {
     return (`<div class="anb-panel__bar">` +
         `<span class="anb-panel__title">${escapeHtml(title)}</span>` +
         `<span class="anb-panel__actions">` +
-        `<button type="button" class="anb-panel__action" data-anb-action="copy" title="Copy" aria-label="Copy">⎘</button>` +
         `<button type="button" class="anb-panel__action" data-anb-action="delete" title="Delete" aria-label="Delete">×</button>` +
         `</span>` +
         `</div>` +

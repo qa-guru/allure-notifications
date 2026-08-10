@@ -1696,7 +1696,6 @@ function panelInnerHtml(item: ChartItem) {
     `<div class="anb-panel__bar">` +
     `<span class="anb-panel__title">${escapeHtml(title)}</span>` +
     `<span class="anb-panel__actions">` +
-    `<button type="button" class="anb-panel__action" data-anb-action="copy" title="Copy" aria-label="Copy">⎘</button>` +
     `<button type="button" class="anb-panel__action" data-anb-action="delete" title="Delete" aria-label="Delete">×</button>` +
     `</span>` +
     `</div>` +

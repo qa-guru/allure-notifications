@@ -66,7 +66,7 @@ test.describe('allure-notifications-builder e2e blanket', () => {
     await expect(deleteBtn).toBeEnabled();
     await expect(first.locator('.anb-panel__bar')).toBeVisible();
     await expect(first.locator('[data-anb-action="delete"]')).toBeVisible();
-    await expect(first.locator('[data-anb-action="copy"]')).toBeVisible();
+    await expect(first.locator('[data-anb-action="copy"]')).toHaveCount(0);
 
     const before = await page.locator('#anb-grid .grid-stack-item').count();
     await deleteBtn.click();
