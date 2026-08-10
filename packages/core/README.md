@@ -28,7 +28,8 @@ import {
 const config = parseConfig(/* config.json */);
 const analytics = await loadReportAnalytics(config);
 const qualityGates = await loadQualityGateCollageData(config);
-const png: Buffer = await renderCollagePng(config, analytics, qualityGates);
+const testsTable = await loadTestsTableCollageData(config);
+const png: Buffer = await renderCollagePng(config, analytics, qualityGates, testsTable);
 ```
 
 ### Quality gates (`chart.profile=kit`)
@@ -43,8 +44,20 @@ Kit-only tiles `allureQualityGate` / `sonarQualityGate` (`type: qualityGate`) re
 
 Missing data when `profile=kit` and a QG tile is present → **fail** (`QualityGateDataMissingError`).
 
+### Tests table (`chart.profile=kit`)
+
+Kit-only tile `testsTable` (`type: testsTable`) renders via `renderTestsTablePng` (canvas, name | status | trend | stability) when `chart.profile === "kit"`. Under `profile: "default"` it **silent-skips** (parse OK, no tile).
+
+| Field | Role |
+|-------|------|
+| `chart.testsTablePath` | `KitTestsTableData` JSON (explicit) |
+| (fallback) | `<allureFolder>/widgets/kit-panels/testsTable.json` |
+
+Missing data when `profile=kit` and a testsTable tile is present → **fail** (`TestsTableDataMissingError`).
+
 ```ts
-const png: Buffer = await renderCollagePng(config, analytics, qualityGates);
+const testsTable = await loadTestsTableCollageData(config);
+const png: Buffer = await renderCollagePng(config, analytics, qualityGates, testsTable);
 ```
 
 Free-layout collage panels:
@@ -52,7 +65,7 @@ Free-layout collage panels:
 | Kind | Types |
 |------|--------|
 | **Real (analytics)** | `currentStatus` · `testingPyramid` · … · `statusAgePyramid` |
-| **Kit-only (profile=kit)** | `qualityGate` + id `allureQualityGate` \| `sonarQualityGate` |
+| **Kit-only (profile=kit)** | `qualityGate` + id `allureQualityGate` \| `sonarQualityGate` · `testsTable` |
 | **Empty-state** | Unknown tile types → themed card (`No data yet`), **not** silent-drop. Real panels keep the tile with an honest caption when their series is missing (`No history data` / `No environment data` / …). |
 
 **History source** (Java `HistoryAnalytics` / `ReportAnalyticsBuilder` parity + A3 catalog series): Allure 3 `history.jsonl` via `chart.historyPath` or auto-discover next to report/results (and parents). Typical A3 lines carry `status`, `duration`/`start`/`stop`, `environment`, and `labels` — used for transitions, growth, coverage, problems-by-env, duration trend, age pyramid, and stability. Minimal history (`id`+`status` only) still drives transitions / growth / age; duration / environment / labeled coverage→empty captions. Without history → history panels show **"No history data"** (tile kept). `stabilityDistribution` can fall back to current `*-result.json` labels. `pyramidFallback: "suites"` → real `SuitesPanel` when no known layers.

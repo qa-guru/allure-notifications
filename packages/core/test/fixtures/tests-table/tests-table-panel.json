@@ -1,0 +1,68 @@
+{
+  "columns": ["Тест", "Статус", "Тренд", "Стабильность"],
+  "lang": "ru",
+  "rows": [
+    {
+      "id": "mock-001",
+      "name": "shouldLoginWithValid…",
+      "fullName": "auth.LoginTests.shouldLoginWithValidCredentials",
+      "status": "passed",
+      "history": [
+        { "status": "passed", "durationSec": 1.32 },
+        { "status": "passed", "durationSec": 1.18 },
+        { "status": "passed", "durationSec": 1.05 },
+        { "status": "passed", "durationSec": 1.24 },
+        { "status": "passed", "durationSec": 1.11 }
+      ],
+      "flakyFlips": 0
+    },
+    {
+      "id": "mock-002",
+      "name": "shouldRejectInvalid…",
+      "fullName": "auth.LoginTests.shouldRejectInvalidPassword",
+      "status": "passed",
+      "history": [
+        { "status": "failed", "durationSec": 0.95 },
+        { "status": "passed", "durationSec": 0.82 },
+        { "status": "failed", "durationSec": 0.91 },
+        { "status": "passed", "durationSec": 0.88 },
+        { "status": "passed", "durationSec": 0.88 }
+      ],
+      "flakyFlips": 2
+    },
+    {
+      "id": "mock-003",
+      "name": "checkoutFlowCompletes",
+      "fullName": "e2e.CheckoutTests.checkoutFlowCompletes",
+      "status": "failed",
+      "history": [
+        { "status": "passed", "durationSec": 4.2 },
+        { "status": "passed", "durationSec": 3.9 },
+        { "status": "failed", "durationSec": 5.1 },
+        { "status": "failed", "durationSec": 4.8 }
+      ],
+      "flakyFlips": 1
+    },
+    {
+      "id": "mock-004",
+      "name": "apiHealthReturns200",
+      "fullName": "api.HealthTests.apiHealthReturns200",
+      "status": "broken",
+      "history": [
+        { "status": "passed", "durationSec": 0.42 },
+        { "status": "broken", "durationSec": 0.55 }
+      ],
+      "flakyFlips": 0
+    },
+    {
+      "id": "mock-005",
+      "name": "legacyImportSkipped",
+      "fullName": "unit.LegacyTests.legacyImportSkipped",
+      "status": "skipped",
+      "history": [
+        { "status": "skipped", "durationSec": 0.01 }
+      ],
+      "flakyFlips": 0
+    }
+  ]
+}

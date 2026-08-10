@@ -1,0 +1,31 @@
+{
+  "base": {
+    "project": "Tests table kit dogfood",
+    "environment": "dogfood",
+    "language": "en",
+    "allureFolder": "../packages/core/test/fixtures/dogfood-report",
+    "allureResultsFolder": "../packages/core/test/fixtures/dogfood-results",
+    "enableChart": true,
+    "darkMode": true,
+    "chart": {
+      "profile": "kit",
+      "mode": "collage",
+      "layout": "free",
+      "width": 870,
+      "height": 540,
+      "headerHeight": 34,
+      "cardGap": 14,
+      "gridCols": 10,
+      "gridRows": 10,
+      "testsTablePath": "../packages/core/test/fixtures/tests-table/tests-table-panel.json",
+      "items": [
+        { "id": "testsTable", "type": "testsTable", "x": 0, "y": 0, "w": 10, "h": 10 }
+      ]
+    }
+  },
+  "telegram": {
+    "token": "0:dogfood-tests-table-kit",
+    "chat": "0",
+    "templatePath": "/templates/telegram.ftl"
+  }
+}

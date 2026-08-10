@@ -11,7 +11,6 @@ import { access, readFile } from "node:fs/promises";
 import { join } from "node:path";
 
 import {
-  isKitOnlyChartItem,
   normalizeChartProfile,
   resolvePanelMeta,
   shouldSilentSkipKitOnlyItem,
@@ -61,13 +60,22 @@ export function resolveQualityGatePanelId(
   return null;
 }
 
+function isQualityGateChartItem(
+  item: Partial<ChartItem> & { id?: string },
+): boolean {
+  if (item.id === "allureQualityGate" || item.id === "sonarQualityGate") {
+    return true;
+  }
+  return item.type?.trim() === "qualityGate";
+}
+
 function kitQualityGateItems(config: Config): ChartItem[] {
   const chart = config.base.chart;
   const profile = normalizeChartProfile(chart?.profile);
   const items = chart?.items ?? [];
   return items.filter(
     (item) =>
-      isKitOnlyChartItem(item) && !shouldSilentSkipKitOnlyItem(profile, item),
+      isQualityGateChartItem(item) && !shouldSilentSkipKitOnlyItem(profile, item),
   );
 }
 

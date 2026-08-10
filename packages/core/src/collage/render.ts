@@ -48,10 +48,13 @@ import { renderSuccessRateDistributionPanel } from "./panels/successRateDistribu
 import { renderSuitesPanel } from "./panels/suites.js";
 import { renderTestBaseGrowthPanel } from "./panels/testBaseGrowth.js";
 import { renderQualityGatePng } from "./panels/qualityGate.js";
+import { renderTestsTablePng } from "./panels/testsTable.js";
 import {
   resolveQualityGatePanelId,
   type QualityGateCollageData,
 } from "./qualityGateData.js";
+import { isTestsTableChartItem } from "./testsTableData.js";
+import type { KitTestsTableData } from "@qa-guru/allure-report-kit";
 
 const DEFAULT_WIDTH = 1000;
 const DEFAULT_HEIGHT = 600;
@@ -88,6 +91,7 @@ const PANEL_STABILITY = "stabilitydistribution";
 const PANEL_DURATION_DYNAMICS = "durationdynamics";
 const PANEL_STATUS_AGE = "statusagepyramid";
 const PANEL_QUALITY_GATE = "qualitygate";
+const PANEL_TESTS_TABLE = "teststable";
 
 const DEBUG =
   process.env.ALLURE_NOTIFICATIONS_DEBUG === "1" ||
@@ -152,6 +156,9 @@ function normalize(raw: string | undefined | null): string | null {
 
 /** Panel dispatch key — `type` plus catalog `id` for kit-only kinds. */
 function resolvePanelKey(item: ChartItem): string | null {
+  if (isTestsTableChartItem(item)) {
+    return PANEL_TESTS_TABLE;
+  }
   if (isKitOnlyChartItem(item)) {
     return PANEL_QUALITY_GATE;
   }
@@ -280,6 +287,8 @@ function renderPanelPng(
   by?: string,
   qualityGates?: QualityGateCollageData,
   item?: ChartItem,
+  testsTable?: KitTestsTableData,
+  darkMode?: boolean,
 ): Buffer {
   const ctx = panelContext(config, theme, width, height, analytics, {
     showTitle: false,
@@ -340,6 +349,12 @@ function renderPanelPng(
       throw new Error(`quality gate data not loaded for ${qgId}`);
     }
     return renderQualityGatePng(data, { width, height });
+  }
+  if (key === PANEL_TESTS_TABLE) {
+    if (!testsTable) {
+      throw new Error("tests table data not loaded for testsTable tile");
+    }
+    return renderTestsTablePng(testsTable, { width, height, dark: darkMode });
   }
   // Unknown tiles: empty-state body (card chrome carries title).
   return renderEmptyPanel(ctx, DEFAULT_EMPTY_MESSAGE);
@@ -468,6 +483,7 @@ export async function renderCollagePng(
   config: Config,
   analytics: ReportAnalytics,
   qualityGates: QualityGateCollageData = {},
+  testsTable?: KitTestsTableData,
 ): Promise<Buffer> {
   const chart = config.base.chart;
   const collageWidth = chart?.width && chart.width > 0 ? chart.width : DEFAULT_WIDTH;
@@ -537,6 +553,8 @@ export async function renderCollagePng(
       item.by,
       qualityGates,
       item,
+      testsTable,
+      config.base.darkMode,
     );
     await drawCard(
       graphics,

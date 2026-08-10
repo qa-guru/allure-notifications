@@ -79,6 +79,8 @@ export const ChartConfigSchema = z
     allureQualityGatePath: z.string().min(1).optional(),
     /** Sonar QG input path (`projectStatus` JSON; mapped via kit runtime). */
     sonarQualityGatePath: z.string().min(1).optional(),
+    /** Kit tests-table payload (`KitTestsTableData`) or report widget override path. */
+    testsTablePath: z.string().min(1).optional(),
   })
   .passthrough()
   .superRefine((chart, ctx) => {

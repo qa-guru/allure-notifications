@@ -69,6 +69,12 @@ export {
   type QualityGateCollageData,
 } from "./collage/qualityGateData.js";
 export {
+  loadTestsTableCollageData,
+  parseKitTestsTableData,
+  isTestsTableChartItem,
+  TestsTableDataMissingError,
+} from "./collage/testsTableData.js";
+export {
   DEFAULT_EMPTY_MESSAGE,
   renderEmptyPanel,
 } from "./collage/panels/empty.js";
@@ -77,6 +83,11 @@ export {
   renderQualityGatePng,
 } from "./collage/panels/qualityGate.js";
 export type { RenderQualityGatePngOptions } from "./collage/panels/qualityGate.js";
+export {
+  TESTS_TABLE_TOKEN_PALETTE,
+  renderTestsTablePng,
+} from "./collage/panels/testsTable.js";
+export type { RenderTestsTablePngOptions } from "./collage/panels/testsTable.js";
 export {
   PYRAMID_GEOMETRY,
   layerBreakdownFrom,

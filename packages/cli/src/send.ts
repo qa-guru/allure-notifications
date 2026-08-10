@@ -8,6 +8,7 @@ import { dirname, isAbsolute, resolve } from "node:path";
 import { parseConfig, type Config } from "@qa-guru/allure-notifications-config";
 import {
   loadQualityGateCollageData,
+  loadTestsTableCollageData,
   loadReportAnalytics,
   renderCollagePng,
 } from "@qa-guru/allure-notifications-core";
@@ -95,6 +96,15 @@ export function resolveConfigPaths(config: Config, configDir: string): Config {
     );
     if (sonarQualityGatePath !== undefined) {
       base.chart = { ...base.chart, sonarQualityGatePath };
+    }
+  }
+  if (base.chart?.testsTablePath) {
+    const testsTablePath = resolveMaybeRelative(
+      base.chart.testsTablePath,
+      configDir,
+    );
+    if (testsTablePath !== undefined) {
+      base.chart = { ...base.chart, testsTablePath };
     }
   }
   return { ...config, base };
@@ -244,7 +254,8 @@ export async function send(options: SendOptions): Promise<SendResult> {
   });
   const analytics = await loadReportAnalytics(config);
   const qualityGates = await loadQualityGateCollageData(config);
-  const png = await renderCollagePng(config, analytics, qualityGates);
+  const testsTable = await loadTestsTableCollageData(config);
+  const png = await renderCollagePng(config, analytics, qualityGates, testsTable);
 
   let pngPath: string | undefined;
   if (options.out) {
