@@ -1066,30 +1066,26 @@ html.theme-light .anb-zone--terminal .ch-theme--vscode .ch-tok-cmd { color: #795
   line-height: 1.1;
 }
 
-/* Canvas QG: kill DS hybrid floors that explode 2×2 thumbs (min-width 6.5rem / min-height 4.5rem). */
-.anb-panel__tile .anb-kit-mock.quality-gate .quality-gate__bar {
-  height: auto;
+/* Canvas QG body-only (no nested quality-gate__bar — editor owns anb-panel__bar). */
+.anb-panel__tile .anb-kit-mock.quality-gate {
+  display: flex;
+  flex-direction: column;
+  border: none;
+  background: transparent;
+}
+
+.anb-panel__tile .anb-kit-mock.quality-gate .quality-gate__body {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
   min-height: 0;
-  padding-left: 4px;
-}
-
-.anb-panel__tile .anb-kit-mock.quality-gate .quality-gate__bar-title {
-  font-size: 0.5rem;
-  text-align: left;
-}
-
-.anb-panel__tile .anb-kit-mock.quality-gate .quality-gate__bar > .qg-info {
-  padding-right: 4px;
-}
-
-.anb-panel__tile .anb-kit-mock.quality-gate .quality-gate__bar > .qg-info .qg-info__trigger {
-  width: 0.85rem;
-  height: 0.85rem;
-  min-width: 0.85rem;
-  min-height: 0.85rem;
+  height: 100%;
+  padding: 0;
 }
 
 .anb-panel__tile .anb-kit-mock.quality-gate--passed .quality-gate__body {
+  align-items: center;
+  justify-content: center;
   min-height: 0;
   padding: 2px;
 }
@@ -1102,6 +1098,7 @@ html.theme-light .anb-zone--terminal .ch-theme--vscode .ch-tok-cmd { color: #795
   display: grid;
   grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr);
   align-items: stretch;
+  flex: 1;
   margin: 0;
   padding: 0;
   list-style: none;
