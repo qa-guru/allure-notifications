@@ -18,9 +18,9 @@
 
 | Field | Default | Role |
 |-------|---------|------|
-| `headerHeight` | **31** | Card title-bar height (logical canvas px) = DS `--wt-bar-height`. Jar **5.0.3+**. TG/Preview: inline `--wt-bar-height` + title/dots from baseline 31. Editor `anb-panel__bar`: logical × displayScale (no floor). |
-| `cardGap` | **14** | Gap around/between cards (logical canvas px) — equal edge & between. Jar **5.0.4+**. Editor: half-inset × displayScale; TG preview = `freeCellRect` then `transform: scale`. |
-| `tilePad` | **6** | Inner body pad (logical canvas px) → `--wt-pad` × displayScale on editor; full logical on TG stage. Jar has no field yet. |
+| `headerHeight` | **31** | Card title-bar height (logical canvas px) = DS `--wt-bar-height`. CLI collage / TG Preview: inline `--wt-bar-height` + title/dots from baseline 31. Editor `anb-panel__bar`: logical × displayScale (no floor). |
+| `cardGap` | **14** | Gap around/between cards (logical canvas px) — equal edge & between. Editor: half-inset × displayScale; TG preview = `freeCellRect` then `transform: scale`. |
+| `tilePad` | **6** | Inner body pad (logical canvas px) → `--wt-pad` × displayScale on editor; full logical on TG stage. |
 
 Reset / `vector#default` → default vector (`applyDefaultVector`) = these three defaults + CB-870 canvas + `DEFAULT_ITEMS`.
 
@@ -48,9 +48,9 @@ Palette slots ↔ `awesome-charts.mjs` / DS `WidgetTileMocks` (id unique; `type`
 | durationDynamics | durationDynamics | |
 | statusAgePyramid | statusAgePyramid | |
 
-## Free export shape (jar)
+## Free export shape (CLI)
 
-Terminal exports full `config.json`. Chart block for jar free-grid (CB-870 default):
+Terminal exports full `config.json`. Chart block for CLI free-grid collage (CB-870 default):
 
 ```json
 {
@@ -73,7 +73,7 @@ Terminal exports full `config.json`. Chart block for jar free-grid (CB-870 defau
 }
 ```
 
-Telegram is **top-level** `telegram: { token, chat, topic, replyTo, templatePath }` (jar Config shape).
+Telegram is **top-level** `telegram: { token, chat, topic, replyTo, templatePath }` (CLI Config shape).
 
 
 ## Header tools (do not regress)
@@ -91,19 +91,19 @@ NE/NW/SE/SW parked at the **cell edge** (`top/bottom/left/right: 0`). The visibl
 
 ## Editor ↔ TG preview proportions
 
-Logical `cardGap` / `headerHeight` / `tilePad` are jar canvas px. TG stage draws at full logical size then `transform: scale`. Editor must multiply the same values by `displayW / chart.width` into `--anb-card-gap` / `--anb-bar-h` / `--wt-pad` (and GridStack cellHeight inset) — never raw logical px as CSS px. Chart mocks share `tierForSpan(10, w, h)`. Editor header stays `anb-panel__bar` (title + copy/delete); product dots only on TG/export.
+Logical `cardGap` / `headerHeight` / `tilePad` are collage canvas px (`packages/core`). TG stage draws at full logical size then `transform: scale`. Editor must multiply the same values by `displayW / chart.width` into `--anb-card-gap` / `--anb-bar-h` / `--wt-pad` (and GridStack cellHeight inset) — never raw logical px as CSS px. Chart mocks share `tierForSpan(10, w, h)`. Editor header stays `anb-panel__bar` (title + copy/delete); product dots only on TG/export.
 
 ## Quality-gate chrome (LOCKED — do not regress)
 
 **Accepted visual:**
-- **Jar / TG preview:** same product chrome as other tiles — macOS dots + title (`drawCard` / `widget-tile__bar`) + **body-only** QG (no second `quality-gate__bar`).
+- **CLI collage / TG preview:** same product chrome as other tiles — macOS dots + title (`drawCard` / `widget-tile__bar`) + **body-only** QG (no second `quality-gate__bar`).
 - **Editor:** hybrid `quality-gate__bar` + body (no `anb-panel__bar`); delete inside bar; **no** QG status indicator / `(i)`.
 - Palette add = **2×2**. SQG compact `cov|72<80` + `bugs|3>0`. Editor bar height = `--anb-bar-h`.
 - Debug: [`debug-qg.html`](./debug-qg.html). Goldens: [`fixtures/qg-locked/`](./fixtures/qg-locked/). Guard: smoke `chart.profile kit`.
 
 | Surface | Chrome | Forbidden |
 |---------|--------|-----------|
-| Jar collage PNG | macOS `drawCard` + body-only QG PNG | hybrid QG bar under drawCard; QG status indicator; info glyph |
+| CLI collage PNG (`packages/core`) | macOS `drawCard` + body-only QG PNG | hybrid QG bar under drawCard; QG status indicator; info glyph |
 | Editor canvas | Hybrid full-bleed; title-only; delete in `quality-gate__bar`; **2×2** add | `anb-panel__bar`; QG status indicator; `(i)`; absolute delete overlay; raw `31px` bar; non-2×2 default footprint |
 | TG / export preview | `widget-tile__bar` (dots + title) + body-only QG | hybrid `quality-gate__bar` under product bar; QG status indicator; `(i)` |
 
