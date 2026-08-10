@@ -631,10 +631,10 @@ html.theme-light .anb-canvas--chart-off::after {
 
 .anb-panel__action {
   box-sizing: border-box;
-  min-width: 14px;
-  min-height: 14px;
-  width: 14px;
-  height: 14px;
+  min-width: 11px;
+  min-height: 11px;
+  width: 11px;
+  height: 11px;
   padding: 0;
   border: 1px solid rgba(255, 255, 255, 0.18);
   border-radius: 2px;
@@ -642,7 +642,7 @@ html.theme-light .anb-canvas--chart-off::after {
   color: #fff;
   opacity: 1;
   cursor: pointer;
-  font-size: 0.625rem;
+  font-size: 0.5rem;
   line-height: 1;
   display: inline-flex;
   align-items: center;
