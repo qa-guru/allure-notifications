@@ -95,7 +95,7 @@ Logical `cardGap` / `headerHeight` / `tilePad` are jar canvas px. TG stage draws
 
 ## Quality-gate chrome (LOCKED — do not regress)
 
-**Accepted visual (2026-08-10):** one hybrid bar + body. Editor 2×2 shows full titles `Allure QG` / `Sonar QG`, SQG compact `cov|72<80` + `bugs|3>0`, bar height = `--anb-bar-h` (display-scaled). Debug: [`debug-qg.html`](./debug-qg.html). Guard: smoke `chart.profile kit` QG chrome asserts.
+**Accepted visual (2026-08-10):** one hybrid bar + body. Editor 2×2 shows full titles `Allure QG` / `Sonar QG`, SQG compact `cov|72<80` + `bugs|3>0`, bar height = `--anb-bar-h` (display-scaled). Debug: [`debug-qg.html`](./debug-qg.html). Goldens: [`fixtures/qg-locked/`](./fixtures/qg-locked/). Guard: smoke `chart.profile kit` QG chrome asserts.
 
 | Surface | Chrome | Forbidden |
 |---------|--------|-----------|
