@@ -348,7 +348,7 @@ test.describe('formats', () => {
 });
 
 test.describe('panels', () => {
-  test('panel bar delete + toolbar copy + keyboard', async ({
+  test('panel bar delete + keyboard copy', async ({
     page,
   }) => {
     await page.goto('/');
@@ -359,16 +359,6 @@ test.describe('panels', () => {
     await page.evaluate(() => {
       const A = globalThis.__ANB__;
       const el = document.querySelector('#anb-grid .grid-stack-item');
-      const btn = document.querySelector('[data-anb-action="copy"]');
-      if (btn instanceof HTMLElement) {
-        btn.dispatchEvent(
-          new PointerEvent('pointerdown', {
-            bubbles: true,
-            cancelable: true,
-            pointerType: 'mouse',
-          }),
-        );
-      }
       if (el instanceof HTMLElement) A.copyItem(el);
       const del = document.querySelector('[data-anb-action="delete"]');
       if (del instanceof HTMLElement) {
@@ -384,7 +374,6 @@ test.describe('panels', () => {
 
     const tile = page.locator('#anb-grid .grid-stack-item').first();
     await tile.click();
-    await page.getByTestId('anb-btn-copy').click();
     await page.getByTestId('anb-btn-delete').click();
     await tile.click({ trial: true }).catch(() => {});
     const any = page.locator('#anb-grid .grid-stack-item').first();
@@ -395,7 +384,8 @@ test.describe('panels', () => {
     }
 
     await page.getByTestId('anb-canvas').click({ position: { x: 8, y: 8 } });
-    await expect(page.getByTestId('anb-btn-copy')).toBeDisabled();
+    await expect(page.getByTestId('anb-btn-delete')).toBeDisabled();
+    await expect(page.getByTestId('anb-btn-copy')).toHaveCount(0);
 
     await page.evaluate(() => {
       const A = globalThis.__ANB__;
@@ -922,11 +912,8 @@ test.describe('negative', () => {
       const rows = A.GRID_ROWS;
       A.injectPyramidSsot();
 
-      // Toolbar copy/delete when nothing selected (falsy selectedEl).
+      // Toolbar delete when nothing selected (falsy selectedEl).
       A.clearSelection();
-      document.getElementById('anb-btn-copy')?.dispatchEvent(
-        new MouseEvent('click', { bubbles: true }),
-      );
       document.getElementById('anb-btn-delete')?.dispatchEvent(
         new MouseEvent('click', { bubbles: true }),
       );
@@ -1198,7 +1185,6 @@ test.describe('negative', () => {
       A.hydrateControls();
 
       document.getElementById('anb-layout')?.remove();
-      document.getElementById('anb-btn-copy')?.remove();
       document.getElementById('anb-btn-delete')?.remove();
       A.updateToolbar();
 

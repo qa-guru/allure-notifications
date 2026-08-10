@@ -47,22 +47,20 @@ test.describe('allure-notifications-builder e2e blanket', () => {
       .toEqual({ w: 1410, h: 1080 });
   });
 
-  test('panel bar: select tile enables Copy/Delete; Delete removes item', async ({
+  test('panel bar: select tile enables Delete; Delete removes item', async ({
     page,
   }) => {
     await page.goto('/');
     await page.getByTestId('anb-btn-reset').click();
 
-    const copyBtn = page.getByTestId('anb-btn-copy');
     const deleteBtn = page.getByTestId('anb-btn-delete');
-    await expect(copyBtn).toBeDisabled();
     await expect(deleteBtn).toBeDisabled();
+    await expect(page.getByTestId('anb-btn-copy')).toHaveCount(0);
 
     const first = page.locator('#anb-grid .grid-stack-item').first();
     await expect(first).toBeVisible();
     await first.click();
 
-    await expect(copyBtn).toBeEnabled();
     await expect(deleteBtn).toBeEnabled();
     await expect(first.locator('.anb-panel__bar')).toBeVisible();
     await expect(first.locator('[data-anb-action="delete"]')).toBeVisible();

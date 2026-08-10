@@ -18,7 +18,7 @@
 
 | Field | Default | Role |
 |-------|---------|------|
-| `headerHeight` | **31** | Card title-bar height (logical canvas px) = DS `--wt-bar-height`. CLI collage / TG Preview: inline `--wt-bar-height` + title/dots from baseline 31. Editor `anb-panel__bar`: logical × displayScale (no floor). |
+| `headerHeight` | **31** | Card title-bar height (logical canvas px) = DS `--wt-bar-height`. CLI collage / TG Preview: inline `--wt-bar-height` + title/dots from baseline 31. Editor `anb-panel__bar`: logical × displayScale (no floor). Jar PNG omit/null → `packages/core` `resolveHeaderHeight` = config `DEFAULT_HEADER_HEIGHT`. |
 | `cardGap` | **14** | Gap around/between cards (logical canvas px) — equal edge & between. Editor: half-inset × displayScale; TG preview = `freeCellRect` then `transform: scale`. |
 | `tilePad` | **6** | Inner body pad (logical canvas px) → `--wt-pad` × displayScale on editor; full logical on TG stage. |
 
@@ -91,7 +91,7 @@ NE/NW/SE/SW parked at the **cell edge** (`top/bottom/left/right: 0`). The visibl
 
 ## Editor ↔ TG preview proportions
 
-Logical `cardGap` / `headerHeight` / `tilePad` are collage canvas px (`packages/core`). TG stage draws at full logical size then `transform: scale`. Editor must multiply the same values by `displayW / chart.width` into `--anb-card-gap` / `--anb-bar-h` / `--wt-pad` (and GridStack cellHeight inset) — never raw logical px as CSS px. Chart mocks share `tierForSpan(10, w, h)`. Non-QG editor header: `anb-panel__bar` (title + delete only — no copy on the bar; toolbar/keyboard copy stays). QG editor chrome → § Quality-gate chrome. Product dots only on TG/export.
+Logical `cardGap` / `headerHeight` / `tilePad` are collage canvas px (`packages/core`). TG stage draws at full logical size then `transform: scale`. Editor must multiply the same values by `displayW / chart.width` into `--anb-card-gap` / `--anb-bar-h` / `--wt-pad` (and GridStack cellHeight inset) — never raw logical px as CSS px. Chart mocks share `tierForSpan(10, w, h)`. Non-QG editor header: `anb-panel__bar` (title + delete only — no copy on the bar). Duplicate tile: keyboard Ctrl/Cmd+C (or D). No toolbar Copy button. QG editor chrome → § Quality-gate chrome. Product dots only on TG/export.
 
 ## Quality-gate chrome (LOCKED — do not regress)
 

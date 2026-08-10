@@ -1787,11 +1787,9 @@ function updateEmptyState() {
 }
 
 function updateToolbar() {
-  const copyBtn = document.getElementById('anb-btn-copy');
   const delBtn = document.getElementById('anb-btn-delete');
   const chartOn = Boolean(getPath('base.enableChart'));
   const on = chartOn && Boolean(selectedEl);
-  if (copyBtn instanceof HTMLButtonElement) copyBtn.disabled = !on;
   if (delBtn instanceof HTMLButtonElement) delBtn.disabled = !on;
 }
 
@@ -2211,9 +2209,6 @@ function onPanelAction(e: Event) {
 
   document.getElementById('anb-btn-reset')?.addEventListener('click', resetToDefault);
   document.getElementById('anb-btn-clear')?.addEventListener('click', clearAll);
-  document.getElementById('anb-btn-copy')?.addEventListener('click', () => {
-    if (selectedEl) copyItem(selectedEl);
-  });
   document.getElementById('anb-btn-delete')?.addEventListener('click', () => {
     if (selectedEl) deleteItem(selectedEl);
   });
