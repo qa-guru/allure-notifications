@@ -242,12 +242,10 @@ body {
 
 .anb-canvas[data-anb-dark="true"] {
   background: #222;
-  --anb-resize-ink: rgba(255, 255, 255, 0.48);
 }
 
 .anb-canvas[data-anb-dark="false"] {
   background: #eef2f6;
-  --anb-resize-ink: rgba(26, 35, 48, 0.82);
 }
 
 .anb-canvas[data-anb-dark="false"] .grid-stack {
@@ -720,52 +718,29 @@ html.theme-light .anb-canvas--chart-off::after {
   z-index: 100;
 }
 
-/* Resize: L-brackets as crop marks in the cardGap gutter (outside the card).
- * Handle box stays large for hit-testing; ::after mark fits in half-gap so the
- * stroke never digs into the rounded card / chart. Parked at cell edge (0) —
- * never under title bar (half-gap + bar-h). */
+/* Resize: invisible hit targets only (no corner/edge marks). */
 .anb-canvas {
   --anb-resize-size: 14px;
   --anb-resize-inset: 0px;
-  /* Stay inside scaled half-gap — never a fixed 6px floor that digs into the card. */
-  --anb-resize-mark: max(0px, calc(var(--anb-half-gap) - 1px));
-  --anb-resize-ink: rgba(255, 255, 255, 0.48);
 }
 
 .anb-canvas .grid-stack-item > .ui-resizable-handle {
   background-image: none !important;
   background-color: transparent;
-  opacity: 0 !important;
+  opacity: 0;
   z-index: 1;
   transform: none !important;
   box-sizing: border-box;
 }
 
-/* Edges stay invisible hit targets; corners show L-brackets. */
 .anb-canvas .grid-stack-item > .ui-resizable-ne,
 .anb-canvas .grid-stack-item > .ui-resizable-nw,
 .anb-canvas .grid-stack-item > .ui-resizable-se,
 .anb-canvas .grid-stack-item > .ui-resizable-sw {
   width: var(--anb-resize-size);
   height: var(--anb-resize-size);
-  opacity: 0.7;
   /* Above edge strips + title bar so corners keep diagonal resize. */
   z-index: 5;
-}
-
-.anb-canvas .grid-stack-item:hover > .ui-resizable-ne,
-.anb-canvas .grid-stack-item:hover > .ui-resizable-nw,
-.anb-canvas .grid-stack-item:hover > .ui-resizable-se,
-.anb-canvas .grid-stack-item:hover > .ui-resizable-sw,
-.anb-canvas .grid-stack-item.is-selected > .ui-resizable-ne,
-.anb-canvas .grid-stack-item.is-selected > .ui-resizable-nw,
-.anb-canvas .grid-stack-item.is-selected > .ui-resizable-se,
-.anb-canvas .grid-stack-item.is-selected > .ui-resizable-sw,
-.anb-canvas .grid-stack-item.ui-resizable-resizing > .ui-resizable-ne,
-.anb-canvas .grid-stack-item.ui-resizable-resizing > .ui-resizable-nw,
-.anb-canvas .grid-stack-item.ui-resizable-resizing > .ui-resizable-se,
-.anb-canvas .grid-stack-item.ui-resizable-resizing > .ui-resizable-sw {
-  opacity: 1;
 }
 
 /* !important — GridStack injects .gs-id-* { top: 0 } after our sheet. */
@@ -819,47 +794,6 @@ html.theme-light .anb-canvas--chart-off::after {
   right: calc(var(--anb-resize-inset) + var(--anb-resize-size));
   bottom: var(--anb-resize-inset);
   height: 8px;
-}
-
-/* Crop-mark stroke: only the outer gutter, anchored to the cell corner. */
-.anb-canvas .grid-stack-item > .ui-resizable-ne::after,
-.anb-canvas .grid-stack-item > .ui-resizable-nw::after,
-.anb-canvas .grid-stack-item > .ui-resizable-se::after,
-.anb-canvas .grid-stack-item > .ui-resizable-sw::after {
-  content: "";
-  position: absolute;
-  width: var(--anb-resize-mark);
-  height: var(--anb-resize-mark);
-  pointer-events: none;
-  box-sizing: border-box;
-}
-
-.anb-canvas .grid-stack-item > .ui-resizable-nw::after {
-  top: 0;
-  left: 0;
-  border-left: 1.5px solid var(--anb-resize-ink);
-  border-top: 1.5px solid var(--anb-resize-ink);
-}
-
-.anb-canvas .grid-stack-item > .ui-resizable-ne::after {
-  top: 0;
-  right: 0;
-  border-right: 1.5px solid var(--anb-resize-ink);
-  border-top: 1.5px solid var(--anb-resize-ink);
-}
-
-.anb-canvas .grid-stack-item > .ui-resizable-sw::after {
-  bottom: 0;
-  left: 0;
-  border-left: 1.5px solid var(--anb-resize-ink);
-  border-bottom: 1.5px solid var(--anb-resize-ink);
-}
-
-.anb-canvas .grid-stack-item > .ui-resizable-se::after {
-  bottom: 0;
-  right: 0;
-  border-right: 1.5px solid var(--anb-resize-ink);
-  border-bottom: 1.5px solid var(--anb-resize-ink);
 }
 
 .anb-group + .anb-group {
