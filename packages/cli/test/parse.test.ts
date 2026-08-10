@@ -223,7 +223,7 @@ describe("@qa-guru/allure-notifications runCli help", () => {
 describe("@qa-guru/allure-notifications VERSION", () => {
   it("matches packages/cli/package.json (no stale 6.0.0 pin)", async () => {
     assert.equal(VERSION, pkgVersion);
-    assert.match(VERSION, /^6\.0\.\d+$/);
+    assert.match(VERSION, /^6\.\d+\.\d+$/);
     assert.notEqual(VERSION, "6.0.0", "6.0.1+ must not report 6.0.0");
 
     const result = await runCli(["-V"]);

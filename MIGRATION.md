@@ -217,3 +217,38 @@ See [docs/ci-cookbook.md](docs/ci-cookbook.md): **primary** = `allure generate` 
 ## Next
 
 Phase 5 **done** + docs prep for plugin consumers. **Next = release 6.0.5** (npm publish plugin + pin bump), then AI features (by OK). Do not bump `VERSION` / publish without HQ.
+
+## 6.1.0 — quality gates + testsTable (kit profile)
+
+**Pin:** `@qa-guru/allure-notifications@6.1.0` (+ scoped `@qa-guru/allure-notifications-*` at the same version).
+
+### Breaking: `chart.sonarProjectStatusPath` removed
+
+Rename to **`chart.sonarQualityGatePath`** (Sonar `projectStatus` JSON path for the `sonarQualityGate` collage tile).
+
+```json
+{
+  "base": {
+    "chart": {
+      "profile": "kit",
+      "sonarQualityGatePath": "fixtures/sonar/project-status.json",
+      "allureQualityGatePath": "widgets/kit-panels/allureQualityGate.json"
+    }
+  }
+}
+```
+
+Configs using the old field name will fail schema validation — search/replace `sonarProjectStatusPath` → `sonarQualityGatePath`.
+
+### New (kit profile)
+
+- `chart.profile`: `"default"` | `"kit"` — kit-only tiles (`allureQualityGate`, `sonarQualityGate`, `testsTable`) **silent-skip** when `profile !== "kit"`.
+- Quality-gate collage tiles render via `@qa-guru/allure-report-kit` layout IR when `profile=kit` (pin kit **≥ 0.3.0**).
+- `testsTable` panel kind — kit tests-table PNG in collage (builder palette T5/T7).
+
+### Consumer checklist
+
+1. Bump CLI + scoped packages to **6.1.0** (single train).
+2. Replace `sonarProjectStatusPath` if present.
+3. For QG/testsTable collage: set `"profile": "kit"` and provide data paths / widget JSON.
+4. Dry-run: `npx @qa-guru/allure-notifications@6.1.0 send --config config.json --dry-run`
