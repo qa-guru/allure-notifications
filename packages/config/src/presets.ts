@@ -29,7 +29,7 @@ export const DEFAULT_TILE_PAD = 6;
 
 /**
  * Default layout — 4-tile on full 10×10 substrate.
- * pie 4×4 · durationDynamics 6×4 · pyramid 3×3 | durations-by-layer 4×3 · empty cols 7–9 + rows 7–9.
+ * currentStatus 4×4 · durationDynamics 6×4 · pyramid 3×3 | durations-by-layer 4×3 · empty cols 7–9 + rows 7–9.
  * See builder CANON.md.
  */
 export const DEFAULT_ITEMS: ReadonlyArray<ChartItem> = Object.freeze([
