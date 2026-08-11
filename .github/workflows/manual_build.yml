@@ -16,6 +16,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      # Archive branch has full legacy/java tree.
       - name: Checkout changes
         uses: actions/checkout@v7
 
