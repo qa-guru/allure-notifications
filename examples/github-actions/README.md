@@ -1,7 +1,7 @@
 # GitHub Marketplace Action
 
 Runnable dogfood workflows for every integration variant are documented in
-[`.github/README.md`](../../.github/README.md).
+[`.github/workflows/README.md`](../../.github/workflows/README.md).
 
 The primary pipeline is:
 
