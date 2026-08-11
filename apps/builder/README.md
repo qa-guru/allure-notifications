@@ -69,7 +69,8 @@ pnpm typecheck
 - `tests/config-parity.test.mjs` — import `@qa-guru/allure-notifications-config` (SQ-1080 / presets / catalog)
 - `tests/pyramid-parity.test.mjs` — import `@qa-guru/allure-notifications-pyramid` (geometry / palette / vendor)
 - `tests/smoke.spec.js` — Playwright: header, zones, Reset → free `items`, CB-870 / SQ-1080 / WD-1410, export, panel bar
-- `tests/dogfood_jar.py` — needs jar + `build/pyramid-showcase`; skip unless `ANB_DOGFOOD_REQUIRED=1`
+
+Jar PNG dogfood is **not** a 6.x health gate (CLI collage / kit). Opt-in legacy only: [`legacy/java/dogfood_jar.py`](../../legacy/java/dogfood_jar.py).
 
 ## Prod
 

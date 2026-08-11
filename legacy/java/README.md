@@ -9,3 +9,16 @@ cd legacy/java
 ```
 
 CI (master): [`.github/workflows/build.yml`](../../.github/workflows/build.yml) runs Gradle from this directory.
+
+## Opt-in jar dogfood (not 6.x gate)
+
+Builder active tests = unit + Playwright. Jar PNG check lives here only:
+
+```bash
+# from repo root; needs assemble + build/pyramid-showcase fixtures
+python legacy/java/dogfood_jar.py
+# fail if jar/fixtures missing:
+ANB_DOGFOOD_REQUIRED=1 python legacy/java/dogfood_jar.py
+```
+
+Chrome knobs match builder defaults (`headerHeight` **31**). Do not wire this into `apps/builder` `pnpm test`.

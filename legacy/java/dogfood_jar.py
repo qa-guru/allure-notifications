@@ -1,11 +1,12 @@
 #!/usr/bin/env python
-"""Dogfood: builder CB-870 free export shape → allure-notifications jar → PNG 870×1080.
+"""Legacy (Java 5.x) dogfood: CB-870 free export shape → fat jar → PNG 870×1080.
 
-Requires nested monorepo layout (apps/builder → repo root):
-  ../../allure-notifications/build/libs/allure-notifications-*.jar
-  ../../build/pyramid-showcase/{allure-report,allure-results}
+Not a 6.x gate. Active product path = CLI collage / kit profile.
+Requires:
+  legacy/java/allure-notifications/build/libs/allure-notifications-*.jar
+  <repo>/build/pyramid-showcase/{allure-report,allure-results}
 
-Skip with exit 0 if jar/fixtures missing (local UI-only CI).
+Skip with exit 0 if jar/fixtures missing.
 Force fail if missing: ANB_DOGFOOD_REQUIRED=1
 """
 
@@ -23,13 +24,17 @@ try:
 except ImportError:  # pragma: no cover
     Image = None  # type: ignore
 
-ROOT = Path(__file__).resolve().parents[1]
-# apps/builder → allure-notifications repo → hub
-AN = ROOT.parents[1]
-HUB = AN.parent
+# legacy/java → allure-notifications repo root
+LEGACY_JAVA = Path(__file__).resolve().parent
+AN = LEGACY_JAVA.parents[1]
 SHOWCASE = AN / "build" / "pyramid-showcase"
-JAR_GLOB = "allure-notifications/build/libs/allure-notifications-*.jar"
 
+# Builder chrome defaults (packages/config DEFAULT_* / CANON.md)
+DEFAULT_HEADER_HEIGHT = 31
+DEFAULT_CARD_GAP = 14
+DEFAULT_TILE_PAD = 6
+
+# Classic CB-870 legacy dogfood layout (CANON «Legacy dogfood»)
 CB870_ITEMS = [
     {"type": "currentStatus", "x": 0, "y": 0, "w": 5, "h": 5},
     {"type": "testingPyramid", "x": 5, "y": 0, "w": 5, "h": 5},
@@ -42,7 +47,7 @@ def find_jar() -> Path | None:
     if env:
         p = Path(env)
         return p if p.is_file() else None
-    libs = AN / "allure-notifications" / "build" / "libs"
+    libs = LEGACY_JAVA / "allure-notifications" / "build" / "libs"
     if not libs.is_dir():
         return None
     jars = sorted(libs.glob("allure-notifications-*.jar"), reverse=True)
@@ -56,7 +61,7 @@ def builder_shaped_config(allure_report: Path, allure_results: Path) -> dict:
         "base": {
             "project": "builder-dogfood-cb870",
             "environment": "autotest",
-            "comment": "tests/dogfood_jar.py — builder DEFAULT_ITEMS / CANON CB-870",
+            "comment": "legacy/java/dogfood_jar.py — Java 5.x only, not 6.x gate",
             "language": "en",
             "allureFolder": str(allure_report) + "/",
             "allureResultsFolder": str(allure_results) + "/",
@@ -67,8 +72,9 @@ def builder_shaped_config(allure_report: Path, allure_results: Path) -> dict:
                 "layout": "free",
                 "width": 870,
                 "height": 1080,
-                "headerHeight": 68,
-                "cardGap": 14,
+                "headerHeight": DEFAULT_HEADER_HEIGHT,
+                "cardGap": DEFAULT_CARD_GAP,
+                "tilePad": DEFAULT_TILE_PAD,
                 "gridCols": 10,
                 "gridRows": 10,
                 "items": list(CB870_ITEMS),
@@ -91,7 +97,7 @@ def main() -> int:
     results = SHOWCASE / "allure-results"
     if not jar or not results.is_dir():
         msg = (
-            f"skip dogfood_jar: jar={jar} results={results.is_dir()} "
+            f"skip legacy dogfood_jar: jar={jar} results={results.is_dir()} "
             f"(set ANB_DOGFOOD_REQUIRED=1 to fail)"
         )
         print(msg)
@@ -142,7 +148,7 @@ def main() -> int:
 
         img = Image.open(chart_path)
         w, h = img.size
-        print(f"dogfood OK: {chart_path} {w}×{h} bytes={chart_path.stat().st_size}")
+        print(f"legacy dogfood OK: {chart_path} {w}×{h} bytes={chart_path.stat().st_size}")
         if (w, h) != (870, 1080):
             print(f"unexpected size {w}×{h}, want 870×1080")
             return 1
