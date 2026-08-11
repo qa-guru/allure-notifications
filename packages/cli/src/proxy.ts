@@ -41,8 +41,13 @@ function parsePort(value: unknown): number | undefined {
 /**
  * Parse top-level `config.proxy`. Returns undefined when host/port missing or invalid.
  * Default type: `http` (jar parity). `socks` / `socks5` → socks5.
+ * Username/password: config fields, else `MICROSOCKS_USER`/`MICROSOCKS_PASS`
+ * or `ALLURE_NOTIFICATIONS_PROXY_USERNAME`/`ALLURE_NOTIFICATIONS_PROXY_PASSWORD`.
  */
-export function resolveOutboundProxy(raw: unknown): OutboundProxy | undefined {
+export function resolveOutboundProxy(
+  raw: unknown,
+  env: NodeJS.ProcessEnv = process.env,
+): OutboundProxy | undefined {
   if (raw == null || typeof raw !== "object" || Array.isArray(raw)) {
     return undefined;
   }
@@ -57,12 +62,21 @@ export function resolveOutboundProxy(raw: unknown): OutboundProxy | undefined {
   const type: OutboundProxyType =
     typeRaw === "socks5" || typeRaw === "socks" ? "socks5" : "http";
 
+  const username =
+    nonEmptyString(o.username) ??
+    nonEmptyString(env.MICROSOCKS_USER) ??
+    nonEmptyString(env.ALLURE_NOTIFICATIONS_PROXY_USERNAME);
+  const password =
+    nonEmptyString(o.password) ??
+    nonEmptyString(env.MICROSOCKS_PASS) ??
+    nonEmptyString(env.ALLURE_NOTIFICATIONS_PROXY_PASSWORD);
+
   return {
     type,
     host,
     port,
-    username: nonEmptyString(o.username),
-    password: nonEmptyString(o.password),
+    username,
+    password,
   };
 }
 
@@ -107,11 +121,12 @@ export function createProxiedFetch(proxy: OutboundProxy): typeof fetch {
 export function resolveLiveFetch(opts: {
   configProxy: unknown;
   fetchImpl?: typeof fetch;
+  env?: NodeJS.ProcessEnv;
 }): typeof fetch | undefined {
   if (opts.fetchImpl) {
     return opts.fetchImpl;
   }
-  const proxy = resolveOutboundProxy(opts.configProxy);
+  const proxy = resolveOutboundProxy(opts.configProxy, opts.env ?? process.env);
   if (!proxy) {
     return undefined;
   }

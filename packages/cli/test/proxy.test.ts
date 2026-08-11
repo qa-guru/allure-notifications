@@ -89,6 +89,15 @@ describe("@qa-guru/allure-notifications proxy resolve", () => {
     assert.ok(http instanceof ProxyAgent);
   });
 
+  it("resolveOutboundProxy reads MICROSOCKS_* env when config omits auth", () => {
+    const proxy = resolveOutboundProxy(
+      { type: "socks5", host: "proxy.example", port: 7777 },
+      { MICROSOCKS_USER: "u", MICROSOCKS_PASS: "p" },
+    );
+    assert.equal(proxy?.username, "u");
+    assert.equal(proxy?.password, "p");
+  });
+
   it("resolveLiveFetch: explicit fetchImpl wins over config.proxy", () => {
     const custom: typeof fetch = async () => new Response("ok");
     const resolved = resolveLiveFetch({

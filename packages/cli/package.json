@@ -1,6 +1,6 @@
 {
   "name": "@qa-guru/allure-notifications",
-  "version": "6.1.2",
+  "version": "6.1.3",
   "description": "CLI: allure-notifications send --config (6.0 TypeScript). Collage via @napi-rs/canvas.",
   "type": "module",
   "bin": {

@@ -139,6 +139,7 @@ export async function deliverLive(
     const fetchImpl = resolveLiveFetch({
       configProxy: (config as { proxy?: unknown }).proxy,
       fetchImpl: opts.fetchImpl,
+      env: opts.env,
     });
     const sent: SendPhotoResult = await sendTelegramPhoto({
       credentials,

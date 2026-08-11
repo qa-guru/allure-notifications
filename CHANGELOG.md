@@ -2,6 +2,16 @@
 
 ## Unreleased
 
+## v 6.1.3
+
+### English
+
+- **CLI proxy auth** — `config.proxy` username/password; fallback `MICROSOCKS_USER`/`MICROSOCKS_PASS` (or `ALLURE_NOTIFICATIONS_PROXY_*`). Required for qa.guru microsocks (`proxy.qaguru.school:7777`); use `prepare-telegram-socks-proxy.sh` on agents.
+
+### Russian
+
+- **CLI proxy auth** — username/password в `config.proxy`; fallback `MICROSOCKS_USER`/`MICROSOCKS_PASS` (или `ALLURE_NOTIFICATIONS_PROXY_*`). Нужно для microsocks qa.guru; на агентах — `prepare-telegram-socks-proxy.sh`.
+
 ## v 6.1.2
 
 ### English

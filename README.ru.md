@@ -239,7 +239,7 @@ Showcase layout (7-tile readme-hero) = [`config/config.dogfood-telegram-full.jso
 `webhookUrl` из шаблона Workflows *“Post to a channel when a webhook request is received”* (legacy Office 365 Connectors уходят). Chart — base64; payload ≤ 28 KB; throttle ~4 req/s.
 </details>
 
-Top-level `proxy` (`type`: `http` \| `socks5`, `host`, `port`, опционально `username` / `password`) — CLI live Telegram через undici `ProxyAgent` / `Socks5ProxyAgent` (jar: Apache HttpClient). При заданном proxy `proxychains4` для Bot API не нужен.
+Top-level `proxy` (`type`: `http` \| `socks5`, `host`, `port`, опционально `username` / `password`) — CLI live Telegram через undici `ProxyAgent` / `Socks5ProxyAgent` (jar: Apache HttpClient). При заданном proxy `proxychains4` для Bot API не нужен. SOCKS с auth (qa.guru `proxy.qaguru.school:7777`) требует `username`/`password` в config — на агентах Jenkins сначала `/opt/qa-guru/bin/prepare-telegram-socks-proxy.sh` (подставляет microsocks creds).
 
 ## Визуальный канон
 
