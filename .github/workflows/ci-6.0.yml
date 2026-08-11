@@ -1,5 +1,5 @@
 # 6.0 TypeScript monorepo CI (master + feature/6.0* + quality contour lines).
-# Java 5.0.8 jar CI stays in build.yml (master) — do not merge jobs.
+# Java 5.0.8 jar CI stays in build.yml — scoped to legacy/java/** + workflow_dispatch only.
 # Q1: Allure results + generate + c8 coverage artifacts.
 # Q2: Sonar upload + sonar-gate-wait.
 # Q3: TestOps upload+close via allurectl (informational; skip without ALLURE_*).
@@ -33,7 +33,7 @@ on:
       - 'pnpm-workspace.yaml'
       - 'action.yml'
       - 'examples/github-actions/**'
-      - '.github/README.md'
+      - '.github/workflows/README.md'
       - '.github/actions/**'
       - '.github/examples/**'
       - '.github/workflows/action-e2e.yml'

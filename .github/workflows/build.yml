@@ -1,12 +1,21 @@
-name: CI
+name: CI — legacy Java 5.0.8
 
 on:
+  workflow_dispatch:
   push:
     branches:
-    - master
+      - master
+    paths:
+      - 'legacy/java/**'
+      - 'config/ci-telegram.json'
+      - '.github/workflows/build.yml'
   pull_request:
     branches:
-    - master
+      - master
+    paths:
+      - 'legacy/java/**'
+      - 'config/ci-telegram.json'
+      - '.github/workflows/build.yml'
 
 jobs:
   build:
