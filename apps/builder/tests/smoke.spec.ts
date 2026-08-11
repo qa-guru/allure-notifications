@@ -356,7 +356,7 @@ test.describe('allure-notifications-builder smoke', () => {
     expect(snap.hints[1]).toBe('Testing pyramid');
   });
 
-  test('resize L-brackets sit in gutter outside card (not under title bar)', async ({
+  test('resize handles sit in gutter outside card (not under title bar)', async ({
     page,
   }) => {
     await page.goto('/');
@@ -379,27 +379,24 @@ test.describe('allure-notifications-builder smoke', () => {
       const barBottom = bar ? bar.getBoundingClientRect().bottom : c.top + 31;
       const cs = getComputedStyle(el.closest('.anb-canvas'));
       const halfGap = parseFloat(cs.getPropertyValue('--anb-card-gap')) / 2;
-      // Custom props may stay as calc()/max(); read used ::after size instead.
-      const mark = parseFloat(getComputedStyle(nw, '::after').width);
       const radius = parseFloat(getComputedStyle(card).borderRadius);
+      const handleOpacity = parseFloat(getComputedStyle(nw).opacity);
       return {
         ok: true,
         halfGap,
-        mark,
         radius,
+        handleOpacity,
         // Handle box at cell edge → outside card by ~half-gap.
         dNwTop: nwR.top - c.top,
         dNeTop: neR.top - c.top,
         dNwLeft: nwR.left - c.left,
         dSwBottom: c.bottom - swR.bottom,
-        // Crop-mark (::after) must end before the card edge.
-        markEndsBeforeCard: Number.isFinite(mark) && mark <= halfGap - 0.5,
         nwBelowBar: nwR.top >= barBottom - 1,
       };
     });
     expect(pos.ok, JSON.stringify(pos)).toBe(true);
     expect(pos.halfGap).toBeGreaterThan(0);
-    expect(pos.markEndsBeforeCard).toBe(true);
+    expect(pos.handleOpacity).toBe(0);
     // Outside card (negative offset ≈ half-gap), not flush on the chart.
     expect(pos.dNwTop).toBeLessThan(-2);
     expect(pos.dNeTop).toBeLessThan(-2);
