@@ -7,7 +7,7 @@ Do **not** execute big moves until this checklist is explicitly OK'd. Phase 0 = 
 | # | Action | From | To | Done |
 |---|--------|------|-----|------|
 | 1 | Move Gradle multi-module tree under legacy | repo-root modules (`allure-notifications/`, `allure-notifications-api/`, `build.gradle`, `settings.gradle`, `gradle/`, `gradlew*`) | `legacy/java/` (keep build runnable from that cwd) | [x] |
-| 2 | README legacy banner | root README | State **5.0.\* Java legacy** / **6.0.\* TypeScript** active; point jar users at `legacy/java/` | [x] |
+| 2 | README legacy banner | root README | State **5.0.\* Java legacy** / **6.0.\* TypeScript** active; point jar users at branch `legacy/java-5.0.8` + release `v5.0.8` | [x] |
 | 3 | Merge builder into monorepo | hub clone `allure-notifications-builder/` (or upstream Pages repo) | `apps/builder/` | [x] Stage E |
 | 4 | Archive second repo | `qa-guru/allure-notifications-builder` | Archive on GitHub **after** domain cutover (row 5) + separate HQ OK | [x] `gh repo archive` · `isArchived=true` |
 | 5 | Pages CNAME / custom domain | builder Pages (`allure.notifications.qa.guru` / live `allure-notifications.qa.guru`) | Serve from `apps/builder/` via [`pages-builder.yml`](../.github/workflows/pages-builder.yml); runbook [`pages-cutover.md`](pages-cutover.md) | [x] domain on `qa-guru/allure-notifications` · HTTPS · `curl -sfI` 2xx |
@@ -49,7 +49,7 @@ Hub clone `allure-notifications-builder/` may remain on disk as optional linger;
 
 ## Must not break during moves
 
-- Java jar build still works under `legacy/java/` until 6.0 dogfood parity
+- Java jar build archived on branch `legacy/java-5.0.8` (+ release `v5.0.8`); not required in-tree on `master` after 6.0 dogfood parity
 - Builder Playwright tests / dogfood scripts relocate with `apps/builder/`
 - Monorepo pin `docs/allure-notifications/VERSION` = **6.0.0** CLI (cutover done); jar 5.0.8 = legacy only
 - No `dashboard-overrides` / inject copied into `packages/`

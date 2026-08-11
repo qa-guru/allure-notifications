@@ -11,7 +11,7 @@ There is **no 5.1** line. Historical Java A3 MVP stays at **5.0.8**; product con
 | Line | Allure | Stack | Status |
 |------|--------|-------|--------|
 | **4.\*** | Allure 2 | Java | Historical A2 |
-| **5.\*** | Allure 3 | Java MVP (Gradle fat jar **5.0.8**) | **Historical build** under [`legacy/java/`](legacy/java/) — **keep forever**; bugfix / security only; **no TypeScript**; **do not delete** |
+| **5.\*** | Allure 3 | Java MVP (Gradle fat jar **5.0.8**) | **Archived** on branch [`legacy/java-5.0.8`](https://github.com/qa-guru/allure-notifications/tree/legacy/java-5.0.8/legacy/java) — **keep forever on that branch**; release [v5.0.8](https://github.com/qa-guru/allure-notifications/releases/tag/v5.0.8); bugfix / security only; **no TypeScript**; **not in-tree on `master`** |
 | **6.\*** | Allure 3 | TypeScript / typescript-go · CLI · builder · A3 plugin · AI | **Product** on `master` — pin `docs/allure-notifications/VERSION` (**6.0.12**) |
 
 Monorepo pin = **6.0.12**. Product packages: npm **`@qa-guru/allure-notifications`** + scoped `@qa-guru/allure-notifications-*` (CLI + plugin aligned at **6.0.9**).
@@ -39,7 +39,7 @@ npx allure-notifications send --config config.json
 | AI features | **yes** — in-line for 6.\* (by OK) |
 | `dashboard-overrides` / HTML inject in npm | **no** — private zds stack / upstream Allure only |
 | Merge into `allure-framework/allure3` | **no** |
-| Delete `legacy/java` / erase 5.0 | **no** — historical keep |
+| Delete archive branch / erase 5.0 release | **no** — historical keep on `legacy/java-5.0.8` + tag `v5.0.8` |
 
 ## Target tree
 
@@ -53,8 +53,6 @@ allure-notifications/                 # version line 6.0.*
     plugin/          # Allure 3 plugin — thin over core (6.*)
   apps/
     builder/         # was qa-guru/allure-notifications-builder; Pages CNAME
-  legacy/
-    java/            # 5.0.8 historical Java A3 MVP — KEEP
   pnpm-workspace.yaml
   package.json       # "version": "6.0.*"
   MIGRATION.md
@@ -63,7 +61,7 @@ allure-notifications/                 # version line 6.0.*
     phase-0-checklist.md
 ```
 
-Java **5.0.8** Gradle multi-module lives under [`legacy/java/`](legacy/java/) (`cd legacy/java && ./gradlew assemble`). Builder is in `apps/builder/` (Stage E); hub clone may linger until Pages cutover.
+Java **5.0.8** Gradle multi-module is **archived** on branch [`legacy/java-5.0.8`](https://github.com/qa-guru/allure-notifications/tree/legacy/java-5.0.8/legacy/java) (`git checkout legacy/java-5.0.8 && cd legacy/java && ./gradlew assemble`). Jar: [release v5.0.8](https://github.com/qa-guru/allure-notifications/releases/tag/v5.0.8). Builder is in `apps/builder/` (Stage E); hub clone may linger until Pages cutover.
 
 **Hub bootstrap (post-G docs sync):** monorepo hub README = **one** clone `allure-notifications`; builder path = `apps/builder/` (stand cwd already). Second hub clone `allure-notifications-builder/` = linger until domain cutover + archive. Checklist row 7 done; **Pages workflow ready** ([`pages-builder.yml`](.github/workflows/pages-builder.yml) + [`docs/pages-cutover.md`](docs/pages-cutover.md)); row 5 domain switch and row 4 archive stay open (manual GitHub UI).
 
@@ -94,7 +92,7 @@ Java **5.0.8** Gradle multi-module lives under [`legacy/java/`](legacy/java/) (`
 - Jenkins Plugin Manager
 - collage-builder (`:3010`)
 - Reviving **4.\*** / Allure 2 as a product line (historical only)
-- **Deleting `legacy/java`** / erasing 5.0 history — forbidden
+- Erasing 5.0 history (tag/release `v5.0.8` or archive branch `legacy/java-5.0.8`) — forbidden
 - Big-bang rewrite without this file
 
 ## CI surface
@@ -103,7 +101,7 @@ See [docs/ci-cookbook.md](docs/ci-cookbook.md): **primary** = `allure generate` 
 
 - **6.0 TS:** [`.github/workflows/ci-6.0.yml`](.github/workflows/ci-6.0.yml) — `pnpm install` + `pnpm typecheck` (`typescript@7`) + `pnpm test` on `master` + `feature/6.0*` + `feature/builder-ts` (Playwright Chromium for `apps/builder` e2e).
 - **Builder Pages:** [`.github/workflows/pages-builder.yml`](.github/workflows/pages-builder.yml) — build `apps/builder` TS → `js/`, sync vendor, deploy static (`index` / `css` / `js` / `vendor`) on `master` + `feature/6.0*` + `feature/builder-ts`; no Telegram secrets. Cutover runbook: [`docs/pages-cutover.md`](docs/pages-cutover.md).
-- **5.0.8 Java:** [`.github/workflows/build.yml`](.github/workflows/build.yml) — **master** only; cwd / paths → `legacy/java/`.
+- **5.0.8 Java:** [`.github/workflows/build.yml`](.github/workflows/build.yml) — branch **`legacy/java-5.0.8`** only (+ `workflow_dispatch` checks out that branch); not path-filtered on `master`.
 
 ## Phase 1 notes
 
@@ -171,7 +169,7 @@ See [docs/ci-cookbook.md](docs/ci-cookbook.md): **primary** = `allure generate` 
 
 - Workflow: `.github/workflows/ci-6.0.yml` — Node 24 + pnpm 9.15 + Python 3.12; `pnpm install --frozen-lockfile`; Playwright Chromium; `pnpm test` (config/pyramid/core/cli + builder unit/e2e).
 - Triggers: push `master` + `feature/6.0*`; PRs into `feature/6.0*` or `master` with path filter on `packages/**` / `apps/**` / pnpm lockfiles / this workflow.
-- Java `build.yml` (master) left intact — no shared job / no VERSION bump / no live Telegram in 6.0 CI.
+- Java `build.yml` — archive branch `legacy/java-5.0.8` only; no shared job / no VERSION bump / no live Telegram in 6.0 CI.
 - Cookbook: `docs/ci-cookbook.md` documents real `send --config --dry-run` (+ workspace `pnpm exec` pre-publish).
 - **Telegram dogfood (ADR 008):** CLI `--live` + [`docs/telegram-dogfood.md`](docs/telegram-dogfood.md); **not** wired into `ci-6.0.yml`.
 
@@ -188,11 +186,12 @@ See [docs/ci-cookbook.md](docs/ci-cookbook.md): **primary** = `allure generate` 
 - Parity: `tests/config-parity.test.mjs` · `tests/pyramid-parity.test.mjs`
 - Verify: `pnpm --filter @qa-guru/allure-notifications-builder test` / root `pnpm test`
 
-## Layout move notes (Java → `legacy/java`)
+## Layout move notes (Java → `legacy/java` → archive branch)
 
 - Moved: `allure-notifications/`, `allure-notifications-api/`, root Gradle files, `gradle/`, `gradlew*`, plus `config/checkstyle` (Gradle rootDir).
-- Dogfood JSON/PNG under repo-root `config/` stay put; `config/ci-telegram.json` Allure paths → `legacy/java/…`.
-- Build: `cd legacy/java && ./gradlew assemble` (fat jar under `legacy/java/allure-notifications/build/libs/`).
+- Later cut from `master`: tree kept forever on branch [`legacy/java-5.0.8`](https://github.com/qa-guru/allure-notifications/tree/legacy/java-5.0.8/legacy/java); jar → [release v5.0.8](https://github.com/qa-guru/allure-notifications/releases/tag/v5.0.8).
+- Dogfood JSON/PNG under repo-root `config/` stay put; on the archive branch `config/ci-telegram.json` Allure paths → `legacy/java/…`.
+- Build (archive): `git checkout legacy/java-5.0.8 && cd legacy/java && ./gradlew assemble`.
 - **Not in this move:** Telegram live dogfood, publish, Pages/archive, VERSION bump, Matrix.
 
 ## Pages prep notes (post-G)

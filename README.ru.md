@@ -46,7 +46,7 @@ Collage PNG + текст со статистикой и ссылками. Соб
 | Версия | Стек | Allure | Статус |
 |--------|------|--------|--------|
 | **4.\*** | Java | Allure 2 | Историческая |
-| **5.\*** | Java | Allure 3 | Legacy freeze на **5.0.8** (`legacy/java/`); версии **5.1 нет** |
+| **5.\*** | Java | Allure 3 | Legacy freeze на **5.0.8** (ветка [`legacy/java-5.0.8`](https://github.com/qa-guru/allure-notifications/tree/legacy/java-5.0.8/legacy/java)); версии **5.1 нет** |
 | **6.\*** | TypeScript | Allure 3 | **Продукт** — pin **6.0.12** (CLI + builder + plugin) |
 
 Патч-ноты → [GitHub Releases](https://github.com/qa-guru/allure-notifications/releases) · миграция → [`MIGRATION.md`](MIGRATION.md).
@@ -259,13 +259,13 @@ npm add allure @qa-guru/allure-notifications-plugin@6.0.12
 
 ## Legacy Java 5.0.8
 
-Только bugfix / security. Сборка: [`legacy/java/`](legacy/java/).
+Только bugfix / security. Исходники на ветке [`legacy/java-5.0.8`](https://github.com/qa-guru/allure-notifications/tree/legacy/java-5.0.8/legacy/java) (не в дереве `master`).
 
 ```bash
 java -DconfigFile=notifications/config.json -jar allure-notifications-5.0.8.jar
 ```
 
-Релиз: [v5.0.8](https://github.com/qa-guru/allure-notifications/releases/tag/v5.0.8) · заметки 4.x → 5.0: [`docs/migration-5.0.md`](docs/migration-5.0.md).
+Jar релиза: [v5.0.8](https://github.com/qa-guru/allure-notifications/releases/tag/v5.0.8) · заметки 4.x → 5.0: [`docs/migration-5.0.md`](docs/migration-5.0.md).
 
 ## CI cookbook
 

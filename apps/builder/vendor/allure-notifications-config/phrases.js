@@ -1,5 +1,6 @@
 /**
- * TS mirror of jar SSOT: legacy/java/allure-notifications-api/src/main/resources/phrases/*.json
+ * TS mirror of jar SSOT archived on branch legacy/java-5.0.8
+ * (allure-notifications-api/src/main/resources/phrases/*.json)
  */
 export const PHRASES = Object.freeze({
     en: {

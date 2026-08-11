@@ -1,6 +1,6 @@
 # CI cookbook (6.0 TypeScript)
 
-Public surface: the Marketplace Action and CLI `send --config` render a native collage PNG (`@napi-rs/canvas`) from an existing report. Java `java -jar` remains the **5.0** path under [`legacy/java/`](../legacy/java/).
+Public surface: the Marketplace Action and CLI `send --config` render a native collage PNG (`@napi-rs/canvas`) from an existing report. Java `java -jar` remains the **5.0** path on archive branch [`legacy/java-5.0.8`](https://github.com/qa-guru/allure-notifications/tree/legacy/java-5.0.8/legacy/java) · release [v5.0.8](https://github.com/qa-guru/allure-notifications/releases/tag/v5.0.8).
 
 ## Contract
 

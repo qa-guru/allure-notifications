@@ -29,9 +29,8 @@ no Telegram network call is required.
    - Runs on pushes and pull requests as the release gate.
 
 5. **Legacy Java JAR**
-   - Workflow: [`build.yml`](build.yml)
-   - Kept for the frozen Java 5.0.8 capability; it is not the recommended 6.x
-     consumer path.
+   - Workflow: [`build.yml`](build.yml) — branch [`legacy/java-5.0.8`](https://github.com/qa-guru/allure-notifications/tree/legacy/java-5.0.8/legacy/java) only
+   - Release jar: [v5.0.8](https://github.com/qa-guru/allure-notifications/releases/tag/v5.0.8); not the recommended 6.x consumer path.
 
 All runnable examples validate the collage with the local
 [`assert-collage`](../actions/assert-collage/action.yml) composite Action and

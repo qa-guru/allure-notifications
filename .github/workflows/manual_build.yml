@@ -16,8 +16,11 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      # Java tree is archived on legacy/java-5.0.8 (not on master).
       - name: Checkout changes
         uses: actions/checkout@v7
+        with:
+          ref: legacy/java-5.0.8
 
       - name: Set up JDK
         uses: actions/setup-java@v5

@@ -70,7 +70,7 @@ Missing a messenger or locale? [Open an issue](https://github.com/qa-guru/allure
 | Version | Stack | Allure | Status |
 |---------|-------|--------|--------|
 | **4.\*** | Java | Allure 2 | Historical |
-| **5.\*** | Java | Allure 3 | Legacy freeze at **5.0.8** (`legacy/java/`); there is **no 5.1** |
+| **5.\*** | Java | Allure 3 | Legacy freeze at **5.0.8** (branch [`legacy/java-5.0.8`](https://github.com/qa-guru/allure-notifications/tree/legacy/java-5.0.8/legacy/java)); there is **no 5.1** |
 | **6.\*** | TypeScript | Allure 3 | **Product** — pin **6.0.13** (Action + CLI + builder + plugin) |
 
 Older patch notes → [GitHub Releases](https://github.com/qa-guru/allure-notifications/releases) · migration → [`MIGRATION.md`](MIGRATION.md).
@@ -283,13 +283,13 @@ npm add allure @qa-guru/allure-notifications-plugin@6.0.14
 
 ## Legacy Java 5.0.8
 
-Bugfix / security only. Build: [`legacy/java/`](legacy/java/).
+Bugfix / security only. Source tree archived on branch [`legacy/java-5.0.8`](https://github.com/qa-guru/allure-notifications/tree/legacy/java-5.0.8/legacy/java) (not in-tree on `master`).
 
 ```bash
 java -DconfigFile=notifications/config.json -jar allure-notifications-5.0.8.jar
 ```
 
-Release: [v5.0.8](https://github.com/qa-guru/allure-notifications/releases/tag/v5.0.8) · 4.x → 5.0 notes: [`docs/migration-5.0.md`](docs/migration-5.0.md).
+Release jar: [v5.0.8](https://github.com/qa-guru/allure-notifications/releases/tag/v5.0.8) · 4.x → 5.0 notes: [`docs/migration-5.0.md`](docs/migration-5.0.md).
 
 ## CI cookbook
 

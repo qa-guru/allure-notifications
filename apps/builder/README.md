@@ -70,7 +70,7 @@ pnpm typecheck
 - `tests/pyramid-parity.test.mjs` — import `@qa-guru/allure-notifications-pyramid` (geometry / palette / vendor)
 - `tests/smoke.spec.js` — Playwright: header, zones, Reset → free `items`, CB-870 / SQ-1080 / WD-1410, export, panel bar
 
-Jar PNG dogfood is **not** a 6.x health gate (CLI collage / kit). Opt-in legacy only: [`legacy/java/dogfood_jar.py`](../../legacy/java/dogfood_jar.py).
+Jar PNG dogfood is **not** a 6.x health gate (CLI collage / kit). Opt-in legacy only on archive branch [`legacy/java-5.0.8`](https://github.com/qa-guru/allure-notifications/tree/legacy/java-5.0.8/legacy/java/dogfood_jar.py) · jar [v5.0.8](https://github.com/qa-guru/allure-notifications/releases/tag/v5.0.8).
 
 ## Prod
 

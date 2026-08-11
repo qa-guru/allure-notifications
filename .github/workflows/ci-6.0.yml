@@ -1,5 +1,5 @@
 # 6.0 TypeScript monorepo CI (master + feature/6.0* + quality contour lines).
-# Java 5.0.8 jar CI stays in build.yml — scoped to legacy/java/** + workflow_dispatch only.
+# Java 5.0.8 jar CI: build.yml on archive branch legacy/java-5.0.8 only (not in-tree on master).
 # Q1: Allure results + generate + c8 coverage artifacts.
 # Q2: Sonar upload + sonar-gate-wait.
 # Q3: TestOps upload+close via allurectl (informational; skip without ALLURE_*).

@@ -94,7 +94,7 @@ h2{margin-top:28px}
 <table>
 <tr><th>Версия</th><th>Стек</th><th>Allure</th><th>Статус</th></tr>
 <tr><td><strong>4.\</strong>*</td><td>Java</td><td>Allure 2</td><td>Историческая</td></tr>
-<tr><td><strong>5.\</strong>*</td><td>Java</td><td>Allure 3</td><td>Legacy freeze на <strong>5.0.8</strong> (<code>legacy/java/</code>); версии <strong>5.1 нет</strong></td></tr>
+<tr><td><strong>5.\</strong>*</td><td>Java</td><td>Allure 3</td><td>Legacy freeze на <strong>5.0.8</strong> (ветка <a href="https://github.com/qa-guru/allure-notifications/tree/legacy/java-5.0.8/legacy/java"><code>legacy/java-5.0.8</code></a>); версии <strong>5.1 нет</strong></td></tr>
 <tr><td><strong>6.\</strong>*</td><td>TypeScript</td><td>Allure 3</td><td><strong>Продукт</strong> — pin <strong>6.0.11</strong> (CLI + builder + plugin)</td></tr>
 </table>
 <p>Патч-ноты → <a href="https://github.com/qa-guru/allure-notifications/releases">GitHub Releases</a> · миграция → <a href="MIGRATION.md"><code>MIGRATION.md</code></a>.</p>
@@ -257,7 +257,7 @@ npx @qa-guru/allure-notifications@6.0.11 send --config config.json --live
 </code></pre>
 <p>- Документация: <a href="packages/plugin/README.md"><code>packages/plugin/README.md</code></a> - Пример: <a href="examples/allurerc.notifications.mjs"><code>examples/allurerc.notifications.mjs</code></a> - GitHub Actions: <a href="examples/github-actions/"><code>examples/github-actions/</code></a></p>
 <h2>Legacy Java 5.0.8</h2>
-<p>Только bugfix / security. Сборка: <a href="legacy/java/"><code>legacy/java/</code></a>.</p>
+<p>Только bugfix / security. Исходники на ветке <a href="https://github.com/qa-guru/allure-notifications/tree/legacy/java-5.0.8/legacy/java"><code>legacy/java-5.0.8</code></a> (не в дереве <code>master</code>).</p>
 <pre><code class="language-bash">java -DconfigFile=notifications/config.json -jar allure-notifications-5.0.8.jar
 </code></pre>
 <p>Релиз: <a href="https://github.com/qa-guru/allure-notifications/releases/tag/v5.0.8">v5.0.8</a> · заметки 4.x → 5.0: <a href="docs/migration-5.0.md"><code>docs/migration-5.0.md</code></a>.</p>

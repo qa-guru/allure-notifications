@@ -1,17 +1,20 @@
 name: CI — legacy Java 5.0.8
 
+# Archive only: tree lives on branch legacy/java-5.0.8 (not on master).
+# Release jar: https://github.com/qa-guru/allure-notifications/releases/tag/v5.0.8
+
 on:
   workflow_dispatch:
   push:
     branches:
-      - master
+      - legacy/java-5.0.8
     paths:
       - 'legacy/java/**'
       - 'config/ci-telegram.json'
       - '.github/workflows/build.yml'
   pull_request:
     branches:
-      - master
+      - legacy/java-5.0.8
     paths:
       - 'legacy/java/**'
       - 'config/ci-telegram.json'
@@ -32,6 +35,8 @@ jobs:
     steps:
     - name: Checkout
       uses: actions/checkout@v7
+      with:
+        ref: legacy/java-5.0.8
 
     - name: Set up JDK
       uses: actions/setup-java@v5
@@ -78,6 +83,8 @@ jobs:
     steps:
     - name: Checkout
       uses: actions/checkout@v7
+      with:
+        ref: legacy/java-5.0.8
 
     - name: Set up JDK
       uses: actions/setup-java@v5
