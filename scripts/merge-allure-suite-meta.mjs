@@ -26,6 +26,7 @@ const PACKAGE_SCOPE_DIRS = {
   "@qa-guru/allure-notifications-pyramid": "packages/pyramid",
   "@qa-guru/allure-notifications-plugin": "packages/plugin",
   "@qa-guru/allure-notifications-test-meta": "packages/test-meta",
+  "@qa-guru/allure-notifications": "packages/cli",
   "allure-notifications": "packages/cli",
   "@qa-guru/allure-notifications-builder": "apps/builder",
 };
