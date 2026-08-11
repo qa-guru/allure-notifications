@@ -37,6 +37,16 @@ export {
 } from "./telegram.js";
 
 export {
+  buildProxyUri,
+  createProxiedFetch,
+  createProxyDispatcher,
+  resolveLiveFetch,
+  resolveOutboundProxy,
+  type OutboundProxy,
+  type OutboundProxyType,
+} from "./proxy.js";
+
+export {
   applyConfigOverrides,
   formatConfigValidationError,
   loadConfigFile,

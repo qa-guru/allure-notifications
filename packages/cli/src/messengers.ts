@@ -5,6 +5,7 @@
 import type { Config } from "@qa-guru/allure-notifications-config";
 import type { ReportAnalytics } from "@qa-guru/allure-notifications-core";
 
+import { resolveLiveFetch } from "./proxy.js";
 import {
   buildTelegramCaption,
   resolveTelegramCredentials,
@@ -135,11 +136,15 @@ export async function deliverLive(
       env: opts.env,
     });
     const caption = buildTelegramCaption(config, opts.analytics);
+    const fetchImpl = resolveLiveFetch({
+      configProxy: (config as { proxy?: unknown }).proxy,
+      fetchImpl: opts.fetchImpl,
+    });
     const sent: SendPhotoResult = await sendTelegramPhoto({
       credentials,
       png: opts.png,
       caption,
-      fetchImpl: opts.fetchImpl,
+      fetchImpl,
     });
 
     const topicPart =

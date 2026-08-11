@@ -93,6 +93,9 @@ importers:
       '@qa-guru/allure-notifications-core':
         specifier: workspace:*
         version: link:../core
+      undici:
+        specifier: ^8.0.0
+        version: 8.10.0
     devDependencies:
       '@qa-guru/allure-notifications-test-meta':
         specifier: workspace:*
@@ -1695,6 +1698,10 @@ packages:
 
   undici-types@8.3.0:
     resolution: {integrity: sha512-j375ScV60dom+YkPFIfTLcOiPxkN/buHz5GobjLhixFuANaNs3C9l4GmrWqejgXWJ7BbJcFYpTEUkS1Ge8bpZQ==}
+
+  undici@8.10.0:
+    resolution: {integrity: sha512-HvltHd7avK13QIw/oLe4qoOLyoVSoafqJ2jYOrtMRBkbYT31eiBQ8O0ehRKZiEZCMEyLFQNIADpgCWC5fALvYQ==}
+    engines: {node: '>=22.19.0'}
 
   unicorn-magic@0.3.0:
     resolution: {integrity: sha512-+QBBXBCvifc56fsbuxZQ6Sic3wqqc3WWaqxs58gvJrcOuN83HGTCwz3oS5phzU9LthRNE9VrJCFCLUgHeeFnfA==}
@@ -3587,6 +3594,8 @@ snapshots:
     optional: true
 
   undici-types@8.3.0: {}
+
+  undici@8.10.0: {}
 
   unicorn-magic@0.3.0: {}
 

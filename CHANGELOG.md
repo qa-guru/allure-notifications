@@ -2,6 +2,16 @@
 
 ## Unreleased
 
+## v 6.1.2
+
+### English
+
+- **CLI `config.proxy`** — live Telegram `sendPhoto` uses undici `ProxyAgent` / `Socks5ProxyAgent` from top-level `proxy` (http \| socks5). Fixes `fetch failed` on hosts that cannot reach `api.telegram.org` directly (e.g. qa.guru Jenkins agents). Explicit `fetchImpl` still wins for tests.
+
+### Russian
+
+- **CLI `config.proxy`** — live Telegram `sendPhoto` ходит через undici `ProxyAgent` / `Socks5ProxyAgent` из top-level `proxy` (http \| socks5). Чинит `fetch failed` там, где нет прямого доступа к `api.telegram.org` (агенты Jenkins qa.guru). Явный `fetchImpl` по-прежнему перекрывает proxy в тестах.
+
 ## v 6.0.13
 
 ### English

@@ -263,7 +263,7 @@ Keep `base` and only the messenger block you need. Optional `templatePath` point
 `webhookUrl` from the Workflows app template *“Post to a channel when a webhook request is received”* (legacy Office 365 Connectors are retiring). Chart embeds as base64; payload ≤ 28 KB; ~4 req/s throttle.
 </details>
 
-Top-level `proxy` (`type`: `http` \| `socks5`, `host`, `port`, optional `username` / `password`) — outbound HTTP/SOCKS where supported.
+Top-level `proxy` (`type`: `http` \| `socks5`, `host`, `port`, optional `username` / `password`) — applied on CLI live Telegram via undici `ProxyAgent` / `Socks5ProxyAgent` (jar: Apache HttpClient). No `proxychains4` required for Bot API when proxy is set.
 
 ## Visual canon
 
