@@ -133,7 +133,7 @@ Launch name: `allure-notifications · <ref_name> · <sha>`. Job summary prints t
 
 ## Telegram (Q4)
 
-Collage of **this run’s** Allure report into ADR 008 Monitoring topic **34** (`allure-notifications`). Wrapper: [`scripts/ci-telegram.sh`](../scripts/ci-telegram.sh). Template config: [`config/ci-telegram.json`](../config/ci-telegram.json) (CB-870 layout aligned with `DEFAULT_ITEMS`: pie · suites · testing pyramid **↔** durations-by-layer on row 2; no history/severity panels). Before send, [`scripts/enrich-allure-layers.mjs`](../scripts/enrich-allure-layers.mjs) tags `allure-results` with `layer` labels (unit / component / e2e) so the pyramid renders instead of an empty fallback. Points at `../allure-report` + `../allure-results`; runtime file gitignored. Missing `allure-report/summary.json` → **fail** (no dogfood fixture fallback).
+Collage of **this run’s** Allure report into ADR 008 Monitoring topic **34** (`allure-notifications`). Wrapper: [`scripts/ci-telegram.sh`](../scripts/ci-telegram.sh). Template config: [`config/ci-telegram.json`](../config/ci-telegram.json) (CB-870 free-grid: `currentStatus` 4×4 · `suites` 6×4 (row 1); `testingPyramid` 3×3 · `durations` (`groupBy: layer`) 4×3 (row 2) — differs from builder `DEFAULT_ITEMS`, which uses `durationDynamics` instead of `suites`; no history/severity panels). Before send, [`scripts/enrich-allure-layers.mjs`](../scripts/enrich-allure-layers.mjs) tags `allure-results` with `layer` labels (unit / component / e2e) so the pyramid renders instead of an empty fallback. Points at `../allure-report` + `../allure-results`; runtime file gitignored. Missing `allure-report/summary.json` → **fail** (no dogfood fixture fallback).
 
 | Event | Mode |
 |-------|------|
