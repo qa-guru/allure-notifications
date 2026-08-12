@@ -4,7 +4,7 @@
 
 **Beautiful test-run notifications — right in your messenger.**
 
-Collage PNG + caption with statistics and links. Build `config.json` in the [Config builder](#config-builder-anb), send with the GitHub Action or TypeScript CLI **6.0.13**.
+Collage PNG + caption with statistics and links. Build `config.json` in the [Config builder](#config-builder-anb), send with the GitHub Action or TypeScript CLI **6.2.2**.
 
 ## GitHub Marketplace Action
 
@@ -71,16 +71,16 @@ Missing a messenger or locale? [Open an issue](https://github.com/qa-guru/allure
 |---------|-------|--------|--------|
 | **4.\*** | Java | Allure 2 | Historical |
 | **5.\*** | Java | Allure 3 | Legacy freeze at **5.0.8** (branch [`legacy/java-5.0.8`](https://github.com/qa-guru/allure-notifications/tree/legacy/java-5.0.8/legacy/java)); there is **no 5.1** |
-| **6.\*** | TypeScript | Allure 3 | **Product** — pin **6.0.13** (Action + CLI + builder + plugin) |
+| **6.\*** | TypeScript | Allure 3 | **Product** — pin **6.2.2** (Action + CLI + builder + plugin) |
 
 Older patch notes → [GitHub Releases](https://github.com/qa-guru/allure-notifications/releases) · migration → [`MIGRATION.md`](MIGRATION.md).
 
 | Piece | Role |
 |-------|------|
-| **CLI** | `npx @qa-guru/allure-notifications@6.0.14 send --config …` — primary runtime |
+| **CLI** | `npx @qa-guru/allure-notifications@6.2.2 send --config …` — primary runtime |
 | **Collage PNG** | `@napi-rs/canvas` in `@qa-guru/allure-notifications-core` (Playwright = tests only) |
 | **Config builder** | Web UI → full `config.json` + free-layout collage — [`apps/builder/`](apps/builder/) |
-| **Packages** | `@qa-guru/allure-notifications-config` · `pyramid` · `core` · bin `allure-notifications` · plugin `@qa-guru/allure-notifications-plugin` |
+| **Packages** | `@qa-guru/allure-notifications-config` · `core` (palette/geometry via `@qa-guru/allure-report-kit/collage`) · bin `allure-notifications` · plugin `@qa-guru/allure-notifications-plugin` |
 
 After tests finish, Allure writes a summary. The CLI finds it automatically:
 
@@ -91,7 +91,7 @@ Summary drives notification text. In collage mode the CLI also reads `*-result.j
 
 ```bash
 npx allure generate allure-results --clean -o allure-report
-npx @qa-guru/allure-notifications@6.0.14 send --config config.json --live
+npx @qa-guru/allure-notifications@6.2.2 send --config config.json --live
 ```
 
 | Flag | Behavior |
@@ -136,7 +136,7 @@ Install as a **PWA** (Add to Home Screen / Install) for offline shell and standa
 4. Send:
 
 ```bash
-npx @qa-guru/allure-notifications@6.0.14 send --config <exported>.json
+npx @qa-guru/allure-notifications@6.2.2 send --config <exported>.json
 ```
 
 ## config.json
@@ -273,7 +273,7 @@ Locked collage rules and reference PNG: [`docs/canon/CANON.md`](docs/canon/CANON
 Allure 3 plugin — thin wrapper over the same core pipeline. CLI remains primary.
 
 ```bash
-npm add allure @qa-guru/allure-notifications-plugin@6.0.14
+npm add allure @qa-guru/allure-notifications-plugin@6.2.2
 ```
 
 - Docs: [`packages/plugin/README.md`](packages/plugin/README.md)

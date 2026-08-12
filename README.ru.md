@@ -4,7 +4,7 @@
 
 **Красивые уведомления о прогоне автотестов — прямо в мессенджер.**
 
-Collage PNG + текст со статистикой и ссылками. Соберите `config.json` в [Config builder](#config-builder-anb), отправьте через CLI на TypeScript **6.0.12**.
+Collage PNG + текст со статистикой и ссылками. Соберите `config.json` в [Config builder](#config-builder-anb), отправьте через CLI на TypeScript **6.2.2**.
 
 ## Пример уведомления
 
@@ -47,16 +47,16 @@ Collage PNG + текст со статистикой и ссылками. Соб
 |--------|------|--------|--------|
 | **4.\*** | Java | Allure 2 | Историческая |
 | **5.\*** | Java | Allure 3 | Legacy freeze на **5.0.8** (ветка [`legacy/java-5.0.8`](https://github.com/qa-guru/allure-notifications/tree/legacy/java-5.0.8/legacy/java)); версии **5.1 нет** |
-| **6.\*** | TypeScript | Allure 3 | **Продукт** — pin **6.0.12** (CLI + builder + plugin) |
+| **6.\*** | TypeScript | Allure 3 | **Продукт** — pin **6.2.2** (CLI + builder + plugin) |
 
 Патч-ноты → [GitHub Releases](https://github.com/qa-guru/allure-notifications/releases) · миграция → [`MIGRATION.md`](MIGRATION.md).
 
 | Часть | Роль |
 |-------|------|
-| **CLI** | `npx @qa-guru/allure-notifications@6.0.12 send --config …` — основной runtime |
+| **CLI** | `npx @qa-guru/allure-notifications@6.2.2 send --config …` — основной runtime |
 | **Collage PNG** | `@napi-rs/canvas` в `@qa-guru/allure-notifications-core` (Playwright — только тесты) |
 | **Config builder** | Web UI → полный `config.json` + free-layout collage — [`apps/builder/`](apps/builder/) |
-| **Пакеты** | `@qa-guru/allure-notifications-config` · `pyramid` · `core` · bin `allure-notifications` · plugin `@qa-guru/allure-notifications-plugin` |
+| **Пакеты** | `@qa-guru/allure-notifications-config` · `core` (палитра/геометрия через `@qa-guru/allure-report-kit/collage`) · bin `allure-notifications` · plugin `@qa-guru/allure-notifications-plugin` |
 
 После тестов Allure пишет summary. CLI находит его автоматически:
 
@@ -67,7 +67,7 @@ Collage PNG + текст со статистикой и ссылками. Соб
 
 ```bash
 npx allure generate allure-results --clean -o allure-report
-npx @qa-guru/allure-notifications@6.0.12 send --config config.json --live
+npx @qa-guru/allure-notifications@6.2.2 send --config config.json --live
 ```
 
 | Флаг | Поведение |
@@ -112,7 +112,7 @@ Web UI: полный `config.json` (`base` · `chart` · `links` · messengers) 
 4. Отправка:
 
 ```bash
-npx @qa-guru/allure-notifications@6.0.12 send --config <exported>.json
+npx @qa-guru/allure-notifications@6.2.2 send --config <exported>.json
 ```
 
 ## config.json
@@ -249,7 +249,7 @@ Top-level `proxy` (`type`: `http` \| `socks5`, `host`, `port`, опционал�
 Плагин Allure 3 — тонкая обёртка над тем же core. Основной путь — CLI.
 
 ```bash
-npm add allure @qa-guru/allure-notifications-plugin@6.0.12
+npm add allure @qa-guru/allure-notifications-plugin@6.2.2
 ```
 
 - Документация: [`packages/plugin/README.md`](packages/plugin/README.md)

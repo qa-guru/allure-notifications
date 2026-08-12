@@ -94,7 +94,7 @@ Do not unpublish live 6.0.x (npm age policy). Org `allure-notifications` is aban
 
 ```bash
 # primary — CLI pin
-npx @qa-guru/allure-notifications@6.0.14 send --config config.json --live
+npx @qa-guru/allure-notifications@6.2.2 send --config config.json --live
 
 # after local npm i @qa-guru/allure-notifications — bin name unchanged:
 npx --no-install allure-notifications send --config config.json --live

@@ -12,9 +12,9 @@ There is **no 5.1** line. Historical Java A3 MVP stays at **5.0.8**; product con
 |------|--------|-------|--------|
 | **4.\*** | Allure 2 | Java | Historical A2 |
 | **5.\*** | Allure 3 | Java MVP (Gradle fat jar **5.0.8**) | **Archived** on branch [`legacy/java-5.0.8`](https://github.com/qa-guru/allure-notifications/tree/legacy/java-5.0.8/legacy/java) — **keep forever on that branch**; release [v5.0.8](https://github.com/qa-guru/allure-notifications/releases/tag/v5.0.8); bugfix / security only; **no TypeScript**; **not in-tree on `master`** |
-| **6.\*** | Allure 3 | TypeScript / typescript-go · CLI · builder · A3 plugin · AI | **Product** on `master` — pin `docs/allure-notifications/VERSION` (**6.0.12**) |
+| **6.\*** | Allure 3 | TypeScript / typescript-go · CLI · builder · A3 plugin · AI | **Product** on `master` — pin `docs/allure-notifications/VERSION` (**6.2.2**) |
 
-Monorepo pin = **6.0.12**. Product packages: npm **`@qa-guru/allure-notifications`** + scoped `@qa-guru/allure-notifications-*` (CLI + plugin aligned at **6.0.9**).
+Monorepo pin = **6.2.2**. Product packages: npm **`@qa-guru/allure-notifications`** + scoped `@qa-guru/allure-notifications-*` (CLI + plugin aligned at **6.2.2**). Collage palette/geometry: **`@qa-guru/allure-report-kit/collage`** (≥0.3.3); `@qa-guru/allure-notifications-pyramid` removed.
 
 ## Public product 6.\* (locked)
 
@@ -47,8 +47,7 @@ npx allure-notifications send --config config.json
 allure-notifications/                 # version line 6.0.*
   packages/
     config/          # zod, PANEL_CATALOG, DEFAULT_ITEMS, canvas presets
-    pyramid/         # palette + CORNER_RATIO / TIER_GAP / rounded tiers (SSOT)
-    core/            # read A3 summary/results → native collage PNG → messengers
+    core/            # read A3 summary/results → native collage PNG → messengers (kit /collage palette)
     cli/             # bin: allure-notifications send
     plugin/          # Allure 3 plugin — thin over core (6.*)
   apps/
@@ -73,7 +72,7 @@ Java **5.0.8** Gradle multi-module is **archived** on branch [`legacy/java-5.0.8
 | **1** | `packages/config` — zod schema, PANEL_CATALOG, DEFAULT_ITEMS, SQ-1080 presets | **done** |
 | **2** | kit collage palette + testing-pyramid geometry (removed `packages/pyramid`) | **done** |
 | **3** | `packages/core` + `cli` — native PNG, Telegram, dogfood, cookbooks; public **6.0.0** | **done** (core + cli dry-run/mock + live Telegram `--live` / ADR 008 dogfood) |
-| **4** | Builder import `@config` (browser SSOT); optional `@pyramid`; full TS / typescript@7 | **done** (`@config` + `@pyramid` import map → vendor sync); **full TS done** (`apps/builder/src` → emit `js/`, toolchain `typescript@7`) |
+| **4** | Builder import `@config` (browser SSOT); kit `/collage` vendor; full TS / typescript@7 | **done** (`@config` + `@qa-guru/allure-report-kit/collage` import map → vendor sync); **full TS done** (`apps/builder/src` → emit `js/`, toolchain `typescript@7`) |
 | **5** | Thin `@allurereport/plugin-api` wrapper over `core` (`packages/plugin`) | **done** (`@qa-guru/allure-notifications-plugin` — `done` hook; dry-run default) |
 
 ## Anti-hack rules
@@ -81,7 +80,7 @@ Java **5.0.8** Gradle multi-module is **archived** on branch [`legacy/java-5.0.8
 1. `npx allure-notifications send` must not touch awesome/dashboard HTML.
 2. Production PNG without Playwright.
 3. Builder + CLI share one `@config`.
-4. Pyramid numbers live in one `@pyramid`.
+4. Collage palette/geometry live in `@qa-guru/allure-report-kit/collage` (not a notifications package).
 5. README: 4.\* A2/Java · 5.\* A3/Java MVP historical keep · 6.\* A3 TS+builder+plugin+AI.
 6. Stand `:3011` + Pages stay live across the builder merge.
 
