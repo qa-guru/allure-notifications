@@ -1,6 +1,6 @@
 # allure-notifications collage canon (locked)
 
-**Product pin:** monorepo `docs/allure-notifications/VERSION` → **6.0.12** (`npx allure-notifications`)  
+**Product pin:** monorepo `docs/allure-notifications/VERSION` → **6.1.3** (`npx allure-notifications`)  
 **Classic visual lock:** [v5.0.3](https://github.com/qa-guru/allure-notifications/releases/tag/v5.0.3) 3-tile PNG (pixel gate — historical only)
 
 ## Active canon (6.x CLI / builder)
@@ -62,12 +62,12 @@ Alias: [`collage-cb870-free-dogfood.png`](./collage-cb870-free-dogfood.png)
 
 ## Version policy
 
-CLI **6.1.2** / **6.1.3** are patch releases (`@qa-guru/allure-notifications-cli` — proxy / Telegram transport). Workspace libraries **`core`**, **`config`**, **`pyramid`**, **`plugin`** stay at **6.1.1** until a shared collage/API change ships; pin consumers via monorepo `docs/allure-notifications/VERSION` (CLI), not by forcing all workspace packages to the CLI patch.
+Product pin **6.1.3** — CLI (`@qa-guru/allure-notifications-cli`) and workspace packages (`core`, `config`, `pyramid`, `plugin`). Consumers: monorepo `docs/allure-notifications/VERSION`; no split pins across 6.1.x minors.
 
 ## Do not regress
 
 1. Do **not** reintroduce a separate “accessible” green for `unit` that drifts from passed status (`#94ca66`).
 2. Do **not** ship consumer configs without `base.darkMode: true` for Monitoring dogfood.
-3. Pin consumers to monorepo `docs/allure-notifications/VERSION` (**6.0.12** CLI). Legacy jar: **5.0.8**.
+3. Pin consumers to monorepo `docs/allure-notifications/VERSION` (**6.1.3** CLI). Legacy jar: **5.0.8**.
 4. Do **not** swap dogfood-full / README hero footer back to `testResultSeverities` + wide `successRate`.
 5. Do **not** document **1024×1280**, **headerHeight 68**, or slot type **`pie`** as active 6.x canon — historical gate only (§ above).
