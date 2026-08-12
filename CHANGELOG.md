@@ -2,6 +2,16 @@
 
 ## Unreleased
 
+## v 6.2.1
+
+### English
+
+- **Kit pin train** — `@qa-guru/allure-notifications-core` depends on `@qa-guru/allure-report-kit` via `^0.3.2` (no nested exact `0.3.0` lag)
+
+### Russian
+
+- **Kit pin train** — `@qa-guru/allure-notifications-core` зависит от `@qa-guru/allure-report-kit` через `^0.3.2` (без nested exact `0.3.0`)
+
 ## v 6.2.0
 
 ### English

@@ -1,6 +1,6 @@
 {
   "name": "@qa-guru/allure-notifications-pyramid",
-  "version": "6.2.0",
+  "version": "6.2.1",
   "description": "Testing-pyramid palette + rounded-tier geometry SSOT (Phase 2).",
   "type": "module",
   "exports": {

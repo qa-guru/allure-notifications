@@ -2,7 +2,7 @@
   "name": "@qa-guru/allure-notifications-builder",
   "private": true,
   "type": "module",
-  "version": "6.2.0",
+  "version": "6.2.1",
   "description": "Full config.json configurator for allure-notifications (apps/builder).",
   "scripts": {
     "sync-config": "node scripts/sync-config.mjs",

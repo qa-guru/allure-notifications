@@ -141,8 +141,8 @@ importers:
         specifier: workspace:*
         version: link:../pyramid
       '@qa-guru/allure-report-kit':
-        specifier: 0.3.0
-        version: 0.3.0(@allurereport/charts-api@3.14.3)
+        specifier: ^0.3.2
+        version: 0.3.2(@allurereport/charts-api@3.14.3)
     devDependencies:
       '@qa-guru/allure-notifications-test-meta':
         specifier: workspace:*
@@ -612,8 +612,8 @@ packages:
     peerDependencies:
       preact: '>= 10.25.0 || >=11.0.0-0'
 
-  '@qa-guru/allure-report-kit@0.3.0':
-    resolution: {integrity: sha512-A+RFaWa1MoITYsstKkPqPvxZj2iGXgv7NyTTAqw9UKQOl/s43nfXIhlpVP3YWlxX31BDq+vZYgAPpUmqhdCinA==}
+  '@qa-guru/allure-report-kit@0.3.2':
+    resolution: {integrity: sha512-dUpCHKujl8dSlcUdq7ht6NYhLJInJhntAgqt8j+DI/rvIsUbR7oLQlIrkARLAibBW04B+q16BFZp/On4v2MmWA==}
     engines: {node: '>=20'}
     peerDependencies:
       '@allurereport/charts-api': ~3.14.0
@@ -2606,7 +2606,7 @@ snapshots:
       '@preact/signals-core': 1.14.4
       preact: 10.29.7
 
-  '@qa-guru/allure-report-kit@0.3.0(@allurereport/charts-api@3.14.3)':
+  '@qa-guru/allure-report-kit@0.3.2(@allurereport/charts-api@3.14.3)':
     optionalDependencies:
       '@allurereport/charts-api': 3.14.3
 
