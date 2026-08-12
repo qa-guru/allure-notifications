@@ -53,7 +53,7 @@ node packages/cli/dist/src/bin.js send \
 ```
 
 Fixture = CB-870 free (pie / pyramid / durations) against `packages/core` dogfood Allure fixtures.  
-**Full collage** = same dogfood results + `history-dogfood-full.jsonl` (12 runs) → 7-tile readme-hero: pie · statusDynamics · pyramid · durations-by-layer · successRate · durationDynamics · statusTransitions.  
+**Full collage** = same dogfood results + `history-dogfood-full.jsonl` (12 runs) → 7-tile readme-hero: currentStatus · statusDynamics · pyramid · durations-by-layer · successRate · durationDynamics · statusTransitions.  
 **Caption** = environment · comment (`Release smoke · master`) · duration · statistic counters · `base.links` (report / dashboard / testops / build).  
 Canon collage: [`docs/canon/collage-cb870-readme-hero-dogfood.png`](canon/collage-cb870-readme-hero-dogfood.png) · full bubble: [`docs/notification-example.png`](notification-example.png).  
 Stdout reports `[sent] telegram: … message_id=… chat=… topic=…` (no token).
