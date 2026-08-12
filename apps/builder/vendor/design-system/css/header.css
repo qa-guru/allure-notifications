@@ -218,7 +218,12 @@ html:not(.theme-light)
   margin-left: auto;
 }
 
-.header__burger {
+/* Hidden unless a show rule below applies. Specificity must beat
+   `.icon-btn { display: inline-flex }` (same 0,1,0 as `.header__burger` alone):
+   Vite injects `@zero-design-system/react/styles.css` after
+   `<link href="/css/header.css">`, so a single-class hide loses and the burger
+   stays visible next to inline nav. */
+.header .header__burger {
   display: none;
 }
 
