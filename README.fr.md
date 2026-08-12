@@ -146,7 +146,7 @@ Exemple de notification dans Telegram
 }
 ```
 Le bloc `proxy` est utilisé pour spécifier une configuration proxy supplémentaire.  
-Le paramètre `templatePath` est optionnel et permet de définir le chemin vers un modèle Freemarker personnalisé. Exemple :
+Le paramètre `templatePath` est optionnel, **déprécié et ignoré** en 6.x (pas de runtime FreeMarker). Exemple (forme encore acceptée, sans effet) :
 ```json
 {
   "base": { "..." : "..." },
@@ -195,7 +195,7 @@ Description des champs :
 + `enableSuitesPublishing` — publier les statistiques par suite de tests (`true` / `false`, par défaut `false`). Nécessite la présence de `suites.json` dans `<allureFolder>/widgets`.
 + `logo` — chemin vers un fichier logo ; s'il est défini, le logo s'affiche dans le coin supérieur gauche du graphique.
 + `durationFormat` (optionnel, par défaut `HH:mm:ss.SSS`) — format d'affichage de la durée des tests.
-+ `customData` — données supplémentaires disponibles dans les modèles Freemarker personnalisés (optionnel).
++ `customData` — données supplémentaires pour le texte de notification (optionnel).
 
 6. Remplissez le bloc de la messagerie souhaitée : voir [Configuration config.json par messagerie](#configuration-configjson-par-messagerie).
 
@@ -345,6 +345,6 @@ java "-DconfigFile=notifications/config.json" -jar ../allure-notifications-4.11.
       <li>Le graphique (si <code>enableChart=true</code>) est intégré à l'Adaptive Card en tant qu'image base64 — aucun hébergement externe n'est requis.</li>
       <li>La taille totale du message doit être ≤ <strong>28 Ko</strong>. Pour des graphiques très volumineux, il peut être nécessaire de les désactiver ou de les héberger en externe.</li>
       <li>Teams limite la fréquence des requêtes à <strong>4 requêtes/seconde</strong>.</li>
-      <li>L'Adaptive Card utilise <code>$schema</code> <code>http://adaptivecards.io/schemas/adaptive-card.json</code>, version <code>1.5</code>. Pour personnaliser la carte, fournissez votre propre modèle via <code>templatePath</code> — son contenu devient le champ <code>TextBlock.text</code> (Markdown supporté par Teams : <code>**gras**</code>, <code>_italique_</code>, listes, liens).</li>
+      <li>L'Adaptive Card utilise <code>$schema</code> <code>http://adaptivecards.io/schemas/adaptive-card.json</code>, version <code>1.5</code>. Le champ <code>templatePath</code> est déprécié et ignoré en 6.x (pas de FreeMarker) — le texte de la carte est généré par le runtime TS.</li>
     </ul>
   </details>

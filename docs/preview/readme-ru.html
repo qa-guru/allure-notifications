@@ -218,7 +218,7 @@ npx @qa-guru/allure-notifications@6.0.11 send --config config.json --live
 <tr><td><code>logo</code>, <code>durationFormat</code>, <code>customData</code></td><td>Опционально</td></tr>
 </table>
 <h2>Мессенджеры</h2>
-<p>Оставьте <code>base</code> и только нужный блок мессенджера. <code>templatePath</code> — опциональный путь к своему Freemarker-шаблону.</p>
+<p>Оставьте <code>base</code> и только нужный блок мессенджера. Опциональный <code>templatePath</code> deprecated и игнорируется в 6.x (нет FreeMarker runtime).</p>
 <p><strong>Telegram</strong> — <a href="https://github.com/qa-guru/knowledge-base/wiki/12.-Телеграм-бот.-Отправляем-уведомления-о-результатах-прохождения-тестов">wiki</a>: <code>token</code>, <code>chat</code>, опционально <code>topic</code> / <code>replyTo</code>.</p>
 <p><strong>Slack</strong> — <a href="https://github.com/qa-guru/allure-notifications/wiki/Slack-configuration">wiki</a>: <code>token</code>, <code>chat</code>, опционально <code>replyTo</code>.</p>
 <p><strong>Email</strong> — <a href="https://github.com/qa-guru/allure-notifications/wiki/Email-configuration">wiki</a>: <code>host</code>, <code>port</code>, <code>username</code>, <code>password</code>, <code>from</code>, <code>to</code>, опционально <code>cc</code> / <code>bcc</code> / <code>securityProtocol</code>.</p>

@@ -2,7 +2,7 @@
   "base": {
     "project": "Reference App \u2014 pyramid canon (Allure3 F5)",
     "environment": "local dogfood",
-    "comment": "Full report demo \u2014 pie + testing pyramid + durations",
+    "comment": "Full report demo \u2014 currentStatus + testing pyramid + durations",
     "language": "ru",
     "allureFolder": "../build/pyramid-showcase/allure-report/",
     "allureResultsFolder": "../build/pyramid-showcase/allure-results/",
