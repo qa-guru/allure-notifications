@@ -1,5 +1,5 @@
 /**
- * TS mirror of jar SSOT archived on branch legacy/java-5.0.8
+ * TS mirror; jar archive = legacy/java-5.0.8 only
  * (allure-notifications-api/src/main/resources/phrases/*.json)
  */
 
