@@ -123,6 +123,7 @@ export const TelegramSchema = z
     chat: z.string().optional(),
     topic: z.string().optional(),
     replyTo: z.string().optional(),
+    /** @deprecated Ignored in 6.x — no FreeMarker runtime. Shape passthrough only. */
     templatePath: z.string().optional(),
   })
   .passthrough();

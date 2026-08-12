@@ -167,8 +167,8 @@ function linkCaptionLines(
 }
 
 /**
- * HTML caption for Telegram sendPhoto — FreeMarker `telegram.ftl` parity
- * (environment / stats / duration / links). No FreeMarker runtime.
+ * HTML caption for Telegram sendPhoto — text shape (environment / stats /
+ * duration / links). No FreeMarker runtime; `templatePath` is ignored.
  */
 export function buildTelegramCaption(
   config: Config,

@@ -179,7 +179,7 @@ function resolveCardGap() {
 }
 
 /**
- * Push jar chrome knobs onto the editor canvas (cardGap · headerHeight · tilePad).
+ * Push config/DS chrome knobs onto the editor canvas (cardGap · headerHeight · tilePad).
  * Values are logical canvas px, converted to CSS px via canvasDisplayScale so
  * gutters/pads match TG preview proportions at any shell width.
  */

@@ -161,7 +161,7 @@ Minimal **6.0** example — collage + free layout + one messenger:
       "layout": "free",
       "width": 870,
       "height": 1080,
-      "headerHeight": 56,
+      "headerHeight": 31,
       "cardGap": 14,
       "tilePad": 6,
       "gridCols": 10,
@@ -187,8 +187,7 @@ Minimal **6.0** example — collage + free layout + one messenger:
   "telegram": {
     "token": "",
     "chat": "",
-    "topic": "",
-    "templatePath": "/templates/telegram.ftl"
+    "topic": ""
   },
   "proxy": {
     "type": "socks5",
@@ -216,14 +215,14 @@ Showcase layout (7-tile readme-hero) = [`config/config.dogfood-telegram-full.jso
 | `chart.mode` | `collage` (only value in 6.x TS; legacy jar `pie` → branch `legacy/java-5.0.8`) |
 | `chart.layout` | **`free` + `items`** is the main path. Legacy `grid` \| `stacked` \| `row` still supported |
 | `chart.width` / `height` | Canvas size (px) |
-| `chart.headerHeight` / `cardGap` / `tilePad` | Card chrome (builder defaults: 22 / 14 / 6) |
+| `chart.headerHeight` / `cardGap` / `tilePad` | Card chrome (builder defaults: 31 / 14 / 6) |
 | `darkMode` | Chart theme |
 | `enableSuitesPublishing` | Per-suite stats from `suites.json` when present |
 | `logo`, `durationFormat`, `customData` | Optional |
 
 ## Messengers
 
-Keep `base` and only the messenger block you need. Optional `templatePath` points to a custom Freemarker template.
+Keep `base` and only the messenger block you need. Optional `templatePath` is deprecated and ignored in 6.x (no FreeMarker runtime).
 
 **Telegram** — [wiki](https://github.com/qa-guru/knowledge-base/wiki/12.-Телеграм-бот.-Отправляем-уведомления-о-результатах-прохождения-тестов): `token`, `chat`, optional `topic` / `replyTo`.
 

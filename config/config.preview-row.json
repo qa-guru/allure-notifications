@@ -2,10 +2,10 @@
   "base": {
     "project": "Reference App — pyramid canon (Allure3 F5)",
     "environment": "local dogfood",
-    "comment": "Collage preset — row layout (pie · pyramid · durations)",
+    "comment": "Collage preset — row layout (currentStatus · pyramid · durations)",
     "language": "ru",
-    "allureFolder": "/Users/stanislav/zero-design-system/projects/allure-notifications-home/allure-notifications/build/pyramid-showcase/allure-report/",
-    "allureResultsFolder": "/Users/stanislav/zero-design-system/projects/allure-notifications-home/allure-notifications/build/pyramid-showcase/allure-results/",
+    "allureFolder": "../build/pyramid-showcase/allure-report/",
+    "allureResultsFolder": "../build/pyramid-showcase/allure-results/",
     "enableChart": true,
     "darkMode": true,
     "enableSuitesPublishing": false,

@@ -137,7 +137,7 @@ npx @qa-guru/allure-notifications@6.0.12 send --config <exported>.json
       "layout": "free",
       "width": 870,
       "height": 1080,
-      "headerHeight": 56,
+      "headerHeight": 31,
       "cardGap": 14,
       "tilePad": 6,
       "gridCols": 10,
@@ -163,8 +163,7 @@ npx @qa-guru/allure-notifications@6.0.12 send --config <exported>.json
   "telegram": {
     "token": "${TELEGRAM_BOT_TOKEN}",
     "chat": "${TELEGRAM_CHAT_ID}",
-    "topic": "",
-    "templatePath": "/templates/telegram.ftl"
+    "topic": ""
   },
   "proxy": {
     "type": "socks5",
@@ -192,14 +191,14 @@ Showcase layout (7-tile readme-hero) = [`config/config.dogfood-telegram-full.jso
 | `chart.mode` | `collage` (единственное значение в 6.x TS; legacy jar `pie` → ветка `legacy/java-5.0.8`) |
 | `chart.layout` | Основной путь — **`free` + `items`**. Legacy `grid` \| `stacked` \| `row` ещё поддерживаются |
 | `chart.width` / `height` | Размер canvas (px) |
-| `chart.headerHeight` / `cardGap` / `tilePad` | Chrome карточек (defaults builder: 22 / 14 / 6) |
+| `chart.headerHeight` / `cardGap` / `tilePad` | Chrome карточек (defaults builder: 31 / 14 / 6) |
 | `darkMode` | Тема chart |
 | `enableSuitesPublishing` | Статистика по suites из `suites.json` |
 | `logo`, `durationFormat`, `customData` | Опционально |
 
 ## Мессенджеры
 
-Оставьте `base` и только нужный блок мессенджера. `templatePath` — опциональный путь к своему Freemarker-шаблону.
+Оставьте `base` и только нужный блок мессенджера. Опциональный `templatePath` deprecated и игнорируется в 6.x (нет FreeMarker runtime).
 
 **Telegram** — [wiki](https://github.com/qa-guru/knowledge-base/wiki/12.-Телеграм-бот.-Отправляем-уведомления-о-результатах-прохождения-тестов): `token`, `chat`, опционально `topic` / `replyTo`.
 

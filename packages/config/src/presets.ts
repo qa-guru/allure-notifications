@@ -21,10 +21,10 @@ export const DEFAULT_CANVAS = "870x1080" as const;
 export const GRID_COLS = 10;
 export const GRID_ROWS = 10;
 
-/** Jar / collage chrome defaults (CollageRenderer + widget-tile canon in builder). */
+/** Collage chrome defaults (config/DS SSOT · CollageRenderer + widget-tile in builder). */
 export const DEFAULT_HEADER_HEIGHT = 31;
 export const DEFAULT_CARD_GAP = 14;
-/** Inner body pad (px) — jar collage + builder `--wt-pad`. */
+/** Inner body pad (px) — collage + builder `--wt-pad`. */
 export const DEFAULT_TILE_PAD = 6;
 
 /**
@@ -52,6 +52,7 @@ export type DefaultConfigOptions = {
     chat?: string;
     topic?: string;
     replyTo?: string;
+    /** @deprecated Ignored in 6.x — no FreeMarker runtime. */
     templatePath?: string;
   };
 };
@@ -103,7 +104,9 @@ export function createDefaultConfig(opts: DefaultConfigOptions = {}) {
       chat: opts.telegram?.chat ?? "",
       topic: opts.telegram?.topic ?? "",
       replyTo: opts.telegram?.replyTo ?? "",
-      templatePath: opts.telegram?.templatePath ?? "/templates/telegram.ftl",
+      ...(opts.telegram?.templatePath != null
+        ? { templatePath: opts.telegram.templatePath }
+        : {}),
     },
   };
 }

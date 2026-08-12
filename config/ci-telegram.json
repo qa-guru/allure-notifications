@@ -14,7 +14,7 @@
       "layout": "free",
       "width": 870,
       "height": 1080,
-      "headerHeight": 56,
+      "headerHeight": 31,
       "cardGap": 14,
       "tilePad": 6,
       "gridCols": 10,
