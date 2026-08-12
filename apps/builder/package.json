@@ -2,15 +2,15 @@
   "name": "@qa-guru/allure-notifications-builder",
   "private": true,
   "type": "module",
-  "version": "6.2.1",
+  "version": "6.2.2",
   "description": "Full config.json configurator for allure-notifications (apps/builder).",
   "scripts": {
     "sync-config": "node scripts/sync-config.mjs",
-    "sync-pyramid": "node scripts/sync-pyramid.mjs",
+    "sync-kit-collage": "node scripts/sync-kit-collage.mjs",
     "build": "tsc -p tsconfig.json",
     "typecheck": "tsc -p tsconfig.json --noEmit",
     "build:test": "tsc -p tsconfig.test.json",
-    "pretest": "pnpm run build && pnpm run sync-config && pnpm run sync-pyramid && pnpm run build:test",
+    "pretest": "pnpm run build && pnpm run sync-config && pnpm run sync-kit-collage && pnpm run build:test",
     "test": "pnpm run test:unit && pnpm run test:e2e",
     "test:unit": "node ../../scripts/node-test-allure.mjs dist/test/*.test.js",
     "test:e2e": "PLAYWRIGHT_HEADLESS=1 playwright test",
@@ -20,7 +20,7 @@
   },
   "dependencies": {
     "@qa-guru/allure-notifications-config": "workspace:*",
-    "@qa-guru/allure-notifications-pyramid": "workspace:*"
+    "@qa-guru/allure-report-kit": "^0.3.3"
   },
   "devDependencies": {
     "@qa-guru/allure-notifications-test-meta": "workspace:*",

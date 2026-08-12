@@ -5,8 +5,7 @@ Publishable surface (not private) — **org `qa-guru` only** (parity with `@qa-g
 | Package | npm name | Role |
 |---------|----------|------|
 | `packages/config` | `@qa-guru/allure-notifications-config` | schema + catalog |
-| `packages/pyramid` | `@qa-guru/allure-notifications-pyramid` | palette / geometry |
-| `packages/core` | `@qa-guru/allure-notifications-core` | collage PNG (`@napi-rs/canvas`) |
+| `packages/core` | `@qa-guru/allure-notifications-core` | collage PNG (`@napi-rs/canvas`; palette/geometry from `@qa-guru/allure-report-kit`) |
 | `packages/cli` | **`@qa-guru/allure-notifications`** | public bin `allure-notifications` → `npx @qa-guru/allure-notifications` |
 | `packages/plugin` | `@qa-guru/allure-notifications-plugin` | Allure 3 thin plugin |
 
@@ -62,16 +61,14 @@ pnpm run publish:packages
 `publish:packages` filter order (dependency → consumers):
 
 1. `@qa-guru/allure-notifications-config`
-2. `@qa-guru/allure-notifications-pyramid`
-3. `@qa-guru/allure-notifications-core`
-4. `@qa-guru/allure-notifications` (CLI)
-5. `@qa-guru/allure-notifications-plugin`
+2. `@qa-guru/allure-notifications-core` (depends on `@qa-guru/allure-report-kit` ≥0.3.3 for collage palette)
+3. `@qa-guru/allure-notifications` (CLI)
+4. `@qa-guru/allure-notifications-plugin`
 
 Equivalent manual sequence:
 
 ```bash
 pnpm --filter @qa-guru/allure-notifications-config publish --access public --no-git-checks
-pnpm --filter @qa-guru/allure-notifications-pyramid publish --access public --no-git-checks
 pnpm --filter @qa-guru/allure-notifications-core publish --access public --no-git-checks
 pnpm --filter @qa-guru/allure-notifications publish --access public --no-git-checks
 pnpm --filter @qa-guru/allure-notifications-plugin publish --access public --no-git-checks
@@ -84,7 +81,8 @@ pnpm --filter @qa-guru/allure-notifications-plugin publish --access public --no-
 ```bash
 npm deprecate allure-notifications@"*" "Moved to @qa-guru/allure-notifications@6.0.14"
 npm deprecate @allure-notifications/config@"*" "Moved to @qa-guru/allure-notifications-config@6.0.14"
-npm deprecate @allure-notifications/pyramid@"*" "Moved to @qa-guru/allure-notifications-pyramid@6.0.14"
+npm deprecate @qa-guru/allure-notifications-pyramid@"*" "Removed — use @qa-guru/allure-report-kit/collage"
+npm deprecate @allure-notifications/pyramid@"*" "Removed — use @qa-guru/allure-report-kit/collage"
 npm deprecate @allure-notifications/core@"*" "Moved to @qa-guru/allure-notifications-core@6.0.14"
 npm deprecate @allure-notifications/plugin@"*" "Moved to @qa-guru/allure-notifications-plugin@6.0.14"
 npm deprecate @allure-notifications/test-meta@"*" "Moved to @qa-guru (private); use monorepo workspace"

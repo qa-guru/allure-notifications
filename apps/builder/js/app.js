@@ -1,5 +1,5 @@
 import { CANVAS_PRESETS, DEFAULT_CANVAS, GRID_COLS, GRID_ROWS, PANEL_CATALOG, PANEL_META, isKitOnlyPanelId, normalizeChartProfile, } from '@qa-guru/allure-notifications-config';
-import { CORNER_RATIO, PYRAMID_COLORS_DARK, PYRAMID_COLORS_LIGHT, STATUS_COLORS, TIER_GAP_RATIO, } from '@qa-guru/allure-notifications-pyramid';
+import { CORNER_RATIO, PYRAMID_COLORS_DARK, PYRAMID_COLORS_LIGHT, STATUS_COLORS, TIER_GAP_RATIO, } from '@qa-guru/allure-report-kit/collage';
 import { DEFAULT_TILE_H, DEFAULT_TILE_W, addItem, clearAll, clearSelection, clearResizeMockElForTest, copyItem, deleteItem, fillEditorMocks, fitAndFillEditor, fitEditorScale, getGrid, getSelectedEl, initGrid, loadItems, migrateChromeKnobs, onGridChange, onGridResizeStart, onGridResizeStop, readItemsFromGrid, scheduleFitEditorScale, scheduleLiveResizeMock, selectItem, setGridAnimate, setGridForTest, setSuppressSyncForTest, stopLiveResizeMocks, syncEditorChrome, updateEmptyState, updateToolbar, canvasDisplayHeight, canvasDisplayScale, chromeCssVars, clampItem, findFreeSpot, freeCellRect, makeWidgetEl, rectsOverlap, } from './grid-editor.js';
 import { canvasTestsTableMaxRows, canvasTestsTableRowsHtml, kitOnlyPanelMockHtml, paletteItemHtml, panelInnerHtml, previewItemHtml, syncCanvasTestsTables, tileTier, } from './mocks/kit.js';
 import { controlValue, createDefaultState, getPath, resolvePath, setPath, state } from './state.js';
@@ -24,7 +24,7 @@ import { DEFAULT_VECTOR_ID, VECTOR_REGISTRY_KEY, VECTOR_REGISTRY_KEY_LEGACY, cap
  * no blank pad rows before `{` / after `}`).
  *
  * Catalog / presets from `@qa-guru/allure-notifications-config`; pyramid geometry +
- * layer palette from `@qa-guru/allure-notifications-pyramid` (import map → vendor sync).
+ * layer palette from `@qa-guru/allure-report-kit/collage` (import map → vendor sync).
  * UI-only packing stays local.
  */
 /** TG feed bubble width (CSS px) — not export SSOT. */

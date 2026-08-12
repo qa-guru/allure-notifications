@@ -12,7 +12,7 @@ Production collage uses **[`@napi-rs/canvas`](https://github.com/Brooooood/canva
 | **Not used** | Playwright, Puppeteer, Sharp-as-draw, browser screenshot |
 | **Playwright** | tests only (elsewhere — builder e2e); never production render |
 
-Depends on `@qa-guru/allure-notifications-config` + `@qa-guru/allure-notifications-pyramid`
+Depends on `@qa-guru/allure-notifications-config` + `@qa-guru/allure-report-kit`
 (`CORNER_RATIO` / `TIER_GAP_RATIO`, `STATUS_COLORS.passed` = `#94ca66`).
 
 ## API

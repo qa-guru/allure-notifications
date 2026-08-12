@@ -34,7 +34,7 @@ npx allure-notifications send --config config.json
 | TS CLI post-step after `allure generate` | **yes** — main 6.\* runtime |
 | Builder on GitHub Pages | **yes** — `apps/builder/` |
 | Native collage PNG | **yes** — `packages/core` (`@napi-rs/canvas`); never Playwright for production PNG |
-| `packages/pyramid` SSOT (colors + geometry) | **yes** |
+| kit collage palette + geometry (`@qa-guru/allure-report-kit`) | **yes** |
 | Thin A3 plugin wrapper | **yes** — in-line for 6.\* (`packages/plugin`) |
 | AI features | **yes** — in-line for 6.\* (by OK) |
 | `dashboard-overrides` / HTML inject in npm | **no** — private zds stack / upstream Allure only |
@@ -71,7 +71,7 @@ Java **5.0.8** Gradle multi-module is **archived** on branch [`legacy/java-5.0.8
 |-------|--------|--------|
 | **0** | Monorepo shell, MIGRATION, checklist, CI sketch; layout moves per checklist | **done** (Java→`legacy/java` + README banner; Pages workflow ready; domain/archive still open) |
 | **1** | `packages/config` — zod schema, PANEL_CATALOG, DEFAULT_ITEMS, SQ-1080 presets | **done** |
-| **2** | `packages/pyramid` — palette + geometry SSOT (not dashboard-overrides) | **done** |
+| **2** | kit collage palette + testing-pyramid geometry (removed `packages/pyramid`) | **done** |
 | **3** | `packages/core` + `cli` — native PNG, Telegram, dogfood, cookbooks; public **6.0.0** | **done** (core + cli dry-run/mock + live Telegram `--live` / ADR 008 dogfood) |
 | **4** | Builder import `@config` (browser SSOT); optional `@pyramid`; full TS / typescript@7 | **done** (`@config` + `@pyramid` import map → vendor sync); **full TS done** (`apps/builder/src` → emit `js/`, toolchain `typescript@7`) |
 | **5** | Thin `@allurereport/plugin-api` wrapper over `core` (`packages/plugin`) | **done** (`@qa-guru/allure-notifications-plugin` — `done` hook; dry-run default) |
@@ -114,23 +114,22 @@ See [docs/ci-cookbook.md](docs/ci-cookbook.md): **primary** = `allure generate` 
 - Extracted from hub builder `allure-notifications-builder/js/app.js` (builder still has a local copy until Phase 4 / `apps/builder/` merge)
 - Verify: `pnpm --filter @qa-guru/allure-notifications-config test`
 
-## Phase 2 notes
+## Phase 2 notes (removed — now in kit)
 
-`@qa-guru/allure-notifications-pyramid` (`packages/pyramid/`):
+Collage palette + testing-pyramid geometry live in `@qa-guru/allure-report-kit` (`/collage` export):
 
 - Palette mirrors monorepo SSOT `stacks/java-spring/tests/allure/pyramid-layers.json`
-- `unit` light/dark = pie `STATUS_COLORS.passed` / `#94ca66`
+- `unit` light/dark = collage `STATUS_COLORS.passed` / `#94ca66`
 - Geometry: `CORNER_RATIO=0.18`, `TIER_GAP_RATIO=0.11` (+ `tierGapPx` / `tierCornerRadius`)
-- Not shipped: `dashboard-overrides` / HTML inject
-- Verify: `pnpm --filter @qa-guru/allure-notifications-pyramid test` and
-  (from monorepo root) `python scripts/pyramid_palette_sync.py --check`
+- Verify: kit `test/collage-palette.test.mjs` and (from monorepo root) `python scripts/pyramid_palette_sync.py --check`
+- `@qa-guru/allure-notifications-pyramid` — **removed** (deprecated on npm)
 
 ## Phase 3 notes (core — Stage C)
 
 `@qa-guru/allure-notifications-core` (`packages/core/`):
 
 - Native collage PNG via **`@napi-rs/canvas`** (locked in package README) — not Playwright
-- Depends on `@qa-guru/allure-notifications-config` + `@qa-guru/allure-notifications-pyramid`
+- Depends on `@qa-guru/allure-notifications-config` + `@qa-guru/allure-report-kit`
 - Allure 3 `summary.json` (`stats`) + `*-result.json` → `ReportAnalytics` → free-layout collage
 - Panels: **real** = pie / testingPyramid / durations (+ `groupBy: layer`); **empty-state stubs** =
   other `PANEL_CATALOG` types + unknown tiles (Java `EmptyStatePanel` parity — themed card,
@@ -179,11 +178,11 @@ See [docs/ci-cookbook.md](docs/ci-cookbook.md): **primary** = `allure generate` 
 - `apps/builder/scripts/sync-config.mjs` → `vendor/allure-notifications-config/` (real files; stand cannot follow pnpm symlink outside cwd)
 - `index.html` import map: `@qa-guru/allure-notifications-config` → vendor `browser.js`
 - `js/app.js` imports SSOT; local leftovers = packing / TG preview / vector UI only
-- `@qa-guru/allure-notifications-pyramid/browser` — geometry (`CORNER_RATIO` / `TIER_GAP_RATIO`) + layer palette (`unit` = `#94ca66`)
-- `apps/builder/scripts/sync-pyramid.mjs` → `vendor/allure-notifications-pyramid/`
-- `index.html` import map: `@qa-guru/allure-notifications-pyramid` → vendor `browser.js`
-- `js/app.js` injects `--layer-*` + `--anb-pyramid-*` from `@pyramid`; packing UI stays local
-- Parity: `tests/config-parity.test.mjs` · `tests/pyramid-parity.test.mjs`
+- `@qa-guru/allure-report-kit/collage` — geometry (`CORNER_RATIO` / `TIER_GAP_RATIO`) + layer palette (`unit` = `#94ca66`)
+- `apps/builder/scripts/sync-kit-collage.mjs` → `vendor/allure-report-kit-collage/`
+- `index.html` import map: `@qa-guru/allure-report-kit/collage` → vendor `collage.js`
+- `js/app.js` injects `--layer-*` + `--anb-pyramid-*` from kit collage; packing UI stays local
+- Parity: `tests/config-parity.test.mjs` · `tests/collage-parity.test.mjs`
 - Verify: `pnpm --filter @qa-guru/allure-notifications-builder test` / root `pnpm test`
 
 ## Layout move notes (Java → `legacy/java` → archive branch)
@@ -196,7 +195,7 @@ See [docs/ci-cookbook.md](docs/ci-cookbook.md): **primary** = `allure generate` 
 
 ## Pages prep notes (post-G)
 
-- Workflow deploys assembled `_site` from `apps/builder/` (+ `sync-config` / `sync-pyramid` for vendor `@config` + `@pyramid`).
+- Workflow deploys assembled `_site` from `apps/builder/` (+ `sync-config` / `sync-kit-collage` for vendor `@config` + kit collage).
 - Artifact includes `CNAME` = current prod hostname `allure-notifications.qa.guru` (checklist also mentions `allure.notifications.qa.guru` — confirm before DNS edits).
 - **Manual (GitHub UI):** enable Pages source = GitHub Actions; smoke on `qa-guru.github.io/allure-notifications/`; then move custom domain off `allure-notifications-builder` onto this repo ([`docs/pages-cutover.md`](docs/pages-cutover.md)).
 - Archive second repo = **after** domain cutover + separate HQ OK (checklist row 4).

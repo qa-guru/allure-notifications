@@ -23,7 +23,6 @@ const SUITE_LABELS = ["epic", "feature", "story", "layer", "severity", "componen
 const PACKAGE_SCOPE_DIRS = {
   "@qa-guru/allure-notifications-core": "packages/core",
   "@qa-guru/allure-notifications-config": "packages/config",
-  "@qa-guru/allure-notifications-pyramid": "packages/pyramid",
   "@qa-guru/allure-notifications-plugin": "packages/plugin",
   "@qa-guru/allure-notifications-test-meta": "packages/test-meta",
   "@qa-guru/allure-notifications": "packages/cli",

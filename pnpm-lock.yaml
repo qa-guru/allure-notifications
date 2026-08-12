@@ -4,6 +4,9 @@ settings:
   autoInstallPeers: true
   excludeLinksFromLockfile: false
 
+overrides:
+  '@qa-guru/allure-report-kit': link:../../allure-report-kit-home/allure-report-kit
+
 importers:
 
   .:
@@ -62,9 +65,9 @@ importers:
       '@qa-guru/allure-notifications-config':
         specifier: workspace:*
         version: link:../../packages/config
-      '@qa-guru/allure-notifications-pyramid':
-        specifier: workspace:*
-        version: link:../../packages/pyramid
+      '@qa-guru/allure-report-kit':
+        specifier: link:../../../../allure-report-kit-home/allure-report-kit
+        version: link:../../../../allure-report-kit-home/allure-report-kit
     devDependencies:
       '@playwright/test':
         specifier: ^1.61.1
@@ -137,12 +140,9 @@ importers:
       '@qa-guru/allure-notifications-config':
         specifier: workspace:*
         version: link:../config
-      '@qa-guru/allure-notifications-pyramid':
-        specifier: workspace:*
-        version: link:../pyramid
       '@qa-guru/allure-report-kit':
-        specifier: ^0.3.2
-        version: 0.3.2(@allurereport/charts-api@3.14.3)
+        specifier: link:../../../../allure-report-kit-home/allure-report-kit
+        version: link:../../../../allure-report-kit-home/allure-report-kit
     devDependencies:
       '@qa-guru/allure-notifications-test-meta':
         specifier: workspace:*
@@ -171,21 +171,6 @@ importers:
       '@qa-guru/allure-notifications-core':
         specifier: workspace:*
         version: link:../core
-    devDependencies:
-      '@qa-guru/allure-notifications-test-meta':
-        specifier: workspace:*
-        version: link:../test-meta
-      '@types/node':
-        specifier: 26.1.2
-        version: 26.1.2
-      allure-node-test:
-        specifier: 3.10.2
-        version: 3.10.2(allure-playwright@3.10.2(@playwright/test@1.62.0))
-      typescript:
-        specifier: 7.0.2
-        version: 7.0.2
-
-  packages/pyramid:
     devDependencies:
       '@qa-guru/allure-notifications-test-meta':
         specifier: workspace:*
@@ -611,21 +596,6 @@ packages:
     resolution: {integrity: sha512-avH1zQLZR6c0DmH3pT/sn4RIzsNDXAue+MEoyS5RIvApKALSU8m05KyBOL8ua21gxeDYp1DclTMcFd+N1zaL1Q==}
     peerDependencies:
       preact: '>= 10.25.0 || >=11.0.0-0'
-
-  '@qa-guru/allure-report-kit@0.3.2':
-    resolution: {integrity: sha512-dUpCHKujl8dSlcUdq7ht6NYhLJInJhntAgqt8j+DI/rvIsUbR7oLQlIrkARLAibBW04B+q16BFZp/On4v2MmWA==}
-    engines: {node: '>=20'}
-    peerDependencies:
-      '@allurereport/charts-api': ~3.14.0
-      '@amcharts/amcharts5': '*'
-      highcharts: '>=11'
-    peerDependenciesMeta:
-      '@allurereport/charts-api':
-        optional: true
-      '@amcharts/amcharts5':
-        optional: true
-      highcharts:
-        optional: true
 
   '@react-spring/animated@10.1.2':
     resolution: {integrity: sha512-yAsQ/bbp6+vko7WNCI1M00c6KLE9XKTGCrgRhQqS4JcK3oF5qBV4rHYrQEprvEvYXxt+1H5FsLS2eVValEPfFw==}
@@ -2605,10 +2575,6 @@ snapshots:
     dependencies:
       '@preact/signals-core': 1.14.4
       preact: 10.29.7
-
-  '@qa-guru/allure-report-kit@0.3.2(@allurereport/charts-api@3.14.3)':
-    optionalDependencies:
-      '@allurereport/charts-api': 3.14.3
 
   '@react-spring/animated@10.1.2(@preact/compat@18.3.2(preact@10.29.7))':
     dependencies:

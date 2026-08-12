@@ -1,12 +1,14 @@
 /**
- * Testing-pyramid palette SSOT (hex strings).
+ * Collage palette SSOT (hex strings).
  *
  * Upstream SSOT: `stacks/java-spring/tests/allure/pyramid-layers.json`
  * (verified by monorepo `python scripts/pyramid_palette_sync.py --check`
- * and by this package's unit tests).
+ * and by kit unit tests).
  *
- * `unit` deliberately reuses pie success (`STATUS_COLORS.passed` / `#94ca66`)
+ * `unit` deliberately reuses collage success (`STATUS_COLORS.passed` / `#94ca66`)
  * in both themes — do not introduce a separate “accessible” green.
+ *
+ * Report chart status (`--ark-status-*`) is a different palette — see `theme.ts`.
  */
 /** Bottom → tip band order (unit widest … manual narrowest). */
 export const LAYER_ORDER = [
@@ -19,7 +21,7 @@ export const LAYER_ORDER = [
 ];
 /** Aggregate bucket for non-SSOT layer values (gray top band). */
 export const OTHER_LAYER = "other";
-/** Pie / Allure 3 status colors (shared with pyramid `unit` = passed). */
+/** Collage / currentStatus status colors (shared with pyramid `unit` = passed). */
 export const STATUS_COLORS = {
     passed: "#94ca66",
     failed: "#ff5744",
@@ -27,7 +29,7 @@ export const STATUS_COLORS = {
     skipped: "#aaaaaa",
     unknown: "#d861be",
 };
-/** Layer → pie status / brand mapping (informational; matches SSOT). */
+/** Layer → collage status / brand mapping (informational; matches SSOT). */
 export const STATUS_MAPPING = {
     unit: "passed",
     e2e: "failed",
@@ -37,7 +39,7 @@ export const STATUS_MAPPING = {
     component: "brand-orange",
     manual: "brand-blue",
 };
-/** Light theme layer fills (unit = pie passed). */
+/** Light theme layer fills (unit = collage passed). */
 export const PYRAMID_COLORS_LIGHT = {
     unit: STATUS_COLORS.passed,
     component: "#ff8200",
@@ -47,7 +49,7 @@ export const PYRAMID_COLORS_LIGHT = {
     manual: "#459bde",
     other: "#64748b",
 };
-/** Dark theme layer fills (unit = pie passed). */
+/** Dark theme layer fills (unit = collage passed). */
 export const PYRAMID_COLORS_DARK = {
     unit: STATUS_COLORS.passed,
     component: "#ffa833",

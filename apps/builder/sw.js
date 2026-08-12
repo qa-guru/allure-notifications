@@ -3,7 +3,7 @@ const PRECACHE = 'anb-shell';
 const MANIFEST = [
   {
     "url": "/css/app.css",
-    "revision": "785ea2d00137c044"
+    "revision": "8408fe753c2caa85"
   },
   {
     "url": "/icons/pwa-192.png",
@@ -19,15 +19,39 @@ const MANIFEST = [
   },
   {
     "url": "/index.html",
-    "revision": "af68ee38ec2924a4"
+    "revision": "b03f4b8a1c9a7fae"
   },
   {
     "url": "/js/app.js",
-    "revision": "eea54c3b9ae81231"
+    "revision": "8bca520844412930"
+  },
+  {
+    "url": "/js/grid-editor.js",
+    "revision": "4b4896e4109bf1ad"
+  },
+  {
+    "url": "/js/mocks/kit.js",
+    "revision": "d63a54663d904924"
   },
   {
     "url": "/js/phrases.js",
-    "revision": "7a6ecd0d2fcdbf4d"
+    "revision": "7326cdcf6b10d442"
+  },
+  {
+    "url": "/js/state.js",
+    "revision": "d3ac1f66b8111cdc"
+  },
+  {
+    "url": "/js/tests-table-mock.js",
+    "revision": "58be4ec78ae793be"
+  },
+  {
+    "url": "/js/tg-caption.js",
+    "revision": "2af370c43df197ac"
+  },
+  {
+    "url": "/js/vector-registry.js",
+    "revision": "f64c215120848729"
   },
   {
     "url": "/manifest.webmanifest",
@@ -47,23 +71,23 @@ const MANIFEST = [
   },
   {
     "url": "/vendor/allure-notifications-config/phrases.js",
-    "revision": "4cc9deed24797bb3"
+    "revision": "ef00c120ee669f74"
   },
   {
     "url": "/vendor/allure-notifications-config/presets.js",
-    "revision": "bd4ce48144ee7fee"
+    "revision": "31c1f4be0b6bb7ff"
   },
   {
-    "url": "/vendor/allure-notifications-pyramid/browser.js",
-    "revision": "d4a26fdc98a7ce18"
+    "url": "/vendor/allure-report-kit-collage/collage-palette.js",
+    "revision": "6ac9fce5a7a348a8"
   },
   {
-    "url": "/vendor/allure-notifications-pyramid/geometry.js",
-    "revision": "f3f3a4e90b5df732"
+    "url": "/vendor/allure-report-kit-collage/collage.js",
+    "revision": "bba87e89a0ba2c58"
   },
   {
-    "url": "/vendor/allure-notifications-pyramid/palette.js",
-    "revision": "7291f2fa57d15316"
+    "url": "/vendor/allure-report-kit-collage/testing-pyramid-geometry.js",
+    "revision": "c6a31807545fad7f"
   },
   {
     "url": "/vendor/design-system/assets/allure3-logo.svg",
@@ -159,11 +183,11 @@ const MANIFEST = [
   },
   {
     "url": "/vendor/design-system/css/sparkline.css",
-    "revision": "934db011899702a4"
+    "revision": "9fb5a716451b28cb"
   },
   {
     "url": "/vendor/design-system/css/stability-cell.css",
-    "revision": "e38d20525ee675b4"
+    "revision": "bc0304c00b279b43"
   },
   {
     "url": "/vendor/design-system/css/stack.css",
@@ -175,7 +199,7 @@ const MANIFEST = [
   },
   {
     "url": "/vendor/design-system/css/tests-table-panel.css",
-    "revision": "3ad21fb01c0e4b03"
+    "revision": "4a3b3d548b804bf8"
   },
   {
     "url": "/vendor/design-system/css/text.css",

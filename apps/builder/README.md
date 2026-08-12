@@ -10,7 +10,7 @@ Merged into the 6.0 monorepo as `apps/builder/` (Stage E). Pages deploy from thi
 
 | Layer | Path | Role |
 |-------|------|------|
-| Source | `src/app.ts`, `src/phrases.ts` | Typed app (contracts from `@qa-guru/allure-notifications-config` + `@pyramid`) |
+| Source | `src/app.ts`, `src/phrases.ts` | Typed app (contracts from `@qa-guru/allure-notifications-config` + kit `/collage`) |
 | Emit | `js/` | Browser runtime — `tsc -p tsconfig.json` (ESM, no bundler) |
 | Toolchain | `typescript@7` | Native `tsc` from the `typescript` package (no separate `tsgo` script) |
 
@@ -30,9 +30,9 @@ Only: **870×1080** · **1080×1080** · **1410×1080**. No 1024×1280.
 | Package | Role | Vendor sync |
 |---------|------|-------------|
 | `@qa-guru/allure-notifications-config` | catalog / presets / `createDefaultConfig` (browser, no zod) | `pnpm run sync-config` → `vendor/allure-notifications-config/` |
-| `@qa-guru/allure-notifications-pyramid` | `CORNER_RATIO` / `TIER_GAP_RATIO` + layer palette (`unit` = `#94ca66`) | `pnpm run sync-pyramid` → `vendor/allure-notifications-pyramid/` |
+| `@qa-guru/allure-report-kit/collage` | `CORNER_RATIO` / `TIER_GAP_RATIO` + layer palette (`unit` = `#94ca66`) | `pnpm run sync-kit-collage` → `vendor/allure-report-kit-collage/` |
 
-Stand/`http.server` cannot follow pnpm symlinks outside `apps/builder`, so sync copies real files. `index.html` import map maps both bare specifiers → vendor. UI-only packing (`DEFAULT_TILE_W`, `PACK_*`, `WT_BAR_BASELINE`) stays local. Parity: `tests/config-parity.test.mjs` · `tests/pyramid-parity.test.mjs`.
+Stand/`http.server` cannot follow pnpm symlinks outside `apps/builder`, so sync copies real files. `index.html` import map maps both bare specifiers → vendor. UI-only packing (`DEFAULT_TILE_W`, `PACK_*`, `WT_BAR_BASELINE`) stays local. Parity: `tests/config-parity.test.mjs` · `tests/collage-parity.test.mjs`.
 
 ## Stand
 
@@ -67,7 +67,7 @@ pnpm typecheck
 ```
 
 - `tests/config-parity.test.mjs` — import `@qa-guru/allure-notifications-config` (SQ-1080 / presets / catalog)
-- `tests/pyramid-parity.test.mjs` — import `@qa-guru/allure-notifications-pyramid` (geometry / palette / vendor)
+- `tests/collage-parity.test.mjs` — import `@qa-guru/allure-report-kit/collage` (geometry / palette / vendor)
 - `tests/smoke.spec.js` — Playwright: header, zones, Reset → free `items`, CB-870 / SQ-1080 / WD-1410, export, panel bar
 
 Jar PNG dogfood is **not** a 6.x health gate (CLI collage / kit). Opt-in legacy only on archive branch [`legacy/java-5.0.8`](https://github.com/qa-guru/allure-notifications/tree/legacy/java-5.0.8/legacy/java/dogfood_jar.py) · jar [v5.0.8](https://github.com/qa-guru/allure-notifications/releases/tag/v5.0.8).

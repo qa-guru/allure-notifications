@@ -2,6 +2,16 @@
 
 ## Unreleased
 
+## v 6.2.2
+
+### English
+
+- **Remove `@qa-guru/allure-notifications-pyramid`** — collage palette + testing-pyramid geometry now come from `@qa-guru/allure-report-kit` (`/collage` export, ≥0.3.3). Builder vendor sync → `sync-kit-collage.mjs`.
+
+### Russian
+
+- **Удалён `@qa-guru/allure-notifications-pyramid`** — палитра коллажа и геометрия testing pyramid теперь из `@qa-guru/allure-report-kit` (export `/collage`, ≥0.3.3). Vendor builder → `sync-kit-collage.mjs`.
+
 ## v 6.2.1
 
 ### English

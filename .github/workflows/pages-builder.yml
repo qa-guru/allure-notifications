@@ -24,10 +24,9 @@ on:
       - 'apps/builder/package.json'
       - 'apps/builder/vendor/**'
       - 'apps/builder/scripts/sync-config.mjs'
-      - 'apps/builder/scripts/sync-pyramid.mjs'
+      - 'apps/builder/scripts/sync-kit-collage.mjs'
       - 'apps/builder/scripts/generate-sw.mjs'
       - 'packages/config/**'
-      - 'packages/pyramid/**'
       - '.github/workflows/pages-builder.yml'
       - 'docs/pages-cutover.md'
   workflow_dispatch:
@@ -70,11 +69,11 @@ jobs:
 
       # Workspace package exports point at dist/; emit deps before builder tsc
       # (fresh CI has no dist — same reason as ci-6.0 "Build (packages + builder emit)").
-      - name: Build builder TS → js/ + sync @config/@pyramid vendor + PWA sw
+      - name: Build builder TS → js/ + sync @config/@kit collage vendor + PWA sw
         run: |
           pnpm --filter @qa-guru/allure-notifications-builder... run build
           pnpm --filter @qa-guru/allure-notifications-builder run sync-config
-          pnpm --filter @qa-guru/allure-notifications-builder run sync-pyramid
+          pnpm --filter @qa-guru/allure-notifications-builder run sync-kit-collage
           pnpm --filter @qa-guru/allure-notifications-builder run generate-sw
 
       - name: Assemble static site (index / css / js / vendor / PWA)

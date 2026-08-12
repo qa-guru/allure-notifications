@@ -1,6 +1,6 @@
 {
   "name": "@qa-guru/allure-notifications-monorepo",
-  "version": "6.2.1",
+  "version": "6.2.2",
   "private": true,
   "description": "Allure report \u2192 messenger notifications. 6.0.* = TypeScript monorepo (CLI + builder). 5.0.* = Java jar archived on branch legacy/java-5.0.8 (freeze 5.0.8 / release v5.0.8); there is no 5.1 line.",
   "packageManager": "pnpm@9.15.0",
@@ -15,7 +15,7 @@
     "allure:generate": "rm -rf allure-report && allure generate allure-results --output allure-report",
     "panel-gallery": "node scripts/panel-gallery.mjs",
     "widget-picker": "node scripts/panel-gallery.mjs",
-    "publish:packages": "pnpm --filter @qa-guru/allure-notifications-config --filter @qa-guru/allure-notifications-pyramid --filter @qa-guru/allure-notifications-core --filter @qa-guru/allure-notifications --filter @qa-guru/allure-notifications-plugin publish --access public --no-git-checks",
+    "publish:packages": "pnpm --filter @qa-guru/allure-notifications-config --filter @qa-guru/allure-notifications-core --filter @qa-guru/allure-notifications --filter @qa-guru/allure-notifications-plugin publish --access public --no-git-checks",
     "typecheck": "pnpm -r run typecheck"
   },
   "devDependencies": {
@@ -43,5 +43,10 @@
       "refactor": "Refactoring"
     },
     "repo": "qa-guru/allure-notifications"
+  },
+  "pnpm": {
+    "overrides": {
+      "@qa-guru/allure-report-kit": "link:../../allure-report-kit-home/allure-report-kit"
+    }
   }
 }

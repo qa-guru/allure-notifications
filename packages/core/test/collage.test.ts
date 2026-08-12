@@ -30,7 +30,7 @@ import {
   CORNER_RATIO,
   STATUS_COLORS,
   TIER_GAP_RATIO,
-} from "@qa-guru/allure-notifications-pyramid";
+} from "@qa-guru/allure-report-kit";
 
 import {
   DEFAULT_EMPTY_MESSAGE,

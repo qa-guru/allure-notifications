@@ -18,6 +18,6 @@ export function loadConfigVendorBrowser(): typeof import("@qa-guru/allure-notifi
   return loadVendor("allure-notifications-config/browser.js");
 }
 
-export function loadPyramidVendorBrowser(): typeof import("@qa-guru/allure-notifications-pyramid/browser") {
-  return loadVendor("allure-notifications-pyramid/browser.js");
+export function loadKitCollageVendorBrowser(): typeof import("@qa-guru/allure-report-kit/collage") {
+  return loadVendor("allure-report-kit-collage/collage.js");
 }

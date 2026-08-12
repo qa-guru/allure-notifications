@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 /**
  * Coverage gate (hard 100% × 4 metrics):
- * 1. Packages — c8 on packages/{config,pyramid,core,cli,plugin}/src
+ * 1. Packages — c8 on packages/{config,core,cli,plugin}/src
  * 2. Builder — istanbul via Playwright (`scripts/builder-coverage.mjs`)
  *    on apps/builder/js/{app,phrases}.js (SSOT: src/app.ts + src/phrases.ts).
  *
@@ -37,8 +37,6 @@ const packagesStatus = run(
     "pnpm",
     "--filter",
     "@qa-guru/allure-notifications-config",
-    "--filter",
-    "@qa-guru/allure-notifications-pyramid",
     "--filter",
     "@qa-guru/allure-notifications-core",
     "--filter",

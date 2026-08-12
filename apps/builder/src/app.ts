@@ -16,7 +16,7 @@ import {
   PYRAMID_COLORS_LIGHT,
   STATUS_COLORS,
   TIER_GAP_RATIO,
-} from '@qa-guru/allure-notifications-pyramid';
+} from '@qa-guru/allure-report-kit/collage';
 import {
   DEFAULT_TILE_H,
   DEFAULT_TILE_W,
@@ -116,7 +116,7 @@ import {
  * no blank pad rows before `{` / after `}`).
  *
  * Catalog / presets from `@qa-guru/allure-notifications-config`; pyramid geometry +
- * layer palette from `@qa-guru/allure-notifications-pyramid` (import map → vendor sync).
+ * layer palette from `@qa-guru/allure-report-kit/collage` (import map → vendor sync).
  * UI-only packing stays local.
  */
 
