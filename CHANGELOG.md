@@ -2,12 +2,18 @@
 
 ## Unreleased
 
+## v 6.2.0
+
 ### English
 
+- **Dark collage** — quality-gate and tests-table kit tiles use dark surface in `base.darkMode: true` (no near-white bodies)
+- **Version line** — unified workspace + npm pin **6.2.0** for CLI, core, config, pyramid, plugin (fixes CLI 6.1.3 → core 6.1.1 gap)
 - **Chart** — drop dead `chart.mode: pie` from zod schema, builder UI, and 6.x README; TS runtime always renders collage PNG (legacy jar pie remains on branch `legacy/java-5.0.8` only)
 
 ### Russian
 
+- **Dark collage** — quality-gate и tests-table в kit-тайлах используют тёмную surface при `base.darkMode: true` (без near-white тел)
+- **Версии** — единый pin **6.2.0** для CLI, core, config, pyramid, plugin (закрыт gap CLI 6.1.3 → core 6.1.1)
 - **Chart** — убран мёртвый `chart.mode: pie` из zod-схемы, builder UI и README 6.x; TS runtime всегда рендерит collage PNG (legacy jar `pie` только на ветке `legacy/java-5.0.8`)
 
 ## v 6.1.3

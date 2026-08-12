@@ -240,4 +240,4 @@ Live messenger send (token in credentials) is out of band until ADR 008 dogfood 
 
 ## Config
 
-Use builder export (`apps/builder/`) → `config.json` with free layout (`chart.layout: "free"`, `items`). Default canvas target: **CB-870** (870×1080). Example dry-run fixture: `packages/cli/test/fixtures/config.dry-run.json` (classic CB-870 pie + pyramid + durations).
+Use builder export (`apps/builder/`) → `config.json` with free layout (`chart.layout: "free"`, `items`). Default canvas target: **CB-870** (870×1080). Example dry-run fixture: `packages/cli/test/fixtures/config.dry-run.json` (classic CB-870 currentStatus + pyramid + durations).
