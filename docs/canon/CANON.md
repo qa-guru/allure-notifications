@@ -60,6 +60,10 @@ Alias: [`collage-cb870-free-dogfood.png`](./collage-cb870-free-dogfood.png)
 - `unit.light` / `unit.dark` = `#94ca66` (Allure 3 passed)
 - Guard: `python scripts/pyramid_palette_sync.py --check`
 
+## Version policy
+
+CLI **6.1.2** / **6.1.3** are patch releases (`@qa-guru/allure-notifications-cli` — proxy / Telegram transport). Workspace libraries **`core`**, **`config`**, **`pyramid`**, **`plugin`** stay at **6.1.1** until a shared collage/API change ships; pin consumers via monorepo `docs/allure-notifications/VERSION` (CLI), not by forcing all workspace packages to the CLI patch.
+
 ## Do not regress
 
 1. Do **not** reintroduce a separate “accessible” green for `unit` that drifts from passed status (`#94ca66`).

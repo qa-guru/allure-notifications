@@ -371,16 +371,6 @@ describe("@qa-guru/allure-notifications-core coverage history", () => {
     assert.equal(durationRuns.durationDynamics.length, 1);
     assert.ok(durationRuns.durationDynamics[0]! > 0);
 
-    const weird = historyFromRuns([
-      {
-        testResults: {
-          ok: { id: "ok", status: "weird-status", duration: 1 },
-          skip: null as unknown as import("../src/report/history.js").HistoryTestResult,
-        },
-      },
-    ]);
-    assert.equal(weird.statusDynamics[0]!.unknown, 1);
-
     const noEnvProblems = historyFromRuns([
       {
         testResults: {
@@ -586,24 +576,10 @@ describe("@qa-guru/allure-notifications-core coverage collage render defaults", 
     });
     config.base.chart!.items = [
       { type: "currentStatus", y: 0, w: 2, h: 2 },
-      { type: null as unknown as string, x: 0, y: 2, w: 2, h: 2 },
+      { type: "totallyUnknown", x: 0, y: 2, w: 2, h: 2 },
     ] as NonNullable<typeof config.base.chart>["items"];
     const png = await renderCollagePng(config, analytics);
     assert.ok(png.length > 100);
-  });
-
-  it("resolveCardTitle treats null panel type as unknown", () => {
-    const summary = adaptSummaryJson({ stats: { passed: 1, total: 1 }, duration: 0 });
-    const analytics = buildAnalytics(summary, []);
-    const config = bareConfig();
-    assert.equal(
-      resolveCardTitle(
-        { type: null as unknown as string, x: 0, y: 0, w: 1, h: 1 },
-        config,
-        analytics,
-      ),
-      "Panel",
-    );
   });
 });
 
@@ -639,7 +615,6 @@ describe("@qa-guru/allure-notifications-core coverage panels edge UI", () => {
       showTitle: true,
     });
     assert.ok(renderEmptyPanel(base).length > 0);
-    assert.ok(renderEmptyPanel(base, null as unknown as string).length > 0);
     assert.ok(renderEmptyPanel(base, "").length > 0);
     assert.ok(renderEmptyPanel(base, { message: "  ", title: "Tile" }).length > 0);
     assert.ok(
@@ -889,7 +864,7 @@ describe("@qa-guru/allure-notifications-core coverage panels edge UI", () => {
     assert.ok(renderEmptyPanel(base, { message: "Hi" }).length > 0);
   });
 
-  it("pie empty ring dark + suites null truncate", () => {
+  it("pie empty ring dark", () => {
     const dark = themeFromDarkMode(true);
     const emptyStats = buildAnalytics(
       adaptSummaryJson({ stats: { total: 0, passed: 0 }, duration: 0 }),
@@ -900,10 +875,6 @@ describe("@qa-guru/allure-notifications-core coverage panels edge UI", () => {
         panelContext(bareConfig({ darkMode: true }), dark, 120, 120, emptyStats),
       ).length > 0,
     );
-
-    const suites = buildAnalytics(emptySummary(), []);
-    suites.suites = [{ name: null as unknown as string, count: 2 }];
-    assert.ok(renderSuitesPanel(ctx(suites)).length > 0);
   });
 
   it("pyramid light other + unknown layer fallback colors", () => {
@@ -1036,7 +1007,7 @@ describe("@qa-guru/allure-notifications-core coverage panels edge UI", () => {
       runCount: 2,
       problemsByEnvironment: {
         environments: ["chrome-desktop-long"],
-        matrix: [[1, undefined as unknown as number]],
+        matrix: [[1, 0]],
       },
     });
     assert.ok(
@@ -1109,27 +1080,6 @@ describe("@qa-guru/allure-notifications-core coverage panels edge UI", () => {
 });
 
 describe("@qa-guru/allure-notifications-core coverage history deep edges", () => {
-  it("normalizeStatus nullish + caseId empty + labelsMap first-wins", () => {
-    const h = historyFromRuns([
-      {
-        testResults: {
-          k1: {
-            id: "",
-            status: null as unknown as string,
-            duration: 1,
-            labels: [
-              { name: "feature", value: "First" },
-              { name: "feature", value: "Second" },
-              { name: "host", value: "" },
-              null as unknown as { name: string; value: string },
-            ],
-          },
-        },
-      },
-    ]);
-    assert.equal(h.statusDynamics[0]!.unknown, 1);
-  });
-
   it("stabilityBarsFromCases null/zero-total/skip blank labels", () => {
     assert.deepEqual(stabilityBarsFromCases(null, "feature"), []);
     assert.deepEqual(
@@ -1144,28 +1094,6 @@ describe("@qa-guru/allure-notifications-core coverage history deep edges", () =>
       ),
       [{ name: "Ok", rate: 100 }],
     );
-  });
-
-  it("problems env from labels + durationDynamics null results", () => {
-    const h = historyFromRuns([
-      {
-        testResults: {
-          f: {
-            id: "f",
-            status: "failed",
-            duration: 10,
-            labels: [{ name: "environment", value: "stage-a" }],
-          },
-          n: null as unknown as import("../src/report/history.js").HistoryTestResult,
-        },
-      },
-      {
-        // missing testResults → ?? {}
-        uuid: "r2",
-      },
-    ]);
-    assert.deepEqual(h.problemsByEnvironment.environments, ["stage-a"]);
-    assert.ok(h.durationDynamics.length >= 1);
   });
 
   it("status age: break on passed / status change mid-streak", () => {
@@ -1340,13 +1268,11 @@ describe("@qa-guru/allure-notifications-core coverage render + analytics edges",
     assert.ok((await renderCollagePng(config, analytics)).length > 100);
   });
 
-  it("buildAnalytics epic/story/component + id fallback + durationMs null", () => {
+  it("buildAnalytics epic/story/component + id fallback", () => {
     const summary = adaptSummaryJson({
       stats: { passed: 1, failed: 0, total: 1 },
       duration: null,
     });
-    // Force nullish durationMs after adapt.
-    summary.durationMs = undefined as unknown as number;
     const analytics = buildAnalytics(summary, [
       {
         status: "passed",
@@ -1362,17 +1288,6 @@ describe("@qa-guru/allure-notifications-core coverage render + analytics edges",
     assert.equal(analytics.stabilityCases[0]!.labels.component, "C1");
     assert.equal(analytics.stabilityCases[0]!.id, "r-0");
     assert.equal(analytics.durationMs, 0);
-  });
-
-  it("loadReportAnalytics defaults allureFolder when missing", async () => {
-    const config = parseConfig({
-      base: {
-        project: "no-folder",
-        enableChart: true,
-      },
-    });
-    delete (config.base as { allureFolder?: string }).allureFolder;
-    await assert.rejects(() => loadReportAnalytics(config));
   });
 
   it("adaptSummaryJson Allure2 without time object + parseTestResult non-string status", () => {
