@@ -44,7 +44,7 @@ body {
 }
 
 .anb-zone--options .panel {
-  flex: 0 1 auto;
+  flex: 0 0 auto;
   min-height: auto;
 }
 
@@ -59,6 +59,7 @@ body {
   flex-direction: column;
   gap: var(--space-3);
   flex: 1 1 auto;
+  min-height: 0;
 }
 
 .anb-zone--preview .panel__bar {
@@ -883,28 +884,10 @@ html.theme-light .anb-canvas--chart-off::after {
   min-width: 0;
 }
 
-/*
- * No inner panel scrolls — panels hug content, the page scrolls naturally.
- * Sticky offset comes from vendor sticky.css; its max-height/overflow is
- * overridden so panels never clip their content.
- */
 .anb-zone--preview,
 .anb-zone--terminal {
   display: flex;
   flex-direction: column;
-}
-
-.anb-zone--preview .panel--sticky,
-.anb-zone--terminal .panel--sticky,
-:has(#app-header) .anb-zone--preview .panel--sticky,
-:has(#app-header) .anb-zone--terminal .panel--sticky {
-  flex: 0 1 auto;
-  max-height: none;
-  overflow: hidden;
-}
-
-.anb-zone .panel__body {
-  overflow: visible;
 }
 
 .anb-zone--terminal .panel__code {
@@ -951,14 +934,83 @@ html.theme-light .anb-zone--terminal .ch-theme--vscode .ch-tok-comment { color: 
 html.theme-light .anb-zone--terminal .ch-theme--vscode .ch-tok-cmd { color: #795e26; }
 
 @media (min-width: 769px) {
+  html,
+  body {
+    height: 100%;
+    overflow: hidden;
+  }
+
+  .anb-page.page-shell {
+    height: 100%;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+  }
+
   .anb-layout {
     grid-template-columns: repeat(3, minmax(0, 1fr));
+    grid-template-rows: minmax(0, 1fr);
+    flex: 1 1 auto;
+    min-height: 0;
+    overflow: hidden;
+  }
+
+  .anb-zone {
+    min-height: 0;
+    overscroll-behavior: contain;
+  }
+
+  /* Options: two stacked panels — the zone is the scrollport. */
+  .anb-zone--options {
+    overflow: auto;
+  }
+
+  /*
+   * Preview / terminal: chrome bar pinned, body/code scrolls.
+   * Cancel vendor sticky.css max-height so the panel fills the zone.
+   */
+  .anb-zone--preview,
+  .anb-zone--terminal {
+    overflow: hidden;
+  }
+
+  .anb-zone--preview .panel,
+  .anb-zone--terminal .panel,
+  .anb-zone--preview .panel--sticky,
+  .anb-zone--terminal .panel--sticky,
+  :has(#app-header) .anb-zone--preview .panel--sticky,
+  :has(#app-header) .anb-zone--terminal .panel--sticky {
+    flex: 1 1 auto;
+    min-height: 0;
+    max-height: none;
+    overflow: hidden;
+    position: relative;
+  }
+
+  .anb-zone--preview .panel__body {
+    overflow: auto;
+    overscroll-behavior: contain;
+  }
+
+  .anb-zone--terminal .panel__code {
+    overscroll-behavior: contain;
   }
 }
 
 @media (max-width: 768px) {
   .anb-layout {
     grid-template-columns: 1fr;
+  }
+
+  .anb-zone--preview .panel--sticky,
+  .anb-zone--terminal .panel--sticky {
+    flex: 0 1 auto;
+    max-height: none;
+    overflow: hidden;
+  }
+
+  .anb-zone .panel__body {
+    overflow: visible;
   }
 }
 

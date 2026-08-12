@@ -28,6 +28,68 @@ test.describe('allure-notifications-builder smoke', () => {
     await expect(page.locator('#app-header')).not.toBeEmpty();
   });
 
+  test('desktop: three columns scroll independently', async ({ page }) => {
+    const errors = [];
+    page.on('console', (msg) => {
+      if (msg.type() === 'error') errors.push(`console:${msg.text()}`);
+    });
+    page.on('pageerror', (err) => errors.push(`pageerror:${err.message}`));
+
+    await page.setViewportSize({ width: 1280, height: 640 });
+    await page.goto('/');
+    await expect(page.getByTestId('anb-layout')).toBeVisible();
+    await expect(page.getByTestId('anb-canvas')).toBeVisible();
+    await expect(page.getByTestId('anb-terminal')).not.toBeEmpty();
+
+    const snap = await page.evaluate(() => {
+      const scrollport = (root, inner) => {
+        const nested = inner ? root.querySelector(inner) : null;
+        if (nested instanceof HTMLElement && nested.scrollHeight > nested.clientHeight + 1) {
+          return nested;
+        }
+        return root instanceof HTMLElement ? root : null;
+      };
+      const options = document.querySelector('[data-testid="anb-zone-options"]');
+      const preview = document.querySelector('[data-testid="anb-zone-preview"]');
+      const terminal = document.querySelector('[data-testid="anb-zone-terminal"]');
+      if (!options || !preview || !terminal) {
+        throw new Error('zones missing');
+      }
+      const ports = {
+        options: scrollport(options, null),
+        preview: scrollport(preview, '.panel__body'),
+        terminal: scrollport(terminal, '.panel__code'),
+      };
+      if (!ports.options || !ports.preview || !ports.terminal) {
+        throw new Error('scrollports missing');
+      }
+      const metric = (el) => ({
+        overflowY: getComputedStyle(el).overflowY,
+        canScroll: el.scrollHeight > el.clientHeight + 1,
+        top: el.scrollTop,
+      });
+      ports.options.scrollTop = 80;
+      ports.preview.scrollTop = 120;
+      return {
+        bodyOverflow: getComputedStyle(document.body).overflowY,
+        pageScroll: document.documentElement.scrollTop,
+        options: metric(ports.options),
+        preview: metric(ports.preview),
+        terminal: metric(ports.terminal),
+      };
+    });
+
+    expect(snap.bodyOverflow).toBe('hidden');
+    expect(snap.pageScroll).toBe(0);
+    expect(snap.options.canScroll).toBe(true);
+    expect(snap.preview.canScroll).toBe(true);
+    expect(snap.terminal.canScroll).toBe(true);
+    expect(snap.options.top).toBeGreaterThan(0);
+    expect(snap.preview.top).toBeGreaterThan(0);
+    expect(snap.terminal.top).toBe(0);
+    expect(errors, errors.join('\n')).toEqual([]);
+  });
+
   test('header tool links: monorepo + prod builder site', async ({ page }) => {
     await page.goto('/');
     await expect(page.getByTestId('anb-page')).toBeVisible();
