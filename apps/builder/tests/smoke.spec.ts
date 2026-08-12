@@ -68,6 +68,19 @@ test.describe('allure-notifications-builder smoke', () => {
         canScroll: el.scrollHeight > el.clientHeight + 1,
         top: el.scrollTop,
       });
+      const chartsPanel = document.querySelector('[data-testid="anb-layout-options"]');
+      const previewPanel = document.querySelector('[data-testid="anb-preview-panel"]');
+      const terminalPanel = document.querySelector('[data-testid="anb-terminal-panel"]');
+      const headerEl =
+        document.querySelector('#app-header .header') || document.querySelector('#app-header');
+      const headerBottom = headerEl?.getBoundingClientRect().bottom ?? 0;
+      const panelTop = (el) => (el instanceof HTMLElement ? el.getBoundingClientRect().top : 0);
+      const align = {
+        chartsTop: panelTop(chartsPanel),
+        previewTop: panelTop(previewPanel),
+        terminalTop: panelTop(terminalPanel),
+        gapBelowHeader: panelTop(chartsPanel) - headerBottom,
+      };
       ports.options.scrollTop = 80;
       ports.preview.scrollTop = 120;
       return {
@@ -76,6 +89,7 @@ test.describe('allure-notifications-builder smoke', () => {
         options: metric(ports.options),
         preview: metric(ports.preview),
         terminal: metric(ports.terminal),
+        ...align,
       };
     });
 
@@ -87,6 +101,10 @@ test.describe('allure-notifications-builder smoke', () => {
     expect(snap.options.top).toBeGreaterThan(0);
     expect(snap.preview.top).toBeGreaterThan(0);
     expect(snap.terminal.top).toBe(0);
+    expect(Math.abs(snap.previewTop - snap.chartsTop)).toBeLessThan(2);
+    expect(Math.abs(snap.terminalTop - snap.chartsTop)).toBeLessThan(2);
+    expect(snap.gapBelowHeader).toBeGreaterThan(0);
+    expect(snap.gapBelowHeader).toBeLessThan(40);
     expect(errors, errors.join('\n')).toEqual([]);
   });
 

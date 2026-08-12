@@ -984,7 +984,10 @@ html.theme-light .anb-zone--terminal .ch-theme--vscode .ch-tok-cmd { color: #795
     min-height: 0;
     max-height: none;
     overflow: hidden;
-    position: relative;
+    /* static + top:auto — vendor sticky.css `top: header + space-4` must not
+       become a relative offset (that dropped preview/terminal below Charts). */
+    position: static;
+    top: auto;
   }
 
   .anb-zone--preview .panel__body {
@@ -1007,6 +1010,8 @@ html.theme-light .anb-zone--terminal .ch-theme--vscode .ch-tok-cmd { color: #795
     flex: 0 1 auto;
     max-height: none;
     overflow: hidden;
+    position: static;
+    top: auto;
   }
 
   .anb-zone .panel__body {
