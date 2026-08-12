@@ -1,6 +1,8 @@
 # Migration guide: 4.x → 5.0
 
-This guide covers configuration and report layout changes introduced in **allure-notifications 5.0.0**.
+This guide covers configuration and report layout changes introduced in **allure-notifications 5.0.0** (Java jar on branch [`legacy/java-5.0.8`](../MIGRATION.md)).
+
+> **Scope:** Java jar **5.0.8** only. TypeScript **6.x** on `master` always renders collage PNG; `chart.mode: pie` is **not** supported in npm packages (schema rejects it).
 
 For a ready-to-use CI example see [ci-cookbook-5.0.md](ci-cookbook-5.0.md) and [config/config-5.0-collage.example.json](../config/config-5.0-collage.example.json).
 

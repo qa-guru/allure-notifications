@@ -1,6 +1,6 @@
 # CI cookbook — allure-notifications 5.0
 
-Examples for sending notifications with **collage chart** and **multi-link** templates from CI.
+Examples for sending notifications with **collage chart** and **multi-link** templates from CI (Java jar **5.0.8** on branch `legacy/java-5.0.8`). TypeScript **6.x** CLI/plugin: collage only — see root [README.md](../README.md).
 
 Full config reference: [migration-5.0.md](migration-5.0.md).
 
@@ -175,9 +175,9 @@ java \
 
 Set `ALLURE_REPORT_URL`, `TELEGRAM_*`, etc. as Jenkins credentials or injected env vars.
 
-## Pie mode (4.x compatible) in CI
+## Pie mode (4.x compatible) in CI — jar 5.0.8 only
 
-Omit `chart.mode` or set `pie` explicitly — no `allureResultsFolder` required:
+Omit `chart.mode` or set `pie` explicitly — no `allureResultsFolder` required (not supported in TS 6.x npm):
 
 ```shell
 java "-DconfigFile=notifications/config.json" \

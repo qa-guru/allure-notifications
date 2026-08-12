@@ -2,6 +2,14 @@
 
 ## Unreleased
 
+### English
+
+- **Chart** — drop dead `chart.mode: pie` from zod schema, builder UI, and 6.x README; TS runtime always renders collage PNG (legacy jar pie remains on branch `legacy/java-5.0.8` only)
+
+### Russian
+
+- **Chart** — убран мёртвый `chart.mode: pie` из zod-схемы, builder UI и README 6.x; TS runtime всегда рендерит collage PNG (legacy jar `pie` только на ветке `legacy/java-5.0.8`)
+
 ## v 6.1.3
 
 ### English

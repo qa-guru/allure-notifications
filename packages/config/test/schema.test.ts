@@ -187,6 +187,22 @@ describe("@qa-guru/allure-notifications-config schema vs repo fixtures", () => {
     assert.equal(result.success, true, result.success ? "" : JSON.stringify(result.error.format()));
   });
 
+  it('rejects chart.mode "pie" (TS 6.x collage-only)', () => {
+    const bad = {
+      base: {
+        chart: {
+          mode: "pie",
+          layout: "free",
+          width: 870,
+          height: 1080,
+          items: [{ type: "currentStatus", x: 0, y: 0, w: 2, h: 2 }],
+        },
+      },
+    };
+    const result = safeParseConfig(bad);
+    assert.equal(result.success, false);
+  });
+
   it("rejects free layout without items", () => {
     const bad = {
       base: {

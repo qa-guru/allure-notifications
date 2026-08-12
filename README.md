@@ -213,7 +213,7 @@ Showcase layout (7-tile readme-hero) = [`config/config.dogfood-telegram-full.jso
 | `allureFolder` | Generated Allure report directory |
 | `allureResultsFolder` | Raw `allure-results` (needed for collage analytics) |
 | `enableChart` | Attach collage / chart image |
-| `chart.mode` | `collage` (primary) or `pie` |
+| `chart.mode` | `collage` (only value in 6.x TS; legacy jar `pie` → branch `legacy/java-5.0.8`) |
 | `chart.layout` | **`free` + `items`** is the main path. Legacy `grid` \| `stacked` \| `row` still supported |
 | `chart.width` / `height` | Canvas size (px) |
 | `chart.headerHeight` / `cardGap` / `tilePad` | Card chrome (builder defaults: 22 / 14 / 6) |

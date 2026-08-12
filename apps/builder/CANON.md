@@ -7,12 +7,12 @@
 | Canvas | **870×1080** · grid **10×10** · cell **87×108** |
 | Presets only | **870×1080** · **1080×1080** · **1410×1080** (no 1024×1280) |
 | Panels | **17 catalog** (currentStatus · ChartType + groupBy/by) · mocks synced |
-| Layout | **4-tile on 10×10** — pie 4×4 · durationDynamics 6×4 · pyramid 3×3 \| durations-by-layer 4×3 · empty cols 7–9 + rows 7–9 (`DEFAULT_ITEMS` only) |
+| Layout | **4-tile on 10×10** — currentStatus 4×4 · durationDynamics 6×4 · pyramid 3×3 \| durations-by-layer 4×3 · empty cols 7–9 + rows 7–9 (`DEFAULT_ITEMS` only) |
 | Palette add | always **2×2** footprint — caption = panel title; `defaultW/H` never mirror grid presets |
 | Grid SSOT | `base.chart.items` from current vector · boot / Reset / `vector#default` → `applyDefaultVector()` |
 | Float / overlap | float **on** (exact x,y — no upward compact) · overlap off · min **1×1** |
-| Legacy dogfood | classic CB-870 (pie 5×5 · pyramid 5×5 · durations 10×5) remains in pixel-gate fixtures |
-| Telegram / README showcase | **7-tile readme-hero** — `config/config.dogfood-telegram-full.json` (pie 5×4 · statusDynamics 5×4 · pyramid 4×3 · durations-by-layer 6×3 · successRate 3×3 · durationDynamics 4×3 · statusTransitions 3×3); not `DEFAULT_ITEMS` |
+| Legacy dogfood (historical) | v5.0.3 pixel gate only — legacy slot `pie` 5×5 · pyramid 5×5 · durations 10×5 @ **1024×1280** / headerHeight **68**; not active 6.x canon |
+| Telegram / README showcase | **7-tile readme-hero** — `config/config.dogfood-telegram-full.json` (currentStatus 5×4 · statusDynamics 5×4 · pyramid 4×3 · durations-by-layer 6×3 · successRate 3×3 · durationDynamics 4×3 · statusTransitions 3×3); not `DEFAULT_ITEMS` |
 
 ## Chrome knobs (Options → `base.chart.*`)
 

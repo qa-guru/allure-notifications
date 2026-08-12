@@ -58,7 +58,8 @@ export const ChartConfigSchema = z
      * Kit-only panel kinds parse always; runtime silent-skip when `"default"`.
      */
     profile: ChartProfileSchema.optional().default("default"),
-    mode: z.enum(["pie", "collage"]).optional(),
+    /** TS 6.x always renders collage PNG; legacy jar `pie` lives on branch `legacy/java-5.0.8` only. */
+    mode: z.literal("collage").optional(),
     layout: z.enum(["grid", "stacked", "row", "free"]).optional(),
     panels: PanelsSchema.optional(),
     items: z.array(ChartItemSchema).optional(),
@@ -66,7 +67,7 @@ export const ChartConfigSchema = z
     gridRows: z.number().int().positive().optional(),
     width: z.number().int().positive().optional(),
     height: z.number().int().positive().optional(),
-    /** Card title-bar height (px). Builder SQ-1080 default 22; jar unset → renderer 68. */
+    /** Card title-bar height (px). Omit/null → `DEFAULT_HEADER_HEIGHT` (31, DS `--wt-bar-height`). Legacy jar pixel-gate fixtures used 68 on `legacy/java-5.0.8` only — not active 6.x default. */
     headerHeight: z.number().int().positive().optional().nullable(),
     /** Gap around/between cards (px). Default 14. */
     cardGap: z.number().int().nonnegative().optional().nullable(),
