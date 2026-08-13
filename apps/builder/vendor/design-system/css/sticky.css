@@ -6,7 +6,18 @@
     position: sticky;
     top: var(--space-6);
     max-height: calc(100vh - 2 * var(--space-6));
-    overflow: auto;
+  }
+
+  /*
+   * Panel keeps .panel { overflow: hidden } clip — scrollport is
+   * .panel__body / .panel__code (one per column). overflow: auto here
+   * overrode that clip and, with overflow-x: hidden|clip, Chrome paints
+   * a classic ~15px gutter beside the macOS overlay thumb.
+   * Section has no inner body scrollport.
+   */
+  .section--sticky {
+    overflow-y: auto;
+    scrollbar-width: thin;
   }
 
   /* Fixed #app-header (autotests-builder, playground, …) */

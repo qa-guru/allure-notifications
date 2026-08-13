@@ -278,6 +278,7 @@ html:not(.theme-light)
   z-index: var(--z-header);
   max-height: min(70vh, 24rem);
   overflow-y: auto;
+  scrollbar-width: thin;
 }
 
 /* Default header: drop search first, then fold to burger at 768

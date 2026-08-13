@@ -20,7 +20,7 @@
       },
       {
         "path": "css/code-highlight.css",
-        "sha256_16": "ff1ff618bf0a459c"
+        "sha256_16": "8bb9ec6a12d588c2"
       },
       {
         "path": "css/configurator.css",
@@ -32,7 +32,7 @@
       },
       {
         "path": "css/header.css",
-        "sha256_16": "0caed161d6b04a08"
+        "sha256_16": "8f667ed1c30925d8"
       },
       {
         "path": "css/icon-btn.css",
@@ -64,7 +64,7 @@
       },
       {
         "path": "css/panel.css",
-        "sha256_16": "498c88820ec95801"
+        "sha256_16": "41740882010674a4"
       },
       {
         "path": "css/plaque-divider.css",
@@ -92,7 +92,7 @@
       },
       {
         "path": "css/sticky.css",
-        "sha256_16": "4d8d8de4259d90ec"
+        "sha256_16": "b1ba038c29cd0737"
       },
       {
         "path": "css/text.css",

@@ -166,7 +166,9 @@
   flex: 1 1 auto;
   min-height: 0;
   padding: var(--space-4);
-  overflow: auto;
+  /* overflow-y only — overflow-x: hidden|clip → Chrome classic ~15px gutter */
+  overflow-y: auto;
+  scrollbar-width: thin;
 }
 
 /*
@@ -180,6 +182,7 @@
   display: flex;
   flex-direction: column;
   min-height: 0;
+  overflow: hidden; /* clip; .panel__code is the column scrollport */
 }
 
 .panel__code {
@@ -188,7 +191,8 @@
   margin: 0;
   padding: var(--space-3);
   padding-bottom: calc(var(--space-3) + 0.25em);
-  overflow: auto;
+  overflow-y: auto;
+  scrollbar-width: thin;
   font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
   font-size: var(--font-size-sm);
   line-height: 1.55;
@@ -231,7 +235,8 @@
   padding: var(--space-3) var(--space-2);
   border-top: none;
   border-left: 1px solid var(--panel-border);
-  overflow: auto;
+  overflow-y: auto;
+  scrollbar-width: thin;
 }
 
 .panel--terminal.panel--foot-rail .panel__foot > .tabs {

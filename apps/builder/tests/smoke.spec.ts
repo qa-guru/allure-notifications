@@ -102,11 +102,14 @@ test.describe('allure-notifications-builder smoke', () => {
     expect(snap.bodyOverflow).toBe('hidden');
     expect(snap.pageScroll).toBe(0);
     expect(snap.options.overflowX).not.toBe('hidden');
+    expect(snap.options.overflowX).not.toBe('clip');
     expect(snap.preview.overflowX).not.toBe('hidden');
+    expect(snap.preview.overflowX).not.toBe('clip');
     expect(snap.terminal.overflowX).not.toBe('hidden');
-    expect(snap.options.gutter).toBeLessThanOrEqual(10);
-    expect(snap.preview.gutter).toBeLessThanOrEqual(10);
-    expect(snap.terminal.gutter).toBeLessThanOrEqual(10);
+    expect(snap.terminal.overflowX).not.toBe('clip');
+    expect(snap.options.gutter).toBeLessThan(12);
+    expect(snap.preview.gutter).toBeLessThan(12);
+    expect(snap.terminal.gutter).toBeLessThan(12);
     expect(snap.optionBodiesOverflowY.every((v) => v === 'visible')).toBe(true);
     expect(snap.options.canScroll).toBe(true);
     expect(snap.preview.canScroll).toBe(true);

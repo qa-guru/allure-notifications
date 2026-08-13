@@ -8,7 +8,8 @@
   --ch-code-fg: #e6edf3;
   margin: 0;
   padding: var(--space-3);
-  overflow: auto;
+  overflow-y: auto;
+  scrollbar-width: thin;
   font-family: var(--ch-mono);
   font-size: var(--font-size-sm);
   line-height: 1.55;

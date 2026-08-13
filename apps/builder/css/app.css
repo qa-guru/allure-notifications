@@ -966,7 +966,7 @@ html.theme-light .anb-zone--terminal .ch-theme--vscode .ch-tok-cmd { color: #795
     overflow-y: auto;
   }
 
-  /* DS panel__body is overflow:auto — must not become a nested scrollport. */
+  /* DS panel__body is overflow-y: auto — must not become a nested scrollport. */
   .anb-zone--options .panel__body {
     overflow: visible;
   }
@@ -1018,25 +1018,6 @@ html.theme-light .anb-zone--terminal .ch-theme--vscode .ch-tok-cmd { color: #795
   .anb-zone--terminal .panel__code {
     scrollbar-width: thin;
     scrollbar-color: color-mix(in srgb, var(--color-text) 32%, transparent) transparent;
-  }
-
-  .anb-zone--options::-webkit-scrollbar,
-  .anb-zone--preview .panel__body::-webkit-scrollbar,
-  .anb-zone--terminal .panel__code::-webkit-scrollbar {
-    width: 8px;
-  }
-
-  .anb-zone--options::-webkit-scrollbar-track,
-  .anb-zone--preview .panel__body::-webkit-scrollbar-track,
-  .anb-zone--terminal .panel__code::-webkit-scrollbar-track {
-    background: transparent;
-  }
-
-  .anb-zone--options::-webkit-scrollbar-thumb,
-  .anb-zone--preview .panel__body::-webkit-scrollbar-thumb,
-  .anb-zone--terminal .panel__code::-webkit-scrollbar-thumb {
-    background: color-mix(in srgb, var(--color-text) 32%, transparent);
-    border-radius: 999px;
   }
 }
 
