@@ -120,9 +120,9 @@ html:not(.theme-light)
   grid-column: 2;
   grid-row: 1;
   font-family: var(--font-sans);
-  font-size: 15px;
-  font-weight: 400;
-  letter-spacing: 0.005em;
+  font-size: 16px;
+  font-weight: 500;
+  letter-spacing: -0.018em;
   line-height: 1;
   color: var(--color-brand-logo);
   white-space: nowrap;
@@ -131,8 +131,12 @@ html:not(.theme-light)
 }
 
 .header__brand-ver {
+  display: inline-block;
   margin-left: 0.18em;
+  font-family: "Arial Rounded MT Bold", "Trebuchet MS", var(--font-sans);
+  font-size: 1.06em;
   font-weight: 700;
+  line-height: 0.8;
   color: var(--color-info);
 }
 
@@ -155,8 +159,9 @@ html:not(.theme-light)
 
 /* Mini logo beside “by” — scaled with the 8px byline. */
 .header__brand:has(.header__brand-link--leading:not([hidden])) .header__brand-logo {
-  height: 6px;
-  max-height: 6px;
+  height: 8px;
+  max-height: 8px;
+  opacity: 0.55;
 }
 
 .header__brand-logo {
@@ -182,13 +187,18 @@ html:not(.theme-light)
   margin-left: calc(var(--space-3) - var(--space-4));
 }
 
+/* Beat `.link--nav` if Vite injects react-ui styles.css after this file. */
+.header .link--nav {
+  font-size: 12px;
+}
+
 .header__nav .link--nav {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
   max-width: 10rem;
-  /* room for underline inside the ellipsis box (10px + offset) */
-  padding-block-end: 3px;
+  /* room for underline inside the ellipsis box (12px + offset) */
+  padding-block-end: 4px;
 }
 
 /* Step 4: search */
