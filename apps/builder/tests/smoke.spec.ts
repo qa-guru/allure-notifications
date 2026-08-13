@@ -68,6 +68,7 @@ test.describe('allure-notifications-builder smoke', () => {
         overflowY: getComputedStyle(el).overflowY,
         canScroll: el.scrollHeight > el.clientHeight + 1,
         top: el.scrollTop,
+        gutter: el.offsetWidth - el.clientWidth,
       });
       const chartsPanel = document.querySelector('[data-testid="anb-layout-options"]');
       const previewPanel = document.querySelector('[data-testid="anb-preview-panel"]');
@@ -84,21 +85,29 @@ test.describe('allure-notifications-builder smoke', () => {
       };
       ports.options.scrollTop = 80;
       ports.preview.scrollTop = 120;
+      const optionBodies = [...options.querySelectorAll('.panel__body')].map((el) =>
+        getComputedStyle(el).overflowY,
+      );
       return {
         bodyOverflow: getComputedStyle(document.body).overflowY,
         pageScroll: document.documentElement.scrollTop,
         options: metric(ports.options),
         preview: metric(ports.preview),
         terminal: metric(ports.terminal),
+        optionBodiesOverflowY: optionBodies,
         ...align,
       };
     });
 
     expect(snap.bodyOverflow).toBe('hidden');
     expect(snap.pageScroll).toBe(0);
-    expect(snap.options.overflowX).toBe('hidden');
-    expect(snap.preview.overflowX).toBe('hidden');
-    expect(snap.terminal.overflowX).toBe('hidden');
+    expect(snap.options.overflowX).not.toBe('hidden');
+    expect(snap.preview.overflowX).not.toBe('hidden');
+    expect(snap.terminal.overflowX).not.toBe('hidden');
+    expect(snap.options.gutter).toBeLessThanOrEqual(10);
+    expect(snap.preview.gutter).toBeLessThanOrEqual(10);
+    expect(snap.terminal.gutter).toBeLessThanOrEqual(10);
+    expect(snap.optionBodiesOverflowY.every((v) => v === 'visible')).toBe(true);
     expect(snap.options.canScroll).toBe(true);
     expect(snap.preview.canScroll).toBe(true);
     expect(snap.terminal.canScroll).toBe(true);

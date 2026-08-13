@@ -894,7 +894,6 @@ html.theme-light .anb-canvas--chart-off::after {
   flex: 1 1 auto;
   min-height: 0;
   margin: 0;
-  overflow-x: hidden;
   overflow-y: auto;
   white-space: pre-wrap;
   word-break: break-word;
@@ -964,8 +963,12 @@ html.theme-light .anb-zone--terminal .ch-theme--vscode .ch-tok-cmd { color: #795
 
   /* Options: two stacked panels — the zone is the scrollport. */
   .anb-zone--options {
-    overflow-x: hidden;
     overflow-y: auto;
+  }
+
+  /* DS panel__body is overflow:auto — must not become a nested scrollport. */
+  .anb-zone--options .panel__body {
+    overflow: visible;
   }
 
   /*
@@ -994,15 +997,46 @@ html.theme-light .anb-zone--terminal .ch-theme--vscode .ch-tok-cmd { color: #795
   }
 
   /*
-   * overflow-x:hidden + overflow-y:auto — not `overflow:auto`.
-   * Chrome treats auto/auto as a classic layout scrollbar (wide gutter) as soon
-   * as a subpixel horizontal overflow appears while scrolling.
+   * Only overflow-y. overflow-x:hidden|clip computes a layout scrollbar in
+   * Chrome, which sits next to the macOS overlay thumb (the wide gutter).
    */
   .anb-zone--preview .panel__body,
   .anb-zone--terminal .panel__code {
-    overflow-x: hidden;
     overflow-y: auto;
     overscroll-behavior: contain;
+  }
+
+  .anb-zone--options > .panel,
+  .anb-zone--preview .anb-canvas,
+  .anb-zone--terminal .panel__code {
+    max-width: 100%;
+    min-width: 0;
+  }
+
+  .anb-zone--options,
+  .anb-zone--preview .panel__body,
+  .anb-zone--terminal .panel__code {
+    scrollbar-width: thin;
+    scrollbar-color: color-mix(in srgb, var(--color-text) 32%, transparent) transparent;
+  }
+
+  .anb-zone--options::-webkit-scrollbar,
+  .anb-zone--preview .panel__body::-webkit-scrollbar,
+  .anb-zone--terminal .panel__code::-webkit-scrollbar {
+    width: 8px;
+  }
+
+  .anb-zone--options::-webkit-scrollbar-track,
+  .anb-zone--preview .panel__body::-webkit-scrollbar-track,
+  .anb-zone--terminal .panel__code::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  .anb-zone--options::-webkit-scrollbar-thumb,
+  .anb-zone--preview .panel__body::-webkit-scrollbar-thumb,
+  .anb-zone--terminal .panel__code::-webkit-scrollbar-thumb {
+    background: color-mix(in srgb, var(--color-text) 32%, transparent);
+    border-radius: 999px;
   }
 }
 
