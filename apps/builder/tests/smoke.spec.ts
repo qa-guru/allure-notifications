@@ -64,6 +64,7 @@ test.describe('allure-notifications-builder smoke', () => {
         throw new Error('scrollports missing');
       }
       const metric = (el) => ({
+        overflowX: getComputedStyle(el).overflowX,
         overflowY: getComputedStyle(el).overflowY,
         canScroll: el.scrollHeight > el.clientHeight + 1,
         top: el.scrollTop,
@@ -95,6 +96,9 @@ test.describe('allure-notifications-builder smoke', () => {
 
     expect(snap.bodyOverflow).toBe('hidden');
     expect(snap.pageScroll).toBe(0);
+    expect(snap.options.overflowX).toBe('hidden');
+    expect(snap.preview.overflowX).toBe('hidden');
+    expect(snap.terminal.overflowX).toBe('hidden');
     expect(snap.options.canScroll).toBe(true);
     expect(snap.preview.canScroll).toBe(true);
     expect(snap.terminal.canScroll).toBe(true);

@@ -894,7 +894,8 @@ html.theme-light .anb-canvas--chart-off::after {
   flex: 1 1 auto;
   min-height: 0;
   margin: 0;
-  overflow: auto;
+  overflow-x: hidden;
+  overflow-y: auto;
   white-space: pre-wrap;
   word-break: break-word;
   font-family: var(--font-mono, ui-monospace, monospace);
@@ -938,6 +939,7 @@ html.theme-light .anb-zone--terminal .ch-theme--vscode .ch-tok-cmd { color: #795
   body {
     height: 100%;
     overflow: hidden;
+    overscroll-behavior: none;
   }
 
   .anb-page.page-shell {
@@ -962,7 +964,8 @@ html.theme-light .anb-zone--terminal .ch-theme--vscode .ch-tok-cmd { color: #795
 
   /* Options: two stacked panels — the zone is the scrollport. */
   .anb-zone--options {
-    overflow: auto;
+    overflow-x: hidden;
+    overflow-y: auto;
   }
 
   /*
@@ -990,12 +993,15 @@ html.theme-light .anb-zone--terminal .ch-theme--vscode .ch-tok-cmd { color: #795
     top: auto;
   }
 
-  .anb-zone--preview .panel__body {
-    overflow: auto;
-    overscroll-behavior: contain;
-  }
-
+  /*
+   * overflow-x:hidden + overflow-y:auto — not `overflow:auto`.
+   * Chrome treats auto/auto as a classic layout scrollbar (wide gutter) as soon
+   * as a subpixel horizontal overflow appears while scrolling.
+   */
+  .anb-zone--preview .panel__body,
   .anb-zone--terminal .panel__code {
+    overflow-x: hidden;
+    overflow-y: auto;
     overscroll-behavior: contain;
   }
 }
