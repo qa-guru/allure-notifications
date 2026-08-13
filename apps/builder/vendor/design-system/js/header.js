@@ -28,8 +28,38 @@ const TEMPLATE_URLS = [
 
 export const HEADER_LANG_CHANGE = 'header:lang-change';
 
+/**
+ * Keyboard vs pointer focus — SSOT with css/tokens.css
+ * `html[data-keyboard-intent]`. Rings stay off until Tab/Arrow; a click
+ * never leaves the UA / :focus-visible box on chrome controls.
+ */
+function installKeyboardFocusIntent() {
+  if (typeof document === 'undefined') {
+    return;
+  }
+  const root = document.documentElement;
+  if (root.dataset.focusIntentReady) {
+    return;
+  }
+  root.dataset.focusIntentReady = 'true';
+  const pointer = () => {
+    root.removeAttribute('data-keyboard-intent');
+  };
+  const keyboard = (event) => {
+    if (event.metaKey || event.ctrlKey || event.altKey) {
+      return;
+    }
+    if (event.key === 'Tab' || event.key.startsWith('Arrow')) {
+      root.setAttribute('data-keyboard-intent', '');
+    }
+  };
+  window.addEventListener('pointerdown', pointer, true);
+  window.addEventListener('keydown', keyboard, true);
+}
+
 if (typeof window !== 'undefined') {
   window.HEADER_LANG_CHANGE = HEADER_LANG_CHANGE;
+  installKeyboardFocusIntent();
 }
 
 /** @type {HeaderConfig} */

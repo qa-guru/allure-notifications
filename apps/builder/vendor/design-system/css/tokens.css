@@ -165,6 +165,38 @@ body {
   background: var(--color-surface);
 }
 
+html {
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* Focus SSOT. Pointer / leftover click: no UA box. Keyboard: designed
+   ring after Tab/Arrow (`html[data-keyboard-intent]` from js/header.js).
+   Default-off so a click never flashes a white ring before the script. */
+:focus {
+  outline: none;
+}
+
+:focus-visible {
+  outline: none !important;
+}
+
+html[data-keyboard-intent] :focus-visible {
+  outline: 2px solid var(--color-primary) !important;
+}
+
+button::-moz-focus-inner {
+  border: 0;
+}
+
+button,
+[type="button"],
+[type="submit"],
+[type="reset"],
+[role="button"] {
+  -webkit-user-select: none;
+  user-select: none;
+}
+
 html.theme-light {
   --plaque-chevron-glyph: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6' fill='none'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%231c1917' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
   --color-surface: #f2f2f2;
