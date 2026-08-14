@@ -16,7 +16,7 @@
       "actualValue": "0"
     }
   ],
-  "projectKey": "reference-app-backend",
+  "projectKey": "autotests-ai-multistack-app-backend-java-spring",
   "analysis_id": "AXfixturePassedAnalysis",
-  "dashboard_url": "https://sonar.qa.guru/dashboard?id=reference-app-backend"
+  "dashboard_url": "https://sonar.qa.guru/dashboard?id=autotests-ai-multistack-app-backend-java-spring"
 }
