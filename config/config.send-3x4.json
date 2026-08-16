@@ -22,8 +22,8 @@
       "height": 1140
     },
     "links": {
-      "report": "https://autotests-ai.github.io/reference-app/reports/latest/awesome/index.html",
-      "dashboard": "https://autotests-ai.github.io/reference-app/reports/latest/dashboard/index.html",
+      "report": "https://reports.autotests.ai/reports/latest/awesome/index.html",
+      "dashboard": "https://reports.autotests.ai/reports/latest/dashboard/index.html",
       "testops": "https://allure.qa.guru",
       "build": "https://github.com/autotests-ai/reference-app/actions"
     }
