@@ -7,7 +7,7 @@ npx @qa-guru/allure-notifications@6.0.14 send --config config.json --dry-run
 npx @qa-guru/allure-notifications@6.0.14 send --config config.json \
   --allure-folder build/reports/allure-report/allureReport/awesome \
   --allure-results-folder build/allure-results \
-  --project reference-app \
+  --project Multistack \
   --build-url "$BUILD_URL" \
   --live
 ```

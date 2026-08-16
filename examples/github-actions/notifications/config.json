@@ -1,6 +1,6 @@
 {
   "base": {
-    "project": "reference-app",
+    "project": "Multistack",
     "environment": "GitHub Actions",
     "comment": "Allure report notification",
     "language": "en",

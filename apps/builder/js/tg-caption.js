@@ -13,12 +13,12 @@ export const TG_PREVIEW_STATS = Object.freeze({
 });
 /** Test override — null uses TG_PREVIEW_STATS. */
 let tgPreviewStatsOverride = null;
-/** Fallback links when Options → links are empty (reference-app dogfood). */
+/** Fallback links when Options → links are empty (Multistack dogfood). */
 export const TG_PREVIEW_LINKS = Object.freeze({
     report: 'https://reports.autotests.ai/reports/latest/awesome/index.html',
     dashboard: 'https://reports.autotests.ai/reports/latest/dashboard/index.html',
     testops: 'https://allure.qa.guru/launch/54543',
-    build: 'https://github.com/autotests-ai/reference-app/actions/runs/29798732034',
+    build: 'https://github.com/autotests-ai/autotests-ai-multistack-app/actions/runs/29798732034',
 });
 export const TG_LINK_KEYS = Object.freeze(['report', 'dashboard', 'testops', 'build']);
 /**

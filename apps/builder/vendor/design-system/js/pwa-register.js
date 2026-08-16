@@ -1,7 +1,7 @@
 /**
  * PWA register primitive (SSOT).
  *
- * Heirs (selenoid-ui, allure-notifications builder, reference-app / stacks)
+ * Heirs (selenoid-ui, allure-notifications builder, autotests-ai-multistack-app / stacks)
  * generate `sw.js` on their own build, but **must** register through this
  * module — no local bare `navigator.serviceWorker.register` copies.
  *

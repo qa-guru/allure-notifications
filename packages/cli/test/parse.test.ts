@@ -83,7 +83,7 @@ describe("@qa-guru/allure-notifications parseArgs", () => {
       "build/report/awesome",
       "--allure-results-folder=build/allure-results",
       "--project",
-      "reference-app",
+      "Multistack",
       "--report-url=https://example.test/report",
       "--dashboard-url",
       "https://example.test/dashboard",
@@ -93,7 +93,7 @@ describe("@qa-guru/allure-notifications parseArgs", () => {
     ]);
     assert.equal(args.allureFolder, "build/report/awesome");
     assert.equal(args.allureResultsFolder, "build/allure-results");
-    assert.equal(args.project, "reference-app");
+    assert.equal(args.project, "Multistack");
     assert.equal(args.reportUrl, "https://example.test/report");
     assert.equal(args.dashboardUrl, "https://example.test/dashboard");
     assert.equal(args.testopsUrl, "https://example.test/launch/1");

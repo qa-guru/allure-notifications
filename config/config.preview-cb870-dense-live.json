@@ -1,6 +1,6 @@
 {
   "base": {
-    "project": "reference-app",
+    "project": "Multistack",
     "environment": "ci / dense",
     "comment": "cb870-dense-live · all 7 live · pie 3×3 · pyramid|durations · severities 2×3 · dual durations",
     "allureFolder": "../build/pyramid-showcase/allure-report",
@@ -77,7 +77,7 @@
       "report": "https://reports.autotests.ai/reports/latest/awesome/index.html",
       "dashboard": "https://reports.autotests.ai/reports/latest/dashboard/index.html",
       "testops": "https://allure.qa.guru",
-      "build": "https://github.com/autotests-ai/reference-app/actions"
+      "build": "https://github.com/autotests-ai/autotests-ai-multistack-app/actions"
     }
   },
   "telegram": {

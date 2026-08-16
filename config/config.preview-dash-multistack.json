@@ -1,6 +1,6 @@
 {
   "base": {
-    "project": "reference-app",
+    "project": "Multistack",
     "environment": "ci / main",
     "comment": "pie 4×4 hero · statusDynamics · pyramid · durations · successRate @ SQ-1080",
     "allureFolder": "../build/pyramid-showcase/allure-report/",
@@ -63,7 +63,7 @@
       "report": "https://reports.autotests.ai/reports/latest/awesome/index.html",
       "dashboard": "https://reports.autotests.ai/reports/latest/dashboard/index.html",
       "testops": "https://allure.qa.guru",
-      "build": "https://github.com/autotests-ai/reference-app/actions"
+      "build": "https://github.com/autotests-ai/autotests-ai-multistack-app/actions"
     }
   },
   "telegram": {
