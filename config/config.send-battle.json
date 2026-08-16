@@ -1,6 +1,6 @@
 {
   "base": {
-    "project": "Reference App (autotests-ai)",
+    "project": "Multistack (autotests-ai)",
     "environment": "CI · GitHub Actions",
     "comment": "Nightly regression — full suite",
     "language": "ru",

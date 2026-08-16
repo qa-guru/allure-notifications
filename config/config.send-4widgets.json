@@ -1,6 +1,6 @@
 {
   "base": {
-    "project": "Reference App — 4-widget grid (Allure3 F5)",
+    "project": "Multistack — 4-widget grid (Allure3 F5)",
     "environment": "local dogfood",
     "comment": "2x2 collage — currentStatus + testing pyramid + status dynamics + success rate",
     "language": "ru",

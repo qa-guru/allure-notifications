@@ -1,6 +1,6 @@
 {
   "base": {
-    "project": "Reference App — 3x4 grid test",
+    "project": "Multistack — 3x4 grid test",
     "environment": "local dogfood",
     "comment": "3x4 collage grid test — 12 cells (3 rows x 4 cols)",
     "language": "ru",

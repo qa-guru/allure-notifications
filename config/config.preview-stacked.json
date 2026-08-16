@@ -1,6 +1,6 @@
 {
   "base": {
-    "project": "Reference App \u2014 pyramid canon (Allure3 F5)",
+    "project": "Multistack \u2014 pyramid canon (Allure3 F5)",
     "environment": "local dogfood",
     "comment": "Collage preset \u2014 stacked layout (pie \u00b7 pyramid \u00b7 durations)",
     "language": "ru",

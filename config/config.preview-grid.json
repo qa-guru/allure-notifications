@@ -1,6 +1,6 @@
 {
   "base": {
-    "project": "Reference App — pyramid canon (Allure3 F5)",
+    "project": "Multistack — pyramid canon (Allure3 F5)",
     "environment": "local dogfood",
     "comment": "Collage preset — grid layout (currentStatus · pyramid · durations)",
     "language": "ru",
