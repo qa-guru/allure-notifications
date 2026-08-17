@@ -1,7 +1,7 @@
 /**
  * Collage palette SSOT (hex strings).
  *
- * Upstream SSOT: `stacks/java-spring/tests/allure/pyramid-layers.json`
+ * Upstream SSOT: `projects/autotests-ai-multistack-home/ethalon/tests/java/tests-java-gradle-junit5-allure3-selenide/allure/pyramid-layers.json`
  * (verified by monorepo `python scripts/pyramid_palette_sync.py --check`
  * and by kit unit tests).
  *

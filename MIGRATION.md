@@ -117,7 +117,7 @@ See [docs/ci-cookbook.md](docs/ci-cookbook.md): **primary** = `allure generate` 
 
 Collage palette + testing-pyramid geometry live in `@qa-guru/allure-report-kit` (`/collage` export):
 
-- Palette mirrors monorepo SSOT `stacks/java-spring/tests/allure/pyramid-layers.json`
+- Palette mirrors monorepo SSOT `projects/autotests-ai-multistack-home/ethalon/tests/java/tests-java-gradle-junit5-allure3-selenide/allure/pyramid-layers.json`
 - `unit` light/dark = collage `STATUS_COLORS.passed` / `#94ca66`
 - Geometry: `CORNER_RATIO=0.18`, `TIER_GAP_RATIO=0.11` (+ `tierGapPx` / `tierCornerRadius`)
 - Verify: kit `test/collage-palette.test.mjs` and (from monorepo root) `python scripts/pyramid_palette_sync.py --check`
