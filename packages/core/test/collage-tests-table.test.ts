@@ -213,6 +213,23 @@ describe("tests-table collage wire", () => {
     );
   });
 
+  it("column tracks are 4:2:2:2 name/status/trend/stability", () => {
+    const width = 1008;
+    const layout = testsTableColumnLayout(width);
+    const inner = width - layout.padX * 2;
+    assert.equal(
+      layout.nameW + layout.statusW + layout.trendW + layout.stabilityW,
+      inner,
+    );
+    assert.equal(layout.nameW, Math.round((inner * 4) / 10));
+    assert.equal(layout.statusW, Math.round((inner * 2) / 10));
+    assert.equal(layout.trendW, Math.round((inner * 2) / 10));
+    assert.equal(
+      layout.stabilityW,
+      inner - layout.nameW - layout.statusW - layout.trendW,
+    );
+  });
+
   it("optional aHash smoke — standalone panel PNG is stable", () => {
     const raw = JSON.parse(readFileSync(TABLE_FIXTURE, "utf8"));
     const data = parseKitTestsTableData(raw);

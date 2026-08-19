@@ -86,15 +86,16 @@ export type TestsTableColumnLayout = {
 };
 
 /**
- * Column tracks for the canvas table. Caps keep status/trend/stability
- * content-sized on a wide 10-col tile (DS container ladder is for ~2×2).
+ * Column tracks: Test : Status : Trend : Stability = 4 : 2 : 2 : 2.
  */
 export function testsTableColumnLayout(width: number): TestsTableColumnLayout {
   const padX = TABLE_PAD_X;
-  const statusW = Math.min(88, Math.floor(width * 0.22));
-  const trendW = Math.min(96, Math.floor(width * 0.24));
-  const stabilityW = Math.min(88, Math.floor(width * 0.22));
-  const nameW = Math.max(40, width - statusW - trendW - stabilityW - padX * 2);
+  const inner = Math.max(0, width - padX * 2);
+  const unit = inner / 10;
+  const nameW = Math.max(1, Math.round(unit * 4));
+  const statusW = Math.max(1, Math.round(unit * 2));
+  const trendW = Math.max(1, Math.round(unit * 2));
+  const stabilityW = Math.max(1, inner - nameW - statusW - trendW);
   return {
     padX,
     cellPadX: TESTS_TABLE_CELL_PAD_X,
