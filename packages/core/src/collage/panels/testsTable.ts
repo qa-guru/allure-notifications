@@ -59,6 +59,86 @@ const SPARKLINE_EMPTY = {
 
 const PNG_MAGIC = "89504e470d0a1a0a";
 
+/** Outer table inset — collage panel edge. */
+const TABLE_PAD_X = 8;
+
+/** DS `tests-table-panel` cell padding: `6px var(--space-2)` (`--space-2: 8px`). */
+export const TESTS_TABLE_CELL_PAD_X = 8;
+
+const HEADER_H = 28;
+const ROW_H = 32;
+
+export type TestsTableColumnLayout = {
+  padX: number;
+  cellPadX: number;
+  headerH: number;
+  rowH: number;
+  nameW: number;
+  statusW: number;
+  trendW: number;
+  stabilityW: number;
+  colX: {
+    name: number;
+    status: number;
+    trend: number;
+    stability: number;
+  };
+};
+
+/**
+ * Column tracks for the canvas table. Caps keep status/trend/stability
+ * content-sized on a wide 10-col tile (DS container ladder is for ~2×2).
+ */
+export function testsTableColumnLayout(width: number): TestsTableColumnLayout {
+  const padX = TABLE_PAD_X;
+  const statusW = Math.min(88, Math.floor(width * 0.22));
+  const trendW = Math.min(96, Math.floor(width * 0.24));
+  const stabilityW = Math.min(88, Math.floor(width * 0.22));
+  const nameW = Math.max(40, width - statusW - trendW - stabilityW - padX * 2);
+  return {
+    padX,
+    cellPadX: TESTS_TABLE_CELL_PAD_X,
+    headerH: HEADER_H,
+    rowH: ROW_H,
+    nameW,
+    statusW,
+    trendW,
+    stabilityW,
+    colX: {
+      name: padX,
+      status: padX + nameW,
+      trend: padX + nameW + statusW,
+      stability: padX + nameW + statusW + trendW,
+    },
+  };
+}
+
+function cellContentBox(
+  colX: number,
+  colW: number,
+): { x: number; w: number } {
+  return {
+    x: colX + TESTS_TABLE_CELL_PAD_X,
+    w: Math.max(1, colW - TESTS_TABLE_CELL_PAD_X * 2),
+  };
+}
+
+function withCellClip(
+  ctx: SKRSContext2D,
+  x: number,
+  y: number,
+  w: number,
+  h: number,
+  paint: () => void,
+): void {
+  ctx.save();
+  ctx.beginPath();
+  ctx.rect(x, y, w, h);
+  ctx.clip();
+  paint();
+  ctx.restore();
+}
+
 export type RenderTestsTablePngOptions = {
   width: number;
   height: number;
@@ -204,7 +284,7 @@ function paintSparkline(
   }
 
   const values = points.map((point) => point.durationSec as number);
-  /* Fill the trend column — do not leave an intrinsic 88px island. */
+  /* Fill the padded trend content box — not an intrinsic 88px island. */
   const width = Math.max(1, w);
   const height = Math.min(28, h);
   const padX = 0;
@@ -221,6 +301,9 @@ function paintSparkline(
   const oy = y + (h - height) / 2;
 
   ctx.save();
+  ctx.beginPath();
+  ctx.rect(x, y, w, h);
+  ctx.clip();
   ctx.beginPath();
   ctx.moveTo(ox + padX, oy + height - padY);
   for (const point of coords) {
@@ -364,20 +447,15 @@ export function renderTestsTablePng(
     return canvas.toBuffer("image/png");
   }
 
-  const padX = 8;
-  const headerH = 28;
-  const rowH = 32;
-  const statusW = Math.min(88, Math.floor(width * 0.22));
-  const trendW = Math.min(96, Math.floor(width * 0.24));
-  const stabilityW = Math.min(88, Math.floor(width * 0.22));
-  const nameW = Math.max(40, width - statusW - trendW - stabilityW - padX * 2);
-
-  const colX = {
-    name: padX,
-    status: padX + nameW,
-    trend: padX + nameW + statusW,
-    stability: padX + nameW + statusW + trendW,
-  };
+  const {
+    headerH,
+    rowH,
+    nameW,
+    statusW,
+    trendW,
+    stabilityW,
+    colX,
+  } = testsTableColumnLayout(width);
 
   // Header
   ctx.fillStyle = rgbCss(muted);
@@ -386,10 +464,10 @@ export function renderTestsTablePng(
   ctx.textAlign = "left";
   const headerY = headerH / 2;
   const headers = [columns[0] ?? "", columns[1] ?? "", columns[2] ?? "", columns[3] ?? ""];
-  ctx.fillText(headers[0]!, colX.name, headerY);
-  ctx.fillText(headers[1]!, colX.status, headerY);
-  ctx.fillText(headers[2]!, colX.trend, headerY);
-  ctx.fillText(headers[3]!, colX.stability, headerY);
+  ctx.fillText(headers[0]!, colX.name + TESTS_TABLE_CELL_PAD_X, headerY);
+  ctx.fillText(headers[1]!, colX.status + TESTS_TABLE_CELL_PAD_X, headerY);
+  ctx.fillText(headers[2]!, colX.trend + TESTS_TABLE_CELL_PAD_X, headerY);
+  ctx.fillText(headers[3]!, colX.stability + TESTS_TABLE_CELL_PAD_X, headerY);
 
   ctx.strokeStyle = rgbCss(border);
   ctx.lineWidth = 1;
@@ -411,42 +489,64 @@ export function renderTestsTablePng(
       ctx.stroke();
     }
 
-    ctx.fillStyle = rgbCss(text);
-    ctx.font = "13px sans-serif";
-    ctx.textAlign = "left";
-    ctx.textBaseline = "middle";
-    const displayName = row.name || row.fullName || "—";
-    ctx.fillText(
-      ellipsize(ctx, displayName, nameW - 4),
-      colX.name,
-      y + rowH / 2,
-    );
+    const nameBox = cellContentBox(colX.name, nameW);
+    const statusBox = cellContentBox(colX.status, statusW);
+    const trendBox = cellContentBox(colX.trend, trendW);
+    const stabilityBox = cellContentBox(colX.stability, stabilityW);
 
-    paintStatusBadge(
-      ctx,
-      row.status,
-      statusLabel(row.status, lang),
-      colX.status,
-      y,
-      statusW,
-      rowH,
-      palette,
-    );
+    withCellClip(ctx, colX.name, y, nameW, rowH, () => {
+      ctx.fillStyle = rgbCss(text);
+      ctx.font = "13px sans-serif";
+      ctx.textAlign = "left";
+      ctx.textBaseline = "middle";
+      const displayName = row.name || row.fullName || "—";
+      ctx.fillText(
+        ellipsize(ctx, displayName, nameBox.w),
+        nameBox.x,
+        y + rowH / 2,
+      );
+    });
 
-    paintSparkline(
-      ctx,
-      row.history,
-      colX.trend,
-      y,
-      trendW,
-      rowH,
-      sparkTheme,
-      lang,
-      palette,
-      trendSparkColor(row.status, sparkTheme),
-    );
+    withCellClip(ctx, colX.status, y, statusW, rowH, () => {
+      paintStatusBadge(
+        ctx,
+        row.status,
+        statusLabel(row.status, lang),
+        statusBox.x,
+        y,
+        statusBox.w,
+        rowH,
+        palette,
+      );
+    });
 
-    paintStabilityCell(ctx, row, colX.stability, y, stabilityW, rowH, sparkTheme, palette);
+    withCellClip(ctx, colX.trend, y, trendW, rowH, () => {
+      paintSparkline(
+        ctx,
+        row.history,
+        trendBox.x,
+        y,
+        trendBox.w,
+        rowH,
+        sparkTheme,
+        lang,
+        palette,
+        trendSparkColor(row.status, sparkTheme),
+      );
+    });
+
+    withCellClip(ctx, colX.stability, y, stabilityW, rowH, () => {
+      paintStabilityCell(
+        ctx,
+        row,
+        stabilityBox.x,
+        y,
+        stabilityBox.w,
+        rowH,
+        sparkTheme,
+        palette,
+      );
+    });
   });
 
   const png = canvas.toBuffer("image/png");

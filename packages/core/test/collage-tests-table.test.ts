@@ -20,7 +20,7 @@ declareSuite({
 
 import { createCanvas, loadImage } from "@napi-rs/canvas";
 import { parseConfig, shouldSilentSkipKitOnlyItem } from "@qa-guru/allure-notifications-config";
-import { TESTS_TABLE_TOKEN_PALETTE, renderTestsTablePng } from "../src/collage/panels/testsTable.js";
+import { TESTS_TABLE_TOKEN_PALETTE, renderTestsTablePng, testsTableColumnLayout } from "../src/collage/panels/testsTable.js";
 import { KIT_DARK_TOKEN_PALETTE } from "../src/theme.js";
 import {
   TestsTableDataMissingError,
@@ -219,5 +219,39 @@ describe("tests-table collage wire", () => {
     const a = renderTestsTablePng(data, { width: 400, height: 260, dark: true });
     const b = renderTestsTablePng(data, { width: 400, height: 260, dark: true });
     assert.equal(aHash16(a), aHash16(b));
+  });
+
+  it("flaky badge does not paint into the trend column", async () => {
+    const raw = JSON.parse(readFileSync(TABLE_FIXTURE, "utf8"));
+    const data = parseKitTestsTableData(raw);
+    const width = 1000;
+    const height = 220;
+    const png = renderTestsTablePng(data, { width, height, dark: true });
+    const layout = testsTableColumnLayout(width);
+    const rowIndex = 1;
+    const y = layout.headerH + rowIndex * layout.rowH + Math.floor(layout.rowH / 2);
+    const probeW = 6;
+    const x = layout.colX.stability - probeW;
+    const warning = KIT_DARK_TOKEN_PALETTE["--color-warning"]!;
+    const img = await loadImage(png);
+    const canvas = createCanvas(img.width, img.height);
+    const ctx = canvas.getContext("2d");
+    ctx.drawImage(img, 0, 0);
+    const { data: pixels } = ctx.getImageData(x, y - 4, probeW, 8);
+    let warningHits = 0;
+    for (let i = 0; i < pixels.length; i += 4) {
+      if (
+        Math.abs(pixels[i]! - warning.r) <= 20 &&
+        Math.abs(pixels[i + 1]! - warning.g) <= 20 &&
+        Math.abs(pixels[i + 2]! - warning.b) <= 20
+      ) {
+        warningHits += 1;
+      }
+    }
+    assert.equal(
+      warningHits,
+      0,
+      `stability flaky badge leaked ${warningHits} px into the trend column`,
+    );
   });
 });
