@@ -681,6 +681,10 @@ describe("@qa-guru/allure-notifications-core empty-state panels", () => {
       "Title Project",
     );
     assert.equal(
+      resolveCardTitle({ type: "pie", x: 0, y: 0, w: 1, h: 1 }, config, analytics),
+      "Title Project",
+    );
+    assert.equal(
       resolveCardTitle(
         { type: "durations", x: 0, y: 0, w: 1, h: 1, groupBy: "layer" },
         config,

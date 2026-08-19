@@ -106,7 +106,7 @@ function normalize(raw: string | undefined | null): string | null {
     return null;
   }
   const key = raw.trim().toLowerCase();
-  if (key === PANEL_CURRENT_STATUS) {
+  if (key === PANEL_CURRENT_STATUS || key === "pie") {
     return PANEL_CURRENT_STATUS;
   }
   if (key === PANEL_PYRAMID || key === "pyramid") {
@@ -231,7 +231,7 @@ function selectedFreeItems(config: Config): ChartItem[] {
   return items.length > 0 ? items : defaultFreeItems();
 }
 
-function pieTitle(config: Config): string {
+function currentStatusTitle(config: Config): string {
   const project = config.base.project;
   return project && project.trim() ? project : "Summary";
 }
@@ -262,7 +262,7 @@ export function resolveCardTitle(
   }
   const key = normalize(item.type);
   if (key === PANEL_CURRENT_STATUS) {
-    return pieTitle(config);
+    return currentStatusTitle(config);
   }
   if (key === PANEL_PYRAMID) {
     return pyramidTitle(config, analytics);

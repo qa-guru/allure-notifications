@@ -139,7 +139,7 @@ export function resolvePanelMeta(
   raw: Partial<ChartItem> & { id?: string },
 ): PanelMeta | undefined {
   if (raw.id && PANEL_META[raw.id]) return PANEL_META[raw.id];
-  const type = raw.type || "";
+  const type = raw.type === "pie" ? "currentStatus" : raw.type || "";
   const groupBy = raw.groupBy || undefined;
   const by = raw.by || undefined;
   const exact = PANEL_CATALOG.find(

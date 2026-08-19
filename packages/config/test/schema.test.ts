@@ -64,6 +64,7 @@ describe("@qa-guru/allure-notifications-config catalog", () => {
 
   it("resolves currentStatus and groupBy variants", () => {
     assert.equal(resolvePanelMeta({ type: "currentStatus" })?.id, "currentStatus");
+    assert.equal(resolvePanelMeta({ type: "pie" })?.id, "currentStatus");
     assert.equal(
       resolvePanelMeta({
         type: "stabilityDistribution",

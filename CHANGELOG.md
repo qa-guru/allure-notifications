@@ -2,6 +2,14 @@
 
 ## Unreleased
 
+### English
+
+- **currentStatus** — leftover chart item `type: pie` maps to `currentStatus` again (Jenkins configs that never renamed the slot). Card title stays the project name, not `pie`; unknown types still get `No data yet`.
+
+### Russian
+
+- **currentStatus** — старый `type: pie` в items снова рендерит donut статуса (хвосты Jenkins). Заголовок карточки — имя проекта, не `pie`; неизвестные типы по-прежнему `No data yet`.
+
 ## v 6.2.2
 
 ### English
