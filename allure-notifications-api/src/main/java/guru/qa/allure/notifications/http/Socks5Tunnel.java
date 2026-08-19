@@ -3,6 +3,7 @@ package guru.qa.allure.notifications.http;
 import guru.qa.allure.notifications.config.proxy.Proxy;
 import org.apache.commons.lang3.StringUtils;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -35,6 +36,7 @@ final class Socks5Tunnel {
         Socket socket = new Socket();
         int timeout = connectTimeoutMs > 0 ? connectTimeoutMs : 15000;
         socket.connect(new InetSocketAddress(proxy.getHost(), proxy.getPort()), timeout);
+        socket.setTcpNoDelay(true);
         socket.setSoTimeout(timeout);
         try {
             handshake(socket, targetHost, targetPort, proxy.getUsername(), proxy.getPassword());
@@ -56,9 +58,7 @@ final class Socks5Tunnel {
         OutputStream out = socket.getOutputStream();
         boolean auth = StringUtils.isNotEmpty(username) && StringUtils.isNotEmpty(password);
         if (auth) {
-            out.write(new byte[] {
-                (byte) SOCKS_VERSION, 2, (byte) METHOD_NO_AUTH, (byte) METHOD_USER_PASS
-            });
+            out.write(new byte[] {(byte) SOCKS_VERSION, 1, (byte) METHOD_USER_PASS});
         } else {
             out.write(new byte[] {(byte) SOCKS_VERSION, 1, (byte) METHOD_NO_AUTH});
         }
@@ -77,11 +77,11 @@ final class Socks5Tunnel {
                 throw new IOException("SOCKS5 proxy requested username/password but none configured");
             }
             writeUserPass(out, username, password);
-            out.flush();
             int authVersion = readByte(in);
             int status = readByte(in);
             if (authVersion != AUTH_VERSION || status != 0) {
-                throw new IOException("SOCKS5 proxy authentication failed");
+                throw new IOException(
+                        "SOCKS5 proxy authentication failed (ver=" + authVersion + ", status=" + status + ")");
             }
         } else if (method != METHOD_NO_AUTH) {
             throw new IOException("SOCKS5 proxy selected unsupported method " + method);
@@ -99,36 +99,41 @@ final class Socks5Tunnel {
         if (userBytes.length > MAX_DOMAIN_LENGTH || passBytes.length > MAX_DOMAIN_LENGTH) {
             throw new IOException("SOCKS5 username/password longer than 255 bytes");
         }
-        out.write(AUTH_VERSION);
-        out.write(userBytes.length);
-        out.write(userBytes);
-        out.write(passBytes.length);
-        out.write(passBytes);
+        ByteArrayOutputStream payload = new ByteArrayOutputStream(3 + userBytes.length + passBytes.length);
+        payload.write(AUTH_VERSION);
+        payload.write(userBytes.length);
+        payload.write(userBytes);
+        payload.write(passBytes.length);
+        payload.write(passBytes);
+        out.write(payload.toByteArray());
+        out.flush();
     }
 
     private static void writeConnect(OutputStream out, String targetHost, int targetPort)
             throws IOException {
-        out.write(SOCKS_VERSION);
-        out.write(CMD_CONNECT);
-        out.write(0);
+        ByteArrayOutputStream payload = new ByteArrayOutputStream();
+        payload.write(SOCKS_VERSION);
+        payload.write(CMD_CONNECT);
+        payload.write(0);
         byte[] ipv4 = parseIpv4(targetHost);
         if (ipv4 != null) {
-            out.write(ATYP_IPV4);
-            out.write(ipv4);
+            payload.write(ATYP_IPV4);
+            payload.write(ipv4);
         } else if (isIpv6Literal(targetHost)) {
-            out.write(ATYP_IPV6);
-            out.write(InetAddress.getByName(targetHost).getAddress());
+            payload.write(ATYP_IPV6);
+            payload.write(InetAddress.getByName(targetHost).getAddress());
         } else {
             byte[] hostBytes = targetHost.getBytes(StandardCharsets.US_ASCII);
             if (hostBytes.length == 0 || hostBytes.length > MAX_DOMAIN_LENGTH) {
                 throw new IOException("SOCKS5 domain name length invalid: " + hostBytes.length);
             }
-            out.write(ATYP_DOMAIN);
-            out.write(hostBytes.length);
-            out.write(hostBytes);
+            payload.write(ATYP_DOMAIN);
+            payload.write(hostBytes.length);
+            payload.write(hostBytes);
         }
-        out.write((targetPort >>> 8) & 0xFF);
-        out.write(targetPort & 0xFF);
+        payload.write((targetPort >>> 8) & 0xFF);
+        payload.write(targetPort & 0xFF);
+        out.write(payload.toByteArray());
     }
 
     private static void readConnectReply(InputStream in) throws IOException {

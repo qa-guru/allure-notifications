@@ -15,6 +15,9 @@ import org.junit.jupiter.api.Test;
 
 import javax.net.ssl.SSLContext;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -216,6 +219,28 @@ class HttpClientFactoryTest {
         Proxy resolved = HttpClientFactory.withResolvedCredentials(proxy, env);
         assertEquals("env-user", resolved.getUsername());
         assertEquals("env-pass", resolved.getPassword());
+    }
+
+    @Test
+    void resolveCredentialsFromEnvFile() throws Exception {
+        Path file = Files.createTempFile("microsocks", ".env");
+        try {
+            Files.write(file, Arrays.asList(
+                    "# comment",
+                    "export MICROSOCKS_USER=\"file-user\"",
+                    "MICROSOCKS_PASS=file-pass"
+            ), StandardCharsets.UTF_8);
+            Proxy proxy = new Proxy();
+            proxy.setHost("proxy.example");
+            proxy.setPort(7777);
+            Map<String, String> env = new HashMap<>();
+            env.put("MICROSOCKS_ENV_FILE", file.toString());
+            Proxy resolved = HttpClientFactory.withResolvedCredentials(proxy, env);
+            assertEquals("file-user", resolved.getUsername());
+            assertEquals("file-pass", resolved.getPassword());
+        } finally {
+            Files.deleteIfExists(file);
+        }
     }
 
     @Test

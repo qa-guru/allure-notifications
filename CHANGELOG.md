@@ -1,5 +1,17 @@
 # Changelog
 
+## v 5.1.1
+
+### English
+
+- **SOCKS5 auth vs microsocks** — RFC 1929 username/password is sent as one TCP payload; greeting offers only the selected method
+- **`/opt/qa-guru/etc/microsocks.env`** — if `proxy.username`/`password` are empty, the jar reads `MICROSOCKS_USER`/`PASS` from that file (`MICROSOCKS_ENV_FILE` overrides the path)
+
+### Russian
+
+- **SOCKS5 auth vs microsocks** — RFC 1929 login/password одним TCP-пакетом; в greeting только выбранный метод
+- **`/opt/qa-guru/etc/microsocks.env`** — если в JSON нет `username`/`password`, jar читает `MICROSOCKS_USER`/`PASS` из файла (`MICROSOCKS_ENV_FILE` — другой путь)
+
 ## v 5.1.0
 
 ### English
