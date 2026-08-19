@@ -17,6 +17,8 @@
   "proxy": {
     "type": "socks5",
     "host": "proxy.qaguru.school",
-    "port": 7777
+    "port": 7777,
+    "username": "",
+    "password": ""
   }
 }

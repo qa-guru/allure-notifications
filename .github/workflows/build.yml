@@ -4,9 +4,13 @@ on:
   push:
     branches:
     - master
+    - 'legacy/java-*'
+    - 'release/**'
   pull_request:
     branches:
     - master
+    - 'legacy/java-*'
+    - 'release/**'
 
 jobs:
   build:

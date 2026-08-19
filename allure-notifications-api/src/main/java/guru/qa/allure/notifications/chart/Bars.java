@@ -57,7 +57,9 @@ final class Bars {
         graphics.fill(verticalBarPath(x, y, width, height, rTop, rBot));
     }
 
-    /** Match widget-tile {@code vBarPath}: clamp radius to half-width/half-height. */
+    /**
+     * Match widget-tile {@code vBarPath}: clamp radius to half-width/half-height.
+     */
     private static int cornerRadius(int maxArc, int width, int height) {
         return Math.max(0, Math.min(maxArc, Math.min(width / 2, height / 2)));
     }

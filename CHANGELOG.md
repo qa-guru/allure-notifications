@@ -1,5 +1,19 @@
 # Changelog
 
+## v 5.1.0
+
+### English
+
+- **Real SOCKS5** — `proxy.type: socks5` opens an RFC 1928 CONNECT tunnel (optional RFC 1929 username/password). Apache `setProxy(HttpHost)` is HTTP CONNECT only and was sending garbage to microsocks (`proxy.qaguru.school:7777`)
+- **SOCKS credentials** — `proxy.username` / `proxy.password`, else `MICROSOCKS_USER`/`MICROSOCKS_PASS` or `ALLURE_NOTIFICATIONS_PROXY_*`
+- **Multipart `sendPhoto`** — HTTP body is unchanged; only the TCP path goes through SOCKS (no dropped `photo` part)
+
+### Russian
+
+- **Настоящий SOCKS5** — `proxy.type: socks5` делает RFC 1928 CONNECT (опционально RFC 1929 login/password). Apache `setProxy(HttpHost)` умеет только HTTP CONNECT и слал мусор на microsocks (`proxy.qaguru.school:7777`)
+- **Креды SOCKS** — `proxy.username` / `proxy.password`, иначе `MICROSOCKS_USER`/`MICROSOCKS_PASS` или `ALLURE_NOTIFICATIONS_PROXY_*`
+- **Multipart `sendPhoto`** — HTTP-тело не трогаем; через SOCKS идёт только TCP (часть `photo` не теряется)
+
 ## v 5.0.8
 
 ### English

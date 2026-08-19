@@ -229,13 +229,15 @@ Minimal 5.0 config sketch:
 }
 ```
 The `proxy` block configures outbound HTTP/SOCKS proxy for **Telegram**, **Slack**, and **Cliq** (Apache HttpClient).  
-`type` defaults to `http` when omitted (backward compatible). Use `socks5` for SOCKS proxies without auth (e.g. `proxy.qaguru.school:7777`).
+`type` defaults to `http` (HTTP CONNECT). For SOCKS5 use `socks5` — the jar opens an RFC 1928 tunnel (not HTTP CONNECT). Auth: `username`/`password`, or env `MICROSOCKS_USER`/`MICROSOCKS_PASS` (qa.guru microsocks on `proxy.qaguru.school:7777` requires auth).
 
 ```json
 "proxy": {
   "type": "socks5",
   "host": "proxy.qaguru.school",
-  "port": 7777
+  "port": 7777,
+  "username": "${MICROSOCKS_USER}",
+  "password": "${MICROSOCKS_PASS}"
 }
 ```
 
