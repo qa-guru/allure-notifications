@@ -33,7 +33,7 @@
     "source": {
       "configFile": "allurerc.mjs",
       "rulesFile": "allure/quality-gate.mjs",
-      "hrefBase": "https://github.com/qa-guru/zero-design-system/blob/master/projects/autotests-ai-multistack-home/ethalon/tests/java/tests-java-gradle-junit5-allure3-selenide/"
+      "hrefBase": "https://github.com/autotests-ai/autotests-ai-multistack-app/blob/master/tests/java/tests-java-gradle-junit5-allure3-selenide/"
     }
   },
   "labels": {

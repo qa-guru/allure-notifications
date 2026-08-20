@@ -56,7 +56,7 @@ Alias: [`collage-cb870-free-dogfood.png`](./collage-cb870-free-dogfood.png)
 
 ## Palette SSOT
 
-- Layers + passed status green: `projects/autotests-ai-multistack-home/ethalon/tests/java/tests-java-gradle-junit5-allure3-selenide/allure/pyramid-layers.json`
+- Layers + passed status green: `projects/autotests-ai-multistack-home/autotests-ai-multistack-app/tests/java/tests-java-gradle-junit5-allure3-selenide/allure/pyramid-layers.json`
 - `unit.light` / `unit.dark` = `#94ca66` (Allure 3 passed)
 - Guard: `python scripts/pyramid_palette_sync.py --check`
 
