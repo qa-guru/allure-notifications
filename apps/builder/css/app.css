@@ -236,8 +236,8 @@ body {
 }
 
 #anb-preview-panel[data-anb-dark="false"] {
-  --panel-bg: #e6e3de;
-  --panel-border: rgba(210, 210, 214, 0.95);
+  --panel-bg: #eef0f3;
+  --panel-border: rgba(15, 23, 42, 0.12);
   --panel-bar-bg: #ffffff;
 }
 
@@ -246,13 +246,13 @@ body {
 }
 
 .anb-canvas[data-anb-dark="false"] {
-  background: #cecac4;
+  background: #e8eaee;
 }
 
 .anb-canvas[data-anb-dark="false"] .grid-stack {
   background-image:
-    linear-gradient(to right, rgba(28, 25, 23, 0.1) 1px, transparent 1px),
-    linear-gradient(to bottom, rgba(28, 25, 23, 0.1) 1px, transparent 1px);
+    linear-gradient(to right, rgba(15, 23, 42, 0.08) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(15, 23, 42, 0.08) 1px, transparent 1px);
 }
 
 .anb-canvas[data-anb-dark="false"] .grid-stack-item-content {

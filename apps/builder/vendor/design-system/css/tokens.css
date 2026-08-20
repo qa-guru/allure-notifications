@@ -203,15 +203,15 @@ button,
 
 html.theme-light {
   --plaque-chevron-glyph: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6' fill='none'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%231c1917' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
-  --color-surface: #dedbd7;
-  --color-surface-soft: #e6e3de;
-  --color-header-surface: #f7f6f4;
+  --color-surface: #ffffff;
+  --color-surface-soft: #eef0f3;
+  --color-header-surface: #f4f5f7;
   --color-panel-bar: #ffffff;
-  --color-text: #1c1917;
-  --color-text-muted: rgba(28, 25, 23, 0.55);
-  --color-border: rgba(28, 25, 23, 0.12);
-  --color-primary: #2c2a26;
-  --color-primary-on: #f1f5f9;
+  --color-text: #1f2937;
+  --color-text-muted: rgba(15, 23, 42, 0.55);
+  --color-border: rgba(15, 23, 42, 0.12);
+  --color-primary: #111827;
+  --color-primary-on: #f8fafc;
   --color-warning: #b45309;
   --color-info: #2f7fc4;
   --sparkline-accent: #20aee3;
@@ -224,5 +224,5 @@ html.theme-light {
   --layer-manual: #459bde;
   --layer-other: #64748b;
   --color-status-passed-chart: #3bc95d;
-  --hover-bg: rgba(28, 25, 23, 0.06);
+  --hover-bg: rgba(15, 23, 42, 0.06);
 }
