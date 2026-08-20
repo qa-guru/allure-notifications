@@ -1,8 +1,9 @@
 :root {
   /* Colors — dark default; light via html.theme-light */
-  --color-surface: #2c2a26;
-  --color-header-surface: var(--color-surface);
-  --color-surface-soft: #383530;
+  --color-surface: #151414;
+  --color-header-surface: #21201f;
+  --color-surface-soft: #262523;
+  --color-panel-bar: #413f3c;
   --color-text: #f1f5f9;
   --color-text-muted: rgba(255, 255, 255, 0.45);
   --color-primary: #e8e4df;
@@ -11,6 +12,7 @@
   --color-warning: #f59e0b;
   --color-danger: #f87171;
   --color-info: #61b6fb;
+  --sparkline-accent: #38bdf8;
   --color-border: rgba(255, 255, 255, 0.1);
   --color-brand-logo: #ffffff;
 
@@ -112,6 +114,8 @@
   --input-min-width: 200px;
   --panel-dot-gap: 5px;
   --panel-dot-size: 8px;
+  --panel-bar-height: 26px;
+  --panel-bar-height-chrome: 36px;
   --panel-action-size: 28px;
   --panel-action-gap: 2px;
   /* Interactive window chrome — 30px hit area around a 15px signal circle.
@@ -156,6 +160,10 @@
   box-sizing: border-box;
 }
 
+html {
+  -webkit-tap-highlight-color: transparent;
+}
+
 body {
   margin: 0;
   font-family: var(--font-sans);
@@ -163,10 +171,6 @@ body {
   line-height: 1.5;
   color: var(--color-text);
   background: var(--color-surface);
-}
-
-html {
-  -webkit-tap-highlight-color: transparent;
 }
 
 /* Focus SSOT. Pointer / leftover click: no UA box. Keyboard: designed
@@ -199,9 +203,10 @@ button,
 
 html.theme-light {
   --plaque-chevron-glyph: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6' fill='none'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%231c1917' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
-  --color-surface: #f2f2f2;
-  --color-surface-soft: #ebebeb;
-  --color-header-surface: #fafafa;
+  --color-surface: #dedbd7;
+  --color-surface-soft: #e6e3de;
+  --color-header-surface: #f7f6f4;
+  --color-panel-bar: #ffffff;
   --color-text: #1c1917;
   --color-text-muted: rgba(28, 25, 23, 0.55);
   --color-border: rgba(28, 25, 23, 0.12);
@@ -209,6 +214,7 @@ html.theme-light {
   --color-primary-on: #f1f5f9;
   --color-warning: #b45309;
   --color-info: #2f7fc4;
+  --sparkline-accent: #20aee3;
   --color-brand-logo: #1c1917;
   --layer-unit: #94ca66;
   --layer-component: #ff8200;

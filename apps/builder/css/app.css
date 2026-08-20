@@ -28,7 +28,7 @@ body {
   width: 100%;
   box-sizing: border-box;
   margin-inline: 0;
-  background: var(--color-surface-soft);
+  background: var(--color-surface);
   color: var(--color-text);
 }
 
@@ -230,29 +230,29 @@ body {
 
 /* Preview panel chrome (TG header bar) follows jar darkMode, not page theme. */
 #anb-preview-panel[data-anb-dark="true"] {
-  --panel-bg: #323232;
+  --panel-bg: #262523;
   --panel-border: rgba(96, 96, 96, 0.9);
-  --panel-bar-bg: #3c3c3c;
+  --panel-bar-bg: #413f3c;
 }
 
 #anb-preview-panel[data-anb-dark="false"] {
-  --panel-bg: #f7f7f9;
+  --panel-bg: #e6e3de;
   --panel-border: rgba(210, 210, 214, 0.95);
   --panel-bar-bg: #ffffff;
 }
 
 .anb-canvas[data-anb-dark="true"] {
-  background: #222;
+  background: #0e0d0c;
 }
 
 .anb-canvas[data-anb-dark="false"] {
-  background: #eef2f6;
+  background: #cecac4;
 }
 
 .anb-canvas[data-anb-dark="false"] .grid-stack {
   background-image:
-    linear-gradient(to right, rgba(26, 35, 48, 0.1) 1px, transparent 1px),
-    linear-gradient(to bottom, rgba(26, 35, 48, 0.1) 1px, transparent 1px);
+    linear-gradient(to right, rgba(28, 25, 23, 0.1) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(28, 25, 23, 0.1) 1px, transparent 1px);
 }
 
 .anb-canvas[data-anb-dark="false"] .grid-stack-item-content {
