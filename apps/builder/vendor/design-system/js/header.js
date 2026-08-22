@@ -18,7 +18,7 @@ const TEMPLATE_URLS = [
 /**
  * @typedef {{ href?: string, label?: string }} HeaderBrandLeadingConfig
  * @typedef {{ href?: string, leading?: HeaderBrandLeadingConfig }} HeaderBrandConfig
- * @typedef {{ href: string, label: string, active?: boolean, testid?: string }} HeaderNavItem
+ * @typedef {{ href: string, label: string, active?: boolean, testid?: string, match?: 'path' | 'host' }} HeaderNavItem
  * @typedef {{ default?: 'ru' | 'en' }} HeaderLangConfig
  * @typedef {{ default?: 'dark' | 'light' }} HeaderThemeConfig
  * @typedef {{ href?: string, label?: string, hidden?: boolean, iconSrc?: string }} HeaderToolLinkConfig
@@ -160,10 +160,33 @@ function hrefToPathname(href) {
 }
 
 /**
+ * Env switcher (`match: 'host'`): keep the configured env home (origin + `/`),
+ * highlight by hostname, without participating in exclusive page-nav active.
+ * Do not copy the current path — Stage/Prod are stand roots, not page twins.
+ * @param {HTMLAnchorElement} link
+ */
+function syncHostMatchLink(link) {
+  let url;
+  try {
+    url = new URL(link.getAttribute('href') || '', window.location.origin);
+  } catch {
+    return;
+  }
+  const isCurrentHost = url.hostname === window.location.hostname;
+  link.classList.toggle('is-active', isCurrentHost);
+  if (isCurrentHost) {
+    link.setAttribute('aria-current', 'true');
+  } else {
+    link.removeAttribute('aria-current');
+  }
+}
+
+/**
  * Recompute is-active / aria-current on the rendered nav from the current URL.
- * Exactly one link is ever marked. Falls back to the config-declared active
- * item (data-header-active) only when no nav href matches the current route.
- * Syncs both inline nav and mobile menu nav links.
+ * Exactly one path-matched link is ever marked `aria-current="page"`. Falls back
+ * to the config-declared active item (data-header-active) only when no nav href
+ * matches the current route. Host-match items (env switchers) keep their
+ * configured origin and are highlighted separately. Syncs inline nav and mobile menu.
  * @param {ParentNode} root
  */
 function syncActiveNav(root) {
@@ -178,16 +201,19 @@ function syncActiveNav(root) {
     return;
   }
 
+  const pathLinks = links.filter((link) => link.dataset.headerMatch !== 'host');
+  const hostLinks = links.filter((link) => link.dataset.headerMatch === 'host');
+
   const current = normalizePathname(window.location.pathname);
-  const routeHref = links
+  const routeHref = pathLinks
     .find((link) => hrefToPathname(link.getAttribute('href')) === current)
     ?.getAttribute('href');
-  const fallbackHref = links
+  const fallbackHref = pathLinks
     .find((link) => link.dataset.headerActive === 'true')
     ?.getAttribute('href');
   const activeHref = routeHref ?? fallbackHref ?? null;
 
-  for (const link of links) {
+  for (const link of pathLinks) {
     const isActive =
       activeHref !== null && link.getAttribute('href') === activeHref;
     link.classList.toggle('is-active', isActive);
@@ -196,6 +222,10 @@ function syncActiveNav(root) {
     } else {
       link.removeAttribute('aria-current');
     }
+  }
+
+  for (const link of hostLinks) {
+    syncHostMatchLink(link);
   }
 }
 
@@ -236,6 +266,9 @@ function applyHeaderConfig(root, config) {
       link.dataset.testid = item.testid ?? `header-nav-${index}`;
       if (item.active) {
         link.dataset.headerActive = 'true';
+      }
+      if (item.match === 'host') {
+        link.dataset.headerMatch = 'host';
       }
       return [divider, link];
     })
@@ -309,6 +342,9 @@ function buildHeaderMenu(root, config) {
         if (item.active) {
           link.dataset.headerActive = 'true';
         }
+        if (item.match === 'host') {
+          link.dataset.headerMatch = 'host';
+        }
         return link;
       })
     );
@@ -320,8 +356,11 @@ function buildHeaderMenu(root, config) {
   menuSearch.dataset.testid = 'header-menu-search';
   const searchInput = document.createElement('input');
   searchInput.type = 'search';
+  searchInput.id = 'header-menu-search-input';
+  searchInput.name = 'header-menu-search';
   searchInput.className = 'input';
   searchInput.placeholder = 'Поиск';
+  searchInput.autocomplete = 'off';
   searchInput.dataset.testid = 'header-menu-search-input';
   searchInput.setAttribute('aria-label', 'Поиск');
   menuSearch.appendChild(searchInput);
