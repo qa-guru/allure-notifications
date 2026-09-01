@@ -2,14 +2,19 @@ package guru.qa.allure.notifications.http;
 
 import guru.qa.allure.notifications.config.proxy.Proxy;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.http.HttpHost;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.net.ConnectException;
+import java.net.Inet4Address;
+import java.net.Inet6Address;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.Socket;
+import java.net.UnknownHostException;
 import java.nio.charset.StandardCharsets;
 
 /**
@@ -31,11 +36,33 @@ final class Socks5Tunnel {
     private Socks5Tunnel() {
     }
 
+    /**
+     * Apache retries every resolved A/AAAA. Skip IPv6 before opening a tunnel:
+     * ATYP_DOMAIN to Telegram via microsocks often hangs on AAAA (15s).
+     * Keep the hostname so CONNECT is ATYP_DOMAIN (proxy-local DNS) and TLS SNI is valid.
+     */
+    static String destinationHost(HttpHost host, InetSocketAddress remoteAddress) throws IOException {
+        if (remoteAddress != null && remoteAddress.getAddress() instanceof Inet6Address) {
+            throw new ConnectException("SOCKS5 skips IPv6 destination");
+        }
+        String hostname = host != null ? host.getHostName() : null;
+        if (isIpv6Literal(hostname)) {
+            throw new ConnectException("SOCKS5 skips IPv6 destination");
+        }
+        if (StringUtils.isNotEmpty(hostname)) {
+            return hostname;
+        }
+        if (remoteAddress != null && remoteAddress.getAddress() instanceof Inet4Address) {
+            return remoteAddress.getAddress().getHostAddress();
+        }
+        throw new IOException("SOCKS5: no usable destination host");
+    }
+
     static Socket open(Proxy proxy, String targetHost, int targetPort, int connectTimeoutMs)
             throws IOException {
         Socket socket = new Socket();
         int timeout = connectTimeoutMs > 0 ? connectTimeoutMs : 15000;
-        socket.connect(new InetSocketAddress(proxy.getHost(), proxy.getPort()), timeout);
+        socket.connect(new InetSocketAddress(ipv4Address(proxy.getHost()), proxy.getPort()), timeout);
         socket.setTcpNoDelay(true);
         socket.setSoTimeout(timeout);
         try {
@@ -120,8 +147,7 @@ final class Socks5Tunnel {
             payload.write(ATYP_IPV4);
             payload.write(ipv4);
         } else if (isIpv6Literal(targetHost)) {
-            payload.write(ATYP_IPV6);
-            payload.write(InetAddress.getByName(targetHost).getAddress());
+            throw new ConnectException("SOCKS5 skips IPv6 destination");
         } else {
             byte[] hostBytes = targetHost.getBytes(StandardCharsets.US_ASCII);
             if (hostBytes.length == 0 || hostBytes.length > MAX_DOMAIN_LENGTH) {
@@ -163,6 +189,16 @@ final class Socks5Tunnel {
         }
     }
 
+    static InetAddress ipv4Address(String host) throws UnknownHostException {
+        InetAddress[] all = InetAddress.getAllByName(host);
+        for (InetAddress address : all) {
+            if (address instanceof Inet4Address) {
+                return address;
+            }
+        }
+        throw new UnknownHostException("No IPv4 address for " + host);
+    }
+
     static byte[] parseIpv4(String host) {
         if (host == null) {
             return null;
@@ -187,7 +223,7 @@ final class Socks5Tunnel {
         return address;
     }
 
-    private static boolean isIpv6Literal(String host) {
+    static boolean isIpv6Literal(String host) {
         return host != null && host.indexOf(':') >= 0;
     }
 

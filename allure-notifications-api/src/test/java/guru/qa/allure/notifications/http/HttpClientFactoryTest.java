@@ -3,6 +3,7 @@ package guru.qa.allure.notifications.http;
 import guru.qa.allure.notifications.config.proxy.Proxy;
 import com.sun.net.httpserver.HttpServer;
 import com.sun.net.httpserver.HttpsServer;
+import org.apache.http.HttpHost;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
@@ -14,6 +15,10 @@ import org.apache.http.util.EntityUtils;
 import org.junit.jupiter.api.Test;
 
 import javax.net.ssl.SSLContext;
+import java.net.ConnectException;
+import java.net.Inet4Address;
+import java.net.InetAddress;
+import java.net.InetSocketAddress;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -252,6 +257,39 @@ class HttpClientFactoryTest {
         assertNull(Socks5Tunnel.parseIpv4("localhost"));
         assertNull(Socks5Tunnel.parseIpv4("127.0.0.256"));
         assertNull(Socks5Tunnel.parseIpv4("01.0.0.1"));
+    }
+
+    @Test
+    void destinationHostKeepsHostnameForIpv4() throws Exception {
+        HttpHost host = new HttpHost("api.telegram.org", 443, "https");
+        InetSocketAddress remote = new InetSocketAddress(InetAddress.getByName("127.0.0.1"), 443);
+        assertEquals("api.telegram.org", Socks5Tunnel.destinationHost(host, remote));
+    }
+
+    @Test
+    void destinationHostSkipsIpv6Remote() throws Exception {
+        HttpHost host = new HttpHost("api.telegram.org", 443, "https");
+        InetSocketAddress remote = new InetSocketAddress(InetAddress.getByName("::1"), 443);
+        assertThrows(ConnectException.class, () -> Socks5Tunnel.destinationHost(host, remote));
+    }
+
+    @Test
+    void destinationHostFallsBackToHostname() throws Exception {
+        HttpHost host = new HttpHost("api.telegram.org", 443, "https");
+        assertEquals("api.telegram.org", Socks5Tunnel.destinationHost(host, null));
+    }
+
+    @Test
+    void destinationHostSkipsIpv6Literal() {
+        HttpHost host = new HttpHost("2001:db8::1", 443, "https");
+        assertThrows(ConnectException.class, () -> Socks5Tunnel.destinationHost(host, null));
+    }
+
+    @Test
+    void ipv4DnsResolverKeepsIpv4() throws Exception {
+        InetAddress[] resolved = HttpClientFactory.ipv4DnsResolver().resolve("127.0.0.1");
+        assertEquals(1, resolved.length);
+        assertTrue(resolved[0] instanceof Inet4Address);
     }
 
     private static Proxy socksProxy(int port, String username, String password) {

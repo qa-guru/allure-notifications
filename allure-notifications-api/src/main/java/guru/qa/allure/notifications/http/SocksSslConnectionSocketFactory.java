@@ -32,8 +32,9 @@ final class SocksSslConnectionSocketFactory extends SSLConnectionSocketFactory {
             InetSocketAddress localAddress,
             HttpContext context) throws IOException {
         closeQuietly(socket);
-        Socket tunneled = Socks5Tunnel.open(proxy, host.getHostName(), host.getPort(), connectTimeout);
-        return createLayeredSocket(tunneled, host.getHostName(), host.getPort(), context);
+        String target = Socks5Tunnel.destinationHost(host, remoteAddress);
+        Socket tunneled = Socks5Tunnel.open(proxy, target, host.getPort(), connectTimeout);
+        return createLayeredSocket(tunneled, target, host.getPort(), context);
     }
 
     private static void closeQuietly(Socket socket) {

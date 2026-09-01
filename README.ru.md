@@ -202,7 +202,7 @@ flowchart LR
 }
 ```
 Блок `proxy` задаёт исходящий HTTP/SOCKS-прокси для **Telegram**, **Slack** и **Cliq** (Apache HttpClient).  
-`type` по умолчанию `http` (HTTP CONNECT). Для SOCKS5 — `socks5`: jar открывает туннель RFC 1928, не HTTP CONNECT. Auth: `username`/`password` или env `MICROSOCKS_USER`/`MICROSOCKS_PASS` (microsocks qa.guru `proxy.qaguru.school:7777` требует логин).
+`type` по умолчанию `http` (HTTP CONNECT). Для SOCKS5 — `socks5`: jar открывает туннель RFC 1928, не HTTP CONNECT. Auth: `username`/`password` или env `MICROSOCKS_USER`/`MICROSOCKS_PASS` (microsocks qa.guru `proxy.qaguru.school:7777` требует логин). SOCKS не ходит на IPv6 и CONNECT с hostname — dual-stack (Telegram) без `-Djava.net.preferIPv4Stack=true`.
 
 ```json
 "proxy": {

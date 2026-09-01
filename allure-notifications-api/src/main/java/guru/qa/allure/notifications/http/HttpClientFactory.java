@@ -8,6 +8,7 @@ import org.apache.http.auth.UsernamePasswordCredentials;
 import org.apache.http.client.CredentialsProvider;
 import org.apache.http.config.Registry;
 import org.apache.http.config.RegistryBuilder;
+import org.apache.http.conn.DnsResolver;
 import org.apache.http.conn.socket.ConnectionSocketFactory;
 import org.apache.http.impl.client.BasicCredentialsProvider;
 import org.apache.http.impl.client.CloseableHttpClient;
@@ -18,12 +19,17 @@ import org.apache.http.ssl.SSLContexts;
 
 import javax.net.ssl.SSLContext;
 import java.io.IOException;
+import java.net.Inet4Address;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 
 public class HttpClientFactory {
@@ -132,7 +138,8 @@ public class HttpClientFactory {
                 .register("http", new SocksPlainConnectionSocketFactory(proxy))
                 .register("https", new SocksSslConnectionSocketFactory(proxy, sslContext))
                 .build();
-        PoolingHttpClientConnectionManager manager = new PoolingHttpClientConnectionManager(registry);
+        PoolingHttpClientConnectionManager manager =
+                new PoolingHttpClientConnectionManager(registry, ipv4DnsResolver());
         return HttpClients.custom()
                 .setConnectionManager(manager)
                 .build();
@@ -151,6 +158,25 @@ public class HttpClientFactory {
             builder.setDefaultCredentialsProvider(credentialsProvider);
         }
         return builder.build();
+    }
+
+    static DnsResolver ipv4DnsResolver() {
+        return new DnsResolver() {
+            @Override
+            public InetAddress[] resolve(String hostname) throws UnknownHostException {
+                InetAddress[] all = InetAddress.getAllByName(hostname);
+                List<InetAddress> ipv4 = new ArrayList<InetAddress>();
+                for (InetAddress address : all) {
+                    if (address instanceof Inet4Address) {
+                        ipv4.add(address);
+                    }
+                }
+                if (ipv4.isEmpty()) {
+                    throw new UnknownHostException("No IPv4 address for " + hostname);
+                }
+                return ipv4.toArray(new InetAddress[0]);
+            }
+        };
     }
 
     private static String firstNonBlank(String... values) {

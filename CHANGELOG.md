@@ -1,5 +1,15 @@
 # Changelog
 
+## v 5.1.2
+
+### English
+
+- **SOCKS5 dual-stack** — skip IPv6 destinations before opening a tunnel (Apache retries AAAA; microsocks often hangs ~15s on Telegram AAAA). CONNECT stays hostname (`ATYP_DOMAIN` + TLS SNI). SOCKS client DNS is IPv4-only. No `-Djava.net.preferIPv4Stack=true`
+
+### Russian
+
+- **SOCKS5 dual-stack** — IPv6 не открываем (Apache перебирает AAAA; microsocks часто зависает ~15с на AAAA Telegram). CONNECT — hostname (`ATYP_DOMAIN` + TLS SNI). DNS SOCKS-клиента только IPv4. JVM-флаг `-Djava.net.preferIPv4Stack=true` не нужен
+
 ## v 5.1.1
 
 ### English

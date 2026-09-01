@@ -30,7 +30,8 @@ final class SocksPlainConnectionSocketFactory implements ConnectionSocketFactory
             InetSocketAddress localAddress,
             HttpContext context) throws IOException {
         closeQuietly(socket);
-        return Socks5Tunnel.open(proxy, host.getHostName(), host.getPort(), connectTimeout);
+        return Socks5Tunnel.open(
+                proxy, Socks5Tunnel.destinationHost(host, remoteAddress), host.getPort(), connectTimeout);
     }
 
     private static void closeQuietly(Socket socket) {
