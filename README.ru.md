@@ -20,12 +20,62 @@ Collage PNG + текст со статистикой и ссылками. Соб
 
 ([allure-notifications.qa.guru](https://allure-notifications.qa.guru/) · [qa-guru.github.io/allure-notifications](https://qa-guru.github.io/allure-notifications/))
 
-| Ось | Поддержка |
-|-----|-----------|
-| **Messengers** | <img src="readme_images/icons/messengers/telegram.png" width="16" height="16" alt=""> Telegram · <img src="readme_images/icons/messengers/slack.png" width="16" height="16" alt=""> Slack · <img src="readme_images/icons/messengers/email.png" width="16" height="16" alt=""> Email · <img src="readme_images/icons/messengers/mattermost.png" width="16" height="16" alt=""> Mattermost · <img src="readme_images/icons/messengers/discord.png" width="16" height="16" alt=""> Discord · <img src="readme_images/icons/messengers/loop.png" width="16" height="16" alt=""> Loop · <img src="readme_images/icons/messengers/rocketdotchat.png" width="16" height="16" alt=""> Rocket.Chat · <img src="readme_images/icons/messengers/zoho.png" width="16" height="16" alt=""> Zoho Cliq · <img src="readme_images/icons/messengers/microsoftteams.png" width="16" height="16" alt=""> Microsoft Teams |
-| **Any CI** | <img src="readme_images/icons/ci/local.png" width="16" height="16" alt=""> local · <img src="readme_images/icons/ci/githubactions.png" width="16" height="16" alt=""> GitHub Actions · <img src="readme_images/icons/ci/gitlab.png" width="16" height="16" alt=""> GitLab CI · <img src="readme_images/icons/ci/amazonaws.png" width="16" height="16" alt=""> AWS CI · <img src="readme_images/icons/ci/azuredevops.png" width="16" height="16" alt=""> Azure DevOps · <img src="readme_images/icons/ci/jenkins.png" width="16" height="16" alt=""> Jenkins · <img src="readme_images/icons/ci/bamboo.png" width="16" height="16" alt=""> Bamboo · <img src="readme_images/icons/ci/bitbucket.png" width="16" height="16" alt=""> Bitbucket Pipelines · <img src="readme_images/icons/ci/teamcity.png" width="16" height="16" alt=""> TeamCity · <img src="readme_images/icons/ci/circleci.png" width="16" height="16" alt=""> CircleCI · <img src="readme_images/icons/ci/buildkite.png" width="16" height="16" alt=""> Buildkite · …и любой runner, где можно выполнить CLI |
-| **Any language with Allure** | <img src="readme_images/icons/languages/java.png" width="16" height="16" alt=""> Java · <img src="readme_images/icons/languages/kotlin.png" width="16" height="16" alt=""> Kotlin · <img src="readme_images/icons/languages/groovy.png" width="16" height="16" alt=""> Groovy · <img src="readme_images/icons/languages/javascript.png" width="16" height="16" alt=""> JavaScript · <img src="readme_images/icons/languages/typescript.png" width="16" height="16" alt=""> TypeScript · <img src="readme_images/icons/languages/python.png" width="16" height="16" alt=""> Python · <img src="readme_images/icons/languages/csharp.png" width="16" height="16" alt=""> C# · <img src="readme_images/icons/languages/php.png" width="16" height="16" alt=""> PHP · <img src="readme_images/icons/languages/ruby.png" width="16" height="16" alt=""> Ruby · <img src="readme_images/icons/languages/go.png" width="16" height="16" alt=""> Go · <img src="readme_images/icons/languages/rust.png" width="16" height="16" alt=""> Rust · <img src="readme_images/icons/languages/dart.png" width="16" height="16" alt=""> Dart · [список фреймворков](https://allurereport.org/docs/frameworks/) |
-| **Notification locales** | <img src="readme_images/icons/locales/en.png" width="16" height="16" alt=""> `en` · <img src="readme_images/icons/locales/de.png" width="16" height="16" alt=""> `de` · <img src="readme_images/icons/locales/fr.png" width="16" height="16" alt=""> `fr` · <img src="readme_images/icons/locales/ru.png" width="16" height="16" alt=""> `ru` · <img src="readme_images/icons/locales/by.png" width="16" height="16" alt=""> `by` · <img src="readme_images/icons/locales/ua.png" width="16" height="16" alt=""> `ua` · <img src="readme_images/icons/locales/cn.png" width="16" height="16" alt=""> `cn` · <img src="readme_images/icons/locales/cnt.png" width="16" height="16" alt=""> `cnt` · <img src="readme_images/icons/locales/morse.png" width="16" height="16" alt=""> `morse` |
+<table>
+<thead>
+<tr>
+<th align="left">Ось</th>
+<th align="left" colspan="4">Поддержка</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td rowspan="3" valign="top"><strong>Messengers</strong></td>
+<td nowrap valign="middle"><img src="readme_images/icons/messengers/telegram.png" width="16" height="16" alt=""> Telegram</td><td nowrap valign="middle"><img src="readme_images/icons/messengers/slack.png" width="16" height="16" alt=""> Slack</td><td nowrap valign="middle"><img src="readme_images/icons/messengers/email.png" width="16" height="16" alt=""> Email</td><td nowrap valign="middle"><img src="readme_images/icons/messengers/mattermost.png" width="16" height="16" alt=""> Mattermost</td>
+</tr>
+<tr>
+<td nowrap valign="middle"><img src="readme_images/icons/messengers/discord.png" width="16" height="16" alt=""> Discord</td><td nowrap valign="middle"><img src="readme_images/icons/messengers/loop.png" width="16" height="16" alt=""> Loop</td><td nowrap valign="middle"><img src="readme_images/icons/messengers/rocketdotchat.png" width="16" height="16" alt=""> Rocket.Chat</td><td nowrap valign="middle"><img src="readme_images/icons/messengers/zoho.png" width="16" height="16" alt=""> Zoho Cliq</td>
+</tr>
+<tr>
+<td nowrap valign="middle"><img src="readme_images/icons/messengers/microsoftteams.png" width="16" height="16" alt=""> Microsoft Teams</td><td></td><td></td><td></td>
+</tr>
+<tr>
+<td rowspan="4" valign="top"><strong>Any CI</strong></td>
+<td nowrap valign="middle"><img src="readme_images/icons/ci/local.png" width="16" height="16" alt=""> local</td><td nowrap valign="middle"><img src="readme_images/icons/ci/githubactions.png" width="16" height="16" alt=""> GitHub Actions</td><td nowrap valign="middle"><img src="readme_images/icons/ci/gitlab.png" width="16" height="16" alt=""> GitLab CI</td><td nowrap valign="middle"><img src="readme_images/icons/ci/amazonaws.png" width="16" height="16" alt=""> AWS CI</td>
+</tr>
+<tr>
+<td nowrap valign="middle"><img src="readme_images/icons/ci/azuredevops.png" width="16" height="16" alt=""> Azure DevOps</td><td nowrap valign="middle"><img src="readme_images/icons/ci/jenkins.png" width="16" height="16" alt=""> Jenkins</td><td nowrap valign="middle"><img src="readme_images/icons/ci/bamboo.png" width="16" height="16" alt=""> Bamboo</td><td nowrap valign="middle"><img src="readme_images/icons/ci/bitbucket.png" width="16" height="16" alt=""> Bitbucket Pipelines</td>
+</tr>
+<tr>
+<td nowrap valign="middle"><img src="readme_images/icons/ci/teamcity.png" width="16" height="16" alt=""> TeamCity</td><td nowrap valign="middle"><img src="readme_images/icons/ci/circleci.png" width="16" height="16" alt=""> CircleCI</td><td nowrap valign="middle"><img src="readme_images/icons/ci/buildkite.png" width="16" height="16" alt=""> Buildkite</td><td></td>
+</tr>
+<tr>
+<td colspan="4">…и любой runner, где можно выполнить CLI</td>
+</tr>
+<tr>
+<td rowspan="4" valign="top"><strong>Any language with Allure</strong></td>
+<td nowrap valign="middle"><img src="readme_images/icons/languages/java.png" width="16" height="16" alt=""> Java</td><td nowrap valign="middle"><img src="readme_images/icons/languages/kotlin.png" width="16" height="16" alt=""> Kotlin</td><td nowrap valign="middle"><img src="readme_images/icons/languages/groovy.png" width="16" height="16" alt=""> Groovy</td><td nowrap valign="middle"><img src="readme_images/icons/languages/javascript.png" width="16" height="16" alt=""> JavaScript</td>
+</tr>
+<tr>
+<td nowrap valign="middle"><img src="readme_images/icons/languages/typescript.png" width="16" height="16" alt=""> TypeScript</td><td nowrap valign="middle"><img src="readme_images/icons/languages/python.png" width="16" height="16" alt=""> Python</td><td nowrap valign="middle"><img src="readme_images/icons/languages/csharp.png" width="16" height="16" alt=""> C#</td><td nowrap valign="middle"><img src="readme_images/icons/languages/php.png" width="16" height="16" alt=""> PHP</td>
+</tr>
+<tr>
+<td nowrap valign="middle"><img src="readme_images/icons/languages/ruby.png" width="16" height="16" alt=""> Ruby</td><td nowrap valign="middle"><img src="readme_images/icons/languages/go.png" width="16" height="16" alt=""> Go</td><td nowrap valign="middle"><img src="readme_images/icons/languages/rust.png" width="16" height="16" alt=""> Rust</td><td nowrap valign="middle"><img src="readme_images/icons/languages/dart.png" width="16" height="16" alt=""> Dart</td>
+</tr>
+<tr>
+<td nowrap valign="middle"><a href="https://allurereport.org/docs/frameworks/">список фреймворков</a></td><td></td><td></td><td></td>
+</tr>
+<tr>
+<td rowspan="3" valign="top"><strong>Notification locales</strong></td>
+<td nowrap valign="middle"><img src="readme_images/icons/locales/en.png" width="16" height="16" alt=""> <code>en</code></td><td nowrap valign="middle"><img src="readme_images/icons/locales/de.png" width="16" height="16" alt=""> <code>de</code></td><td nowrap valign="middle"><img src="readme_images/icons/locales/fr.png" width="16" height="16" alt=""> <code>fr</code></td><td nowrap valign="middle"><img src="readme_images/icons/locales/ru.png" width="16" height="16" alt=""> <code>ru</code></td>
+</tr>
+<tr>
+<td nowrap valign="middle"><img src="readme_images/icons/locales/by.png" width="16" height="16" alt=""> <code>by</code></td><td nowrap valign="middle"><img src="readme_images/icons/locales/ua.png" width="16" height="16" alt=""> <code>ua</code></td><td nowrap valign="middle"><img src="readme_images/icons/locales/cn.png" width="16" height="16" alt=""> <code>cn</code></td><td nowrap valign="middle"><img src="readme_images/icons/locales/cnt.png" width="16" height="16" alt=""> <code>cnt</code></td>
+</tr>
+<tr>
+<td nowrap valign="middle"><img src="readme_images/icons/locales/morse.png" width="16" height="16" alt=""> <code>morse</code></td><td></td><td></td><td></td>
+</tr>
+</tbody>
+</table>
 
 Нет вашего мессенджера или локали? [Issue](https://github.com/qa-guru/allure-notifications/issues/new) или [PR](https://github.com/qa-guru/allure-notifications/compare).
 
