@@ -14,7 +14,7 @@ import org.junit.jupiter.api.Test;
 class PyramidLayerColorsTest {
 
     private static final List<String> CANON_ORDER = Arrays.asList(
-            "unit", "component", "integration", "api", "e2e", "manual"
+            "unit", "component", "integration", "api", "ui", "e2e", "manual"
     );
 
     @Test
@@ -28,6 +28,7 @@ class PyramidLayerColorsTest {
         assertColor("#ffa833", PyramidLayerColors.colorFor("component", true));
         assertColor("#a65ac4", PyramidLayerColors.colorFor("integration", true));
         assertColor("#ffd833", PyramidLayerColors.colorFor("api", true));
+        assertColor("#f472b6", PyramidLayerColors.colorFor("ui", true));
         assertColor("#ff574f", PyramidLayerColors.colorFor("e2e", true));
         assertColor("#61b6fb", PyramidLayerColors.colorFor("manual", true));
     }
@@ -38,6 +39,7 @@ class PyramidLayerColorsTest {
         assertColor("#ff8200", PyramidLayerColors.colorFor("component", false));
         assertColor("#7e22ce", PyramidLayerColors.colorFor("integration", false));
         assertColor("#e8bd00", PyramidLayerColors.colorFor("api", false));
+        assertColor("#db2777", PyramidLayerColors.colorFor("ui", false));
         assertColor("#dc2626", PyramidLayerColors.colorFor("e2e", false));
         assertColor("#459bde", PyramidLayerColors.colorFor("manual", false));
     }

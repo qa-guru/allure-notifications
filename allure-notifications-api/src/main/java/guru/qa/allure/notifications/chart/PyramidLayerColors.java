@@ -19,7 +19,7 @@ import java.util.Map;
  * drifting again; component/manual remain brand orange/blue.
  *
  * <p>
- * SSOT (monorepo): {@code stacks/java-spring/tests/allure/pyramid-layers.json}.
+ * SSOT (monorepo): {@code tests/java/tests-java-junit5-rest_assured-selenide/allure/pyramid-layers.json}.
  * Consumers verified by {@code scripts/pyramid_palette_sync.py --check}. Mirrored in
  * {@code tokens.css} {@code --layer-*} and {@code pyramid-layer-colors.mjs}.
  * Layer keys: {@code docs/rag/testing/test-layers.md}.
@@ -35,6 +35,7 @@ public final class PyramidLayerColors {
             "component",
             "integration",
             "api",
+            "ui",
             "e2e",
             "manual"
     ));
@@ -47,6 +48,7 @@ public final class PyramidLayerColors {
             "#ff8200", // component — brand orange
             "#7e22ce", // integration
             "#e8bd00", // api
+            "#db2777", // ui
             "#dc2626", // e2e
             "#459bde"  // manual — brand blue
     );
@@ -56,6 +58,7 @@ public final class PyramidLayerColors {
             "#ffa833", // component — brand orange
             "#a65ac4", // integration
             "#ffd833", // api
+            "#f472b6", // ui
             "#ff574f", // e2e
             "#61b6fb"  // manual — brand blue
     );
@@ -88,6 +91,7 @@ public final class PyramidLayerColors {
                                                String component,
                                                String integration,
                                                String api,
+                                               String ui,
                                                String e2e,
                                                String manual) {
         Map<String, Color> map = new LinkedHashMap<String, Color>();
@@ -95,6 +99,7 @@ public final class PyramidLayerColors {
         map.put("component", Color.decode(component));
         map.put("integration", Color.decode(integration));
         map.put("api", Color.decode(api));
+        map.put("ui", Color.decode(ui));
         map.put("e2e", Color.decode(e2e));
         map.put("manual", Color.decode(manual));
         return Collections.unmodifiableMap(map);
