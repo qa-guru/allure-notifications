@@ -366,8 +366,8 @@ test.describe('allure-notifications-builder smoke', () => {
     await expect(termPanel).toHaveCSS('background-color', termBgBefore);
     await expect(page.locator('html')).not.toHaveClass(/theme-light/);
     // Entire grid panel (header + outer + card + chart body + caption).
-    await expect(previewPanel).toHaveCSS('background-color', 'rgb(247, 247, 249)');
-    await expect(canvas).toHaveCSS('background-color', 'rgb(238, 242, 246)');
+    await expect(previewPanel).toHaveCSS('background-color', 'rgb(238, 240, 243)');
+    await expect(canvas).toHaveCSS('background-color', 'rgb(232, 234, 238)');
     const card = page.locator('#anb-grid .grid-stack-item-content').first();
     const chartBody = page.locator('#anb-grid .widget-tile__body').first();
     const caption = page.getByTestId('anb-tg-text');
@@ -378,7 +378,7 @@ test.describe('allure-notifications-builder smoke', () => {
     await dark.locator('.plaque-field-seg__btn[data-value="true"]').click();
     await expect(canvas).toHaveAttribute('data-anb-dark', 'true');
     await expect(previewPanel).toHaveAttribute('data-anb-dark', 'true');
-    await expect(canvas).toHaveCSS('background-color', 'rgb(34, 34, 34)');
+    await expect(canvas).toHaveCSS('background-color', 'rgb(14, 13, 12)');
     await expect(card).toHaveCSS('background-color', 'rgb(50, 50, 50)');
     await expect(chartBody).toHaveCSS('background-color', 'rgb(50, 50, 50)');
     await expect(caption).toHaveCSS('color', 'rgb(220, 220, 220)');
@@ -394,7 +394,7 @@ test.describe('allure-notifications-builder smoke', () => {
     );
     await expect(terminal).toContainText('"darkMode": false');
     await expect(canvas).toHaveAttribute('data-anb-dark', 'false');
-    await expect(canvas).toHaveCSS('background-color', 'rgb(238, 242, 246)');
+    await expect(canvas).toHaveCSS('background-color', 'rgb(232, 234, 238)');
     await expect(termPanel).toHaveCSS('background-color', 'rgb(255, 255, 255)');
 
     await enable.locator('.plaque-field-seg__btn[data-value="false"]').click();
