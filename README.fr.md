@@ -201,7 +201,7 @@ Description des champs :
 
 7. Exécutez la commande suivante dans votre terminal :
 ```shell
-java "-DconfigFile=notifications/config.json" -jar notifications/allure-notifications-4.11.0.jar
+java "-DconfigFile=notifications/config.json" -jar notifications/allure-notifications-4.11.1.jar
 ```
 Remarques :
 + Le fichier `summary.json` doit déjà exister au moment de l'exécution.
@@ -244,14 +244,14 @@ Remarques :
 Dans le champ **Script**, saisissez :
 ```bash
 cd ..
-FILE=allure-notifications-4.11.0.jar
+FILE=allure-notifications-4.11.1.jar
 if [ ! -f "$FILE" ]; then
-   wget https://github.com/qa-guru/allure-notifications/releases/download/4.11.0/allure-notifications-4.11.0.jar
+   wget https://github.com/qa-guru/allure-notifications/releases/download/4.11.1/allure-notifications-4.11.1.jar
 fi
 ```
 Cliquez sur **Add another task** et dans le second champ **Script** saisissez :
 ```bash
-java "-DconfigFile=notifications/config.json" -jar ../allure-notifications-4.11.0.jar
+java "-DconfigFile=notifications/config.json" -jar ../allure-notifications-4.11.1.jar
 ```
 
 4. Sauvegardez la configuration et lancez vos tests. Une notification sera envoyée à la messagerie configurée à la fin de l'exécution.
