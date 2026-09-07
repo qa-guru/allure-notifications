@@ -207,4 +207,89 @@ describe("renderQualityGatePng", () => {
     const headerGray = await countNearColor(png, { r: 60, g: 60, b: 60 }, 2, 2);
     assert.equal(headerGray, 0, "unexpected collage dark header chrome");
   });
+
+  it("failed QG at 1px height is a no-op body without throw", () => {
+    const png = renderQualityGatePng(loadFixture("sqg-failed"), {
+      width: 80,
+      height: 1,
+      chrome: "body",
+    });
+    assert.ok(png.length > 0);
+  });
+
+  it("failed QG overflow, empty rows, and non-failed body mode", () => {
+    const failed = parseKitQualityGateData(loadFixture("aqg-failed"));
+    const layout = buildQualityGateLayout(failed);
+
+    const overflow = renderQualityGatePng(failed, {
+      width: 200,
+      height: 1,
+      chrome: "body",
+    });
+    assert.ok(overflow.length > 0);
+
+    const hybridShort = renderQualityGatePng(failed, {
+      width: 160,
+      height: 20,
+      chrome: "hybrid",
+    });
+    assert.ok(hybridShort.length > 0);
+
+    const emptyFailed = renderQualityGatePng(
+      { ...layout, body: { mode: "failed", rows: [] } },
+      { width: 200, height: 80, chrome: "body" },
+    );
+    assert.ok(emptyFailed.length > 0);
+
+    const notFailed = renderQualityGatePng(
+      { ...layout, body: { mode: "empty" as "failed", rows: [] } },
+      { width: 200, height: 80, chrome: "body" },
+    );
+    assert.ok(notFailed.length > 0);
+
+    const wordy = renderQualityGatePng(
+      {
+        ...layout,
+        bar: { ...layout.bar, title: "Quality Gate Title ".repeat(20) },
+        tokens: {
+          ...layout.tokens,
+          barBorderBottom: { ...layout.tokens.barBorderBottom, failed: "--color-danger" },
+        },
+        body: {
+          mode: "failed",
+          rows: [
+            {
+              id: "very-long-rule-identifier-that-must-ellipsize",
+              message: "one two three four five six seven eight nine ten eleven twelve",
+              formula: "actual > expected && coverage < 80",
+            },
+            {
+              id: "blank",
+              message: "   ",
+            },
+          ],
+        },
+      },
+      { width: 180, height: 90, chrome: "hybrid" },
+    );
+    assert.ok(wordy.length > 0);
+
+    const hidden = renderQualityGatePng(
+      { ...layout, hidden: true },
+      { width: 80, height: 40, chrome: "body" },
+    );
+    assert.ok(hidden.length > 0);
+
+    const unknownToken = renderQualityGatePng(
+      {
+        ...layout,
+        tokens: { ...layout.tokens, surface: "--not-a-real-token" as "--color-surface" },
+      },
+      { width: 80, height: 40, chrome: "body" },
+    );
+    assert.ok(unknownToken.length > 0);
+
+    assert.throws(() => renderQualityGatePng(null, { width: 40, height: 40 }));
+    assert.throws(() => renderQualityGatePng("nope", { width: 40, height: 40 }));
+  });
 });

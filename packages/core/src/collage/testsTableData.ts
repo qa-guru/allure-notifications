@@ -132,6 +132,7 @@ async function readJsonFile(path: string): Promise<unknown> {
   try {
     return JSON.parse(raw);
   } catch (err) {
+    /* c8 ignore next — JSON.parse throws SyntaxError; non-Error is defensive */
     const msg = err instanceof Error ? err.message : String(err);
     throw new Error(`invalid JSON in ${path}: ${msg}`);
   }

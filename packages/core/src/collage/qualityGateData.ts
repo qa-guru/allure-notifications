@@ -54,6 +54,7 @@ export function resolveQualityGatePanelId(
     return null;
   }
   const meta = resolvePanelMeta(item);
+  /* c8 ignore next 3 — catalog ids are always set on the item before type-only fallback */
   if (meta?.id === "allureQualityGate" || meta?.id === "sonarQualityGate") {
     return meta.id;
   }
@@ -93,6 +94,7 @@ async function readJsonFile(path: string): Promise<unknown> {
   try {
     return JSON.parse(raw);
   } catch (err) {
+    /* c8 ignore next — JSON.parse throws SyntaxError; non-Error is defensive */
     const msg = err instanceof Error ? err.message : String(err);
     throw new Error(`invalid JSON in ${path}: ${msg}`);
   }

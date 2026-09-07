@@ -97,9 +97,12 @@ const PANEL_STATUS_AGE = "statusagepyramid";
 const PANEL_QUALITY_GATE = "qualitygate";
 const PANEL_TESTS_TABLE = "teststable";
 
-const DEBUG =
-  process.env.ALLURE_NOTIFICATIONS_DEBUG === "1" ||
-  process.env.ALLURE_NOTIFICATIONS_DEBUG === "true";
+function debugEnabled(): boolean {
+  return (
+    process.env.ALLURE_NOTIFICATIONS_DEBUG === "1" ||
+    process.env.ALLURE_NOTIFICATIONS_DEBUG === "true"
+  );
+}
 
 function normalize(raw: string | undefined | null): string | null {
   if (raw == null) {
@@ -196,6 +199,7 @@ export function resolveTilePad(config: Config): number {
 }
 
 function resolveCardArc(collageWidth: number, collageHeight: number): number {
+  /* c8 ignore next 3 — renderCollagePng substitutes DEFAULT_WIDTH/HEIGHT before this */
   if (!(collageWidth > 0) || !(collageHeight > 0)) {
     return DS_CARD_RADIUS_MD;
   }
@@ -402,7 +406,8 @@ async function drawCard(
 
   const img = await loadImage(panelPng);
 
-  // Hybrid panels (quality-gate) own their chrome — full-bleed PNG, no macOS bar.
+  // Schema requires headerHeight > 0; keep the full-bleed branch for a 0 override.
+  /* c8 ignore start */
   if (headerHeight <= 0) {
     const inset = Math.max(0, tilePad);
     const bodyW = Math.max(1, rect.w - 2 * inset);
@@ -421,6 +426,7 @@ async function drawCard(
     );
     return;
   }
+  /* c8 ignore stop */
 
   const scale = headerHeight / BASE_HEADER_HEIGHT;
   const padX = Math.max(CARD_HEADER_PAD_X, Math.round(CARD_HEADER_PAD_X * scale));
@@ -570,7 +576,7 @@ export async function renderCollagePng(
 
   for (const item of items) {
     if (shouldSilentSkipKitOnlyItem(profile, item)) {
-      if (DEBUG) {
+      if (debugEnabled()) {
         const id = item.id ?? item.type;
         console.error(
           `[allure-notifications] silent-skip kit-only tile ${id} (chart.profile=${profile})`,

@@ -252,6 +252,17 @@ describe("@qa-guru/allure-notifications-core coverage report helpers", () => {
     await assert.rejects(() => loadReportAnalytics(config));
   });
 
+  it("loadReportAnalytics defaults allureFolder when omitted", async () => {
+    const config = parseConfig({
+      base: {
+        project: "no-folder",
+        enableChart: true,
+      },
+    });
+    delete config.base.allureFolder;
+    await assert.rejects(() => loadReportAnalytics(config));
+  });
+
   it("loadReportAnalytics resolves widgets summary + optional history", async () => {
     const dir = await mkdtemp(join(tmpdir(), "an-core-load-"));
     const report = join(dir, "report");
@@ -615,6 +626,7 @@ describe("@qa-guru/allure-notifications-core coverage panels edge UI", () => {
       showTitle: true,
     });
     assert.ok(renderEmptyPanel(base).length > 0);
+    assert.ok(renderEmptyPanel(base, null as unknown as string).length > 0);
     assert.ok(renderEmptyPanel(base, "").length > 0);
     assert.ok(renderEmptyPanel(base, { message: "  ", title: "Tile" }).length > 0);
     assert.ok(
@@ -635,6 +647,11 @@ describe("@qa-guru/allure-notifications-core coverage panels edge UI", () => {
       },
     ]);
     assert.ok(renderSuitesPanel(ctx(withSuite)).length > 0);
+    const nameless = {
+      ...empty,
+      suites: [{ name: undefined as unknown as string, count: 2 }],
+    };
+    assert.ok(renderSuitesPanel(ctx(nameless)).length > 0);
     assert.deepEqual(orderedSeverities({}), []);
     assert.ok(renderSeveritiesPanel(ctx(empty)).length > 0);
 
@@ -1006,8 +1023,8 @@ describe("@qa-guru/allure-notifications-core coverage panels edge UI", () => {
       ...historyFromRuns([]),
       runCount: 2,
       problemsByEnvironment: {
-        environments: ["chrome-desktop-long"],
-        matrix: [[1, 0]],
+        environments: ["chrome-desktop-long", "ff"],
+        matrix: [[1, 0], [2]],
       },
     });
     assert.ok(
@@ -1129,6 +1146,79 @@ describe("@qa-guru/allure-notifications-core coverage history deep edges", () =>
       { testResults: { a: { id: "a", status: "passed", duration: 1 } } },
     ]);
     assert.equal(perfect.successRateDistribution[9], 1);
+
+    const skippedNull = historyFromRuns([
+      {
+        testResults: {
+          a: { id: "a", status: "passed" },
+          hole: null as unknown as { id: string; status: string },
+        },
+      },
+    ]);
+    assert.equal(skippedNull.runCount, 1);
+
+    const envAndIds = historyFromRuns([
+      {
+        testResults: {
+          keyed: {
+            id: "",
+            status: "failed",
+            duration: 1,
+            labels: [
+              { name: "environment", value: "linux" },
+              { name: "environment", value: "ignored" },
+            ],
+          },
+          blankEnv: { id: "g", status: "failed", environment: "   ", duration: 1 },
+          ci: { id: "h", status: "broken", environment: "ci", duration: 1 },
+          unknownStatus: { id: "u", status: undefined as unknown as string, duration: 1 },
+          nodur: { id: "n", status: "passed" },
+        },
+      },
+      {},
+    ]);
+    assert.ok(envAndIds.problemsByEnvironment.environments.includes("ci"));
+    assert.ok(envAndIds.problemsByEnvironment.environments.includes("linux"));
+  });
+
+  it("buildAnalytics treats missing durationMs as 0", () => {
+    const summary = { ...emptySummary(), durationMs: undefined as unknown as number };
+    assert.equal(buildAnalytics(summary, []).durationMs, 0);
+  });
+
+  it("DEBUG logs silent-skip of kit-only tiles", async () => {
+    const prev = process.env.ALLURE_NOTIFICATIONS_DEBUG;
+    process.env.ALLURE_NOTIFICATIONS_DEBUG = "1";
+    try {
+      const png = await renderCollagePng(
+        parseConfig({
+          base: {
+            project: "debug-skip",
+            enableChart: true,
+            chart: {
+              profile: "default",
+              mode: "collage",
+              layout: "free",
+              width: 200,
+              height: 200,
+              items: [
+                { type: "currentStatus", x: 0, y: 0, w: 1, h: 1 },
+                { type: "testsTable", id: "testsTable", x: 1, y: 0, w: 1, h: 1 },
+                { type: "qualityGate", x: 2, y: 0, w: 1, h: 1 },
+              ],
+            },
+          },
+        }),
+        buildAnalytics(emptySummary(), []),
+      );
+      assert.ok(png.length > 100);
+    } finally {
+      if (prev === undefined) {
+        delete process.env.ALLURE_NOTIFICATIONS_DEBUG;
+      } else {
+        process.env.ALLURE_NOTIFICATIONS_DEBUG = prev;
+      }
+    }
   });
 
   it("readHistoryFile: missing timestamps + normalizeRun type filters", async () => {
@@ -1266,6 +1356,50 @@ describe("@qa-guru/allure-notifications-core coverage render + analytics edges",
     chart.gridCols = -1;
     chart.gridRows = -1;
     assert.ok((await renderCollagePng(config, analytics)).length > 100);
+  });
+
+  it("renderCollagePng accepts type aliases and skips blank types", async () => {
+    const summary = adaptSummaryJson({
+      stats: { passed: 1, total: 1 },
+      duration: 1,
+    });
+    const analytics = buildAnalytics(summary, []);
+    const config = parseConfig({
+      base: {
+        project: "aliases",
+        allureFolder: join(fixtures, "allure3-report"),
+        enableChart: true,
+        chart: {
+          mode: "collage",
+          layout: "free",
+          width: 400,
+          height: 300,
+          gridCols: 6,
+          gridRows: 4,
+          items: [{ type: "currentStatus", x: 0, y: 0, w: 1, h: 1 }],
+        },
+      },
+    });
+    config.base.chart!.items = [
+      { type: "", x: 0, y: 0, w: 1, h: 1 },
+      { type: "   ", x: 1, y: 0, w: 1, h: 1 },
+      { type: "pie", x: 0, y: 0, w: 1, h: 1 },
+      { type: "pyramid", x: 1, y: 0, w: 1, h: 1 },
+      { type: "duration", x: 2, y: 0, w: 1, h: 1 },
+      { type: "duration-trend", x: 3, y: 0, w: 1, h: 1 },
+      { type: "severities", x: 4, y: 0, w: 1, h: 1 },
+      { type: "severity", x: 5, y: 0, w: 1, h: 1 },
+    ];
+    const png = await renderCollagePng(config, analytics);
+    assert.ok(png.length > 100);
+    assert.equal(
+      resolveCardTitle(
+        { type: undefined as unknown as string, x: 0, y: 0, w: 1, h: 1 },
+        config,
+        analytics,
+      ),
+      "Panel",
+    );
   });
 
   it("buildAnalytics epic/story/component + id fallback", () => {

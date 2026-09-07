@@ -296,7 +296,7 @@ export function renderQualityGatePng(
 
   ctx.restore();
   const png = canvas.toBuffer("image/png");
-  // Sanity for callers / tests — buffer is a PNG.
+  /* c8 ignore next 3 — napi canvas always returns a PNG buffer */
   if (png.subarray(0, 8).toString("hex") !== PNG_MAGIC) {
     throw new Error("renderQualityGatePng: expected PNG buffer");
   }

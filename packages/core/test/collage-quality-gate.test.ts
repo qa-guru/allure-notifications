@@ -4,6 +4,8 @@
 
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
+import { mkdir, mkdtemp, rm, writeFile } from "node:fs/promises";
+import { tmpdir } from "node:os";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { describe, it } from "node:test";
@@ -133,6 +135,10 @@ describe("quality-gate collage wire", () => {
     );
     assert.equal(
       resolveQualityGatePanelId({ type: "qualityGate", x: 0, y: 0, w: 1, h: 1 }),
+      null,
+    );
+    assert.equal(
+      resolveQualityGatePanelId({ type: "currentStatus", x: 0, y: 0, w: 1, h: 1 }),
       null,
     );
   });
@@ -294,6 +300,94 @@ describe("quality-gate collage wire", () => {
     await assert.rejects(
       () => loadQualityGateCollageData(config),
       (err: unknown) => err instanceof QualityGateDataMissingError,
+    );
+  });
+
+  it("qualityGate tile without catalog id fails closed", async () => {
+    const config = kitConfig({
+      items: [{ type: "qualityGate", x: 0, y: 0, w: 5, h: 4 }],
+    });
+    await assert.rejects(
+      () => loadQualityGateCollageData(config),
+      /allureQualityGate|sonarQualityGate/,
+    );
+  });
+
+  it("loadQualityGateCollageData returns {} when items omitted", async () => {
+    const config = kitConfig();
+    delete config.base.chart!.items;
+    assert.deepEqual(await loadQualityGateCollageData(config), {});
+  });
+
+  it("loadQualityGateCollageData reads AQG widget when path omitted", async () => {
+    const dir = await mkdtemp(join(tmpdir(), "an-qg-widget-"));
+    const widgets = join(dir, "widgets", "kit-panels");
+    await mkdir(widgets, { recursive: true });
+    await writeFile(
+      join(widgets, "allureQualityGate.json"),
+      readFileSync(join(fixtures, "quality-gate/aqg-passed.json")),
+    );
+    try {
+      const config = kitConfig({
+        items: [{ id: "allureQualityGate", type: "qualityGate", x: 0, y: 0, w: 5, h: 4 }],
+      });
+      delete config.base.chart!.allureQualityGatePath;
+      config.base.allureFolder = dir;
+      const data = await loadQualityGateCollageData(config);
+      assert.equal(data.allureQualityGate?.passed, true);
+    } finally {
+      await rm(dir, { recursive: true, force: true });
+    }
+  });
+
+  it("loadQualityGateCollageData uses default allure-report folder when omitted", async () => {
+    const config = kitConfig({
+      items: [{ id: "allureQualityGate", type: "qualityGate", x: 0, y: 0, w: 5, h: 4 }],
+    });
+    delete config.base.chart!.allureQualityGatePath;
+    delete config.base.allureFolder;
+    await assert.rejects(
+      () => loadQualityGateCollageData(config),
+      (err: unknown) => err instanceof QualityGateDataMissingError,
+    );
+  });
+
+  it("loadQualityGateCollageData fails closed on invalid JSON", async () => {
+    const dir = await mkdtemp(join(tmpdir(), "an-qg-json-"));
+    const bad = join(dir, "qg.json");
+    await writeFile(bad, "{ not json");
+    try {
+      const config = kitConfig({
+        allureQualityGatePath: bad,
+        items: [{ id: "allureQualityGate", type: "qualityGate", x: 0, y: 0, w: 5, h: 4 }],
+      });
+      await assert.rejects(() => loadQualityGateCollageData(config), /invalid JSON/);
+    } finally {
+      await rm(dir, { recursive: true, force: true });
+    }
+  });
+
+  it("fail-closed when QG tiles are present but data was not loaded", async () => {
+    const config = kitConfig();
+    const summary = await readSummary(join(fixtures, "allure3-report/summary.json"));
+    const results = await readAllureResults(join(fixtures, "allure-results"));
+    const analytics = buildAnalytics(summary, results);
+    await assert.rejects(
+      () => renderCollagePng(config, analytics, {}),
+      /quality gate data not loaded/,
+    );
+  });
+
+  it("fail-closed when qualityGate type reaches collage without catalog id", async () => {
+    const config = kitConfig({
+      items: [{ type: "QualityGate", x: 0, y: 0, w: 5, h: 4 }],
+    });
+    const summary = await readSummary(join(fixtures, "allure3-report/summary.json"));
+    const results = await readAllureResults(join(fixtures, "allure-results"));
+    const analytics = buildAnalytics(summary, results);
+    await assert.rejects(
+      () => renderCollagePng(config, analytics, {}),
+      /qualityGate collage tile requires id/,
     );
   });
 });

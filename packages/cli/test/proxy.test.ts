@@ -17,6 +17,7 @@ import {
 
 import {
   buildProxyUri,
+  createProxiedFetch,
   createProxyDispatcher,
   resolveLiveFetch,
   resolveOutboundProxy,
@@ -55,6 +56,7 @@ describe("@qa-guru/allure-notifications proxy resolve", () => {
         ?.type,
       "socks5",
     );
+    assert.equal(resolveOutboundProxy({ host: "p.example", port: "nope" }), undefined);
   });
 
   it("buildProxyUri encodes basic auth", () => {
@@ -71,6 +73,10 @@ describe("@qa-guru/allure-notifications proxy resolve", () => {
         password: "p/w",
       }),
       "http://u%40x:p%2Fw@proxy.example:3128",
+    );
+    assert.equal(
+      buildProxyUri({ type: "http", host: "proxy.example", port: 3128, username: "u" }),
+      "http://u:@proxy.example:3128",
     );
   });
 
@@ -113,6 +119,15 @@ describe("@qa-guru/allure-notifications proxy resolve", () => {
     });
     assert.ok(resolved);
     assert.notEqual(resolved, fetch);
+  });
+
+  it("createProxiedFetch invokes undici with the proxy dispatcher", async () => {
+    const proxied = createProxiedFetch({
+      type: "http",
+      host: "127.0.0.1",
+      port: 1,
+    });
+    await assert.rejects(() => proxied("http://127.0.0.1:1/"));
   });
 
   it("resolveLiveFetch: undefined when no proxy and no fetchImpl", () => {

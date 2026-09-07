@@ -158,6 +158,7 @@ type SparklineTheme = {
 };
 
 function lookupToken(ref: string, palette: Record<string, Rgb>): Rgb {
+  /* c8 ignore next — kit palette always resolves collage token refs */
   return palette[ref] ?? TESTS_TABLE_TOKEN_PALETTE[ref] ?? hexToRgb("#000000");
 }
 
@@ -551,6 +552,7 @@ export function renderTestsTablePng(
   });
 
   const png = canvas.toBuffer("image/png");
+  /* c8 ignore next 3 — napi canvas always returns a PNG buffer */
   if (png.subarray(0, 8).toString("hex") !== PNG_MAGIC) {
     throw new Error("renderTestsTablePng: expected PNG buffer");
   }

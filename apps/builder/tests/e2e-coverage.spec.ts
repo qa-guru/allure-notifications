@@ -360,6 +360,16 @@ test.describe('panels', () => {
       const A = globalThis.__ANB__;
       const el = document.querySelector('#anb-grid .grid-stack-item');
       if (el instanceof HTMLElement) A.copyItem(el);
+      const item = document.querySelector('#anb-grid .grid-stack-item');
+      if (item instanceof HTMLElement) {
+        const copy = document.createElement('button');
+        copy.setAttribute('data-anb-action', 'copy');
+        item.appendChild(copy);
+        copy.dispatchEvent(
+          new PointerEvent('pointerdown', { bubbles: true, cancelable: true, pointerType: 'mouse' }),
+        );
+        copy.remove();
+      }
       const del = document.querySelector('[data-anb-action="delete"]');
       if (del instanceof HTMLElement) {
         del.dispatchEvent(
@@ -1218,5 +1228,31 @@ test.describe('negative', () => {
       host.remove();
       A.initGrid();
     });
+  });
+
+  test('kit-only palette gate: default skip vs kit allow', async ({ page }) => {
+    await page.goto('/');
+    const def = await page.evaluate(() => {
+      const A = globalThis.__ANB__;
+      return {
+        stock: A.canAddPalettePanel('currentStatus'),
+        kit: A.canAddPalettePanel('allureQualityGate'),
+      };
+    });
+    expect(def.stock).toBe(true);
+    expect(def.kit).toBe(false);
+
+    await page.getByTestId('anb-chart-profile').selectOption('kit');
+    const kit = await page.evaluate(() => {
+      const A = globalThis.__ANB__;
+      return {
+        stock: A.canAddPalettePanel('currentStatus'),
+        kit: A.canAddPalettePanel('allureQualityGate'),
+        catalog: A.paletteCatalog().length,
+      };
+    });
+    expect(kit.stock).toBe(true);
+    expect(kit.kit).toBe(true);
+    expect(kit.catalog).toBeGreaterThan(17);
   });
 });

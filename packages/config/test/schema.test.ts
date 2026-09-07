@@ -27,6 +27,8 @@ import {
   createDefaultConfig,
   createSq1080Config,
   isKitOnlyChartItem,
+  isKitOnlyPanelId,
+  isKitOnlyPanelType,
   isValidConfig,
   normalizeChartProfile,
   parseConfig,
@@ -367,6 +369,23 @@ describe("@qa-guru/allure-notifications-config chart.profile + kit-only QG", () 
       false,
     );
     assert.equal(shouldSilentSkipKitOnlyItem("default", { type: "currentStatus" }), false);
+    assert.equal(isKitOnlyPanelType(null), false);
+    assert.equal(isKitOnlyPanelType(""), false);
+    assert.equal(isKitOnlyPanelType("qualityGate"), true);
+    assert.equal(isKitOnlyPanelType("testsTable"), true);
+    assert.equal(isKitOnlyPanelId(null), false);
+    assert.equal(isKitOnlyPanelId(""), false);
+    assert.equal(isKitOnlyPanelId("testsTable"), true);
+    assert.equal(isKitOnlyPanelId("allureQualityGate"), true);
+    assert.equal(isKitOnlyPanelId("sonarQualityGate"), true);
+    assert.equal(isKitOnlyChartItem({ id: "testsTable" }), true);
+  });
+
+  it("createDefaultConfig copies telegram.templatePath when set", () => {
+    const cfg = createDefaultConfig({
+      telegram: { token: "t", chat: "c", templatePath: "legacy.ftl" },
+    });
+    assert.equal(cfg.telegram.templatePath, "legacy.ftl");
   });
 
   it("parses testsTable items under profile=default (no parse fail)", () => {
