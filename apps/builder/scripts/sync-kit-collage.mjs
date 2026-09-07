@@ -4,35 +4,34 @@
  * Needed because python http.server (stand :3011) cannot follow pnpm symlinks
  * outside apps/builder — so bare node_modules/@qa-guru/allure-report-kit 404s.
  *
+ * Resolves the published package from node_modules (CI + local). Do not point
+ * at a sibling zero-design-system kit clone — that path does not exist on GHA.
+ *
  * Usage: node scripts/sync-kit-collage.mjs
  */
-import { cpSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
+import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
+import { createRequire } from "node:module";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
-import { spawnSync } from "node:child_process";
 
 const here = dirname(fileURLToPath(import.meta.url));
 const builderRoot = join(here, "..");
-const workspaceRoot = join(builderRoot, "../..");
-const monorepoRoot = join(workspaceRoot, "../../..");
-const kitRoot = join(
-  monorepoRoot,
-  "projects/allure-report-kit-home/allure-report-kit",
-);
-const distSrc = join(kitRoot, "dist");
 const outDir = join(builderRoot, "vendor/allure-report-kit-collage");
+const require = createRequire(import.meta.url);
 
-const build = spawnSync("npm", ["run", "build"], {
-  cwd: kitRoot,
-  stdio: "inherit",
-  shell: process.platform === "win32",
-});
-if (build.status !== 0) {
-  process.exit(build.status ?? 1);
+const kitPkg = require.resolve("@qa-guru/allure-report-kit/package.json");
+const distSrc = join(dirname(kitPkg), "dist");
+const files = ["collage.js", "collage-palette.js", "testing-pyramid-geometry.js"];
+
+for (const name of files) {
+  const src = join(distSrc, name);
+  if (!existsSync(src)) {
+    console.error(`missing ${name} in ${distSrc}`);
+    process.exit(1);
+  }
 }
 
 mkdirSync(outDir, { recursive: true });
-const files = ["collage.js", "collage-palette.js", "testing-pyramid-geometry.js"];
 for (const name of files) {
   const src = join(distSrc, name);
   const body = readFileSync(src, "utf8").replace(/\n\/\/# sourceMappingURL=.*$/m, "\n");
