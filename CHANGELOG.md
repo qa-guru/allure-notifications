@@ -1,5 +1,12 @@
 # Changelog
 
+## 4.11.1
+
+- SOCKS5 CONNECT (RFC 1928) + optional username/password (RFC 1929) for Telegram/Unirest
+- `proxy.type`: `http` (default) or `socks5`
+- Credentials from JSON, `MICROSOCKS_USER`/`MICROSOCKS_PASS`, or `/opt/qa-guru/etc/microsocks.env`
+- Skip IPv6 destinations before opening a tunnel (microsocks + Telegram AAAA hang)
+
 ## v 2.0.1
 
 ### English

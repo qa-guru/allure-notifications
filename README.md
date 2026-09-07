@@ -137,6 +137,7 @@ Languages: 🇬🇧 🇫🇷 🇷🇺 🇺🇦 🇧🇾 🇨🇳
     "templatePath": "/templates/markdown.ftl"
   },
   "proxy": {
+    "type": "http",
     "host": "",
     "port": 0,
     "username": "",
@@ -144,7 +145,7 @@ Languages: 🇬🇧 🇫🇷 🇷🇺 🇺🇦 🇧🇾 🇨🇳
   }
 }
 ```
-Блок `proxy` используется если нужно указать дополнительную конфигурацию proxy.\
+Блок `proxy` — исходящий HTTP или SOCKS5 (`"type": "socks5"`). Для школьного `proxy.qaguru.school:7777` достаточно host/port/`socks5`; логин и пароль читаются из `MICROSOCKS_USER`/`MICROSOCKS_PASS` или `/opt/qa-guru/etc/microsocks.env` (4.11.1+).
 Параметр `templatePath` является опциональным и позволяет установить путь к собственному Freemarker шаблону для сообщения. 
 Пример:
 ```
@@ -206,7 +207,7 @@ Languages: 🇬🇧 🇫🇷 🇷🇺 🇺🇦 🇧🇾 🇨🇳
  
 7. Выполнить в терминале следующую команду:
 ```
-java "-DconfigFile=notifications/config.json" -jar notifications/allure-notifications-4.2.1.jar
+java "-DconfigFile=notifications/config.json" -jar notifications/allure-notifications-4.11.1.jar
 ``` 
 Примечание:
 + На момент запуска уже должен быть сформирован файл `summary.json`.
@@ -247,9 +248,9 @@ java "-DconfigFile=notifications/config.json" -jar notifications/allure-notifica
 + В поле `Script` указываем следующее:
 ```
 cd ..
-FILE=allure-notifications-4.2.1.jar
+FILE=allure-notifications-4.11.1.jar
 if [ ! -f "$FILE" ]; then
-   wget https://github.com/qa-guru/allure-notifications/releases/download/4.2.1/allure-notifications-4.2.1.jar
+   wget https://github.com/qa-guru/allure-notifications/releases/download/4.11.1/allure-notifications-4.11.1.jar
 fi
 ```
 Примечание: 
@@ -257,7 +258,7 @@ fi
 
 + Нажимаем `Add another task` и во втором поле `Script` указываем следующее:
 ```
-java "-DconfigFile=notifications/config.json" -jar ../allure-notifications-4.2.1.jar
+java "-DconfigFile=notifications/config.json" -jar ../allure-notifications-4.11.1.jar
 ```
  
 4. Сохраняем изменения настроек и запускаем автотесты. По завершении в мессенджер будет направлено уведомление о результатах.

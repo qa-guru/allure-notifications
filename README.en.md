@@ -184,7 +184,7 @@ Fields:
 6. Fill in the `config.json` file block with the information about the chosen messenger.
 7. Execute the following command in terminal:
 ```
-java "-DconfigFile=notifications/config.json" -jar notifications/allure-notifications-4.6.1.jar
+java "-DconfigFile=notifications/config.json" -jar notifications/allure-notifications-4.11.1.jar
 ```
 Note:
 
