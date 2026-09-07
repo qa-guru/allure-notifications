@@ -53,10 +53,15 @@ public final class EmptyStatePanel implements ChartPanel {
             graphics.setColor(theme.getBackground());
             graphics.fillRect(0, 0, width, height);
             graphics.setColor(theme.getText());
+            int ruleW = Math.max(48, width / 5);
+            int ruleH = 3;
+            int ruleX = Math.max(MARGIN, (width - ruleW) / 2);
+            int ruleY = Math.max(MARGIN, height / 2 - 10);
+            graphics.fillRect(ruleX, ruleY, ruleW, ruleH);
             graphics.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 12));
             int textWidth = graphics.getFontMetrics().stringWidth(caption);
             int x = Math.max(MARGIN, (width - textWidth) / 2);
-            int y = Math.max(MARGIN + 12, height / 2);
+            int y = Math.min(height - MARGIN, ruleY + ruleH + 16);
             graphics.drawString(caption, x, y);
         } finally {
             graphics.dispose();

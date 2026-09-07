@@ -232,8 +232,8 @@ class ChartPanelsTest {
 
     private static boolean hasNonBackgroundPixels(BufferedImage image) {
         int background = image.getRGB(0, 0);
-        for (int y = 0; y < image.getHeight(); y += 10) {
-            for (int x = 0; x < image.getWidth(); x += 10) {
+        for (int y = 0; y < image.getHeight(); y++) {
+            for (int x = 0; x < image.getWidth(); x++) {
                 if (image.getRGB(x, y) != background) {
                     return true;
                 }
