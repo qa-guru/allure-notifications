@@ -4,9 +4,6 @@ settings:
   autoInstallPeers: true
   excludeLinksFromLockfile: false
 
-overrides:
-  '@qa-guru/allure-report-kit': link:../../allure-report-kit-home/allure-report-kit
-
 importers:
 
   .:
@@ -66,8 +63,8 @@ importers:
         specifier: workspace:*
         version: link:../../packages/config
       '@qa-guru/allure-report-kit':
-        specifier: link:../../../../allure-report-kit-home/allure-report-kit
-        version: link:../../../../allure-report-kit-home/allure-report-kit
+        specifier: ^0.3.3
+        version: 0.3.5(@allurereport/charts-api@3.14.3)
     devDependencies:
       '@playwright/test':
         specifier: ^1.61.1
@@ -141,8 +138,8 @@ importers:
         specifier: workspace:*
         version: link:../config
       '@qa-guru/allure-report-kit':
-        specifier: link:../../../../allure-report-kit-home/allure-report-kit
-        version: link:../../../../allure-report-kit-home/allure-report-kit
+        specifier: ^0.3.3
+        version: 0.3.5(@allurereport/charts-api@3.14.3)
     devDependencies:
       '@qa-guru/allure-notifications-test-meta':
         specifier: workspace:*
@@ -596,6 +593,21 @@ packages:
     resolution: {integrity: sha512-avH1zQLZR6c0DmH3pT/sn4RIzsNDXAue+MEoyS5RIvApKALSU8m05KyBOL8ua21gxeDYp1DclTMcFd+N1zaL1Q==}
     peerDependencies:
       preact: '>= 10.25.0 || >=11.0.0-0'
+
+  '@qa-guru/allure-report-kit@0.3.5':
+    resolution: {integrity: sha512-VMheOA8dBSIrwAtoYfv+v9jfUJ0qB7nB4PnA4HCG/2Kz4XZcoI1YSjYf1f4Q3k9sm2JR1QNDgvAfGEsT2M9o5g==}
+    engines: {node: '>=20'}
+    peerDependencies:
+      '@allurereport/charts-api': ~3.14.0
+      '@amcharts/amcharts5': '*'
+      highcharts: '>=11'
+    peerDependenciesMeta:
+      '@allurereport/charts-api':
+        optional: true
+      '@amcharts/amcharts5':
+        optional: true
+      highcharts:
+        optional: true
 
   '@react-spring/animated@10.1.2':
     resolution: {integrity: sha512-yAsQ/bbp6+vko7WNCI1M00c6KLE9XKTGCrgRhQqS4JcK3oF5qBV4rHYrQEprvEvYXxt+1H5FsLS2eVValEPfFw==}
@@ -2575,6 +2587,10 @@ snapshots:
     dependencies:
       '@preact/signals-core': 1.14.4
       preact: 10.29.7
+
+  '@qa-guru/allure-report-kit@0.3.5(@allurereport/charts-api@3.14.3)':
+    optionalDependencies:
+      '@allurereport/charts-api': 3.14.3
 
   '@react-spring/animated@10.1.2(@preact/compat@18.3.2(preact@10.29.7))':
     dependencies:

@@ -43,10 +43,5 @@
       "refactor": "Refactoring"
     },
     "repo": "qa-guru/allure-notifications"
-  },
-  "pnpm": {
-    "overrides": {
-      "@qa-guru/allure-report-kit": "link:../../allure-report-kit-home/allure-report-kit"
-    }
   }
 }
