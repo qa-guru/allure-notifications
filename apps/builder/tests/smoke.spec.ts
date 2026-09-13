@@ -552,6 +552,59 @@ test.describe('allure-notifications-builder smoke', () => {
     expect(snap.previewHasProductBar).toBe(true);
   });
 
+  test('chart.profile default paints stock Allure mocks; kit restores WidgetTileMocks', async ({
+    page,
+  }) => {
+    const errors: string[] = [];
+    page.on('console', (msg) => {
+      if (msg.type() === 'error') errors.push(msg.text());
+    });
+    page.on('pageerror', (err) => {
+      errors.push(err.message);
+    });
+
+    await page.goto('/');
+    await page.getByTestId('anb-btn-reset').click();
+    await expect(page.locator('#anb-canvas')).toHaveAttribute('data-anb-chart-profile', 'default');
+
+    const stock = await page.evaluate(() => {
+      const canvas = document.getElementById('anb-canvas');
+      const palette = document.getElementById('anb-palette');
+      const attr = (chart: string) =>
+        canvas
+          ?.querySelector(`.widget-tile[data-chart="${chart}"] svg`)
+          ?.getAttribute('data-anb-stock') ?? null;
+      const palDots = [...(palette?.querySelectorAll('.widget-tile__bar .indicator-row') ?? [])].filter(
+        (el) => {
+          const bar = el.closest('.widget-tile__bar');
+          if (!(bar instanceof HTMLElement) || !(el instanceof HTMLElement)) return false;
+          return getComputedStyle(bar).display !== 'none' && getComputedStyle(el).display !== 'none';
+        },
+      ).length;
+      return {
+        pyramid: attr('testingPyramid'),
+        dynamics: attr('durationDynamics'),
+        durations: attr('durations'),
+        palDots,
+      };
+    });
+    expect(stock.pyramid).toBe('testingPyramid');
+    expect(stock.dynamics).toBe('durationDynamics');
+    expect(stock.durations).toBe('durations');
+    expect(stock.palDots).toBe(0);
+
+    await page.getByTestId('anb-chart-profile').selectOption('kit');
+    await expect(page.locator('#anb-canvas')).toHaveAttribute('data-anb-chart-profile', 'kit');
+    const kit = await page.evaluate(() => {
+      const canvas = document.getElementById('anb-canvas');
+      return canvas
+        ?.querySelector('.widget-tile[data-chart="testingPyramid"] svg')
+        ?.getAttribute('data-anb-stock');
+    });
+    expect(kit).toBeNull();
+    expect(errors, errors.join('\n')).toEqual([]);
+  });
+
   test('chart.profile kit shows kit palette slots; export includes profile + kit ids', async ({
     page,
   }) => {
@@ -667,9 +720,41 @@ test.describe('allure-notifications-builder smoke', () => {
       mount.style.cssText = 'position:fixed;left:-9999px;top:0;width:240px;height:160px;';
       mount.innerHTML = preview;
       document.body.appendChild(mount);
+      if (typeof window.WidgetTileMocks !== 'undefined' && window.WidgetTileMocks.fill) {
+        window.WidgetTileMocks.fill(mount, { force: true });
+      }
       const previewMock = mount.querySelector(
         '[data-testid="anb-kit-mock-allureQualityGate"]',
       ) as HTMLElement | null;
+      const previewBarDots = mount.querySelectorAll('.widget-tile__bar .indicator').length;
+      const sqgPreview = A.previewItemHtml({
+        id: 'sonarQualityGate',
+        type: 'qualityGate',
+        x: 0,
+        y: 0,
+        w: 2,
+        h: 2,
+      });
+      const ttPreview = A.previewItemHtml({
+        id: 'testsTable',
+        type: 'testsTable',
+        x: 0,
+        y: 0,
+        w: 2,
+        h: 2,
+      });
+      const extra = document.createElement('div');
+      extra.innerHTML = sqgPreview + ttPreview;
+      if (typeof window.WidgetTileMocks !== 'undefined' && window.WidgetTileMocks.fill) {
+        window.WidgetTileMocks.fill(extra, { force: true });
+      }
+      const previewSqgBarDots = extra.querySelectorAll(
+        '[data-panel-id="sonarQualityGate"] .widget-tile__bar .indicator',
+      ).length;
+      const previewTableBarDots = extra.querySelectorAll(
+        '[data-panel-id="testsTable"] .widget-tile__bar .indicator',
+      ).length;
+      extra.remove();
       const previewBody = previewMock?.querySelector('.quality-gate__body') as HTMLElement | null;
       const previewVerdict = previewMock?.querySelector(
         '.quality-gate__verdict--ok',
@@ -703,6 +788,9 @@ test.describe('allure-notifications-builder smoke', () => {
         panelHasQgBar: /quality-gate__bar/.test(panel),
         previewHasProductBar: /widget-tile__bar/.test(preview),
         previewHasQgBar: /quality-gate__bar/.test(preview),
+        previewBarDots,
+        previewSqgBarDots,
+        previewTableBarDots,
         canvasHasQgBar: Boolean(aqgEl?.querySelector('.quality-gate__bar')),
         canvasHasEditorBar: Boolean(
           aqgEl?.closest('.anb-panel')?.querySelector('.anb-panel__bar'),
@@ -742,6 +830,9 @@ test.describe('allure-notifications-builder smoke', () => {
     expect(canvasQgChrome.panelHasQgBar).toBe(true);
     expect(canvasQgChrome.previewHasProductBar).toBe(true);
     expect(canvasQgChrome.previewHasQgBar).toBe(false);
+    expect(canvasQgChrome.previewBarDots).toBeGreaterThan(0);
+    expect(canvasQgChrome.previewSqgBarDots).toBeGreaterThan(0);
+    expect(canvasQgChrome.previewTableBarDots).toBeGreaterThan(0);
     expect(canvasQgChrome.canvasHasEditorBar).toBe(false);
     expect(canvasQgChrome.canvasHasQgBar).toBe(true);
     expect(canvasQgChrome.canvasHasDelete).toBe(true);
@@ -848,6 +939,14 @@ test.describe('allure-notifications-builder smoke', () => {
           expect.objectContaining({ id: 'testsTable', type: 'testsTable' }),
         ]),
       });
+
+    await page.getByTestId('anb-export-tg').hover();
+    await expect(page.getByTestId('anb-export-popover')).toBeVisible();
+    await expect(
+      page.locator(
+        '#anb-export-popover-stage .widget-tile[data-chart="qualityGate"] .widget-tile__bar .indicator',
+      ),
+    ).not.toHaveCount(0);
 
     await page.getByTestId('anb-chart-profile').selectOption('default');
     await expect(palette.locator('.anb-palette__item')).toHaveCount(17);

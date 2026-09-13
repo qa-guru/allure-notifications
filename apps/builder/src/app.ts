@@ -67,6 +67,7 @@ import {
   syncCanvasTestsTables,
   tileTier,
 } from './mocks/kit.js';
+import { applyProfileMocks } from './mocks/stock.js';
 import { controlValue, createDefaultState, getPath, resolvePath, setPath, state } from './state.js';
 import {
   TG_BOT_NAME,
@@ -369,6 +370,7 @@ function renderCollageStage(stage: HTMLElement, mode: 'tg' | 'full') {
   if (typeof window.WidgetTileMocks !== 'undefined' && window.WidgetTileMocks.fill) {
     window.WidgetTileMocks.fill(stage, { force: true });
   }
+  applyProfileMocks(stage);
   syncCanvasTestsTables(stage);
 
   const popover = document.getElementById('anb-export-popover');
@@ -538,6 +540,7 @@ function applyChartFlags() {
   const enableChart = Boolean(getPath('base.enableChart'));
   const darkMode = Boolean(getPath('base.darkMode'));
   const anbDark = darkMode ? 'true' : 'false';
+  const profile = chartProfile();
 
   for (const id of [
     'anb-preview-panel',
@@ -545,10 +548,12 @@ function applyChartFlags() {
     'anb-export-popover-viewport',
     'anb-export-popover-stage',
     'anb-messenger-telegram',
+    'anb-palette',
   ]) {
     const el = document.getElementById(id);
     if (el instanceof HTMLElement) {
-      el.dataset.anbDark = anbDark;
+      if (id !== 'anb-palette') el.dataset.anbDark = anbDark;
+      el.dataset.anbChartProfile = profile;
     }
   }
   syncEditorChrome();
@@ -703,9 +708,11 @@ function renderPaletteItems() {
   if (typeof window.WidgetTileMocks !== 'undefined' && window.WidgetTileMocks.fill) {
     window.WidgetTileMocks.fill(palette, { force: true });
   }
+  applyProfileMocks(palette);
 }
 
 function onChartProfileChange() {
+  applyChartFlags();
   renderPaletteItems();
 }
 
@@ -929,6 +936,7 @@ init();
   renderTerminal,
   renderVectorInput,
   applyChartFlags,
+  applyProfileMocks,
   updateToolbar,
   buildTgCaptionHtml,
   readItemsFromGrid,

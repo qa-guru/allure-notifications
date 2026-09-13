@@ -23,7 +23,7 @@ const MANIFEST = [
   },
   {
     "url": "/js/app.js",
-    "revision": "8bca520844412930"
+    "revision": "7b5ed9e3e9027444"
   },
   {
     "url": "/js/grid-editor.js",
@@ -31,7 +31,11 @@ const MANIFEST = [
   },
   {
     "url": "/js/mocks/kit.js",
-    "revision": "d63a54663d904924"
+    "revision": "0e15745a495a2b51"
+  },
+  {
+    "url": "/js/mocks/stock.js",
+    "revision": "d998e1d7f800699e"
   },
   {
     "url": "/js/phrases.js",
@@ -243,7 +247,7 @@ const MANIFEST = [
   },
   {
     "url": "/vendor/design-system/js/widget-tile-mocks.js",
-    "revision": "eaf573bc057e26e1"
+    "revision": "8a7b52f78cc1a298"
   },
   {
     "url": "/vendor/design-system/templates/header.html",

@@ -2,6 +2,7 @@ import { CANVAS_PRESETS, DEFAULT_CANVAS, GRID_COLS, GRID_ROWS, PANEL_CATALOG, PA
 import { CORNER_RATIO, PYRAMID_COLORS_DARK, PYRAMID_COLORS_LIGHT, STATUS_COLORS, TIER_GAP_RATIO, } from '@qa-guru/allure-report-kit/collage';
 import { DEFAULT_TILE_H, DEFAULT_TILE_W, addItem, clearAll, clearSelection, clearResizeMockElForTest, copyItem, deleteItem, fillEditorMocks, fitAndFillEditor, fitEditorScale, getGrid, getSelectedEl, initGrid, loadItems, migrateChromeKnobs, onGridChange, onGridResizeStart, onGridResizeStop, readItemsFromGrid, scheduleFitEditorScale, scheduleLiveResizeMock, selectItem, setGridAnimate, setGridForTest, setSuppressSyncForTest, stopLiveResizeMocks, syncEditorChrome, updateEmptyState, updateToolbar, canvasDisplayHeight, canvasDisplayScale, chromeCssVars, clampItem, findFreeSpot, freeCellRect, makeWidgetEl, rectsOverlap, } from './grid-editor.js';
 import { canvasTestsTableMaxRows, canvasTestsTableRowsHtml, kitOnlyPanelMockHtml, paletteItemHtml, panelInnerHtml, previewItemHtml, syncCanvasTestsTables, tileTier, } from './mocks/kit.js';
+import { applyProfileMocks } from './mocks/stock.js';
 import { controlValue, createDefaultState, getPath, resolvePath, setPath, state } from './state.js';
 import { TG_BOT_NAME, buildTgCaptionHtml, escapeHtml, formatDurationMs, formatPercentage, phrasesFor, setTgPreviewStatsForTest, } from './tg-caption.js';
 import { DEFAULT_VECTOR_ID, VECTOR_REGISTRY_KEY, VECTOR_REGISTRY_KEY_LEGACY, capsSnap, cloneSnap, configJsonText, fingerprint, fingerprintFromSnap, loadVectorRegistry, normalizeVectorId, rememberSnap, renderTerminal, renderVectorInput, setVectorDraft, setVectorMiss, vectorHash, vectorRegistry, } from './vector-registry.js';
@@ -259,6 +260,7 @@ function renderCollageStage(stage, mode) {
     if (typeof window.WidgetTileMocks !== 'undefined' && window.WidgetTileMocks.fill) {
         window.WidgetTileMocks.fill(stage, { force: true });
     }
+    applyProfileMocks(stage);
     syncCanvasTestsTables(stage);
     const popover = document.getElementById('anb-export-popover');
     let scale = 1;
@@ -421,16 +423,20 @@ function applyChartFlags() {
     const enableChart = Boolean(getPath('base.enableChart'));
     const darkMode = Boolean(getPath('base.darkMode'));
     const anbDark = darkMode ? 'true' : 'false';
+    const profile = chartProfile();
     for (const id of [
         'anb-preview-panel',
         'anb-canvas',
         'anb-export-popover-viewport',
         'anb-export-popover-stage',
         'anb-messenger-telegram',
+        'anb-palette',
     ]) {
         const el = document.getElementById(id);
         if (el instanceof HTMLElement) {
-            el.dataset.anbDark = anbDark;
+            if (id !== 'anb-palette')
+                el.dataset.anbDark = anbDark;
+            el.dataset.anbChartProfile = profile;
         }
     }
     syncEditorChrome();
@@ -583,8 +589,10 @@ function renderPaletteItems() {
     if (typeof window.WidgetTileMocks !== 'undefined' && window.WidgetTileMocks.fill) {
         window.WidgetTileMocks.fill(palette, { force: true });
     }
+    applyProfileMocks(palette);
 }
 function onChartProfileChange() {
+    applyChartFlags();
     renderPaletteItems();
 }
 function renderPalette() {
@@ -793,6 +801,7 @@ globalThis.__ANB__ = {
     renderTerminal,
     renderVectorInput,
     applyChartFlags,
+    applyProfileMocks,
     updateToolbar,
     buildTgCaptionHtml,
     readItemsFromGrid,

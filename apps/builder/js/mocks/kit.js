@@ -3,6 +3,7 @@ import { canvasTestsTableRowsHtml, paletteTestsTableRowsHtml, } from '../tests-t
 import { chromeCssVars, freeCellRect } from '../grid-editor.js';
 import { state } from '../state.js';
 import { escapeHtml } from '../tg-caption.js';
+import { applyProfileMocks } from './stock.js';
 export { canvasTestsTableRowsHtml };
 /** Collage parity: `max(1, floor((hostH - theadH) / rowH))` — metrics measured, not hardcoded. */
 export function canvasTestsTableMaxRows(hostH, headerH, rowH) {
@@ -93,7 +94,7 @@ function paletteQgRulesHtml(rules) {
             .join('') +
         `</ul>`);
 }
-/** Status-family dots — same chrome as chart palette tiles. */
+/** Status-family dots — palette thumbs + TG/export product bar (not CATALOG). */
 function kitOnlyPaletteBarHtml(panelId, chartType) {
     let dots;
     if (chartType === 'testsTable') {
@@ -302,7 +303,11 @@ export function previewItemHtml(item) {
         ? kitOnlyPanelMockHtml(panelId, chartType, isQg ? 'body' : 'hybrid')
         : '';
     const kitTileMod = isQg ? ' widget-tile--quality-gate' : '';
+    const kitBarDots = isKitOnlyPanelType(chartType) && panelId
+        ? kitOnlyPaletteBarHtml(panelId, chartType)
+        : '';
     const productBar = `<div class="widget-tile__bar">` +
+        kitBarDots +
         `<span class="widget-tile__title">${escapeHtml(title)}</span>` +
         `</div>`;
     return (`<figure class="widget-tile widget-tile--tier-${tier} anb-tg__widget${kitTileMod}" ${attrs} ` +
@@ -321,5 +326,6 @@ export function fillEditorMocks(root) {
     if (typeof window.WidgetTileMocks !== 'undefined' && window.WidgetTileMocks.fill) {
         window.WidgetTileMocks.fill(scope, { force: true });
     }
+    applyProfileMocks(scope);
     syncCanvasTestsTables(scope);
 }

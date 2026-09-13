@@ -21,8 +21,9 @@
   var LAYERS = [
     { k: "manual", n: 2, short: "M", c: "var(--layer-manual)" },
     { k: "e2e", n: 3, short: "E", c: "var(--layer-e2e)" },
-    { k: "api", n: 4, short: "A", c: "var(--layer-api)" },
-    { k: "integration", n: 5, short: "I", c: "var(--layer-integration)" },
+    { k: "ui", n: 4, short: "UI", c: "var(--layer-ui)" },
+    { k: "api", n: 5, short: "A", c: "var(--layer-api)" },
+    { k: "integration", n: 6, short: "I", c: "var(--layer-integration)" },
     { k: "component", n: 8, short: "C", c: "var(--layer-component)" },
     { k: "unit", n: 12, short: "U", c: "var(--layer-unit)" },
   ];
@@ -197,7 +198,7 @@
     return parts.join("");
   }
 
-  /** Testing pyramid — funnel (narrow top → wide bottom), 6 F5 layers. */
+  /** Testing pyramid — width ∝ test count, stacked in layer order. */
   function pyramidSvg(host) {
     var v = tileVars(host);
     var box = plotBox(host, 240);
@@ -220,7 +221,10 @@
     var bandH = (H - padY * 2 - gap * (n - 1)) / n;
     var cx = W / 2;
     var funnelW = W - padX * 2;
-    var minFrac = 0.2;
+    var peak = 0;
+    for (var p = 0; p < n; p++) {
+      if (LAYERS[p].n > peak) peak = LAYERS[p].n;
+    }
     var rx = v.tier === "micro" ? Math.max(2, CHART_RX / 2) : CHART_RX;
     var font = Math.round((v.tier === "hero" ? 13 : 12) * v.font);
     // viewBox matches body aspect → 1×2 / 2×1 fill without anamorphic labels.
@@ -233,7 +237,7 @@
     ];
 
     LAYERS.forEach(function (layer, i) {
-      var frac = minFrac + (1 - minFrac) * (i / (n - 1));
+      var frac = peak > 0 ? layer.n / peak : 0;
       var w = funnelW * frac;
       var y = padY + i * (bandH + gap);
       parts.push(
@@ -1326,13 +1330,14 @@
   /**
    * Durations by layer — avg seconds per layer (horizontal pills).
    * Collage canon: Java DurationsPanel / core drawLayerAverages (not stacked hist).
-   * Top → bottom matches Testing pyramid (manual … unit), all 6 F5 layers.
+   * Top → bottom matches Testing pyramid (manual … unit).
    */
   function durationsByLayerSvg(host) {
     var v = tileVars(host);
     var avgs = {
       manual: 4.2,
       e2e: 2.8,
+      ui: 2.1,
       api: 1.6,
       integration: 0.9,
       component: 0.4,
@@ -1340,6 +1345,8 @@
     };
     var rows = LAYERS.map(function (l) {
       return { k: l.k, n: avgs[l.k], c: l.c };
+    }).filter(function (r) {
+      return typeof r.n === "number";
     });
     var box = plotBox(host, 240);
     var W = box.W;
@@ -1559,9 +1566,6 @@
     },
     { type: "durationDynamics", title: "Duration dynamics", dots: ["blue"] },
     { type: "statusAgePyramid", title: "Status age pyramid", dots: ["red", "yellow", "gray", "purple"] },
-    // Kit QG — product bar dots (TG/preview); body mock is prefilled by builder.
-    { type: "qualityGate", id: "allureQualityGate", title: "Allure Quality Gate", dots: ["green"] },
-    { type: "qualityGate", id: "sonarQualityGate", title: "Sonar Quality Gate", dots: ["red"] },
   ];
 
   function readVariant(tile, body) {
@@ -1574,26 +1578,21 @@
     };
   }
 
-  /** Match CATALOG slot for a tile (type + optional groupBy / by / id). */
-  function catalogSlot(kind, variant, panelId) {
+  /** Match CATALOG slot for a tile (type + optional groupBy / by). */
+  function catalogSlot(kind, variant) {
     var resolved = resolveKind(kind, variant);
     var key = resolved.key;
     var groupBy = (variant && variant.groupBy) || "";
     var by = (variant && variant.by) || "";
-    var id = (panelId || "").trim();
     var i;
     var slot;
     for (i = 0; i < CATALOG.length; i++) {
       slot = CATALOG[i];
       if (slot.type !== key) continue;
-      if (slot.id && slot.id !== id) continue;
       if (slot.groupBy && slot.groupBy !== groupBy) continue;
       if (slot.by && slot.by !== by) continue;
       if (!slot.groupBy && groupBy && key === "durations") continue;
       return slot;
-    }
-    for (i = 0; i < CATALOG.length; i++) {
-      if (CATALOG[i].type === key && !CATALOG[i].id) return CATALOG[i];
     }
     for (i = 0; i < CATALOG.length; i++) {
       if (CATALOG[i].type === key) return CATALOG[i];
@@ -1606,10 +1605,8 @@
     if (!tile || !tile.querySelector) return;
     var bar = tile.querySelector(".widget-tile__bar");
     if (!bar) return;
-    var panelId = (tile.getAttribute("data-panel-id") || "").trim();
-    var slot = catalogSlot(kind, variant, panelId);
-    if (!slot || !Array.isArray(slot.dots)) return;
-    var names = slot.dots;
+    var slot = catalogSlot(kind, variant);
+    var names = slot && Array.isArray(slot.dots) ? slot.dots : [];
     var row = bar.querySelector(":scope > .indicator-row");
     if (!row) {
       row = document.createElement("div");
@@ -1636,14 +1633,7 @@
       var kind = (body.getAttribute("data-mock") || (tile && tile.getAttribute("data-chart")) || "").trim();
       var variant = readVariant(tile, body);
       var resolved = resolveKind(kind, variant);
-      // Kit QG / prefilled bodies: no chart renderer — still sync product-bar dots.
-      if (!resolved.render) {
-        if (tile && tile.querySelector(".widget-tile__bar")) {
-          syncIndicators(tile, kind, variant);
-          body.setAttribute("data-mock-filled", "1");
-        }
-        return;
-      }
+      if (!resolved.render) return;
       body.innerHTML = resolved.render(body, resolved.variant);
       body.setAttribute("data-mock-filled", "1");
       syncIndicators(tile, kind, variant);
