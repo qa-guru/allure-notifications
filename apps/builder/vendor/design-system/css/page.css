@@ -1,4 +1,5 @@
 @import url("tokens.css");
+@import url("status.css");
 
 /* Page shell — shared max-width + padding; compose modifiers on <main> */
 .page-shell {
@@ -29,15 +30,6 @@
 .variants-page--below-header {
   padding-top: calc(var(--header-occupied-height) + var(--space-4));
   padding-bottom: var(--space-6);
-}
-
-.status {
-  display: inline-block;
-  padding: var(--space-1) var(--space-3);
-  border-radius: var(--radius-sm);
-  background: var(--color-surface-soft);
-  font-size: var(--font-size-sm);
-  color: var(--color-text-muted);
 }
 
 h1 {

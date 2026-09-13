@@ -60,7 +60,9 @@
 }
 
 .configurator__layout.grid {
-  gap: var(--space-6);
+  /* Same gap cfg↔term as stacked panels in __main (space-3) */
+  --configurator-gap: var(--space-3);
+  gap: var(--configurator-gap);
 }
 
 .configurator__main,
@@ -94,10 +96,15 @@
  *   4) term → rest; cfg stays rest
  *   ≤768 stack (grid--2x1)
  *
+ * BAN: discrete media (900/1100/1280/1600) that rebuild grid-template-columns;
+ * BAN: 1fr 2fr 2fr / 2fr 2fr stage recipes (Capabilities regress → 1:2:2).
+ * Consumers (selenoid-ui .capabilities-body) copy this clamp — see RAG cfg-terminal-6col.
+ *
  * When gutter>0, pad = gutter+gap (mental track + gap). When gutter=0, pad=0
  * (no leftover gap — left page-pad matches right page-pad).
  *
- * Rest @1600: (1600px - 2×page-padding-x - 5×space-6) / 6
+ * Rest @1600: (1600px - 2×page-padding-x - 5×configurator-gap) / 6
+ * (1600 = col-rest anchor only — NOT a track-rebuild breakpoint)
  */
 .configurator.page-shell:has(.configurator__layout--terminal) {
   max-width: none;
@@ -112,10 +119,10 @@
   width: 100%;
   justify-content: start;
   --configurator-col-rest: calc(
-    (1600px - 2 * var(--page-padding-x) - 5 * var(--space-6)) / 6
+    (1600px - 2 * var(--page-padding-x) - 5 * var(--configurator-gap, var(--space-3))) / 6
   );
   --configurator-span-2: calc(
-    2 * var(--configurator-col-rest) + var(--space-6)
+    2 * var(--configurator-col-rest) + var(--configurator-gap, var(--space-3))
   );
 }
 
@@ -134,12 +141,12 @@
      */
     --configurator-gutter: clamp(
       0px,
-      calc(100% - 2 * var(--configurator-span-2) - 2 * var(--space-6)),
+      calc(100% - 2 * var(--configurator-span-2) - 2 * var(--configurator-gap, var(--space-3))),
       var(--configurator-col-rest)
     );
-    /* gap after ░ shrinks with gutter (not binary 24↔0 — that jumped) */
+    /* gap after ░ shrinks with gutter (not binary gap↔0 — that jumped) */
     --configurator-gutter-gap: min(
-      var(--space-6),
+      var(--configurator-gap, var(--space-3)),
       var(--configurator-gutter)
     );
     padding-left: calc(
@@ -148,11 +155,11 @@
     /* 100% below = content box (width − padding-left) */
     --configurator-cfg: clamp(
       var(--configurator-col-rest),
-      calc(100% - var(--configurator-span-2) - var(--space-6)),
+      calc(100% - var(--configurator-span-2) - var(--configurator-gap, var(--space-3))),
       var(--configurator-span-2)
     );
     --configurator-term: calc(
-      100% - var(--configurator-cfg) - var(--space-6)
+      100% - var(--configurator-cfg) - var(--configurator-gap, var(--space-3))
     );
     grid-template-columns: var(--configurator-cfg) var(--configurator-term);
     align-items: start;

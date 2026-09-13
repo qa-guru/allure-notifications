@@ -65,26 +65,37 @@
 }
 
 /*
- * Adaptive column ladder (container widths mirror preview/tests-table-adaptive.html):
+ * Adaptive column ladder (panel inline-size ≈ tile width − 2px; see tests-table-adaptive.html):
  *   ≤196px (#1–3)  TEST + STATUS
- *   197–251px (#4) + TREND
- *   252–559px (#5–9) all four — name may ellipsis
- *   ≥560px (#10) prefer full name; status/trend/stability shrink
+ *   197–249px (#4) + TREND
+ *   250–479px (#5–9) all four — name may ellipsis
+ *   ≥480px (#10 / wide) Test:Status:Trend:Stability ≈ 36:28:18:18
+ *
+ * Width intent: on a wide tile the three trailing columns sit left of a ~36% name
+ * track (not content-capped against the right edge). Status still fits RU/EN
+ * badges (ПРОЙДЕН / НЕИЗВЕСТЕН / PASSED). Hidden columns must also zero matching
+ * `col` widths (table-layout:fixed still allocates % to cols whose cells are
+ * display:none).
  */
 .tests-table-panel__table col.tests-table-panel__name {
-  width: 30%;
+  width: 28%;
 }
 
 .tests-table-panel__table col.tests-table-panel__status {
-  width: 24%;
+  width: 40%;
+}
+
+.tests-table-panel__table th.tests-table-panel__status,
+.tests-table-panel__table td.tests-table-panel__status {
+  width: 40%;
 }
 
 .tests-table-panel__table col.tests-table-panel__trend {
-  width: 26%;
+  width: 20%;
 }
 
 .tests-table-panel__table col.tests-table-panel__stability {
-  width: 20%;
+  width: 12%;
 }
 
 /* #1–3 / ≤196px — TEST + STATUS only */
@@ -97,11 +108,21 @@
   }
 
   .tests-table-panel__table col.tests-table-panel__name {
-    width: 68%;
+    width: 55%;
   }
 
   .tests-table-panel__table col.tests-table-panel__status {
-    width: 32%;
+    width: 45%;
+  }
+
+  .tests-table-panel__table th.tests-table-panel__status,
+  .tests-table-panel__table td.tests-table-panel__status {
+    width: 45%;
+  }
+
+  .tests-table-panel__table col.tests-table-panel__trend,
+  .tests-table-panel__table col.tests-table-panel__stability {
+    width: 0%;
   }
 }
 
@@ -113,37 +134,50 @@
   }
 
   .tests-table-panel__table col.tests-table-panel__name {
-    width: 42%;
+    width: 38%;
   }
 
   .tests-table-panel__table col.tests-table-panel__status {
-    width: 22%;
+    width: 34%;
+  }
+
+  .tests-table-panel__table th.tests-table-panel__status,
+  .tests-table-panel__table td.tests-table-panel__status {
+    width: 34%;
   }
 
   .tests-table-panel__table col.tests-table-panel__trend {
-    width: 36%;
-  }
-}
-
-/* #10 / ≥480px panel — prefer full name (480 = WIDTH step before 560; panel ≈ tile − 2px) */
-@container tests-table (min-width: 480px) {
-  .tests-table-panel__table col.tests-table-panel__name {
-    width: 42%;
-  }
-
-  .tests-table-panel__table col.tests-table-panel__status {
-    width: 14%;
-  }
-
-  .tests-table-panel__table col.tests-table-panel__trend {
-    width: 20%;
+    width: 28%;
   }
 
   .tests-table-panel__table col.tests-table-panel__stability {
-    width: 24%;
+    width: 0%;
   }
 }
 
+/* #10 / ≥480px — Status must fit RU/EN badges (ПРОЙДЕН / PASSED), not 4:2:2:2 */
+@container tests-table (min-width: 480px) {
+  .tests-table-panel__table col.tests-table-panel__name {
+    width: 36%;
+  }
+
+  .tests-table-panel__table col.tests-table-panel__status {
+    width: 28%;
+  }
+
+  .tests-table-panel__table th.tests-table-panel__status,
+  .tests-table-panel__table td.tests-table-panel__status {
+    width: 28%;
+  }
+
+  .tests-table-panel__table col.tests-table-panel__trend {
+    width: 18%;
+  }
+
+  .tests-table-panel__table col.tests-table-panel__stability {
+    width: 18%;
+  }
+}
 .tests-table-panel__table tbody tr:last-child td {
   border-bottom: none;
 }
@@ -171,14 +205,15 @@
   margin: 0;
 }
 
-/* Cell content must stay inside its column (badge/sparkline were visually breaking the grid). */
+/* Badge must size to the RU/EN label — ellipsis fails kit smoke (scrollWidth). */
 .tests-table-panel__status .badge {
   display: inline-block;
   box-sizing: border-box;
-  max-width: 100%;
+  max-width: none;
   margin: 0;
-  overflow: hidden;
-  text-overflow: ellipsis;
+  padding-inline: var(--space-2);
+  overflow: visible;
+  text-overflow: clip;
   vertical-align: middle;
 }
 
@@ -361,12 +396,12 @@
 
 .widget-tile--tier-compact .tests-table-panel__table col.tests-table-panel__name,
 .tests-table-host--tier-compact .tests-table-panel__table col.tests-table-panel__name {
-  width: 30%;
+  width: 22%;
 }
 
 .widget-tile--tier-compact .tests-table-panel__table col.tests-table-panel__status,
 .tests-table-host--tier-compact .tests-table-panel__table col.tests-table-panel__status {
-  width: 18%;
+  width: 26%;
 }
 
 .widget-tile--tier-compact .tests-table-panel__table col.tests-table-panel__trend,

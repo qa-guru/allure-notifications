@@ -18,9 +18,11 @@
   background: var(--hover-bg);
 }
 
+/* Inset ring — icon-btn lives in tight chrome (panel/qg bars) with
+   overflow:hidden; outer offset gets clipped by borders/radius. */
 .icon-btn:focus-visible {
   outline: 2px solid var(--color-primary);
-  outline-offset: 2px;
+  outline-offset: -2px;
 }
 
 .icon-btn:disabled {

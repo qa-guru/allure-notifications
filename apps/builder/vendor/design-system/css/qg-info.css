@@ -174,8 +174,7 @@ html[data-theme="light"] .qg-info__popover.ch-theme--vscode .ch-tok-null {
 
 html.theme-light .qg-info__popover.ch-theme--vscode .ch-tok-punct,
 html[data-theme="light"] .qg-info__popover.ch-theme--vscode .ch-tok-punct {
-  color: #393a34;
-  opacity: 0.55;
+  color: rgba(57, 58, 52, 0.55);
 }
 
 html.theme-light .qg-info__popover.ch-theme--vscode .ch-tok-comment,

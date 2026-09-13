@@ -129,41 +129,45 @@
 }
 
 /* --many: ONE path for any chip count (true|false, tags, …).
-   Dissolve track/seg — chips participate in shell inline flow (float label +
-   text-align:right). ALWAYS right-aligned; wrap under the label. */
+   Chips live in the track (flex row, flex-end). Wrap only inside the
+   control column — never dissolve track/seg (display:contents), never wrap
+   under the label. */
 .plaque-field--divided > .plaque-field-seg-track--many.plaque-field__control {
-  display: contents;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  align-items: stretch;
   width: auto;
-  max-width: none;
+  max-width: 100%;
   min-width: 0;
   height: auto;
   min-height: 0;
-  flex: unset;
-  align-self: unset;
+  flex: 1 1 auto;
+  align-self: center;
   margin-block: 0;
   padding-block: 0;
 }
 
 .plaque-field--divided > .plaque-field-seg-track--many .plaque-field-seg {
-  display: contents;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  align-items: center;
+  flex: 0 1 auto;
+  width: max-content;
+  max-width: 100%;
+  min-width: 0;
 }
 
 .plaque-field--divided > .plaque-field-seg-track--many .plaque-field-seg__btn {
   display: inline-flex;
-  vertical-align: middle;
   flex: 0 0 auto;
   align-items: center;
   min-width: min-content;
-  /* Glyph ~20 — never height:band. Line box = band + row-gap so the shell
-     gradient (period band+gap) stays locked to chip air on every wrap row.
-     Last-row extra gap is pulled back by ::after in plaque-field.css. */
   min-height: var(--plaque-seg-chip-height);
   height: auto;
   box-sizing: border-box;
-  margin-block-start: var(--plaque-seg-chip-air);
-  margin-block-end: calc(var(--plaque-seg-chip-air) + var(--plaque-seg-row-gap));
-  margin-left: var(--plaque-seg-gap);
-  margin-right: 0;
+  margin: 0;
 }
 
 /* --stretch never stretches seg buttons — only select/input (plaque-field.css).

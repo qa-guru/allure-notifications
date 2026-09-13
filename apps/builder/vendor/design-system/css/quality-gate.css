@@ -200,6 +200,10 @@
 }
 
 .quality-gate:has(.quality-gate__bar) .quality-gate__body {
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  min-height: 0;
   padding: 0;
 }
 
@@ -225,7 +229,10 @@
   display: grid;
   /* id col grows with longest key; fit-content cap = 3× base (19.5rem). */
   grid-template-columns: fit-content(19.5rem) 1fr;
+  grid-auto-rows: minmax(min-content, 1fr);
   align-items: stretch;
+  flex: 1 1 auto;
+  min-height: 0;
   margin: 0;
   padding: 0;
   list-style: none;

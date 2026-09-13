@@ -1,6 +1,5 @@
 /* Code highlight — JSON / shell token palettes (primitive).
-   Pairs with panel__code; standalone .ch-code for bare pre.
-   React mirror: packages/react-ui/src/styles/code-highlight.css */
+   Pairs with panel__code; standalone .ch-code for bare pre. */
 
 .ch-code {
   --ch-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
@@ -15,7 +14,8 @@
   line-height: 1.55;
   color: var(--ch-code-fg);
   white-space: pre-wrap;
-  word-break: break-word;
+  overflow-wrap: break-word;
+  word-break: normal;
   background: var(--ch-code-bg);
   border-radius: var(--radius-sm);
 }
@@ -45,11 +45,16 @@
 :where(.ch-code:not(.ch-code--plain)) .ch-tok-null,
 .ch-theme--vscode .ch-tok-null { color: #569cd6; }
 :where(.ch-code:not(.ch-code--plain)) .ch-tok-punct,
-.ch-theme--vscode .ch-tok-punct { color: #d4d4d4; opacity: 0.55; }
+.ch-theme--vscode .ch-tok-punct { color: rgba(212, 212, 212, 0.55); }
 :where(.ch-code:not(.ch-code--plain)) .ch-tok-comment,
 .ch-theme--vscode .ch-tok-comment { color: #6a9955; }
 :where(.ch-code:not(.ch-code--plain)) .ch-tok-cmd,
 .ch-theme--vscode .ch-tok-cmd { color: #dcdcaa; }
+:where(.ch-code:not(.ch-code--plain)) .ch-tok-danger,
+.ch-theme--vscode .ch-tok-danger {
+  color: var(--color-danger, #f85149);
+  font-weight: 600;
+}
 
 /* GitHub Dark */
 .ch-theme--github .ch-tok-key { color: #79c0ff; }
@@ -81,12 +86,20 @@
 .ch-theme--contrast .ch-tok-comment { color: rgba(255, 255, 255, 0.4); }
 .ch-theme--contrast .ch-tok-cmd { color: #c084fc; }
 
-/* Light terminal paper — readable on panel--terminal-light */
+/* Light terminal paper — page theme-light or panel--terminal-light */
+html.theme-light .panel--terminal.ch-theme--vscode .ch-tok-key,
 .panel--terminal-light.ch-theme--vscode .ch-tok-key { color: #0451a5; }
+html.theme-light .panel--terminal.ch-theme--vscode .ch-tok-str,
 .panel--terminal-light.ch-theme--vscode .ch-tok-str { color: #a31515; }
+html.theme-light .panel--terminal.ch-theme--vscode .ch-tok-num,
 .panel--terminal-light.ch-theme--vscode .ch-tok-num { color: #098658; }
+html.theme-light .panel--terminal.ch-theme--vscode .ch-tok-bool,
 .panel--terminal-light.ch-theme--vscode .ch-tok-bool { color: #0000ff; }
+html.theme-light .panel--terminal.ch-theme--vscode .ch-tok-null,
 .panel--terminal-light.ch-theme--vscode .ch-tok-null { color: #0000ff; }
-.panel--terminal-light.ch-theme--vscode .ch-tok-punct { color: #393a34; opacity: 0.55; }
+html.theme-light .panel--terminal.ch-theme--vscode .ch-tok-punct,
+.panel--terminal-light.ch-theme--vscode .ch-tok-punct { color: rgba(57, 58, 52, 0.55); }
+html.theme-light .panel--terminal.ch-theme--vscode .ch-tok-comment,
 .panel--terminal-light.ch-theme--vscode .ch-tok-comment { color: #008000; }
+html.theme-light .panel--terminal.ch-theme--vscode .ch-tok-cmd,
 .panel--terminal-light.ch-theme--vscode .ch-tok-cmd { color: #795e26; }

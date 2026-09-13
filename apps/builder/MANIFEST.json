@@ -3,7 +3,7 @@
   "phase": 6,
   "vendor": {
     "source": "projects/design-system-home/design-system/",
-    "copied": "2026-08-03",
+    "copied": "2026-09-13",
     "policy": "copy-once pin; do not edit files under vendor/",
     "files": [
       {
@@ -12,7 +12,11 @@
       },
       {
         "path": "assets/qa-guru-logo.svg",
-        "sha256_16": "20ca0e73cb21f7e4"
+        "sha256_16": "f4765f40adace36a"
+      },
+      {
+        "path": "css/badge.css",
+        "sha256_16": "afbb6c6f8544813a"
       },
       {
         "path": "css/button.css",
@@ -20,11 +24,11 @@
       },
       {
         "path": "css/code-highlight.css",
-        "sha256_16": "8bb9ec6a12d588c2"
+        "sha256_16": "5245bf7d959b3200"
       },
       {
         "path": "css/configurator.css",
-        "sha256_16": "927c17b0591c4f40"
+        "sha256_16": "512d050b2c5d45c0"
       },
       {
         "path": "css/grid.css",
@@ -32,11 +36,11 @@
       },
       {
         "path": "css/header.css",
-        "sha256_16": "8f667ed1c30925d8"
+        "sha256_16": "c62a2b91ac97a830"
       },
       {
         "path": "css/icon-btn.css",
-        "sha256_16": "30a8439d004bfc65"
+        "sha256_16": "886a5625e28f87d4"
       },
       {
         "path": "css/icon.css",
@@ -56,15 +60,15 @@
       },
       {
         "path": "css/link.css",
-        "sha256_16": "ac3e17e548a7d976"
+        "sha256_16": "98c76b4683dd6a80"
       },
       {
         "path": "css/page.css",
-        "sha256_16": "61f3ae39e8246bed"
+        "sha256_16": "c4fcee1f963edd07"
       },
       {
         "path": "css/panel.css",
-        "sha256_16": "0437be0d90b12522"
+        "sha256_16": "0da29a94dd6ffd34"
       },
       {
         "path": "css/plaque-divider.css",
@@ -72,27 +76,51 @@
       },
       {
         "path": "css/plaque-field-seg-layout.css",
-        "sha256_16": "40a27b452f6acb6c"
+        "sha256_16": "21cf39e6920b29b3"
       },
       {
         "path": "css/plaque-field-seg.css",
-        "sha256_16": "82b795ef9a6edc07"
+        "sha256_16": "018d2d840b4ac58d"
       },
       {
         "path": "css/plaque-field.css",
-        "sha256_16": "325eb70e0d045247"
+        "sha256_16": "1f2342bc01a86369"
       },
       {
         "path": "css/plaque-number.css",
         "sha256_16": "06f8c20d1f8469d0"
       },
       {
+        "path": "css/qg-info.css",
+        "sha256_16": "7aa40d494d70cf7b"
+      },
+      {
+        "path": "css/quality-gate.css",
+        "sha256_16": "2629170e278b33a4"
+      },
+      {
+        "path": "css/sparkline.css",
+        "sha256_16": "ce76ac69d812f3cb"
+      },
+      {
+        "path": "css/stability-cell.css",
+        "sha256_16": "9fba72c68a381874"
+      },
+      {
         "path": "css/stack.css",
         "sha256_16": "502373ef5ff2b0f1"
       },
       {
+        "path": "css/status.css",
+        "sha256_16": "329ad41c08ff203c"
+      },
+      {
         "path": "css/sticky.css",
         "sha256_16": "b1ba038c29cd0737"
+      },
+      {
+        "path": "css/tests-table-panel.css",
+        "sha256_16": "60c96c65cb8495ce"
       },
       {
         "path": "css/text.css",
@@ -100,15 +128,15 @@
       },
       {
         "path": "css/tokens.css",
-        "sha256_16": "3f9ddcfc95c9d064"
+        "sha256_16": "0765b4aea0645341"
       },
       {
         "path": "css/widget-tile.css",
-        "sha256_16": "f415f001f6cbc8f8"
+        "sha256_16": "72030f4c745a5553"
       },
       {
         "path": "js/code-highlight.js",
-        "sha256_16": "9e2376f4735cab70"
+        "sha256_16": "a67f5962f0c9c4bf"
       },
       {
         "path": "js/dom-utils.js",
@@ -120,7 +148,7 @@
       },
       {
         "path": "js/header.js",
-        "sha256_16": "a24b75cefaadbb2c"
+        "sha256_16": "10856f7aed573af4"
       },
       {
         "path": "js/plaque-number.js",
@@ -128,7 +156,7 @@
       },
       {
         "path": "js/pwa-register.js",
-        "sha256_16": "103aceb2a135c622"
+        "sha256_16": "642a4024e82ffe0d"
       },
       {
         "path": "js/theme-icons.js",
@@ -140,7 +168,7 @@
       },
       {
         "path": "templates/header.html",
-        "sha256_16": "d20495432fb08970"
+        "sha256_16": "43aa33dad7885e33"
       },
       {
         "path": "templates/widget-tile.html",

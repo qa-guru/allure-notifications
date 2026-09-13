@@ -40,9 +40,11 @@
   --panel-tab-hover-border: rgba(255, 255, 255, 0.28);
   --panel-tab-hover-color: rgba(255, 255, 255, 0.72);
   --panel-tab-active-color: rgba(255, 255, 255, 0.92);
+  color: var(--panel-code-color);
 }
 
-/* Light output chrome — independent of html.theme-light */
+/* Light paper: page theme-light or explicit tone="light". */
+html.theme-light .panel--terminal,
 .panel--terminal.panel--terminal-light {
   --panel-bg: #ffffff;
   --panel-border: rgba(28, 25, 23, 0.12);
@@ -58,6 +60,7 @@
   --panel-tab-hover-border: rgba(28, 25, 23, 0.28);
   --panel-tab-hover-color: rgba(28, 25, 23, 0.72);
   --panel-tab-active-color: rgba(28, 25, 23, 0.92);
+  color: var(--panel-code-color);
 }
 
 .panel--content {
@@ -230,7 +233,8 @@
   line-height: 1.55;
   color: var(--panel-code-color);
   white-space: pre-wrap;
-  word-break: break-word;
+  overflow-wrap: break-word;
+  word-break: normal;
 }
 
 .panel__foot {

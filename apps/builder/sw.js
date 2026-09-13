@@ -3,7 +3,7 @@ const PRECACHE = 'anb-shell';
 const MANIFEST = [
   {
     "url": "/css/app.css",
-    "revision": "8408fe753c2caa85"
+    "revision": "c3d9b114bb8a87aa"
   },
   {
     "url": "/icons/pwa-192.png",
@@ -19,7 +19,7 @@ const MANIFEST = [
   },
   {
     "url": "/index.html",
-    "revision": "b03f4b8a1c9a7fae"
+    "revision": "7499553b86f4f1cb"
   },
   {
     "url": "/js/app.js",
@@ -51,7 +51,7 @@ const MANIFEST = [
   },
   {
     "url": "/js/tg-caption.js",
-    "revision": "2af370c43df197ac"
+    "revision": "324967e3100d8655"
   },
   {
     "url": "/js/vector-registry.js",
@@ -59,7 +59,7 @@ const MANIFEST = [
   },
   {
     "url": "/manifest.webmanifest",
-    "revision": "b2c8b2259cb27de8"
+    "revision": "a9f284e02e1f0124"
   },
   {
     "url": "/vendor/allure-notifications-config/browser.js",
@@ -75,11 +75,11 @@ const MANIFEST = [
   },
   {
     "url": "/vendor/allure-notifications-config/phrases.js",
-    "revision": "ef00c120ee669f74"
+    "revision": "7fa31dba8d14651f"
   },
   {
     "url": "/vendor/allure-notifications-config/presets.js",
-    "revision": "31c1f4be0b6bb7ff"
+    "revision": "70df4cb7fa5a3077"
   },
   {
     "url": "/vendor/allure-report-kit-collage/collage-palette.js",
@@ -99,11 +99,11 @@ const MANIFEST = [
   },
   {
     "url": "/vendor/design-system/assets/qa-guru-logo.svg",
-    "revision": "7503122a5250d584"
+    "revision": "095581dc212e9a5d"
   },
   {
     "url": "/vendor/design-system/css/badge.css",
-    "revision": "fc54b2c74d9868fc"
+    "revision": "d283dcc5d0adcf32"
   },
   {
     "url": "/vendor/design-system/css/button.css",
@@ -111,11 +111,11 @@ const MANIFEST = [
   },
   {
     "url": "/vendor/design-system/css/code-highlight.css",
-    "revision": "8759188e4dbd9e33"
+    "revision": "0c6ac54bb43034a1"
   },
   {
     "url": "/vendor/design-system/css/configurator.css",
-    "revision": "934b09e981ad2790"
+    "revision": "77dfb2672f5643d6"
   },
   {
     "url": "/vendor/design-system/css/grid.css",
@@ -123,11 +123,11 @@ const MANIFEST = [
   },
   {
     "url": "/vendor/design-system/css/header.css",
-    "revision": "aa303f8ed343d160"
+    "revision": "95e6f6302bc16d9a"
   },
   {
     "url": "/vendor/design-system/css/icon-btn.css",
-    "revision": "6698d905cab2daaf"
+    "revision": "6b84003fd997aa1a"
   },
   {
     "url": "/vendor/design-system/css/icon.css",
@@ -147,15 +147,15 @@ const MANIFEST = [
   },
   {
     "url": "/vendor/design-system/css/link.css",
-    "revision": "b212d39f959f5abe"
+    "revision": "2abee6403da9bd74"
   },
   {
     "url": "/vendor/design-system/css/page.css",
-    "revision": "0924722b37946a74"
+    "revision": "2d20c78e4a24373e"
   },
   {
     "url": "/vendor/design-system/css/panel.css",
-    "revision": "440abaf2e6415092"
+    "revision": "4e217eaad30d0dd4"
   },
   {
     "url": "/vendor/design-system/css/plaque-divider.css",
@@ -163,15 +163,15 @@ const MANIFEST = [
   },
   {
     "url": "/vendor/design-system/css/plaque-field-seg-layout.css",
-    "revision": "bff9b5553447173c"
+    "revision": "4601c57ad4cc2002"
   },
   {
     "url": "/vendor/design-system/css/plaque-field-seg.css",
-    "revision": "61b7f9939299cc4d"
+    "revision": "2715a5c47ea1d1dc"
   },
   {
     "url": "/vendor/design-system/css/plaque-field.css",
-    "revision": "243dbcec18205eb3"
+    "revision": "f938354922735a7d"
   },
   {
     "url": "/vendor/design-system/css/plaque-number.css",
@@ -179,11 +179,11 @@ const MANIFEST = [
   },
   {
     "url": "/vendor/design-system/css/qg-info.css",
-    "revision": "4390159da7672f6c"
+    "revision": "7e452307337a8df6"
   },
   {
     "url": "/vendor/design-system/css/quality-gate.css",
-    "revision": "e0fbf0fda4323cc3"
+    "revision": "bcbc0de8c4d7b004"
   },
   {
     "url": "/vendor/design-system/css/sparkline.css",
@@ -191,19 +191,23 @@ const MANIFEST = [
   },
   {
     "url": "/vendor/design-system/css/stability-cell.css",
-    "revision": "bc0304c00b279b43"
+    "revision": "e38d20525ee675b4"
   },
   {
     "url": "/vendor/design-system/css/stack.css",
     "revision": "9cfb470a3e1b4c3e"
   },
   {
+    "url": "/vendor/design-system/css/status.css",
+    "revision": "e4ebead6a76391b4"
+  },
+  {
     "url": "/vendor/design-system/css/sticky.css",
-    "revision": "fd1818fff8d54383"
+    "revision": "7dadbcaba8a57aed"
   },
   {
     "url": "/vendor/design-system/css/tests-table-panel.css",
-    "revision": "4a3b3d548b804bf8"
+    "revision": "d6ca9252a1869246"
   },
   {
     "url": "/vendor/design-system/css/text.css",
@@ -211,7 +215,7 @@ const MANIFEST = [
   },
   {
     "url": "/vendor/design-system/css/tokens.css",
-    "revision": "cafeb95c19e6e7d1"
+    "revision": "6c771de8bfda4ff8"
   },
   {
     "url": "/vendor/design-system/css/widget-tile.css",
@@ -219,7 +223,7 @@ const MANIFEST = [
   },
   {
     "url": "/vendor/design-system/js/code-highlight.js",
-    "revision": "b99a1f77ebc1ea20"
+    "revision": "fa2f7c157218e9ee"
   },
   {
     "url": "/vendor/design-system/js/dom-utils.js",
@@ -231,7 +235,7 @@ const MANIFEST = [
   },
   {
     "url": "/vendor/design-system/js/header.js",
-    "revision": "bd2abcf18f4ae10b"
+    "revision": "c8c7914a876e1253"
   },
   {
     "url": "/vendor/design-system/js/plaque-number.js",
@@ -239,7 +243,7 @@ const MANIFEST = [
   },
   {
     "url": "/vendor/design-system/js/pwa-register.js",
-    "revision": "ea7a3123deb6ce08"
+    "revision": "2bde45f41a229c16"
   },
   {
     "url": "/vendor/design-system/js/theme-icons.js",
@@ -251,7 +255,7 @@ const MANIFEST = [
   },
   {
     "url": "/vendor/design-system/templates/header.html",
-    "revision": "6b0f364e27b3afff"
+    "revision": "fb0a8e8a45f3b36e"
   },
   {
     "url": "/vendor/design-system/templates/widget-tile.html",

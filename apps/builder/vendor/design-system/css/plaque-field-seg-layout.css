@@ -18,25 +18,54 @@
   flex-shrink: 0;
 }
 
-/* --many in a grid cell: float wrap under the label (text-align:right). */
-.plaque-field-grid .plaque-field--divided > .plaque-field-seg-track--many {
-  justify-self: unset;
-  width: auto;
-  max-width: none;
+/* --many in a grid cell: same 3-col row as PlaqueSelect.
+   Track stays a flex box in column 3 so chips never wrap under the label. */
+.plaque-field-grid .plaque-field--divided > .plaque-field-seg-track--many.plaque-field__control {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  justify-self: stretch;
+  align-self: center;
+  grid-column: 3;
+  width: 100%;
+  max-width: 100%;
   min-width: 0;
+  height: auto;
+  min-height: 0;
+  align-items: stretch;
 }
 
 .plaque-field-grid .plaque-field--divided:has(> .plaque-field-seg-track--many) {
-  display: block;
+  display: grid;
+  align-items: center;
   height: auto;
   min-height: var(--plaque-control-height);
   overflow: visible;
-  text-align: right;
-  grid-template-columns: unset;
+  text-align: unset;
+  background-image: none;
+}
+
+.plaque-field-grid .plaque-field--divided:has(> .plaque-field-seg-track--many)::after {
+  content: none;
+  display: none;
+  margin: 0;
+  height: 0;
+}
+
+.plaque-field-grid .plaque-field--divided:has(> .plaque-field-seg-track--many) > .plaque-field__label,
+.plaque-field-grid .plaque-field--divided:has(> .plaque-field-seg-track--many) > .plaque-field__text {
+  float: none;
+  height: auto;
 }
 
 .plaque-field-grid .plaque-field--divided:has(> .plaque-field-seg-track--many) > .plaque-divider {
-  /* metrics from --many shell in plaque-field.css */
+  float: none;
+  align-self: stretch;
+  height: auto;
+  min-height: 0;
+  margin-block: var(--plaque-divider-inset);
+  margin-right: 0;
+  background: var(--color-border);
 }
 
 .plaque-field-grid-stack .plaque-field--divided > .plaque-field-seg-track {
@@ -46,10 +75,10 @@
 }
 
 .plaque-field-grid-stack .plaque-field--divided > .plaque-field-seg-track--many {
-  grid-column: unset;
-  justify-self: unset;
-  width: auto;
-  max-width: none;
+  grid-column: 3;
+  justify-self: stretch;
+  width: 100%;
+  max-width: 100%;
   min-width: 0;
 }
 
@@ -59,7 +88,12 @@
 }
 
 .plaque-field-grid .plaque-field--divided .plaque-field-seg-track--many .plaque-field-seg {
-  /* display:contents — chips are shell items (see plaque-field-seg.css). */
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  flex: 0 1 auto;
+  width: max-content;
+  max-width: 100%;
   min-width: 0;
 }
 
@@ -70,6 +104,10 @@
   min-width: calc(4ch + var(--space-2));
 }
 
+.plaque-field-grid .plaque-field--divided .plaque-field-seg-track--many .plaque-field-seg__btn {
+  margin: 0;
+}
+
 /* Control-first: never clip true|false text inside grid cells */
 .plaque-field-grid .plaque-field--divided .plaque-field-seg-track .plaque-field-seg__btn {
   overflow: visible;
@@ -77,8 +115,8 @@
 }
 
 .plaque-field-grid--mixed .plaque-field--divided > .plaque-field-seg-track--many {
-  justify-self: unset;
-  width: auto;
-  max-width: none;
+  justify-self: stretch;
+  width: 100%;
+  max-width: 100%;
   min-width: 0;
 }

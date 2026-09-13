@@ -13,12 +13,17 @@ function escapeHtmlKeepQuotes(value) {
 
 /**
  * @param {string} json
- * @param {{ prefix?: string }} [options]
+ * @param {{ prefix?: string, dangerLiterals?: Set<string> | string[] }} [options]
  * @returns {string}
  */
 export function highlightJson(json, options) {
   const opts = options || {};
   const prefix = opts.prefix || 'ch-tok';
+  const dangerLiterals = opts.dangerLiterals
+    ? opts.dangerLiterals instanceof Set
+      ? opts.dangerLiterals
+      : new Set(opts.dangerLiterals)
+    : undefined;
   let html = escapeHtmlKeepQuotes(json);
 
   html = html.replace(JSON_TOKEN, function (match) {
@@ -37,7 +42,7 @@ export function highlightJson(json, options) {
     } else if (match === 'null') {
       cls = prefix + '-null';
     } else {
-      cls = prefix + '-num';
+      cls = dangerLiterals?.has(match) ? prefix + '-danger' : prefix + '-num';
     }
     return '<span class="' + cls + '">' + match + '</span>';
   });

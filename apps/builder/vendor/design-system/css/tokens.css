@@ -21,6 +21,7 @@
   --layer-component: #ffa833;
   --layer-integration: #a65ac4;
   --layer-api: #ffd833;
+  --layer-ui: #f472b6;
   --layer-e2e: #ff574f;
   --layer-manual: #61b6fb;
   --layer-other: #5d6876;
@@ -90,6 +91,8 @@
      shell-end uses the same token so top/bottom/right air match (no hardcode). */
   --plaque-seg-inset: var(--space-1);
   --plaque-shell-pad-x: var(--space-2);
+  /* Textarea plaque — air from resize handle to shell border (right = bottom). */
+  --plaque-textarea-end: 5px;
   --plaque-seg-chip-height: calc(var(--plaque-control-height) - 12px);
   --plaque-seg-chip-air: calc(
     (var(--plaque-seg-band-height) - var(--plaque-seg-chip-height)) / 2
@@ -220,6 +223,7 @@ html.theme-light {
   --layer-component: #ff8200;
   --layer-integration: #7e22ce;
   --layer-api: #e8bd00;
+  --layer-ui: #db2777;
   --layer-e2e: #dc2626;
   --layer-manual: #459bde;
   --layer-other: #64748b;
