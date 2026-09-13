@@ -8,7 +8,7 @@
   padding-right: var(--plaque-seg-shell-end);
 }
 
-.plaque-field-grid .plaque-field--divided > .plaque-field-seg-track {
+.plaque-field-grid .plaque-field--divided > .plaque-field-seg-track:not(.plaque-field-seg-track--many) {
   grid-column: 3;
   justify-self: end;
   margin-left: 0;
@@ -31,7 +31,8 @@
   max-width: 100%;
   min-width: 0;
   height: auto;
-  min-height: 0;
+  /* Content min-size — min-height:0 let the 32px shell clip wrapped chips. */
+  min-height: min-content;
   align-items: stretch;
 }
 
@@ -55,7 +56,11 @@
 .plaque-field-grid .plaque-field--divided:has(> .plaque-field-seg-track--many) > .plaque-field__label,
 .plaque-field-grid .plaque-field--divided:has(> .plaque-field-seg-track--many) > .plaque-field__text {
   float: none;
-  height: auto;
+  /* Must keep the wrap-band height. height:auto + align-self:start
+     pinned OS / Agents / Gradle labels to the top of a single 32px row. */
+  height: var(--plaque-seg-band-height);
+  display: inline-flex;
+  align-items: center;
 }
 
 .plaque-field-grid .plaque-field--divided:has(> .plaque-field-seg-track--many) > .plaque-divider {
@@ -82,7 +87,7 @@
   min-width: 0;
 }
 
-.plaque-field-grid .plaque-field--divided .plaque-field-seg-track .plaque-field-seg {
+.plaque-field-grid .plaque-field--divided .plaque-field-seg-track:not(.plaque-field-seg-track--many) .plaque-field-seg {
   min-width: min-content;
   flex-shrink: 0;
 }
@@ -91,8 +96,10 @@
   display: flex;
   flex-wrap: wrap;
   justify-content: flex-end;
-  flex: 0 1 auto;
-  width: max-content;
+  flex: 1 1 auto;
+  /* Fill column 3 so flex-wrap has a definite bound. max-content is the
+     unwrapped width — chips then overflow-x and the shell clips "opera:…". */
+  width: 100%;
   max-width: 100%;
   min-width: 0;
 }

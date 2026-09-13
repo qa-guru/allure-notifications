@@ -1,7 +1,7 @@
 @import url("tokens.css");
 @import url("plaque-divider.css");
-@import url("plaque-field-seg.css?v=segcol4");
-@import url("plaque-field-seg-layout.css?v=segcol4");
+@import url("plaque-field-seg.css?v=segcol6");
+@import url("plaque-field-seg-layout.css?v=segcol6");
 @import url("plaque-number.css?v=numcols1");
 
 /* Plaque field — compact label+control shell (autotests-builder, forms) */
@@ -125,7 +125,11 @@
 
 .plaque-field--divided .plaque-field__label,
 .plaque-field--divided .plaque-field__text {
-  align-self: center;
+  /* Fill the 32px row and center glyphs — align-self:center on a
+     content-height box sits the caption on the top of the shell. */
+  align-self: stretch;
+  display: inline-flex;
+  align-items: center;
   line-height: 1.35;
   padding-right: var(--space-2);
   border-right: 0;
