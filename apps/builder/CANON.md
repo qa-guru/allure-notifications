@@ -24,6 +24,15 @@
 
 Reset / `vector#default` → default vector (`applyDefaultVector`) = these three defaults + CB-870 canvas + `DEFAULT_ITEMS`.
 
+## `chart.profile` (builder preview)
+
+| Value | Chrome | Overview quad mocks |
+|-------|--------|---------------------|
+| `default` | Allure title-left, no traffic-light dots | nivo-like funnel / bars / duration histogram (`src/mocks/stock.ts`) |
+| `kit` | widget-tile dots + kit SVG | `WidgetTileMocks` (rounded pyramid, layer pills, sparkline) |
+
+Kit-only palette tiles (QG, testsTable) still appear only when `profile=kit`. CLI PNG collage is unchanged in this spike (builder / TG Preview only).
+
 ## 17 catalog
 
 Palette slots ↔ `awesome-charts.mjs` / DS `WidgetTileMocks` (id unique; `type` = ChartType; variants via `groupBy` / `by`):

@@ -1576,3 +1576,36 @@ html.theme-light .anb-zone--terminal .ch-theme--vscode .ch-tok-cmd { color: #795
 .anb-palette__tile .widget-tile__bar:not(:empty) {
   display: flex;
 }
+
+/* Default profile = native Allure 3 chrome (title left, no traffic-light dots). */
+[data-anb-chart-profile="default"] {
+  --anb-stock-funnel: #9b6dd4;
+  --anb-stock-dynamics: #f07167;
+  --anb-stock-bar-1: #8b6bb5;
+  --anb-stock-bar-2: #f07167;
+  --anb-stock-bar-3: #5ec4b6;
+  --anb-stock-bar-4: #e8a0bf;
+}
+
+html.theme-light [data-anb-chart-profile="default"],
+[data-anb-chart-profile="default"][data-anb-dark="false"] {
+  --anb-stock-funnel: #7c5cbf;
+  --anb-stock-dynamics: #e85d5d;
+  --anb-stock-bar-1: #7c5cbf;
+  --anb-stock-bar-2: #e85d5d;
+  --anb-stock-bar-3: #2aa89a;
+  --anb-stock-bar-4: #d989b0;
+}
+
+[data-anb-chart-profile="default"] .widget-tile__bar .indicator-row {
+  display: none;
+}
+
+[data-anb-chart-profile="default"] .widget-tile__title {
+  text-align: left;
+  color: var(--color-text);
+}
+
+#anb-palette[data-anb-chart-profile="default"] .widget-tile__bar {
+  display: none;
+}
