@@ -1,7 +1,7 @@
 @import url("tokens.css");
 @import url("plaque-divider.css");
-@import url("plaque-field-seg.css?v=segcol6");
-@import url("plaque-field-seg-layout.css?v=segcol6");
+@import url("plaque-field-seg.css?v=segcol7");
+@import url("plaque-field-seg-layout.css?v=segcol7");
 @import url("plaque-number.css?v=numcols1");
 
 /* Plaque field — compact label+control shell (autotests-builder, forms) */
@@ -701,7 +701,6 @@ html.theme-light .plaque-field-checkstrip--pill .plaque-field-checkstrip__item:h
   height: auto;
   min-height: var(--plaque-control-height);
   overflow: visible;
-  background-image: none;
 }
 
 .plaque-field-grid .plaque-field:not(:has(> .plaque-field-seg-track)) {

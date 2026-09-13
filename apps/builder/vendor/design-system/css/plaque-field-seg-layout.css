@@ -38,12 +38,11 @@
 
 .plaque-field-grid .plaque-field--divided:has(> .plaque-field-seg-track--many) {
   display: grid;
-  align-items: center;
+  align-items: start;
   height: auto;
   min-height: var(--plaque-control-height);
   overflow: visible;
   text-align: unset;
-  background-image: none;
 }
 
 .plaque-field-grid .plaque-field--divided:has(> .plaque-field-seg-track--many)::after {
@@ -102,6 +101,9 @@
   width: 100%;
   max-width: 100%;
   min-width: 0;
+  column-gap: var(--plaque-seg-gap);
+  row-gap: calc(var(--plaque-seg-chip-air) * 2 + var(--plaque-seg-row-gap));
+  padding-block: var(--plaque-seg-chip-air);
 }
 
 .plaque-field-grid .plaque-field--divided .plaque-field-seg-track .plaque-field-seg__btn {

@@ -146,6 +146,8 @@
   align-self: center;
   margin-block: 0;
   padding-block: 0;
+  row-gap: 0;
+  column-gap: 0;
 }
 
 .plaque-field--divided > .plaque-field-seg-track--many .plaque-field-seg {
@@ -157,6 +159,12 @@
   width: max-content;
   max-width: 100%;
   min-width: 0;
+  /* Flex equivalent of chip margin-block + last-row ::after:
+     each wrap line = chip + 2×air; 1px rule lives in row-gap.
+     n=1 → 30 inner + 2 border = 32. n=2 → 30+1+30. */
+  column-gap: var(--plaque-seg-gap);
+  row-gap: calc(var(--plaque-seg-chip-air) * 2 + var(--plaque-seg-row-gap));
+  padding-block: var(--plaque-seg-chip-air);
 }
 
 .plaque-field--divided > .plaque-field-seg-track--many .plaque-field-seg__btn {
