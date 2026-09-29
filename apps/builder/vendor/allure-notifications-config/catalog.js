@@ -103,7 +103,7 @@ export const CHART_TYPES = Object.freeze(new Set(PANEL_CATALOG.map((p) => p.type
 export function resolvePanelMeta(raw) {
     if (raw.id && PANEL_META[raw.id])
         return PANEL_META[raw.id];
-    const type = raw.type || "";
+    const type = raw.type === "pie" ? "currentStatus" : raw.type || "";
     const groupBy = raw.groupBy || undefined;
     const by = raw.by || undefined;
     const exact = PANEL_CATALOG.find((p) => p.type === type &&
