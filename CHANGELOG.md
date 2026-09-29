@@ -1,14 +1,18 @@
 # Changelog
 
-## Unreleased
+## v 6.2.3
 
 ### English
 
 - **currentStatus** — leftover chart item `type: pie` maps to `currentStatus` again (Jenkins configs that never renamed the slot). Card title stays the project name, not `pie`; unknown types still get `No data yet`.
+- **kit-only tiles** — a skipped `qualityGate` / `testsTable` tile under the default profile now prints a warning naming the tile and the `chart.profile: "kit"` fix (previously only behind `ALLURE_NOTIFICATIONS_DEBUG`).
+- **builder** — palette ends with a note when the default profile hides the kit-only slots; e2e suite moved to a node http server (python `http.server` connection resets caused the dead-app flake).
 
 ### Russian
 
 - **currentStatus** — старый `type: pie` в items снова рендерит donut статуса (хвосты Jenkins). Заголовок карточки — имя проекта, не `pie`; неизвестные типы по-прежнему `No data yet`.
+- **kit-only панели** — пропущенный тайл `qualityGate` / `testsTable` при дефолтном профиле теперь пишет warning с именем тайла и подсказкой `chart.profile: "kit"` (раньше только под `ALLURE_NOTIFICATIONS_DEBUG`).
+- **builder** — в конце палитры заметка о скрытых kit-only слотах при дефолтном профиле; e2e переведены на node http-сервер (`http.server` python сбрасывал соединения — dead-app флак).
 
 ## v 6.2.2
 
