@@ -264,11 +264,23 @@ Showcase layout (7-tile readme-hero) = [`config/config.dogfood-telegram-full.jso
 | `enableChart` | Attach collage / chart image |
 | `chart.mode` | `collage` (only value in 6.x TS; legacy jar `pie` → branch `legacy/java-5.0.8`) |
 | `chart.layout` | **`free` + `items`** is the main path. Legacy `grid` \| `stacked` \| `row` still supported |
+| `chart.profile` | `default` (stock catalog panels only) \| `kit` (unlocks `qualityGate` / `testsTable` tiles — see matrix below) |
 | `chart.width` / `height` | Canvas size (px) |
 | `chart.headerHeight` / `cardGap` / `tilePad` | Card chrome (builder defaults: 31 / 14 / 6) |
 | `darkMode` | Chart theme |
 | `enableSuitesPublishing` | Per-suite stats from `suites.json` when present |
 | `logo`, `durationFormat`, `customData` | Optional |
+
+### `chart.profile` × panel kinds
+
+| Tile | `default` | `kit` |
+|------|-----------|-------|
+| Stock catalog (`currentStatus`, `testingPyramid`, `durations`, `durationDynamics`, `statusAgePyramid`, `coverageDiff`, `problemsDistribution`, `successRateDistribution`, `testResultSeverities`, `statusTransitions`, `testBaseGrowthDynamics`, `statusDynamics`, `stabilityDistribution`, `suites`) | rendered | rendered |
+| `qualityGate` (`id: allureQualityGate` / `sonarQualityGate`) | skipped | rendered — needs `chart.allureQualityGatePath` / `chart.sonarQualityGatePath` |
+| `testsTable` | skipped | rendered — needs `chart.testsTablePath` or the kit report widget JSON |
+| unknown `type` | `No data yet` card | `No data yet` card |
+
+Skipped kit-only tiles are logged as a warning (`kit-only tile "…" skipped — chart.profile is "default"; set "kit" to render it`). This collage `chart.profile` is unrelated to the kit **soft-fork** of the HTML report (`@qa-guru/allure-report-kit`, `withKit` + `panels.*`): the PNG collage always borrows palette/geometry from `@qa-guru/allure-report-kit/collage` regardless of profile.
 
 ## Messengers
 
