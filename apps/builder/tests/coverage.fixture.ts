@@ -57,7 +57,17 @@ function mergeCoverage(cov: Record<string, unknown> | null): void {
 }
 
 const test = base.extend({
-  page: async ({ page }, use) => {
+  page: async ({ page }, use, testInfo) => {
+    // Flake diagnostics: a dead module graph / init throw surfaces only as
+    // missing DOM state. Capture the real cause and dump it on failure.
+    const diag: string[] = [];
+    page.on("pageerror", (e) => diag.push(`pageerror: ${e.message}`));
+    page.on("requestfailed", (r) =>
+      diag.push(`requestfailed: ${r.url()} ${r.failure()?.errorText ?? ""}`),
+    );
+    page.on("console", (m) => {
+      if (m.type() === "error") diag.push(`console.error: ${m.text()}`);
+    });
     if (enabled) {
       ensureInstrumented();
       await page.route("**/js/app.js", async (route) => {
@@ -78,6 +88,9 @@ const test = base.extend({
       });
     }
     await use(page);
+    if (diag.length && testInfo.status !== "passed") {
+      console.log(`[page diagnostics]\n${diag.join("\n")}`);
+    }
     if (enabled) {
       const cov = await page.evaluate(
         () => (globalThis as { __coverage__?: Record<string, unknown> }).__coverage__ ?? null,

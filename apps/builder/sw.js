@@ -19,7 +19,7 @@ const MANIFEST = [
   },
   {
     "url": "/index.html",
-    "revision": "7499553b86f4f1cb"
+    "revision": "5eed0f696280c0d1"
   },
   {
     "url": "/js/app.js",
@@ -67,7 +67,7 @@ const MANIFEST = [
   },
   {
     "url": "/vendor/allure-notifications-config/catalog.js",
-    "revision": "9714f1a7e06ee2a8"
+    "revision": "3ba49aee2d45479b"
   },
   {
     "url": "/vendor/allure-notifications-config/kit-only.js",
@@ -163,15 +163,15 @@ const MANIFEST = [
   },
   {
     "url": "/vendor/design-system/css/plaque-field-seg-layout.css",
-    "revision": "4601c57ad4cc2002"
+    "revision": "121e0ee858178348"
   },
   {
     "url": "/vendor/design-system/css/plaque-field-seg.css",
-    "revision": "2715a5c47ea1d1dc"
+    "revision": "f2083be4109aff45"
   },
   {
     "url": "/vendor/design-system/css/plaque-field.css",
-    "revision": "f938354922735a7d"
+    "revision": "70726c58b5367ffa"
   },
   {
     "url": "/vendor/design-system/css/plaque-number.css",
@@ -260,6 +260,14 @@ const MANIFEST = [
   {
     "url": "/vendor/design-system/templates/widget-tile.html",
     "revision": "c71a209992231b27"
+  },
+  {
+    "url": "/vendor/gridstack/gridstack-all.js",
+    "revision": "bfd69889d95ae436"
+  },
+  {
+    "url": "/vendor/gridstack/gridstack.min.css",
+    "revision": "58379a7f65b41825"
   }
 ];
 
