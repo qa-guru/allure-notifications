@@ -439,6 +439,15 @@ html.theme-light .anb-canvas--chart-off::after {
   color: var(--color-text-muted);
 }
 
+/* Footer note inside the palette grid — kit-only slots hidden at default. */
+.anb-palette__note {
+  grid-column: 1 / -1;
+  padding: 0 2px;
+  font-size: 0.6875rem;
+  line-height: 1.3;
+  color: var(--color-text-muted);
+}
+
 /* Drag ghost = tile only (setDragImage in app.ts); caption stays visible in the slot. */
 .anb-palette__item.is-dragging .anb-palette__tile {
   opacity: 0.35;

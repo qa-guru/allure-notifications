@@ -704,7 +704,15 @@ function resetToDefault() {
 function renderPaletteItems() {
   const palette = document.getElementById('anb-palette');
   if (!palette) return;
-  palette.innerHTML = paletteCatalog().map(paletteItemHtml).join('');
+  const tiles = paletteCatalog().map(paletteItemHtml);
+  if (!isKitProfile()) {
+    tiles.push(
+      '<div class="anb-palette__note" data-testid="anb-palette-kit-note">' +
+        'Quality gate &amp; tests table tiles appear when chart profile is “kit”.' +
+        '</div>',
+    );
+  }
+  palette.innerHTML = tiles.join('');
   if (typeof window.WidgetTileMocks !== 'undefined' && window.WidgetTileMocks.fill) {
     window.WidgetTileMocks.fill(palette, { force: true });
   }

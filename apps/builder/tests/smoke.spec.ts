@@ -622,9 +622,11 @@ test.describe('allure-notifications-builder smoke', () => {
     await expect(page.getByTestId('anb-palette-allureQualityGate')).toHaveCount(0);
     await expect(page.getByTestId('anb-palette-sonarQualityGate')).toHaveCount(0);
     await expect(page.getByTestId('anb-palette-testsTable')).toHaveCount(0);
+    await expect(page.getByTestId('anb-palette-kit-note')).toBeVisible();
 
     await page.getByTestId('anb-chart-profile').selectOption('kit');
     await expect(palette.locator('.anb-palette__item')).toHaveCount(20);
+    await expect(page.getByTestId('anb-palette-kit-note')).toHaveCount(0);
     await expect(page.getByTestId('anb-palette-allureQualityGate')).toBeVisible();
     await expect(page.getByTestId('anb-palette-sonarQualityGate')).toBeVisible();
     await expect(page.getByTestId('anb-palette-testsTable')).toBeVisible();

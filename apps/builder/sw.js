@@ -3,7 +3,7 @@ const PRECACHE = 'anb-shell';
 const MANIFEST = [
   {
     "url": "/css/app.css",
-    "revision": "c3d9b114bb8a87aa"
+    "revision": "fc68d43e04b8788e"
   },
   {
     "url": "/icons/pwa-192.png",
@@ -23,7 +23,7 @@ const MANIFEST = [
   },
   {
     "url": "/js/app.js",
-    "revision": "7b5ed9e3e9027444"
+    "revision": "aa5708b0d695c9d6"
   },
   {
     "url": "/js/grid-editor.js",
@@ -71,7 +71,7 @@ const MANIFEST = [
   },
   {
     "url": "/vendor/allure-notifications-config/kit-only.js",
-    "revision": "55431d1225ee2163"
+    "revision": "1aa029d4bc72d383"
   },
   {
     "url": "/vendor/allure-notifications-config/phrases.js",
