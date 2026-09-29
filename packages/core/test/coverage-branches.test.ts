@@ -1186,9 +1186,10 @@ describe("@qa-guru/allure-notifications-core coverage history deep edges", () =>
     assert.equal(buildAnalytics(summary, []).durationMs, 0);
   });
 
-  it("DEBUG logs silent-skip of kit-only tiles", async () => {
-    const prev = process.env.ALLURE_NOTIFICATIONS_DEBUG;
-    process.env.ALLURE_NOTIFICATIONS_DEBUG = "1";
+  it("warns on skipped kit-only tiles (profile=default)", async () => {
+    const warnings: string[] = [];
+    const origWarn = console.warn;
+    console.warn = (msg?: unknown) => warnings.push(String(msg));
     try {
       const png = await renderCollagePng(
         parseConfig({
@@ -1212,12 +1213,12 @@ describe("@qa-guru/allure-notifications-core coverage history deep edges", () =>
         buildAnalytics(emptySummary(), []),
       );
       assert.ok(png.length > 100);
+      assert.equal(warnings.length, 2);
+      assert.match(warnings[0] ?? "", /kit-only tile "testsTable" skipped/);
+      assert.match(warnings[1] ?? "", /kit-only tile "qualityGate"/);
+      assert.match(warnings[1] ?? "", /chart\.profile is "default"/);
     } finally {
-      if (prev === undefined) {
-        delete process.env.ALLURE_NOTIFICATIONS_DEBUG;
-      } else {
-        process.env.ALLURE_NOTIFICATIONS_DEBUG = prev;
-      }
+      console.warn = origWarn;
     }
   });
 

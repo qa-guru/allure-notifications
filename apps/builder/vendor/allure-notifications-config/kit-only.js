@@ -1,11 +1,14 @@
 /**
- * Kit-only collage panel kinds — valid in schema always; runtime silent-skip when
- * `chart.profile !== "kit"` (dispatch lives in core T6, not here).
+ * Kit-only collage panel kinds — valid in schema always; runtime skips them with
+ * a warning when `chart.profile !== "kit"` (dispatch lives in core T6, not here).
  */
 export const CHART_PROFILE_DEFAULT = "default";
 /** Kit-only kinds from `PanelKind` / Allure custom panel contract. */
 export const KIT_ONLY_PANEL_KINDS_LIST = ["qualityGate", "testsTable"];
-/** First kit-only kind — backward-compatible export. */
+/**
+ * First kit-only kind — backward-compatible export.
+ * @deprecated Use {@link KIT_ONLY_PANEL_KINDS_LIST} / {@link KIT_ONLY_PANEL_KINDS}.
+ */
 export const KIT_ONLY_PANEL_KIND = "qualityGate";
 /** Stable catalog ids from kit overview preset. */
 export const KIT_ONLY_PANEL_IDS = [
@@ -34,8 +37,8 @@ export function isKitOnlyChartItem(item) {
     return isKitOnlyPanelType(item.type) || isKitOnlyPanelId(item.id);
 }
 /**
- * True when collage dispatch should silent-skip this item (profile default + kit-only).
- * T6 collage wire consumes this; config package does not render.
+ * True when collage dispatch should skip this item (profile default + kit-only;
+ * core logs a warning). T6 collage wire consumes this; config package does not render.
  */
 export function shouldSilentSkipKitOnlyItem(profile, item) {
     return normalizeChartProfile(profile) !== "kit" && isKitOnlyChartItem(item);

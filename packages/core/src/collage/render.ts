@@ -97,13 +97,6 @@ const PANEL_STATUS_AGE = "statusagepyramid";
 const PANEL_QUALITY_GATE = "qualitygate";
 const PANEL_TESTS_TABLE = "teststable";
 
-function debugEnabled(): boolean {
-  return (
-    process.env.ALLURE_NOTIFICATIONS_DEBUG === "1" ||
-    process.env.ALLURE_NOTIFICATIONS_DEBUG === "true"
-  );
-}
-
 function normalize(raw: string | undefined | null): string | null {
   if (raw == null) {
     return null;
@@ -576,12 +569,11 @@ export async function renderCollagePng(
 
   for (const item of items) {
     if (shouldSilentSkipKitOnlyItem(profile, item)) {
-      if (debugEnabled()) {
-        const id = item.id ?? item.type;
-        console.error(
-          `[allure-notifications] silent-skip kit-only tile ${id} (chart.profile=${profile})`,
-        );
-      }
+      const id = item.id ?? item.type;
+      console.warn(
+        `[allure-notifications] kit-only tile "${id}" skipped — ` +
+          `chart.profile is "${profile}"; set "kit" to render it`,
+      );
       continue;
     }
 
