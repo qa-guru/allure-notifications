@@ -43,7 +43,11 @@ module.exports = defineConfig({
   webServer: process.env.ANB_NO_WEBSERVER
     ? undefined
     : {
-        command: `python -m http.server ${port}`,
+        // node:http (backlog 511), not `python -m http.server` (backlog 5):
+        // module-graph + SW precache bursts reset connections on python, a dead
+        // script silently leaves the page without __ANB__/listeners.
+        command: `node scripts/e2e-server.mjs --port ${port}`,
+        cwd: __dirname,
         url: baseURL,
         // Default port 13011 avoids stale hub clone on :3011; reuse ensure.py stand when present.
         reuseExistingServer: true,
