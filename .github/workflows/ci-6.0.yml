@@ -89,47 +89,6 @@ jobs:
       - name: Build (packages + builder emit)
         run: pnpm build
 
-      - name: Debug canvas fonts
-        run: |
-          fc-list | head -5 || true
-          cd packages/core && node --input-type=module -e "
-            import { readFileSync, writeFileSync } from 'node:fs';
-            import { fileURLToPath } from 'node:url';
-            import { GlobalFonts, createCanvas } from '@napi-rs/canvas';
-            console.log('families:', GlobalFonts.families.length, JSON.stringify(GlobalFonts.families.slice(0,8)));
-            const c = createCanvas(220,60); const ctx = c.getContext('2d');
-            ctx.fillStyle = '#22c55e'; ctx.font = '600 24px sans-serif'; ctx.fillText('Пройден', 10, 40);
-            const d = ctx.getImageData(0,0,220,60).data; let g = 0;
-            for (let i=0;i<d.length;i+=4){ if (Math.abs(d[i]-34)<20 && Math.abs(d[i+1]-197)<20 && Math.abs(d[i+2]-94)<20) g++; }
-            console.log('probe green px:', g);
-            const { buildQualityGateLayout, parseKitQualityGateData } = await import('@qa-guru/allure-report-kit');
-            const fx = JSON.parse(readFileSync(fileURLToPath(import.meta.resolve('@qa-guru/allure-report-kit/fixtures/quality-gate/aqg-passed.json')), 'utf8'));
-            const layout = buildQualityGateLayout(parseKitQualityGateData(fx));
-            console.log('layout body:', JSON.stringify(layout.body));
-            console.log('layout hidden/passed:', layout.hidden, layout.passed);
-            const mod = await import('./dist/src/collage/panels/qualityGate.js');
-            const png = mod.renderQualityGatePng(fx, { width: 480, height: 240 });
-            writeFileSync('/tmp/qg-ci.png', png);
-            console.log('qg png bytes:', png.length);
-            const img = await import('@napi-rs/canvas').then(m => m.loadImage(png));
-            const cc = createCanvas(img.width, img.height); cc.getContext('2d').drawImage(img,0,0);
-            const dd = cc.getContext('2d').getImageData(0,0,img.width,img.height).data; let gg = 0;
-            const S = mod.QUALITY_GATE_TOKEN_PALETTE['--color-success'];
-            console.log('SUCCESS token:', JSON.stringify(S));
-            for (let i=0;i<dd.length;i+=4){ if (Math.abs(dd[i]-S.r)<=12 && Math.abs(dd[i+1]-S.g)<=12 && Math.abs(dd[i+2]-S.b)<=12) gg++; }
-            console.log('panel green px:', gg);
-          "
-
-      - name: Upload debug QG png
-        if: always()
-        continue-on-error: true
-        uses: actions/upload-artifact@v7
-        with:
-          name: qg-debug
-          path: /tmp/qg-ci.png
-          if-no-files-found: ignore
-          retention-days: 3
-
       - name: Typecheck (packages + builder, typescript@7)
         run: pnpm typecheck
 
