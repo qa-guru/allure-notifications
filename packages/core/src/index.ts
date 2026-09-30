@@ -29,6 +29,7 @@ export type {
 } from "./report/types.js";
 
 export { adaptSummaryJson, readSummary } from "./report/summary.js";
+export { buildSuggestSignals, loadSuggestSignals } from "./report/suggest.js";
 export {
   durationMsOf,
   labelOf,

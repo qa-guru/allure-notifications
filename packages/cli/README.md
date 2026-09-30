@@ -3,8 +3,8 @@
 Public npm bin **`@qa-guru/allure-notifications`** for line **6.0.\***.
 
 ```bash
-npx @qa-guru/allure-notifications@6.0.14 send --config config.json --dry-run
-npx @qa-guru/allure-notifications@6.0.14 send --config config.json \
+npx @qa-guru/allure-notifications@6.2.3 send --config config.json --dry-run
+npx @qa-guru/allure-notifications@6.2.3 send --config config.json \
   --allure-folder build/reports/allure-report/allureReport/awesome \
   --allure-results-folder build/allure-results \
   --project Multistack \
@@ -14,7 +14,7 @@ npx @qa-guru/allure-notifications@6.0.14 send --config config.json \
 
 | Flag | Role |
 |------|------|
-| `send --config <path>` | Required command — load config, collage via `@qa-guru/allure-notifications-core` |
+| `send --config <path>` | Load config, collage via `@qa-guru/allure-notifications-core` |
 | `--dry-run` | Render PNG; list messengers that *would* send; **no network** (default) |
 | `--mock` | Render PNG; record mock deliveries; **no network** |
 | `--live` | Live Telegram `sendPhoto` (ADR 008); needs env token |
@@ -27,13 +27,54 @@ Default without `--mock` / `--live` is safe **dry-run**. Live credentials: `TELE
 
 Relative paths stored in config resolve from the config file directory.
 Relative path overrides resolve from the process cwd. Overrides are applied in
-memory; the CLI never writes a runtime config or copies credentials into JSON.
+memory; `send` never writes a runtime config or copies credentials into JSON.
+
+## Offline `suggest` (workspace / pre-release)
+
+```bash
+pnpm build
+pnpm exec allure-notifications suggest --results packages/core/test/fixtures/dogfood-results
+pnpm exec allure-notifications suggest --results packages/core/test/fixtures/dogfood-results \
+  --config config/config.dogfood-telegram-full.json --out suggested.json
+pnpm exec allure-notifications suggest --results allure-results --profile default
+```
+
+| Flag | Role |
+|------|------|
+| `suggest --results <dir>` | Required raw results directory; no generated report required for suggestion |
+| `--profile default\|kit` | Override automatic profile selection |
+| `--config <path>` | Existing config as local summary/history/QG/payload facts; never modified |
+| `--out <path>` / `--write <path>` | Create a new config JSON file instead of stdout; existing files are not overwritten |
+
+The output contains only `base` (paths, canonical chart and dark mode), validated by
+the same `parseConfig` used by `send`. Messenger blocks, credentials and unknown
+metadata are not copied from `--config`. Without an output file, stdout is JSON only;
+validation errors / warnings go to stderr. There is no PNG rendering, sending, LLM
+or network I/O. Send modes and send-only overrides are rejected for `suggest`.
+
+Counters come from a local or configured `summary.json` (`widgets/summary.json`
+also works); without one they are derived from `*-result.json` statuses. History
+is discovered as `history.jsonl` in results, their parent or the report directory,
+not in an unrelated cwd. Explicit config paths win. Invalid/empty history records
+are ignored; at least two usable runs are required for trend recommendations.
+
+Neighbouring `allureQualityGate.json`, `sonarQualityGate.json` (raw Sonar
+`projectStatus`) and `testsTable.json` are local payload facts. AQG / tests-table
+widgets are also discovered under `widgets/kit-panels/`. Sonar widget payloads are
+not treated as raw `projectStatus`. Paths in emitted JSON are absolute, so moving
+`--out` does not change their resolution. Raw results still need `allure generate`
+before `send` can read its summary. A QG chosen only from `qualityGate.rules` emits
+a warning: provide its payload or generate the AQG report widget before sending.
+`problemsDistribution` needs environment-labelled history to render its heatmap.
+
+Template capacities and selection order: [config package](../config/README.md#deterministic-suggestions-tier-0).
+Builder UI, LLM tier and automatic delivery are separate increments.
 
 **Alternate (Allure 3 plugin):** same collage + messengers via `allurerc` `done` hook — [`examples/allurerc.notifications.mjs`](../../examples/allurerc.notifications.mjs) · [`packages/plugin/README.md`](../plugin/README.md). CLI pin stays primary for consumers.
 
 Workspace (pre-publish / local):
 
 ```bash
-pnpm --filter @qa-guru/allure-notifications test
+ALLURE_RESULTS_DIR="$(mktemp -d)" pnpm --filter @qa-guru/allure-notifications test
 pnpm exec allure-notifications send --config … --dry-run
 ```

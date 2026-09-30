@@ -11,6 +11,10 @@
     "./browser": {
       "types": "./dist/src/browser.d.ts",
       "import": "./dist/src/browser.js"
+    },
+    "./suggest": {
+      "types": "./dist/src/suggest.d.ts",
+      "import": "./dist/src/suggest.js"
     }
   },
   "files": [

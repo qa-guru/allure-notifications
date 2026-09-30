@@ -48,6 +48,13 @@ export {
 } from "./presets.js";
 
 export {
+  SUGGEST_TEMPLATES,
+  suggestLayout,
+  type SuggestedLayout,
+  type SuggestSignals,
+} from "./suggest.js";
+
+export {
   PHRASES,
   captionPhrasesFor,
   phrasesFor,

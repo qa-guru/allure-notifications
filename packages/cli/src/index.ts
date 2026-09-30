@@ -57,4 +57,6 @@ export {
   type SendResult,
 } from "./send.js";
 
+export { suggest, type SuggestOptions, type SuggestResult } from "./suggest.js";
+
 export { formatCliError, runCli, type RunCliResult } from "./cli.js";

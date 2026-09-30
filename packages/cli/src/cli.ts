@@ -6,6 +6,7 @@ import { createRequire } from "node:module";
 
 import { helpText, parseArgs } from "./parse.js";
 import { send } from "./send.js";
+import { suggest } from "./suggest.js";
 
 export const PACKAGE = "allure-notifications";
 export const PHASE = 3;
@@ -63,6 +64,19 @@ export async function runCli(argv: string[]): Promise<RunCliResult> {
   }
 
   try {
+    if (args.command === "suggest") {
+      const result = await suggest({
+        resultsFolder: args.resultsFolder!,
+        profile: args.profile,
+        configPath: args.configPath,
+        out: args.out,
+      });
+      return {
+        exitCode: 0,
+        stdout: result.outPath ? "" : result.json,
+        stderr: result.warnings.map((warning) => `warning: ${warning}\n`).join(""),
+      };
+    }
     const result = await send({
       configPath: args.configPath!,
       dryRun: args.dryRun,

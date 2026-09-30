@@ -3,7 +3,9 @@
  * No external CLI framework — keeps Stage D deps thin.
  */
 
-export type CliCommand = "send" | "help" | "version";
+import type { ChartProfile } from "@qa-guru/allure-notifications-config";
+
+export type CliCommand = "send" | "suggest" | "help" | "version";
 
 export type ConfigOverrides = {
   allureFolder?: string;
@@ -18,6 +20,8 @@ export type ConfigOverrides = {
 export type ParsedArgs = ConfigOverrides & {
   command: CliCommand;
   configPath?: string;
+  resultsFolder?: string;
+  profile?: ChartProfile;
   dryRun: boolean;
   mock: boolean;
   live: boolean;
@@ -29,9 +33,13 @@ const HELP_TEXT = `allure-notifications — Allure report → messenger notifica
 
 Usage:
   allure-notifications send --config <path> [overrides] [--dry-run|--mock|--live] [--out <png>]
+  allure-notifications suggest --results <dir> [--profile default|kit] [--config <path>] [--out <json>]
 
 Options:
-  --config <path>                  Path to config.json (required for send)
+  --config <path>                  Config JSON (required for send; optional facts for suggest)
+  --results <dir>                  Allure results directory (required for suggest)
+  --profile default|kit            Suggest profile override (auto if omitted)
+  --write <path>                   Alias for suggest --out (new file only)
   --allure-folder <path>           Override base.allureFolder (cwd-relative)
   --allure-results-folder <path>   Override base.allureResultsFolder (cwd-relative)
   --project <name>                 Override base.project
@@ -39,13 +47,14 @@ Options:
   --dashboard-url <url>            Override base.links.dashboard
   --testops-url <url>              Override base.links.testops
   --build-url <url>                Override base.links.build
-  --dry-run                        Render collage; skip network I/O (default)
-  --mock                           Render collage; mock deliveries (no network)
-  --live                           Live Telegram send; needs env credentials
-  --out <path>                     Write PNG buffer to file (cwd-relative)
+  --dry-run                        Render collage; skip network I/O (send only, default)
+  --mock                           Render collage; mock deliveries (send only, no network)
+  --live                           Live Telegram send; needs env credentials (send only)
+  --out <path>                     Write PNG (send) or new config JSON (suggest), cwd-relative
   -h, --help                       Show help
   -V, --version                    Show version
 
+Suggest is offline: prints config JSON for review; --out/--write create a new file instead.
 Live credentials (env overrides config): TELEGRAM_BOT_TOKEN | TELEGRAM_TOKEN,
 TELEGRAM_CHAT_ID, TELEGRAM_TOPIC_ID. See docs/telegram-dogfood.md.
 `;
@@ -53,6 +62,8 @@ TELEGRAM_CHAT_ID, TELEGRAM_TOPIC_ID. See docs/telegram-dogfood.md.
 type ValueOption =
   | "configPath"
   | "out"
+  | "resultsFolder"
+  | "profile"
   | keyof ConfigOverrides;
 
 const VALUE_OPTIONS: Record<string, ValueOption> = {
@@ -60,6 +71,9 @@ const VALUE_OPTIONS: Record<string, ValueOption> = {
   "-c": "configPath",
   "--out": "out",
   "-o": "out",
+  "--write": "out",
+  "--results": "resultsFolder",
+  "--profile": "profile",
   "--allure-folder": "allureFolder",
   "--allure-results-folder": "allureResultsFolder",
   "--project": "project",
@@ -80,16 +94,15 @@ export function helpText(): string {
 export function parseArgs(argv: string[]): ParsedArgs {
   const errors: string[] = [];
   let command: CliCommand | undefined;
-  let configPath: string | undefined;
   let dryRun = false;
   let mock = false;
   let live = false;
-  let out: string | undefined;
-  const overrides: ConfigOverrides = {};
+  const values: Partial<Record<ValueOption, string>> = {};
+  const usedOptions = new Set<string>();
 
   for (let i = 0; i < argv.length; i++) {
     const arg = argv[i]!;
-    if (arg === "send" || arg === "help" || arg === "version") {
+    if (arg === "send" || arg === "suggest" || arg === "help" || arg === "version") {
       if (command != null && command !== arg) {
         errors.push(`unexpected command "${arg}" after "${command}"`);
       } else {
@@ -117,34 +130,28 @@ export function parseArgs(argv: string[]): ParsedArgs {
       live = true;
       continue;
     }
-    const valueOption = VALUE_OPTIONS[arg];
+    const valueOption = Object.hasOwn(VALUE_OPTIONS, arg) ? VALUE_OPTIONS[arg] : undefined;
     if (valueOption) {
+      usedOptions.add(arg);
       const next = argv[++i];
       if (!next || next.startsWith("-")) {
         errors.push(`${arg} requires a value`);
-      } else if (valueOption === "configPath") {
-        configPath = next;
-      } else if (valueOption === "out") {
-        out = next;
       } else {
-        overrides[valueOption] = next;
+        values[valueOption] = next;
       }
       continue;
     }
     const equalsAt = arg.indexOf("=");
     if (equalsAt > 0) {
       const option = arg.slice(0, equalsAt);
-      const equalsOption = VALUE_OPTIONS[option];
+      const equalsOption = Object.hasOwn(VALUE_OPTIONS, option) ? VALUE_OPTIONS[option] : undefined;
       if (equalsOption && option.startsWith("--")) {
+        usedOptions.add(option);
         const value = arg.slice(equalsAt + 1);
         if (!value) {
           errors.push(`${option} requires a value`);
-        } else if (equalsOption === "configPath") {
-          configPath = value;
-        } else if (equalsOption === "out") {
-          out = value;
         } else {
-          overrides[equalsOption] = value;
+          values[equalsOption] = value;
         }
         continue;
       }
@@ -156,13 +163,24 @@ export function parseArgs(argv: string[]): ParsedArgs {
     if (argv.length === 0) {
       command = "help";
     } else {
-      errors.push('missing command (expected "send")');
+      errors.push('missing command (expected "send" or "suggest")');
       command = "help";
     }
   }
 
-  if (command === "send" && !configPath) {
-    errors.push("send requires --config <path>");
+  const { configPath, out, resultsFolder, profile, ...overrides } = values;
+  if (command === "send") {
+    if (!configPath) errors.push("send requires --config <path>");
+    const suggestOnly = [...usedOptions].filter((option) => ["--results", "--profile", "--write"].includes(option));
+    if (suggestOnly.length) errors.push(`${suggestOnly.join(", ")} only supported by suggest`);
+  }
+  if (command === "suggest") {
+    if (!resultsFolder) errors.push("suggest requires --results <dir>");
+    if (dryRun || mock || live) errors.push("suggest does not accept --dry-run, --mock or --live");
+    if (Object.keys(overrides).length) errors.push("send overrides are not supported by suggest");
+  }
+  if (profile !== undefined && profile !== "default" && profile !== "kit") {
+    errors.push("--profile must be default or kit");
   }
 
   // Safe default: neither mode → dry-run (never live without --live).
@@ -178,6 +196,8 @@ export function parseArgs(argv: string[]): ParsedArgs {
   return {
     command,
     configPath,
+    resultsFolder,
+    profile: profile === "default" || profile === "kit" ? profile : undefined,
     dryRun,
     mock,
     live,
