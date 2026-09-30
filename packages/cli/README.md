@@ -81,7 +81,7 @@ messenger secrets.
 |-----|------|
 | `ANB_AI_BASE_URL` | OpenAI-compatible base, e.g. `http://localhost:11434/v1` |
 | `ANB_AI_MODEL` | Model name sent in the request |
-| `ANB_AI_API_KEY` | Optional `Authorization: Bearer` key |
+| `ANB_AI_API_KEY` | Optional credential — `Authorization: Bearer` by default; a `user:pass` value is sent as HTTP Basic (e.g. ollama-box2.qa.guru) |
 
 Template capacities and selection order: [config package](../config/README.md#deterministic-suggestions-tier-0).
 Builder UI and automatic delivery are separate increments.

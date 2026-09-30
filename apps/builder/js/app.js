@@ -839,6 +839,26 @@ function aiField(id) {
     const el = document.getElementById(id);
     return el instanceof HTMLInputElement ? el.value.trim() : '';
 }
+/** Endpoint presets — fill base url + model; fields stay editable afterwards. */
+const AI_PRESETS = {
+    custom: undefined,
+    local: { baseUrl: 'http://localhost:11434/v1', model: 'qwen2.5-coder:7b' },
+    box2: { baseUrl: 'https://ollama-box2.qa.guru/v1', model: 'qwen2.5-coder:7b' },
+};
+function onAiPresetChange() {
+    const el = document.getElementById('anb-ai-preset');
+    if (!(el instanceof HTMLSelectElement))
+        return;
+    const preset = AI_PRESETS[el.value];
+    if (!preset)
+        return;
+    const baseUrl = document.getElementById('anb-ai-base-url');
+    if (baseUrl instanceof HTMLInputElement)
+        baseUrl.value = preset.baseUrl;
+    const model = document.getElementById('anb-ai-model');
+    if (model instanceof HTMLInputElement)
+        model.value = preset.model;
+}
 /**
  * Apply by mode — mirrors the CLI contract: 'rules' runs the deterministic
  * scorer; 'ai' calls the shared advisor and on any failure warns and falls
@@ -1007,6 +1027,7 @@ function wireEditorChrome() {
         });
     });
     document.getElementById('anb-suggest-import-input')?.addEventListener('input', onSuggestImportInput);
+    document.getElementById('anb-ai-preset')?.addEventListener('change', onAiPresetChange);
     document.getElementById('anb-assistant')?.addEventListener('change', (e) => {
         const t = e.target;
         if (t instanceof HTMLInputElement && t.type === 'checkbox') {
@@ -1108,6 +1129,7 @@ globalThis.__ANB__ = {
     onSuggestImportInput,
     setAssistantMode,
     onAssistantApply,
+    onAiPresetChange,
     assistantNote,
     applySuggestedLayout,
     chartProfile,

@@ -89,11 +89,18 @@ export async function suggestLayoutViaLlm(
   options: LlmOptions,
 ): Promise<SuggestedLayout> {
   const fetchImpl = options.fetchImpl ?? fetch;
+  const apiKey = options.apiKey;
+  // "user:pass" → HTTP Basic (ollama-box2 qa.guru); anything else → Bearer.
+  const authorization = apiKey
+    ? apiKey.includes(":")
+      ? `Basic ${btoa(apiKey)}`
+      : `Bearer ${apiKey}`
+    : undefined;
   const response = await fetchImpl(`${options.baseUrl}/chat/completions`, {
     method: "POST",
     headers: {
       "content-type": "application/json",
-      ...(options.apiKey ? { authorization: `Bearer ${options.apiKey}` } : {}),
+      ...(authorization ? { authorization } : {}),
     },
     body: JSON.stringify({
       model: options.model,

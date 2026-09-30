@@ -19,11 +19,11 @@ const MANIFEST = [
   },
   {
     "url": "/index.html",
-    "revision": "2c0aad2adba09cdf"
+    "revision": "21e4a2c339e65b13"
   },
   {
     "url": "/js/app.js",
-    "revision": "226c9786c1a17e99"
+    "revision": "f7d26ae6fcca8fd1"
   },
   {
     "url": "/js/grid-editor.js",
@@ -83,7 +83,7 @@ const MANIFEST = [
   },
   {
     "url": "/vendor/allure-notifications-config/suggest-llm.js",
-    "revision": "c8d5be07a04292db"
+    "revision": "b34398f99b8e7b29"
   },
   {
     "url": "/vendor/allure-notifications-config/suggest.js",

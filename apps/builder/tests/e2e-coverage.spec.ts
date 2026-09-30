@@ -1554,6 +1554,39 @@ test.describe('suggest', () => {
       if (error.hidden) throw new Error('empty base url error not shown');
       baseUrlInput.value = 'http://localhost:11434/v1';
 
+      // Endpoint preset: fills url+model; custom keeps fields; guards on missing els.
+      const presetSel = document.getElementById('anb-ai-preset') as HTMLSelectElement;
+      presetSel.value = 'box2';
+      A.onAiPresetChange();
+      if (baseUrlInput.value !== 'https://ollama-box2.qa.guru/v1')
+        throw new Error('box2 preset url wrong');
+      if (modelInput.value !== 'qwen2.5-coder:7b')
+        throw new Error('box2 preset model wrong');
+      presetSel.value = 'custom';
+      A.onAiPresetChange();
+      if (baseUrlInput.value !== 'https://ollama-box2.qa.guru/v1')
+        throw new Error('custom preset should not overwrite fields');
+      presetSel.value = 'bogus';
+      A.onAiPresetChange(); // unknown key → early return
+      presetSel.remove();
+      A.onAiPresetChange(); // missing select → guard return
+      aiSection.insertBefore(
+        presetSel,
+        aiSection.querySelector('.anb-assistant__grid'),
+      );
+      const urlLabel = baseUrlInput.parentElement!;
+      const modelLabel = modelInput.parentElement!;
+      baseUrlInput.remove();
+      modelInput.remove();
+      presetSel.value = 'local';
+      A.onAiPresetChange(); // missing inputs → instanceof guards
+      urlLabel.appendChild(baseUrlInput);
+      modelLabel.appendChild(modelInput);
+      presetSel.value = 'local';
+      A.onAiPresetChange();
+      if (baseUrlInput.value !== 'http://localhost:11434/v1')
+        throw new Error('local preset url wrong');
+
       // aiField missing-element guard + fetch rejection → error + rules fallback.
       const origFetch = globalThis.fetch;
       const keyInput = document.getElementById('anb-ai-key') as HTMLInputElement;

@@ -87,6 +87,19 @@ describe("suggestLayoutViaLlm", () => {
     assert.equal((reply.calls[0]!.init?.headers as Record<string, string>).authorization, "Bearer key-1");
   });
 
+  it("sends HTTP Basic when the api key carries user:pass (ollama-box2)", async () => {
+    const reply = fetchReply({ choices: [{ message: { content: '{"items":["currentStatus"]}' } }] });
+    await suggestLayoutViaLlm(signals(), {
+      ...options,
+      apiKey: "alice:s3cret",
+      fetchImpl: reply.impl,
+    });
+    assert.equal(
+      (reply.calls[0]!.init?.headers as Record<string, string>).authorization,
+      `Basic ${Buffer.from("alice:s3cret").toString("base64")}`,
+    );
+  });
+
   it("derives the kit profile from signals when the answer omits it", async () => {
     const reply = fetchReply({ choices: [{ message: { content: '{"items":["sonarQualityGate","currentStatus"]}' } }] });
     const layout = await suggestLayoutViaLlm(signals({ sonarQualityGatePath: "/f/sonar.json" }), {

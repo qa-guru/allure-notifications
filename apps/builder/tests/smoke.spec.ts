@@ -1076,6 +1076,11 @@ test.describe('allure-notifications-builder smoke', () => {
     await page.getByTestId('anb-mode-ai').click();
     await expect(page.getByTestId('anb-ai-section')).toBeVisible();
     await expect(page.getByTestId('anb-suggest-apply')).toHaveText('Ask AI');
+    // Preset fills endpoint + model.
+    await page.getByTestId('anb-ai-preset').selectOption('local');
+    await expect(page.getByTestId('anb-ai-base-url')).toHaveValue('http://localhost:11434/v1');
+    await expect(page.getByTestId('anb-ai-model')).toHaveValue('qwen2.5-coder:7b');
+    await page.getByTestId('anb-ai-model').fill('');
     await page.getByTestId('anb-suggest-apply').click();
     await expect(page.getByTestId('anb-suggest-error')).toContainText('base url and model');
 
