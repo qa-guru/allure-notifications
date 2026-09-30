@@ -49,6 +49,7 @@ export {
 
 export {
   SUGGEST_TEMPLATES,
+  materializeLayout,
   suggestLayout,
   type SuggestedLayout,
   type SuggestSignals,

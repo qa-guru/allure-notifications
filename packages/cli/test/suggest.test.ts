@@ -1,5 +1,6 @@
 import assert from "node:assert/strict";
-import { spawnSync } from "node:child_process";
+import { execFile, spawnSync } from "node:child_process";
+import { promisify } from "node:util";
 import { cp, mkdtemp, readFile, readdir, rm, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { dirname, join, resolve } from "node:path";
@@ -32,6 +33,23 @@ function runBin(argv: string[], cwd = repoRoot) {
     encoding: "utf8",
     env: { ...process.env, TELEGRAM_BOT_TOKEN: "1:offline-test-token", TELEGRAM_CHAT_ID: "0" },
   });
+}
+
+const execFileAsync = promisify(execFile);
+
+/** Async bin runner: the parent loop stays free to serve a local stub server. */
+async function runBinNet(argv: string[], env: Record<string, string>) {
+  try {
+    const { stdout, stderr } = await execFileAsync(process.execPath, [bin, ...argv], {
+      cwd: repoRoot,
+      encoding: "utf8",
+      env: { ...process.env, ...env },
+    });
+    return { status: 0, stdout, stderr };
+  } catch (err) {
+    const failed = err as { code?: number; stdout?: string; stderr?: string };
+    return { status: failed.code ?? 1, stdout: failed.stdout ?? "", stderr: failed.stderr ?? String(err) };
+  }
 }
 
 describe("suggest CLI", () => {
@@ -217,5 +235,51 @@ describe("suggest CLI", () => {
     assert.match(result.stdout, /suggest --results/);
     assert.match(result.stdout, /--profile/);
     assert.match(result.stdout, /--write/);
+    assert.match(result.stdout, /ANB_AI_BASE_URL/);
+  });
+
+  it("runs the optional LLM advisor against a local OpenAI-compatible stub", async (t) => {
+    const { createServer } = await import("node:http");
+    const answer = JSON.stringify({ items: ["currentStatus", "durationDynamics"], profile: "default" });
+    const seen: string[] = [];
+    const server = createServer((req, res) => {
+      const chunks: Buffer[] = [];
+      req.on("data", (chunk) => chunks.push(chunk));
+      req.on("end", () => {
+        seen.push(JSON.stringify({ url: req.url, body: chunks.map((c) => c.toString()).join("") }));
+        res.writeHead(200, { "content-type": "application/json" });
+        res.end(JSON.stringify({ choices: [{ message: { content: answer } }] }));
+      });
+    });
+    await new Promise<void>((resolveListen) => server.listen(0, "127.0.0.1", resolveListen));
+    t.after(() => new Promise((done) => server.close(done)));
+    const { port } = server.address() as { port: number };
+    const child = await runBinNet(["suggest", "--results", results], {
+      ANB_AI_BASE_URL: `http://127.0.0.1:${port}/v1`,
+      ANB_AI_MODEL: "e2e-model",
+    });
+    assert.equal(child.status, 0, child.stderr);
+    const chart = parseConfig(JSON.parse(child.stdout)).base.chart!;
+    assert.deepEqual(chart.items!.map((item) => resolvePanelMeta(item)!.id), ["currentStatus", "durationDynamics"]);
+    const request = JSON.parse(seen[0]!);
+    assert.equal(request.url, "/v1/chat/completions");
+    assert.equal(JSON.parse(request.body).model, "e2e-model");
+  });
+
+  it("falls back to the deterministic scorer when the LLM endpoint errors", async (t) => {
+    const { createServer } = await import("node:http");
+    const server = createServer((_req, res) => {
+      res.writeHead(500).end();
+    });
+    await new Promise<void>((resolveListen) => server.listen(0, "127.0.0.1", resolveListen));
+    t.after(() => new Promise((done) => server.close(done)));
+    const { port } = server.address() as { port: number };
+    const child = await runBinNet(["suggest", "--results", results], {
+      ANB_AI_BASE_URL: `http://127.0.0.1:${port}`,
+      ANB_AI_MODEL: "m",
+    });
+    assert.equal(child.status, 0, child.stderr);
+    assert.match(child.stderr, /warning: llm suggest failed \(llm http 500\)/);
+    assert.equal(parseConfig(JSON.parse(child.stdout)).base.chart?.width, 870);
   });
 });

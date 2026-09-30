@@ -10,10 +10,12 @@ import {
   suggestLayout,
   type ChartProfile,
   type Config,
+  type SuggestedLayout,
 } from "@qa-guru/allure-notifications-config";
 import { loadSuggestSignals } from "@qa-guru/allure-notifications-core";
 
 import { loadConfigFile } from "./send.js";
+import { llmOptionsFromEnv, suggestLayoutViaLlm } from "./suggest-llm.js";
 
 export type SuggestOptions = {
   resultsFolder: string;
@@ -21,6 +23,9 @@ export type SuggestOptions = {
   configPath?: string;
   out?: string;
   cwd?: string;
+  /** Test seam: defaults to process.env. */
+  env?: Partial<Record<"ANB_AI_BASE_URL" | "ANB_AI_MODEL" | "ANB_AI_API_KEY", string | undefined>>;
+  fetchImpl?: typeof fetch;
 };
 
 export type SuggestResult = {
@@ -37,10 +42,24 @@ export async function suggest(options: SuggestOptions): Promise<SuggestResult> {
     ? await loadConfigFile(resolve(cwd, options.configPath))
     : parseConfig({ base: {} });
   const signals = await loadSuggestSignals(resultsFolder, existing);
-  const { profile, canvas, items } = suggestLayout({
-    ...signals,
-    profile: options.profile ?? (existing.base.chart?.profile === "kit" ? "kit" : undefined),
-  });
+  const profileOverride = options.profile
+    ?? (existing.base.chart?.profile === "kit" ? "kit" : undefined);
+  const warnings: string[] = [];
+  const llm = llmOptionsFromEnv(options.env ?? process.env);
+  let layout: SuggestedLayout | undefined;
+  if (llm) {
+    try {
+      layout = await suggestLayoutViaLlm(signals, {
+        ...llm,
+        profile: profileOverride,
+        fetchImpl: options.fetchImpl,
+      });
+    } catch (err) {
+      warnings.push(`llm suggest failed (${err instanceof Error ? err.message : String(err)}); using deterministic scorer`);
+    }
+  }
+  const { profile, canvas, items } = layout
+    ?? suggestLayout({ ...signals, profile: profileOverride });
   const selected = new Set(items.map((item) => item.id));
   const config = parseConfig({
     base: {
@@ -69,7 +88,6 @@ export async function suggest(options: SuggestOptions): Promise<SuggestResult> {
       },
     },
   });
-  const warnings: string[] = [];
   if (selected.has("allureQualityGate") && !signals.allureQualityGatePath) {
     warnings.push("allureQualityGate selected from qualityGate.rules; provide chart.allureQualityGatePath or generate widgets/kit-panels/allureQualityGate.json before send");
   }

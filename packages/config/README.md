@@ -16,6 +16,8 @@ Chrome defaults: `headerHeight` **31**, `cardGap` **14**, `tilePad` **6**.
 ### Deterministic suggestions (tier 0)
 
 `suggestLayout(signals)` is pure and returns `{ profile, canvas: { w, h }, items }`.
+`materializeLayout(ids, profile)` places caller-chosen catalog ids (e.g. an
+LLM pick, tier 1) into the same canonical slots — ids never invent coordinates.
 The `./suggest` entry exposes this API and `SUGGEST_TEMPLATES` without zod or I/O,
 for future builder reuse. Callers validate the resulting config with `parseConfig`.
 

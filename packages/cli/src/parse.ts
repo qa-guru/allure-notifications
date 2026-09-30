@@ -55,6 +55,9 @@ Options:
   -V, --version                    Show version
 
 Suggest is offline: prints config JSON for review; --out/--write create a new file instead.
+Optional AI advisor (suggest only): ANB_AI_BASE_URL + ANB_AI_MODEL (+ ANB_AI_API_KEY)
+enable an OpenAI-compatible LLM panel pick; any error falls back to the
+deterministic scorer. Disabled when env is unset.
 Live credentials (env overrides config): TELEGRAM_BOT_TOKEN | TELEGRAM_TOKEN,
 TELEGRAM_CHAT_ID, TELEGRAM_TOPIC_ID. See docs/telegram-dogfood.md.
 `;

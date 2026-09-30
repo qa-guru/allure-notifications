@@ -83,6 +83,24 @@ function placePanels(slots: readonly ChartItem[], ids: readonly string[]): Chart
   });
 }
 
+/**
+ * Materialize caller-chosen catalog ids into a canonical template. Ids never
+ * invent coordinates: they occupy the fixed slots of `default` / `trends` /
+ * `detail` by count, like the deterministic scorer does.
+ */
+export function materializeLayout(
+  ids: readonly string[],
+  profile: ChartProfile,
+): SuggestedLayout {
+  const unique = [...new Set(ids)].slice(0, SUGGEST_TEMPLATES.detail.items.length);
+  const selected = unique.length <= SUGGEST_TEMPLATES.default.items.length
+    ? SUGGEST_TEMPLATES.default
+    : unique.length <= SUGGEST_TEMPLATES.trends.items.length
+      ? SUGGEST_TEMPLATES.trends
+      : SUGGEST_TEMPLATES.detail;
+  return { profile, canvas: { ...selected.canvas }, items: placePanels(selected.items, unique) };
+}
+
 export function suggestLayout(signals: SuggestSignals): SuggestedLayout {
   const gates: string[] = [];
   if (signals.qualityGateRuleCount > 0 || signals.allureQualityGatePath) {

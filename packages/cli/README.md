@@ -67,8 +67,23 @@ before `send` can read its summary. A QG chosen only from `qualityGate.rules` em
 a warning: provide its payload or generate the AQG report widget before sending.
 `problemsDistribution` needs environment-labelled history to render its heatmap.
 
+**Optional LLM advisor (tier 1, ADR 020):** disabled unless both env vars are set.
+When enabled, compact signals go to an OpenAI-compatible `chat/completions`
+endpoint, which answers with catalog panel ids; the reply is validated against
+`PANEL_CATALOG` and materialized into the same canonical templates (the LLM
+never picks coordinates). Timeout 15 s. Any error — HTTP, JSON, unknown id,
+kit-only under `default` — falls back to the deterministic scorer with a
+`warning:` on stderr. The LLM sees only compact signals, never raw results or
+messenger secrets.
+
+| Env | Role |
+|-----|------|
+| `ANB_AI_BASE_URL` | OpenAI-compatible base, e.g. `http://localhost:11434/v1` |
+| `ANB_AI_MODEL` | Model name sent in the request |
+| `ANB_AI_API_KEY` | Optional `Authorization: Bearer` key |
+
 Template capacities and selection order: [config package](../config/README.md#deterministic-suggestions-tier-0).
-Builder UI, LLM tier and automatic delivery are separate increments.
+Builder UI and automatic delivery are separate increments.
 
 **Alternate (Allure 3 plugin):** same collage + messengers via `allurerc` `done` hook — [`examples/allurerc.notifications.mjs`](../../examples/allurerc.notifications.mjs) · [`packages/plugin/README.md`](../plugin/README.md). CLI pin stays primary for consumers.
 

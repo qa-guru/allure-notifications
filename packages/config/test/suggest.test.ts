@@ -228,3 +228,37 @@ describe("suggestLayout", () => {
     assert.deepEqual(suggestLayout(signals()).canvas, config.CANVAS_PRESETS["870x1080"]);
   });
 });
+
+describe("materializeLayout", () => {
+  it("anchors matching ids and fills vacant canonical slots", () => {
+    const layout = config.materializeLayout(["testsTable", "currentStatus"], "kit");
+    assert.equal(layout.profile, "kit");
+    assert.deepEqual(layout.canvas, config.CANVAS_PRESETS["870x1080"]);
+    assert.deepEqual(geometry(layout.items), geometry(config.DEFAULT_ITEMS.slice(0, 2)));
+    assert.equal(layout.items[0]!.type, "currentStatus");
+    assert.deepEqual(layout.items[1], { type: "testsTable", x: 4, y: 0, w: 6, h: 4, id: "testsTable" });
+    config.parseConfig({ base: { chart: { profile: "kit", layout: "free", items: layout.items, width: 870, height: 1080 } } });
+  });
+
+  it("picks the template tier by deduped id count and caps at seven", () => {
+    const four = config.materializeLayout(["currentStatus", "currentStatus", "testingPyramid", "durationsByLayer", "statusDynamics"], "default");
+    assert.equal(four.items.length, 4);
+    assert.deepEqual(four.canvas, config.CANVAS_PRESETS["870x1080"]);
+    const six = config.materializeLayout(["currentStatus", "statusDynamics", "testingPyramid", "durationsByLayer", "durationDynamics"], "default");
+    assert.equal(six.items.length, 5);
+    assert.deepEqual(six.canvas, config.CANVAS_PRESETS["1080x1080"]);
+    const crowded = config.materializeLayout([
+      "currentStatus", "statusDynamics", "testingPyramid", "durationsByLayer",
+      "successRateDistribution", "durationDynamics", "statusTransitions", "testBaseGrowthDynamics",
+    ], "default");
+    assert.equal(crowded.items.length, 7);
+    assert.deepEqual(crowded.canvas, config.CANVAS_PRESETS["1410x1080"]);
+    assert.equal(ids(crowded).includes("testBaseGrowthDynamics"), false);
+  });
+
+  it("materializes kit ids neutrally; profile policing stays with the caller", () => {
+    const expected = [{ type: "qualityGate", id: "allureQualityGate", x: 0, y: 0, w: 4, h: 4 }];
+    assert.deepEqual(config.materializeLayout(["allureQualityGate"], "kit").items, expected);
+    assert.deepEqual(config.materializeLayout(["allureQualityGate"], "default").items, expected);
+  });
+});

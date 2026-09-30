@@ -59,4 +59,10 @@ export {
 
 export { suggest, type SuggestOptions, type SuggestResult } from "./suggest.js";
 
+export {
+  llmOptionsFromEnv,
+  suggestLayoutViaLlm,
+  type LlmOptions,
+} from "./suggest-llm.js";
+
 export { formatCliError, runCli, type RunCliResult } from "./cli.js";
