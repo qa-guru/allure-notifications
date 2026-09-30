@@ -22,11 +22,11 @@ export TELEGRAM_CHAT_ID='-1004381150566'   # optional; ADR default if omitted
 export TELEGRAM_TOPIC_ID='34'              # or TELEGRAM_ALLURE_NOTIFICATIONS_TOPIC_ID
 ```
 
-Local tip: token may already live in gitignored `config/config.local.json` — copy into env, do not point `--live` at that file’s old chat id.
+Local tip: a live `@qa_guru_monitoring_bot` token may already live in `~/.config/telegram-bot.token` (user-level, outside the repo). The copy in gitignored `config/config.local.json` can be stale — `getMe` it before use; a revoked token answers `401 Unauthorized`. Do not point `--live` at that file’s old chat id (`-1001587609458` is refused by the CLI guard anyway).
 
 ```bash
-# example: load token from gitignored local config into env (do not commit)
-export TELEGRAM_BOT_TOKEN="$(python -c 'import json;print(json.load(open("config/config.local.json"))["telegram"]["token"])')"
+# example: load token from the user-level file into env (do not commit)
+export TELEGRAM_BOT_TOKEN="$(cat ~/.config/telegram-bot.token | tr -d '[:space:]')"
 export TELEGRAM_CHAT_ID='-1004381150566'
 export TELEGRAM_TOPIC_ID='34'
 ```
