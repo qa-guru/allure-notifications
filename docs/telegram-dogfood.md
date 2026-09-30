@@ -3,7 +3,7 @@
 Live `sendPhoto` of a CB-870 collage via **`@qa-guru/allure-notifications` (primary)**.  
 **Default CLI mode stays `--dry-run` / `--mock` (no network).** Live requires explicit `--live`.
 
-**Alternate:** Allure 3 plugin (`mode: "live"`) after `allure generate` — same credentials / ADR 008. Example: [`examples/allurerc.notifications.mjs`](../examples/allurerc.notifications.mjs) · [`packages/plugin/README.md`](../packages/plugin/README.md). CLI and plugin pins match (**6.0.12**).
+**Alternate:** Allure 3 plugin (`mode: "live"`) after `allure generate` — same credentials / ADR 008. Example: [`examples/allurerc.notifications.mjs`](../examples/allurerc.notifications.mjs) · [`packages/plugin/README.md`](../packages/plugin/README.md). CLI and plugin pins match (**6.3.2**).
 
 ## Canon (ADR 008)
 
@@ -72,17 +72,18 @@ node packages/cli/dist/src/bin.js send \
 - Unit tests mock `fetch` — **no** live network in default `pnpm test`.
 - Optional real send in tests: `ALLURE_NOTIFICATIONS_LIVE_TEST=1` + token env (off in CI).
 - Quality contour **Q4**: job **`telegram`** in [`.github/workflows/ci-6.0.yml`](../.github/workflows/ci-6.0.yml) via [`scripts/ci-telegram.sh`](../scripts/ci-telegram.sh).
+  - Dogfoods `suggest` on this run's `allure-results` before send — tier-0 rules by default; tier-1 LLM when `vars.ANB_AI_BASE_URL`/`ANB_AI_MODEL` (+ `secrets.ANB_AI_API_KEY`, fork-guarded) are set. Suggested config + drift log land in the `collage-telegram` artifact; suggest failure never blocks the send.
   - Config always uses this run’s `allure-report/` / `allure-results/` (no dogfood fixture fallback). Showcase fixtures remain for local CLI demos: [`config/config.dogfood-telegram-full.json`](../config/config.dogfood-telegram-full.json).
-  - PR / feature: `npx @qa-guru/allure-notifications@6.0.12 send --config … --dry-run` (+ optional collage artifact).
+  - PR / feature: `npx @qa-guru/allure-notifications@6.3.2 send --config … --dry-run` (+ optional collage artifact).
   - `master` + `workflow_dispatch`: `--live` when `TELEGRAM_*` present → topic **34**; else soft-skip.
   - Forks: never `--live`.
 
-## Consumer pin checklist (6.0.12)
+## Consumer pin checklist (6.3.2)
 
-Monorepo `VERSION` / nested CI pin = **6.0.12** (CLI + plugin). Remaining human ops:
+Monorepo `VERSION` / nested CI pin = **6.3.2** (CLI + plugin). Remaining human ops:
 
 1. Sync agent file `/opt/qa-guru/etc/allure-notifications.version` (from VERSION)
-2. Ethalon / RAG hard-coded pins → `6.0.12` (where not reading VERSION)
+2. Ethalon / RAG hard-coded pins → `6.3.2` (where not reading VERSION)
 3. Jenkins `send-allure-telegram` consumers → redeploy agent pin (CLI primary)
 4. Optional: try plugin path via `allurerc` — CLI remains primary
 

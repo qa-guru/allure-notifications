@@ -382,13 +382,19 @@ jobs:
         if: steps.gate.outputs.mode != 'skip'
         env:
           MODE: ${{ steps.gate.outputs.mode }}
-          CLI_PIN: '6.0.13'
+          CLI_PIN: '6.3.2'
           REF_NAME: ${{ github.ref_name }}
           SHORT_SHA: ${{ github.sha }}
           BUILD_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
           TELEGRAM_BOT_TOKEN: ${{ (github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository) && (secrets.TELEGRAM_BOT_TOKEN || secrets.TELEGRAM_TOKEN) || '' }}
           TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID || '-1004381150566' }}
           TELEGRAM_TOPIC_ID: ${{ vars.TELEGRAM_TOPIC_ID || vars.TELEGRAM_ALLURE_NOTIFICATIONS_TOPIC_ID || '34' }}
+          # Suggest dogfood: tier-0 rules without these; tier-1 (box2/local LLM) when set.
+          # Secret is fork-guarded same as TELEGRAM_BOT_TOKEN.
+          ANB_AI_BASE_URL: ${{ vars.ANB_AI_BASE_URL }}
+          ANB_AI_MODEL: ${{ vars.ANB_AI_MODEL }}
+          ANB_AI_TIMEOUT_MS: ${{ vars.ANB_AI_TIMEOUT_MS }}
+          ANB_AI_API_KEY: ${{ (github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository) && (secrets.ANB_AI_API_KEY || '') || '' }}
         run: bash scripts/ci-telegram.sh
 
       - name: Upload collage artifact
@@ -397,7 +403,9 @@ jobs:
         uses: actions/upload-artifact@v7
         with:
           name: collage-telegram
-          path: collage-telegram.png
+          path: |
+            collage-telegram.png
+            config/ci-telegram.suggested.json
           if-no-files-found: ignore
           retention-days: 7
 

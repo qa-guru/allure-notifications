@@ -5,14 +5,14 @@
 #   MODE=dry-run|live|skip
 #   TELEGRAM_BOT_TOKEN | TELEGRAM_TOKEN, TELEGRAM_CHAT_ID, TELEGRAM_TOPIC_ID (live)
 #   BUILD_URL, REF_NAME, SHORT_SHA (optional links / project label)
-# Pin: npx @qa-guru/allure-notifications@6.0.14.
+# Pin: npx @qa-guru/allure-notifications@6.3.2.
 set -euo pipefail
 
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 cd "$ROOT"
 
 MODE="${MODE:-dry-run}"
-CLI_PIN="${CLI_PIN:-6.0.13}"
+CLI_PIN="${CLI_PIN:-6.3.2}"
 OUT_PNG="${OUT_PNG:-collage-telegram.png}"
 RUNTIME_CONFIG="${RUNTIME_CONFIG:-config/ci-telegram.runtime.json}"
 
@@ -93,6 +93,35 @@ tg["replyTo"] = ""
 Path(out).write_text(json.dumps(cfg, indent=2) + "\n")
 print(f"wrote {out} (source={source} reason={reason})")
 PY
+
+# Suggest dogfood: run the recommender on this run's data and log the drift
+# vs the wired template. Tier-0 (rules) by default; tier-1 (LLM) kicks in
+# when ANB_AI_BASE_URL (+ANB_AI_API_KEY for basic/bearer endpoints) are set.
+# Non-blocking — send path is authoritative.
+SUGGESTED_CONFIG="config/ci-telegram.suggested.json"
+echo "==> npx @qa-guru/allure-notifications@${CLI_PIN} suggest --results allure-results --config ${RUNTIME_CONFIG}"
+set +e
+SUGGEST_LOG="$(mktemp)"
+npx --yes "@qa-guru/allure-notifications@${CLI_PIN}" suggest \
+  --results allure-results \
+  --config "$RUNTIME_CONFIG" \
+  --out "$SUGGESTED_CONFIG" 2>&1 | tee "$SUGGEST_LOG"
+SUGGEST_EXIT=${PIPESTATUS[0]}
+set -e
+if [[ "$SUGGEST_EXIT" -ne 0 ]]; then
+  echo "WARNING: suggest failed (exit ${SUGGEST_EXIT}) — continue with send" >&2
+else
+  python - "$RUNTIME_CONFIG" "$SUGGESTED_CONFIG" <<'PY'
+import json, sys
+def ids(p):
+    c = json.load(open(p))
+    return [i.get("type") for i in c["base"]["chart"]["items"]]
+cur, sug = ids(sys.argv[1]), ids(sys.argv[2])
+print("current panels   :", ", ".join(cur))
+print("suggested panels :", ", ".join(sug))
+print("layout drift     :", "match" if cur == sug else "suggested differs (review above)")
+PY
+fi
 
 FLAG="--dry-run"
 if [[ "$MODE" == "live" ]]; then
