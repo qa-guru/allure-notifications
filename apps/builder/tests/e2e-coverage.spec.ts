@@ -1383,10 +1383,16 @@ test.describe('suggest', () => {
       if (sig.profile !== 'default') throw new Error('profile should be default');
 
       // Kit profile branch + unchecked payload branches.
+      const profileSel = document.getElementById(
+        'anb-sg-profile',
+      ) as HTMLSelectElement;
       A.setPath('base.chart.profile', 'kit');
       A.setPath('base.chart.allureQualityGatePath', '/a/aqg.json');
       A.setPath('base.chart.sonarQualityGatePath', '/a/sqg.json');
       A.setPath('base.chart.testsTablePath', '/a/t.json');
+      A.closeSuggestPopover();
+      A.openSuggestPopover(); // refill: payload checkboxes enable with paths
+      profileSel.value = 'kit';
       sg('anb-sg-qg-rules').checked = false;
       sg('anb-sg-aqg').checked = true;
       sg('anb-sg-sqg').checked = false;
@@ -1406,13 +1412,21 @@ test.describe('suggest', () => {
       A.setPath('base.chart.testsTablePath', '');
 
       // Missing elements → zero/false guards in readers AND writers.
+      const aqgCheck = sg('anb-sg-aqg');
+      const aqgLabel = aqgCheck.parentElement!;
       passed.remove();
       sg('anb-sg-layer-labels').remove();
+      profileSel.remove(); // suggestProfileField → ?? fallback branch
+      aqgCheck.remove(); // suggestSetPayload → instanceof guard
       const partial = A.currentSuggestSignals();
       if (partial.statistic.passed !== 0 || partial.hasLayerLabels !== false)
         throw new Error('missing-field guards failed');
+      if (partial.profile !== 'default') throw new Error('profile fallback failed');
       A.fillSuggestForm(A.deriveSuggestSignals());
       panel.appendChild(passed);
+      aqgLabel.appendChild(aqgCheck);
+      const sections = popover.querySelectorAll('.anb-suggest-popover__section');
+      sections[sections.length - 1]!.appendChild(profileSel);
       importDetails.appendChild(
         document.getElementById('anb-sg-layer-labels') ||
           Object.assign(document.createElement('input'), {

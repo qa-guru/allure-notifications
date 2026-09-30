@@ -994,6 +994,10 @@ test.describe('allure-notifications-builder smoke', () => {
     await expect(page.getByTestId('anb-sg-passed')).toHaveValue('0');
     await expect(page.getByTestId('anb-sg-history')).toHaveValue('0');
     await expect(page.getByTestId('anb-sg-layer-labels')).not.toBeChecked();
+    await expect(page.getByTestId('anb-sg-profile')).toHaveValue('default');
+    // Payload checkboxes are dead without a configured chart.*Path.
+    await expect(page.getByTestId('anb-sg-aqg')).toBeDisabled();
+    await expect(page.getByTestId('anb-sg-table')).toBeDisabled();
 
     // Second toolbar click toggles the popover closed.
     await suggestBtn.click();

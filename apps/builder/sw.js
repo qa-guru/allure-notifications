@@ -19,11 +19,11 @@ const MANIFEST = [
   },
   {
     "url": "/index.html",
-    "revision": "748444f1cd190b48"
+    "revision": "b34af9dcb6e257cf"
   },
   {
     "url": "/js/app.js",
-    "revision": "4727a5a48307ac9e"
+    "revision": "a7bed1db21a0eb3d"
   },
   {
     "url": "/js/grid-editor.js",

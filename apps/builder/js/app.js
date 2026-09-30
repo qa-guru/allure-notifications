@@ -641,6 +641,21 @@ function suggestSetCheck(id, value) {
     if (el instanceof HTMLInputElement)
         el.checked = value;
 }
+/** Payload checkbox: enabled only when a payload path exists (derived or imported). */
+function suggestSetPayload(id, path) {
+    const el = document.getElementById(id);
+    if (!(el instanceof HTMLInputElement))
+        return;
+    el.checked = Boolean(path);
+    el.disabled = !path;
+    el.title = path ? '' : 'no payload path configured — set chart.*Path in Options first';
+}
+function suggestProfileField() {
+    const el = document.getElementById('anb-sg-profile');
+    if (!(el instanceof HTMLSelectElement))
+        return undefined;
+    return normalizeChartProfile(el.value);
+}
 /** Signals pasted into the import box; merged over derived signals until replaced or cleared. */
 let suggestImported;
 function fillSuggestForm(signals) {
@@ -654,9 +669,12 @@ function fillSuggestForm(signals) {
     suggestSetCheck('anb-sg-layer-labels', signals.hasLayerLabels);
     suggestSetCheck('anb-sg-known-layer-labels', signals.hasKnownLayerLabels);
     suggestSetCheck('anb-sg-qg-rules', signals.qualityGateRuleCount > 0);
-    suggestSetCheck('anb-sg-aqg', Boolean(signals.allureQualityGatePath));
-    suggestSetCheck('anb-sg-sqg', Boolean(signals.sonarQualityGatePath));
-    suggestSetCheck('anb-sg-table', Boolean(signals.testsTablePath));
+    suggestSetPayload('anb-sg-aqg', signals.allureQualityGatePath);
+    suggestSetPayload('anb-sg-sqg', signals.sonarQualityGatePath);
+    suggestSetPayload('anb-sg-table', signals.testsTablePath);
+    const profileEl = document.getElementById('anb-sg-profile');
+    if (profileEl instanceof HTMLSelectElement)
+        profileEl.value = normalizeChartProfile(signals.profile);
 }
 /** Signals = derived ∪ imported ∪ form fields (form always wins for the keys it models). */
 function currentSuggestSignals() {
@@ -690,7 +708,7 @@ function currentSuggestSignals() {
         testsTablePath: suggestCheckField('anb-sg-table')
             ? base.testsTablePath
             : undefined,
-        profile: base.profile === 'kit' ? 'kit' : 'default',
+        profile: suggestProfileField() ?? normalizeChartProfile(base.profile),
     };
 }
 /** Pasted signals JSON → validate → store as import overlay → fill the form. */
