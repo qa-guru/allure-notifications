@@ -1,6 +1,6 @@
 {
   "name": "@qa-guru/allure-notifications-plugin",
-  "version": "6.2.3",
+  "version": "6.3.0",
   "description": "Allure 3 plugin — thin wrapper over core + CLI messengers (Phase 5).",
   "type": "module",
   "main": "./dist/src/index.js",

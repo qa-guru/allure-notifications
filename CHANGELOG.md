@@ -1,5 +1,21 @@
 # Changelog
 
+## v 6.3.0
+
+### English
+
+- **`suggest` command** — `allure-notifications suggest --results <dir>` prints a send-valid collage config recommended from the actual report (deterministic tier-0 scorer in `@qa-guru/allure-notifications-config`: `suggestLayout` + `materializeLayout` + canonical `SUGGEST_TEMPLATES`). Supports `--profile`, `--config`, `--out/--write`; `--signals` prints the compact signals JSON instead of a config. Offline — nothing is sent.
+- **Optional LLM advisor (tier 1)** — with `ANB_AI_BASE_URL` / `ANB_AI_MODEL` / `ANB_AI_API_KEY` set, an OpenAI-compatible endpoint picks panel ids from the compact signals; answers are validated against `PANEL_CATALOG` and placed by `materializeLayout`, so the LLM can never invent coordinates. Any failure warns and falls back to tier-0.
+- **builder: Suggest popover** — toolbar button opens a signals form (results / history & layers / kit payloads + profile) with a collapsible CLI `--signals` import; applies the canonical layout to the canvas. Payload checkboxes disable until a `chart.*Path` exists; form and import state persist between opens.
+- **docs** — `telegram-dogfood.md` points at the live token source `~/.config/telegram-bot.token`.
+
+### Russian
+
+- **Команда `suggest`** — `allure-notifications suggest --results <dir>` печатает валидный для `send` коллаж-конфиг, рекомендованный по фактическому отчёту (детерминированный scorer яруса 0 в `@qa-guru/allure-notifications-config`: `suggestLayout` + `materializeLayout` + канонические `SUGGEST_TEMPLATES`). Опции `--profile`, `--config`, `--out/--write`; `--signals` печатает compact signals JSON вместо конфига. Оффлайн — ничего не отправляется.
+- **Опциональный LLM-советник (ярус 1)** — при заданных `ANB_AI_BASE_URL` / `ANB_AI_MODEL` / `ANB_AI_API_KEY` OpenAI-compatible эндпоинт выбирает id панелей по compact signals; ответ валидируется по `PANEL_CATALOG`, координаты назначает `materializeLayout` — LLM физически не может породить произвольную раскладку. Любой сбой → warning + откат на ярус 0.
+- **builder: поповер Suggest** — кнопка в тулбаре открывает форму сигналов (results / history & layers / kit payloads + profile) со сворачиваемым импортом `--signals` из CLI; применяет канонический шаблон к канве. Payload-чекбоксы неактивны, пока не задан `chart.*Path`; состояние формы и импорта сохраняется между открытиями.
+- **docs** — `telegram-dogfood.md` указывает на живой источник токена `~/.config/telegram-bot.token`.
+
 ## v 6.2.3
 
 ### English
