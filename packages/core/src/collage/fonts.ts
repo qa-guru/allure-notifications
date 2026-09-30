@@ -31,15 +31,23 @@ const FONT_FILES = [
   "/usr/share/fonts/truetype/noto/NotoSansMono-Bold.ttf",
 ];
 
-for (const path of FONT_FILES) {
-  try {
-    if (existsSync(path)) {
-      GlobalFonts.registerFromPath(path);
+export function registerFonts(
+  paths: readonly string[] = FONT_FILES,
+  register: (path: string) => unknown = (path) =>
+    GlobalFonts.registerFromPath(path),
+): void {
+  for (const path of paths) {
+    try {
+      if (existsSync(path)) {
+        register(path);
+      }
+    } catch {
+      // best effort — generic families still apply
     }
-  } catch {
-    // best effort — generic families still apply
   }
 }
+
+registerFonts();
 
 export const SANS_SERIF =
   '"DejaVu Sans", "Liberation Sans", "Noto Sans", sans-serif';
