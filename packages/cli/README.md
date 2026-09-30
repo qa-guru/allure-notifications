@@ -45,6 +45,7 @@ pnpm exec allure-notifications suggest --results allure-results --profile defaul
 | `--profile default\|kit` | Override automatic profile selection |
 | `--config <path>` | Existing config as local summary/history/QG/payload facts; never modified |
 | `--out <path>` / `--write <path>` | Create a new config JSON file instead of stdout; existing files are not overwritten |
+| `--signals` | Print the collected compact signals JSON instead of a config (for the builder Suggest popover); `--profile` sets its `profile` field; no layout, no LLM call |
 
 The output contains only `base` (paths, canonical chart and dark mode), validated by
 the same `parseConfig` used by `send`. Messenger blocks, credentials and unknown

@@ -22,6 +22,8 @@ export type SuggestOptions = {
   profile?: ChartProfile;
   configPath?: string;
   out?: string;
+  /** Print collected compact signals JSON (for the builder Suggest popover); no layout, no LLM. */
+  signalsOnly?: boolean;
   cwd?: string;
   /** Test seam: defaults to process.env. */
   env?: Partial<Record<"ANB_AI_BASE_URL" | "ANB_AI_MODEL" | "ANB_AI_API_KEY", string | undefined>>;
@@ -44,6 +46,13 @@ export async function suggest(options: SuggestOptions): Promise<SuggestResult> {
   const signals = await loadSuggestSignals(resultsFolder, existing);
   const profileOverride = options.profile
     ?? (existing.base.chart?.profile === "kit" ? "kit" : undefined);
+  if (options.signalsOnly) {
+    const dumped = profileOverride ? { ...signals, profile: profileOverride } : signals;
+    const signalsJson = JSON.stringify(dumped, null, 2) + "\n";
+    const signalsOut = options.out ? resolve(cwd, options.out) : undefined;
+    if (signalsOut) await writeFile(signalsOut, signalsJson, { flag: "wx" });
+    return { config: existing, json: signalsJson, outPath: signalsOut, warnings: [] };
+  }
   const warnings: string[] = [];
   const llm = llmOptionsFromEnv(options.env ?? process.env);
   let layout: SuggestedLayout | undefined;

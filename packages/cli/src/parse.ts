@@ -25,6 +25,8 @@ export type ParsedArgs = ConfigOverrides & {
   dryRun: boolean;
   mock: boolean;
   live: boolean;
+  /** suggest --signals: dump collected compact signals instead of a config. */
+  signalsOnly: boolean;
   out?: string;
   errors: string[];
 };
@@ -34,11 +36,14 @@ const HELP_TEXT = `allure-notifications — Allure report → messenger notifica
 Usage:
   allure-notifications send --config <path> [overrides] [--dry-run|--mock|--live] [--out <png>]
   allure-notifications suggest --results <dir> [--profile default|kit] [--config <path>] [--out <json>]
+  allure-notifications suggest --results <dir> --signals [--out <json>]
 
 Options:
   --config <path>                  Config JSON (required for send; optional facts for suggest)
   --results <dir>                  Allure results directory (required for suggest)
   --profile default|kit            Suggest profile override (auto if omitted)
+  --signals                        Suggest: print collected compact signals JSON
+                                   (pasteable into the builder Suggest popover)
   --write <path>                   Alias for suggest --out (new file only)
   --allure-folder <path>           Override base.allureFolder (cwd-relative)
   --allure-results-folder <path>   Override base.allureResultsFolder (cwd-relative)
@@ -100,6 +105,7 @@ export function parseArgs(argv: string[]): ParsedArgs {
   let dryRun = false;
   let mock = false;
   let live = false;
+  let signalsOnly = false;
   const values: Partial<Record<ValueOption, string>> = {};
   const usedOptions = new Set<string>();
 
@@ -131,6 +137,10 @@ export function parseArgs(argv: string[]): ParsedArgs {
     }
     if (arg === "--live") {
       live = true;
+      continue;
+    }
+    if (arg === "--signals") {
+      signalsOnly = true;
       continue;
     }
     const valueOption = Object.hasOwn(VALUE_OPTIONS, arg) ? VALUE_OPTIONS[arg] : undefined;
@@ -176,6 +186,7 @@ export function parseArgs(argv: string[]): ParsedArgs {
     if (!configPath) errors.push("send requires --config <path>");
     const suggestOnly = [...usedOptions].filter((option) => ["--results", "--profile", "--write"].includes(option));
     if (suggestOnly.length) errors.push(`${suggestOnly.join(", ")} only supported by suggest`);
+    if (signalsOnly) errors.push("--signals only supported by suggest");
   }
   if (command === "suggest") {
     if (!resultsFolder) errors.push("suggest requires --results <dir>");
@@ -204,6 +215,7 @@ export function parseArgs(argv: string[]): ParsedArgs {
     dryRun,
     mock,
     live,
+    signalsOnly,
     out,
     ...overrides,
     errors,

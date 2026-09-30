@@ -101,6 +101,49 @@ describe("suggest CLI", () => {
     assert.deepEqual(await readdir(dir), ["suggested.json"]);
   });
 
+  it("--signals dumps collected compact signals JSON, no config, no LLM", () => {
+    const child = spawnSync(
+      process.execPath,
+      ["--import", offlineGuard, bin, "suggest", "--results", results, "--signals", "--profile", "kit"],
+      {
+        cwd: repoRoot,
+        encoding: "utf8",
+        env: {
+          ...process.env,
+          ANB_AI_BASE_URL: "http://127.0.0.1:1/v1",
+          ANB_AI_MODEL: "unused",
+          ANB_AI_API_KEY: "unused",
+        },
+      },
+    );
+    assert.equal(child.status, 0, child.stderr);
+    assert.equal(child.stderr, "");
+    const signals = JSON.parse(child.stdout) as Record<string, unknown>;
+    assert.equal(signals.base, undefined);
+    assert.equal(signals.profile, "kit");
+    assert.ok(signals.statistic && typeof signals.statistic === "object");
+    assert.equal((signals.statistic as { total: number }).total > 0, true);
+    assert.ok(typeof signals.historyRunCount === "number");
+    const args = parseArgs(["suggest", "--results", "r", "--signals"]);
+    assert.equal(args.signalsOnly, true);
+    assert.deepEqual(args.errors, []);
+    const sendArgs = parseArgs(["send", "--config", "c.json", "--signals"]);
+    assert.ok(sendArgs.errors.some((e) => e.includes("--signals")));
+  });
+
+  it("--signals --out writes signals JSON to a new file", async (t) => {
+    const dir = await mkdtemp(join(tmpdir(), "an-suggest-signals-"));
+    t.after(() => rm(dir, { recursive: true, force: true }));
+    const out = join(dir, "signals.json");
+    const child = runBin(["suggest", "--results", results, "--signals", "--out", out]);
+    assert.equal(child.status, 0, child.stderr);
+    assert.equal(child.stdout, "");
+    const signals = JSON.parse(await readFile(out, "utf8")) as Record<string, unknown>;
+    assert.equal(signals.base, undefined);
+    assert.ok(signals.statistic);
+    assert.deepEqual(await readdir(dir), ["signals.json"]);
+  });
+
   it("supports ADR --write as a cwd-relative alias of --out", async (t) => {
     const dir = await mkdtemp(join(tmpdir(), "an-suggest-write-"));
     t.after(() => rm(dir, { recursive: true, force: true }));

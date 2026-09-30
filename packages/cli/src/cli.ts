@@ -70,6 +70,7 @@ export async function runCli(argv: string[]): Promise<RunCliResult> {
         profile: args.profile,
         configPath: args.configPath,
         out: args.out,
+        signalsOnly: args.signalsOnly,
       });
       return {
         exitCode: 0,
