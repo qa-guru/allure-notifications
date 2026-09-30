@@ -26,6 +26,7 @@ import {
 import { hexToRgb, rgbCss, type ChartTheme, type Rgb } from "../../theme.js";
 import type { PanelContext } from "../context.js";
 import { renderSuitesPanel } from "./suites.js";
+import { SANS_SERIF } from "../fonts.js";
 
 const MARGIN = 16;
 const TITLE_HEIGHT = 24;
@@ -128,7 +129,7 @@ export function renderPyramidPanel(context: PanelContext): Buffer {
 
   if (showTitle) {
     ctx.fillStyle = rgbCss(theme.text);
-    ctx.font = "bold 14px sans-serif";
+    ctx.font = `bold 14px ${SANS_SERIF}`;
     ctx.fillText("Testing pyramid", MARGIN, MARGIN + 12);
   }
 
@@ -146,7 +147,7 @@ export function renderPyramidPanel(context: PanelContext): Buffer {
 
   if (bands.length === 0) {
     ctx.fillStyle = rgbCss(theme.text);
-    ctx.font = "12px sans-serif";
+    ctx.font = `12px ${SANS_SERIF}`;
     ctx.fillText("No layer data", MARGIN, MARGIN + TITLE_HEIGHT + 16);
     return canvas.toBuffer("image/png");
   }
@@ -195,7 +196,7 @@ export function renderPyramidPanel(context: PanelContext): Buffer {
 
     const label = `${band.layer} (${band.count})`;
     ctx.fillStyle = rgbCss(contrastText(fill, theme.text));
-    ctx.font = "10px sans-serif";
+    ctx.font = `10px ${SANS_SERIF}`;
     const labelWidth = ctx.measureText(label).width;
     ctx.fillText(
       label,

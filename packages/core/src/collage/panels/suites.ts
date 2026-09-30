@@ -12,6 +12,7 @@ import {
   fillPill,
   horizontalBarRowsLayout,
 } from "./bars.js";
+import { SANS_SERIF } from "../fonts.js";
 
 function truncate(value: string | null | undefined, maxLength: number): string {
   if (value == null) return "";
@@ -30,13 +31,13 @@ export function renderSuitesPanel(context: PanelContext): Buffer {
 
   if (showTitle) {
     ctx.fillStyle = rgbCss(theme.text);
-    ctx.font = "bold 14px sans-serif";
+    ctx.font = `bold 14px ${SANS_SERIF}`;
     ctx.fillText("Suites", MARGIN, MARGIN + 12);
   }
 
   if (suites.length === 0) {
     ctx.fillStyle = rgbCss(theme.text);
-    ctx.font = "12px sans-serif";
+    ctx.font = `12px ${SANS_SERIF}`;
     ctx.fillText("No suite data", MARGIN, MARGIN + TITLE_HEIGHT + 16);
     return canvas.toBuffer("image/png");
   }
@@ -50,7 +51,7 @@ export function renderSuitesPanel(context: PanelContext): Buffer {
   const labelWidth = Math.min(180, Math.floor(chartWidth / 3));
   const barAreaWidth = chartWidth - labelWidth - 40;
   const layout = horizontalBarRowsLayout(height, showTitle, suites.length);
-  ctx.font = `${layout.fontSize}px sans-serif`;
+  ctx.font = `${layout.fontSize}px ${SANS_SERIF}`;
   const ascent = layout.fontSize * 0.8;
   const descent = layout.fontSize * 0.2;
 

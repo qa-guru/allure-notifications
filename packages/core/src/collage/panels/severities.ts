@@ -12,6 +12,7 @@ import {
   fillPill,
   horizontalBarRowsLayout,
 } from "./bars.js";
+import { SANS_SERIF } from "../fonts.js";
 
 const CANON_ORDER = [
   "blocker",
@@ -79,13 +80,13 @@ export function renderSeveritiesPanel(context: PanelContext): Buffer {
 
   if (showTitle) {
     ctx.fillStyle = rgbCss(theme.text);
-    ctx.font = "bold 14px sans-serif";
+    ctx.font = `bold 14px ${SANS_SERIF}`;
     ctx.fillText("Results by severity", MARGIN, MARGIN + 12);
   }
 
   if (ordered.length === 0) {
     ctx.fillStyle = rgbCss(theme.text);
-    ctx.font = "12px sans-serif";
+    ctx.font = `12px ${SANS_SERIF}`;
     ctx.fillText("No severity data", MARGIN, MARGIN + TITLE_HEIGHT + 16);
     return canvas.toBuffer("image/png");
   }
@@ -99,7 +100,7 @@ export function renderSeveritiesPanel(context: PanelContext): Buffer {
   const labelWidth = Math.min(100, Math.floor(chartWidth / 3));
   const barAreaWidth = chartWidth - labelWidth - 40;
   const layout = horizontalBarRowsLayout(height, showTitle, ordered.length);
-  ctx.font = `${layout.fontSize}px sans-serif`;
+  ctx.font = `${layout.fontSize}px ${SANS_SERIF}`;
   const ascent = layout.fontSize * 0.8;
   const descent = layout.fontSize * 0.2;
 

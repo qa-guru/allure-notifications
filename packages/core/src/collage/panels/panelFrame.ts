@@ -12,6 +12,7 @@ import {
 import { rgbCss, type ChartTheme } from "../../theme.js";
 import type { PanelContext } from "../context.js";
 import { MARGIN, TITLE_HEIGHT } from "./bars.js";
+import { SANS_SERIF } from "../fonts.js";
 
 export type OpenHistoryPanel =
   | { empty: true; png: Buffer }
@@ -39,7 +40,7 @@ export function openHistoryPanel(
 
   if (showTitle) {
     ctx.fillStyle = rgbCss(theme.text);
-    ctx.font = "bold 14px sans-serif";
+    ctx.font = `bold 14px ${SANS_SERIF}`;
     ctx.fillText(title, MARGIN, MARGIN + 12);
   }
 
@@ -70,7 +71,7 @@ export function paintPanelMessage(
   message: string,
 ): Buffer {
   ctx.fillStyle = rgbCss(theme.text);
-  ctx.font = "12px sans-serif";
+  ctx.font = `12px ${SANS_SERIF}`;
   ctx.fillText(message, MARGIN, MARGIN + TITLE_HEIGHT + 16);
   return canvas.toBuffer("image/png");
 }

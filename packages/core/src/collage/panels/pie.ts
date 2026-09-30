@@ -13,6 +13,7 @@ import {
   type Rgb,
 } from "../../theme.js";
 import type { PanelContext } from "../context.js";
+import { SANS_SERIF } from "../fonts.js";
 
 const RING_STROKE_RATIO = 0.085;
 const RING_MARGIN_RATIO = 0.14;
@@ -70,7 +71,7 @@ function fitPctFontSize(
   let size = Math.round(side * PCT_FONT_RATIO);
   const minSize = Math.max(8, Math.round(side * PCT_FONT_MIN_RATIO));
   while (size > minSize) {
-    ctx.font = `bold ${size}px sans-serif`;
+    ctx.font = `bold ${size}px ${SANS_SERIF}`;
     if (ctx.measureText(text).width <= maxWidth) {
       return size;
     }
@@ -96,11 +97,11 @@ function drawCenterText(
   const pctSize = fitPctFontSize(ctx, percentageText, side, maxTextWidth);
   const subSize = Math.round(side * SUB_FONT_RATIO);
 
-  ctx.font = `bold ${pctSize}px sans-serif`;
+  ctx.font = `bold ${pctSize}px ${SANS_SERIF}`;
   const pctWidth = ctx.measureText(percentageText).width;
   const pctAscent = pctSize * 0.8;
 
-  ctx.font = `${subSize}px sans-serif`;
+  ctx.font = `${subSize}px ${SANS_SERIF}`;
   const subWidth = ctx.measureText(subText).width;
   const subAscent = subSize * 0.8;
 
@@ -108,11 +109,11 @@ function drawCenterText(
   const blockHeight = pctAscent + lineGap + subAscent;
   const top = centerY - blockHeight / 2;
 
-  ctx.font = `bold ${pctSize}px sans-serif`;
+  ctx.font = `bold ${pctSize}px ${SANS_SERIF}`;
   ctx.fillStyle = rgbCss(headlineText(theme));
   ctx.fillText(percentageText, centerX - pctWidth / 2, top + pctAscent);
 
-  ctx.font = `${subSize}px sans-serif`;
+  ctx.font = `${subSize}px ${SANS_SERIF}`;
   ctx.fillStyle = rgbCss(mutedText(theme));
   ctx.fillText(
     subText,

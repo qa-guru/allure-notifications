@@ -9,6 +9,7 @@ import { isHistoryEmpty } from "../../report/history.js";
 import { rgbCss, type Rgb } from "../../theme.js";
 import type { PanelContext } from "../context.js";
 import { MARGIN, TITLE_HEIGHT, chartHeight, chartTop } from "./bars.js";
+import { SANS_SERIF } from "../fonts.js";
 
 function heatColor(value: number, max: number): Rgb {
   if (value <= 0 || max <= 0) {
@@ -36,7 +37,7 @@ export function renderProblemsDistributionPanel(
 
   if (showTitle) {
     ctx.fillStyle = rgbCss(theme.text);
-    ctx.font = "bold 14px sans-serif";
+    ctx.font = `bold 14px ${SANS_SERIF}`;
     ctx.fillText("Problems by environment", MARGIN, MARGIN + 12);
   }
 
@@ -45,7 +46,7 @@ export function renderProblemsDistributionPanel(
 
   if (isHistoryEmpty(history)) {
     ctx.fillStyle = rgbCss(theme.text);
-    ctx.font = "12px sans-serif";
+    ctx.font = `12px ${SANS_SERIF}`;
     ctx.fillText("No history data", MARGIN, MARGIN + TITLE_HEIGHT + 16);
     return canvas.toBuffer("image/png");
   }
@@ -53,7 +54,7 @@ export function renderProblemsDistributionPanel(
   const problems = history!.problemsByEnvironment;
   if (problems.environments.length === 0) {
     ctx.fillStyle = rgbCss(theme.text);
-    ctx.font = "12px sans-serif";
+    ctx.font = `12px ${SANS_SERIF}`;
     ctx.fillText("No environment data", MARGIN, MARGIN + TITLE_HEIGHT + 16);
     return canvas.toBuffer("image/png");
   }
@@ -62,7 +63,7 @@ export function renderProblemsDistributionPanel(
   const cols = problems.matrix[0]?.length ?? 0;
   if (cols === 0) {
     ctx.fillStyle = rgbCss(theme.text);
-    ctx.font = "12px sans-serif";
+    ctx.font = `12px ${SANS_SERIF}`;
     ctx.fillText("No environment data", MARGIN, MARGIN + TITLE_HEIGHT + 16);
     return canvas.toBuffer("image/png");
   }
@@ -80,7 +81,7 @@ export function renderProblemsDistributionPanel(
     (width - MARGIN * 2 - labelW - gap * (cols - 1)) / cols;
   const cellH = (plotH - gap * (rows - 1)) / rows;
 
-  ctx.font = "10px sans-serif";
+  ctx.font = `10px ${SANS_SERIF}`;
   for (let ri = 0; ri < rows; ri++) {
     const y = top + ri * (cellH + gap);
     const label = problems.environments[ri]!;

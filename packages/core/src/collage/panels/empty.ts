@@ -8,6 +8,7 @@ import { createCanvas } from "@napi-rs/canvas";
 
 import { rgbCss, type ChartTheme, type Rgb } from "../../theme.js";
 import type { PanelContext } from "../context.js";
+import { SANS_SERIF } from "../fonts.js";
 
 const MARGIN = 16;
 const MARKER_MAX_W = 48;
@@ -79,7 +80,7 @@ export function renderEmptyPanel(
 
   if (showTitle && title) {
     const titleSize = Math.max(12, Math.round(Math.min(width, height) * 0.06));
-    ctx.font = `bold ${titleSize}px sans-serif`;
+    ctx.font = `bold ${titleSize}px ${SANS_SERIF}`;
     ctx.fillStyle = rgbCss(headlineText(theme));
     const tw = ctx.measureText(title).width;
     const tx = Math.max(MARGIN, (width - tw) / 2);
@@ -89,7 +90,7 @@ export function renderEmptyPanel(
   }
 
   const captionSize = 12;
-  ctx.font = `${captionSize}px sans-serif`;
+  ctx.font = `${captionSize}px ${SANS_SERIF}`;
   ctx.fillStyle = rgbCss(mutedText(theme));
   const textWidth = ctx.measureText(message).width;
   const textX = Math.max(MARGIN, (width - textWidth) / 2);

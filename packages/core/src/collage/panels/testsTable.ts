@@ -20,6 +20,7 @@ import {
   rgbCss,
   type Rgb,
 } from "../../theme.js";
+import { SANS_SERIF } from "../fonts.js";
 
 /** Kit `theme/kit.css` light defaults — resolve for canvas. */
 export const TESTS_TABLE_TOKEN_PALETTE: Readonly<Record<string, Rgb>> =
@@ -278,7 +279,7 @@ function paintSparkline(
   const points = (history ?? []).filter((point) => typeof point.durationSec === "number");
   if (points.length < 2) {
     ctx.fillStyle = rgbCss(lookupToken("--color-text-muted", palette));
-    ctx.font = "11px sans-serif";
+    ctx.font = `11px ${SANS_SERIF}`;
     ctx.textBaseline = "middle";
     ctx.textAlign = "left";
     ctx.fillText(SPARKLINE_EMPTY[lang], x, y + h / 2);
@@ -353,7 +354,7 @@ function paintStabilityCell(
     ctx.fillStyle = rgbCss(mixRgb(warning, surface, 0.24));
     ctx.fill();
     ctx.fillStyle = rgbCss(warning);
-    ctx.font = "600 10px sans-serif";
+    ctx.font = `600 10px ${SANS_SERIF}`;
     ctx.textAlign = "center";
     ctx.textBaseline = "middle";
     ctx.fillText(String(flips), cursor + badgeW / 2, midY);
@@ -362,7 +363,7 @@ function paintStabilityCell(
 
   if (!runs.length) {
     ctx.fillStyle = rgbCss(lookupToken("--color-text-muted", palette));
-    ctx.font = "12px sans-serif";
+    ctx.font = `12px ${SANS_SERIF}`;
     ctx.textAlign = "left";
     ctx.textBaseline = "middle";
     ctx.fillText("—", cursor, midY);
@@ -396,7 +397,7 @@ function paintStatusBadge(
 ): void {
   const { bg, fg } = statusBadgeColors(status, palette);
   const padX = 6;
-  ctx.font = "600 10px sans-serif";
+  ctx.font = `600 10px ${SANS_SERIF}`;
   const textW = ctx.measureText(label).width;
   const badgeW = Math.min(w, textW + padX * 2);
   const badgeH = 18;
@@ -438,7 +439,7 @@ export function renderTestsTablePng(
 
   if (!rows.length) {
     ctx.fillStyle = rgbCss(muted);
-    ctx.font = "13px sans-serif";
+    ctx.font = `13px ${SANS_SERIF}`;
     ctx.textAlign = "center";
     ctx.textBaseline = "middle";
     ctx.fillText(
@@ -461,7 +462,7 @@ export function renderTestsTablePng(
 
   // Header
   ctx.fillStyle = rgbCss(muted);
-  ctx.font = "600 11px sans-serif";
+  ctx.font = `600 11px ${SANS_SERIF}`;
   ctx.textBaseline = "middle";
   ctx.textAlign = "left";
   const headerY = headerH / 2;
@@ -498,7 +499,7 @@ export function renderTestsTablePng(
 
     withCellClip(ctx, colX.name, y, nameW, rowH, () => {
       ctx.fillStyle = rgbCss(text);
-      ctx.font = "13px sans-serif";
+      ctx.font = `13px ${SANS_SERIF}`;
       ctx.textAlign = "left";
       ctx.textBaseline = "middle";
       const displayName = row.name || row.fullName || "—";

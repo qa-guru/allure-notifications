@@ -20,6 +20,7 @@ import {
   chartTop,
   fillTopRounded,
 } from "./bars.js";
+import { SANS_SERIF } from "../fonts.js";
 
 function rateColor(rate: number) {
   if (rate >= STABILITY_THRESHOLD) return STATUS_RGB.passed;
@@ -39,7 +40,7 @@ export function renderStabilityDistributionPanel(
 
   if (showTitle) {
     ctx.fillStyle = rgbCss(theme.text);
-    ctx.font = "bold 14px sans-serif";
+    ctx.font = `bold 14px ${SANS_SERIF}`;
     ctx.fillText("Stability distribution", MARGIN, MARGIN + 12);
   }
 
@@ -52,7 +53,7 @@ export function renderStabilityDistributionPanel(
 
   if (bars.length === 0) {
     ctx.fillStyle = rgbCss(theme.text);
-    ctx.font = "12px sans-serif";
+    ctx.font = `12px ${SANS_SERIF}`;
     ctx.fillText("No stability data", MARGIN, MARGIN + TITLE_HEIGHT + 16);
     return canvas.toBuffer("image/png");
   }

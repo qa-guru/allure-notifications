@@ -57,6 +57,7 @@ import {
 } from "./qualityGateData.js";
 import { isTestsTableChartItem } from "./testsTableData.js";
 import type { KitTestsTableData } from "@qa-guru/allure-report-kit";
+import { SANS_SERIF } from "./fonts.js";
 
 const DEFAULT_WIDTH = 1000;
 const DEFAULT_HEIGHT = 600;
@@ -471,7 +472,7 @@ async function drawCard(
 
   if (title) {
     graphics.fillStyle = rgbCss(headerText(theme));
-    graphics.font = `bold ${fontSize}px sans-serif`;
+    graphics.font = `bold ${fontSize}px ${SANS_SERIF}`;
     const ascent = fontSize * 0.8;
     const descent = fontSize * 0.2;
     const baseline =

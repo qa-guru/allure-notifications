@@ -8,6 +8,7 @@ import { STATUS_RGB, rgbCss, type Rgb } from "../../theme.js";
 import type { PanelContext } from "../context.js";
 import { MARGIN, chartHeight, chartTop } from "./bars.js";
 import { openHistoryPanel, paintPanelMessage } from "./panelFrame.js";
+import { SANS_SERIF } from "../fonts.js";
 
 const ADDED: Rgb = { r: 0x6b, g: 0xbf, b: 0x59 };
 const REMOVED = STATUS_RGB.failed;
@@ -105,13 +106,13 @@ export function renderCoverageDiffPanel(context: PanelContext): Buffer {
 
     if (w > 48 && h > 28) {
       ctx.fillStyle = "rgba(0,0,0,0.72)";
-      ctx.font = "bold 11px sans-serif";
+      ctx.font = `bold 11px ${SANS_SERIF}`;
       const label =
         cell.name.length > 14 ? `${cell.name.slice(0, 13)}…` : cell.name;
       const tw = ctx.measureText(label).width;
       ctx.fillText(label, x + (w - tw) / 2, y + h / 2 - 2);
       if (h > 40) {
-        ctx.font = "10px sans-serif";
+        ctx.font = `10px ${SANS_SERIF}`;
         ctx.fillStyle = "rgba(0,0,0,0.55)";
         const kind = cell.kind;
         const kw = ctx.measureText(kind).width;

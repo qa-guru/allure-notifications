@@ -10,6 +10,7 @@ import {
 
 import { hexToRgb, rgbCss, type ChartTheme } from "../../theme.js";
 import type { PanelContext } from "../context.js";
+import { SANS_SERIF } from "../fonts.js";
 
 const MARGIN = 16;
 const TITLE_HEIGHT = 24;
@@ -186,7 +187,7 @@ function drawLayerAverages(
   const barH = Math.max(8, Math.floor(rowH * 0.55));
   const fontSize = Math.min(12, Math.max(9, Math.floor(barH)));
 
-  ctx.font = `${fontSize}px sans-serif`;
+  ctx.font = `${fontSize}px ${SANS_SERIF}`;
   let index = 0;
   for (const [key, avg] of avgSeconds) {
     const baseline = blockTop + index * rowH + Math.floor(rowH * 0.7);
@@ -213,7 +214,7 @@ export function renderDurationsPanel(context: PanelContext): Buffer {
 
   if (showTitle) {
     ctx.fillStyle = rgbCss(theme.text);
-    ctx.font = "bold 14px sans-serif";
+    ctx.font = `bold 14px ${SANS_SERIF}`;
     const title = isLayerGroupBy(groupBy)
       ? "Durations by layer (s)"
       : "Durations (s)";
@@ -230,7 +231,7 @@ export function renderDurationsPanel(context: PanelContext): Buffer {
 
   if (analytics.durationsMs.length === 0) {
     ctx.fillStyle = rgbCss(theme.text);
-    ctx.font = "12px sans-serif";
+    ctx.font = `12px ${SANS_SERIF}`;
     ctx.fillText("No duration data", MARGIN, MARGIN + TITLE_HEIGHT + 16);
     return canvas.toBuffer("image/png");
   }

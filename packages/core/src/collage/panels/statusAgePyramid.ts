@@ -7,6 +7,7 @@ import { STATUS_RGB, rgbCss } from "../../theme.js";
 import type { PanelContext } from "../context.js";
 import { DEFAULT_ARC, MARGIN, chartTop } from "./bars.js";
 import { openHistoryPanel, paintPanelMessage } from "./panelFrame.js";
+import { SANS_SERIF } from "../fonts.js";
 
 const ORDER = ["failed", "broken", "skipped", "unknown"] as const;
 
@@ -96,7 +97,7 @@ export function renderStatusAgePyramidPanel(context: PanelContext): Buffer {
 
     if (bandH >= 14 && w > 40) {
       ctx.fillStyle = "rgba(0,0,0,0.72)";
-      ctx.font = "bold 11px sans-serif";
+      ctx.font = `bold 11px ${SANS_SERIF}`;
       const label = b.label;
       const tw = ctx.measureText(label).width;
       ctx.fillText(label, cx - tw / 2, y + bandH / 2 + 4);

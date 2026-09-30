@@ -25,6 +25,7 @@ import {
   rgbCss,
   type Rgb,
 } from "../../theme.js";
+import { SANS_SERIF, MONO } from "../fonts.js";
 
 /** Kit `theme/kit.css` light chrome defaults — resolve IR token refs for canvas. */
 export const QUALITY_GATE_TOKEN_PALETTE: Readonly<Record<string, Rgb>> =
@@ -258,7 +259,7 @@ export function renderQualityGatePng(
     const inset = metrics.barInset;
     // Hybrid bar: title only — no status indicator, no info glyph.
     const titleSize = remPx(metrics.barTitleSizeRem, rem);
-    ctx.font = `600 ${titleSize}px sans-serif`;
+    ctx.font = `600 ${titleSize}px ${SANS_SERIF}`;
     ctx.fillStyle = cssColor(tokens.textMuted, palette, surface);
     ctx.textBaseline = "middle";
     ctx.textAlign = "left";
@@ -275,7 +276,7 @@ export function renderQualityGatePng(
   if (layout.body.mode === "passed") {
     const pad = metrics.bodyPaddingPassed;
     const verdictSize = remPx(metrics.verdictFontSizeRem, rem);
-    ctx.font = `600 ${verdictSize}px sans-serif`;
+    ctx.font = `600 ${verdictSize}px ${SANS_SERIF}`;
     ctx.fillStyle = rgbCss(lookupToken(tokens.verdictOk, palette));
     ctx.textAlign = "center";
     ctx.textBaseline = "middle";
@@ -329,7 +330,7 @@ function paintFailedRules(
   const idMin = remPx(metrics.ruleIdMinWidthRem, box.rem);
   const idMax = remPx(metrics.ruleGridIdMaxRem, box.rem);
   const idFont = box.bodyFont * metrics.ruleIdFontSizeEm;
-  ctx.font = `600 ${idFont}px ui-monospace, "SF Mono", Menlo, monospace`;
+  ctx.font = `600 ${idFont}px ${MONO}`;
 
   let idCol = idMin;
   for (const row of rows) {
@@ -357,7 +358,7 @@ function paintFailedRules(
     ctx.fillStyle = cssColor(tokens.ruleId.background.failed, box.palette, box.surface);
     ctx.fillRect(box.x, y, idCol, h);
     ctx.fillStyle = rgbCss(lookupToken(tokens.ruleId.color.failed, box.palette));
-    ctx.font = `600 ${idFont}px ui-monospace, "SF Mono", Menlo, monospace`;
+    ctx.font = `600 ${idFont}px ${MONO}`;
     ctx.textAlign = "left";
     ctx.textBaseline = "middle";
     const idText = ellipsize(
@@ -373,7 +374,7 @@ function paintFailedRules(
 
     const textX = detailX + metrics.ruleDetailPaddingX;
     const textMaxW = Math.max(4, detailW - 2 * metrics.ruleDetailPaddingX);
-    ctx.font = `400 ${box.bodyFont}px sans-serif`;
+    ctx.font = `400 ${box.bodyFont}px ${SANS_SERIF}`;
     ctx.fillStyle = rgbCss(lookupToken(tokens.ruleMessage, box.palette));
     ctx.textBaseline = "top";
     const msgLines = wrapLines(ctx, row.message, textMaxW, row.formula ? 2 : 3);
@@ -385,7 +386,7 @@ function paintFailedRules(
     if (row.formula) {
       ty += metrics.formulaMarginTop;
       const formulaSize = box.bodyFont * 0.8;
-      ctx.font = `500 ${formulaSize}px ui-monospace, "SF Mono", Menlo, monospace`;
+      ctx.font = `500 ${formulaSize}px ${MONO}`;
       ctx.fillStyle = rgbCss(lookupToken(tokens.ruleFormula, box.palette));
       ctx.fillText(ellipsize(ctx, row.formula, textMaxW), textX, ty);
     }
