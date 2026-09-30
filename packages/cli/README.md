@@ -3,8 +3,8 @@
 Public npm bin **`@qa-guru/allure-notifications`** for line **6.0.\***.
 
 ```bash
-npx @qa-guru/allure-notifications@6.3.0 send --config config.json --dry-run
-npx @qa-guru/allure-notifications@6.3.0 send --config config.json \
+npx @qa-guru/allure-notifications@6.3.1 send --config config.json --dry-run
+npx @qa-guru/allure-notifications@6.3.1 send --config config.json \
   --allure-folder build/reports/allure-report/allureReport/awesome \
   --allure-results-folder build/allure-results \
   --project Multistack \

@@ -1,5 +1,21 @@
 # Changelog
 
+## v 6.3.1
+
+### English
+
+- **builder: Assistant panel** — the Suggest popover becomes a permanent panel with three modes: `manual` (never touches the canvas), `rules` (offline tier-0 scorer), `ai` (LLM picks panel ids; `materializeLayout` still owns the canonical slots). Import accepts both `--signals` JSON (becomes the effective signals, summarized inline) and a full suggest config (ids + profile re-materialized — identical layout to the CLI).
+- **Shared advisor** — `suggestLayoutViaLlm` moved to `@qa-guru/allure-notifications-config` and is vendored into the builder, so CLI and browser run literally the same prompt/validation/materialization code.
+- **AI endpoint presets + auth** — `custom` / `local ollama` / `ollama-box2 qa.guru`; `ANB_AI_API_KEY` (or the builder api-key field) accepts `user:pass` → HTTP Basic, anything else → Bearer.
+- **Configurable AI timeout** — advisor default 15s → 60s; builder `timeout s` field and `ANB_AI_TIMEOUT_MS` env (invalid/≤0 → default). A 401 with an empty key now says to use `user:pass`.
+
+### Russian
+
+- **builder: панель Assistant** — поповер Suggest стал постоянной панелью с тремя режимами: `manual` (канва не трогается), `rules` (оффлайн scorer яруса 0), `ai` (LLM выбирает id панелей; канонические слоты по-прежнему назначает `materializeLayout`). Импорт принимает и `--signals` JSON (становится effective signals + inline-сводка), и готовый suggest-конфиг (id + profile рематериализуются — layout идентичен CLI).
+- **Общий advisor** — `suggestLayoutViaLlm` переехал в `@qa-guru/allure-notifications-config` и вендорится в builder: CLI и браузер выполняют буквально один код промпта/валидации/материализации.
+- **Пресеты AI-эндпоинта + auth** — `custom` / `local ollama` / `ollama-box2 qa.guru`; `ANB_AI_API_KEY` (или поле api key в билдере) принимает `user:pass` → HTTP Basic, иначе → Bearer.
+- **Настраиваемый таймаут AI** — дефолт advisor'а 15s → 60s; поле `timeout s` в билдере и env `ANB_AI_TIMEOUT_MS` в CLI (невалидное/≤0 → дефолт). 401 с пустым ключом теперь честно подсказывает `user:pass`.
+
 ## v 6.3.0
 
 ### English
