@@ -1014,6 +1014,7 @@ test.describe('allure-notifications-builder smoke', () => {
     // Panel is a permanent section; mode manual = no apply, no AI fields.
     await expect(panel).toBeVisible();
     await expect(page.getByTestId('anb-mode-manual')).toHaveAttribute('aria-pressed', 'true');
+    await expect(page.getByTestId('anb-mode-manual')).toHaveClass(/plaque-field-seg__btn--on/);
     await expect(page.getByTestId('anb-assistant-actions')).toBeHidden();
     await expect(page.getByTestId('anb-ai-section')).toBeHidden();
 
@@ -1023,8 +1024,10 @@ test.describe('allure-notifications-builder smoke', () => {
     // Toolbar button scrolls the panel into view.
     await page.getByTestId('anb-btn-suggest').click();
 
-    // Rules mode → Apply appears; ai section still hidden.
+    // Rules mode → Apply appears; ai section still hidden; active chip moves.
     await page.getByTestId('anb-mode-rules').click();
+    await expect(page.getByTestId('anb-mode-rules')).toHaveClass(/plaque-field-seg__btn--on/);
+    await expect(page.getByTestId('anb-mode-manual')).not.toHaveClass(/plaque-field-seg__btn--on/);
     await expect(page.getByTestId('anb-assistant-actions')).toBeVisible();
     await expect(page.getByTestId('anb-suggest-apply')).toHaveText('Apply');
     await expect(page.getByTestId('anb-ai-section')).toBeHidden();

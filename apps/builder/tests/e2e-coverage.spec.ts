@@ -1542,8 +1542,56 @@ test.describe('suggest', () => {
       if (baseUrlInput.value !== 'http://localhost:11434/v1')
         throw new Error('local preset url wrong');
 
-      // Timeout field: invalid and valid inputs both reach the advisor call.
+      // AI endpoint persistence: preset change stores fields (key excluded).
       const timeoutInput = document.getElementById('anb-ai-timeout') as HTMLInputElement;
+      const stored = JSON.parse(localStorage.getItem('anb-ai-endpoint') ?? '{}');
+      if (stored.preset !== 'local') throw new Error('preset not persisted');
+      if ('apiKey' in stored) throw new Error('api key leaked to storage');
+      if (stored.baseUrl !== 'http://localhost:11434/v1')
+        throw new Error('persisted baseUrl wrong');
+
+      // persistAiFields: select missing → 'custom'; storage throwing → swallow.
+      presetSel.remove();
+      A.persistAiFields();
+      aiSection.insertBefore(presetSel, aiSection.querySelector('.anb-assistant__grid'));
+      const realSet = localStorage.setItem.bind(localStorage);
+      localStorage.setItem = (() => {
+        throw new Error('quota');
+      }) as typeof localStorage.setItem;
+      A.persistAiFields(); // quota error → swallowed
+      localStorage.setItem = realSet;
+
+      // restoreAiFields: bad JSON / non-object → early return; valid → fields set.
+      localStorage.setItem('anb-ai-endpoint', '{oops');
+      A.restoreAiFields();
+      localStorage.setItem('anb-ai-endpoint', '42');
+      A.restoreAiFields();
+      localStorage.setItem(
+        'anb-ai-endpoint',
+        JSON.stringify({ preset: 'zzz', baseUrl: 'http://x/v1', model: 'm1', timeout: '33' }),
+      );
+      A.restoreAiFields();
+      if (baseUrlInput.value !== 'http://x/v1' || modelInput.value !== 'm1')
+        throw new Error('restore did not write fields');
+      if (presetSel.value === 'zzz') throw new Error('unknown preset should not stick');
+      if (timeoutInput.value !== '33') throw new Error('timeout not restored');
+      localStorage.setItem('anb-ai-endpoint', JSON.stringify({ preset: 'box2' }));
+      A.restoreAiFields();
+      if (presetSel.value !== 'box2') throw new Error('known preset not restored');
+
+      // restoreAiFields: missing elements → instanceof guards.
+      baseUrlInput.remove();
+      presetSel.remove();
+      localStorage.setItem(
+        'anb-ai-endpoint',
+        JSON.stringify({ preset: 'local', baseUrl: 'http://y/v1' }),
+      );
+      A.restoreAiFields();
+      urlLabel.appendChild(baseUrlInput);
+      aiSection.insertBefore(presetSel, aiSection.querySelector('.anb-assistant__grid'));
+      localStorage.removeItem('anb-ai-endpoint');
+
+      // Timeout field: invalid and valid inputs both reach the advisor call.
       globalThis.fetch = (() =>
         Promise.reject(new TypeError('stop'))) as typeof fetch;
       timeoutInput.value = 'later';

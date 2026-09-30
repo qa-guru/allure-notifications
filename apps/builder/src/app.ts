@@ -880,12 +880,14 @@ function onSuggestImportInput() {
   renderSuggestSummary(currentSuggestSignals());
 }
 
-/** Segmented mode control: sync aria-pressed, toggle AI fields and the Apply row. */
+/** Segmented mode control: sync --on class + aria-pressed, toggle AI fields and the Apply row. */
 function setAssistantMode(mode: AssistantMode) {
   assistantMode = mode;
   document.querySelectorAll('#anb-assistant-mode .plaque-field-seg__btn').forEach((btn) => {
     if (btn instanceof HTMLButtonElement) {
-      btn.setAttribute('aria-pressed', btn.getAttribute('data-mode') === mode ? 'true' : 'false');
+      const on = btn.getAttribute('data-mode') === mode;
+      btn.classList.toggle('plaque-field-seg__btn--on', on);
+      btn.setAttribute('aria-pressed', on ? 'true' : 'false');
     }
   });
   const aiSection = document.getElementById('anb-ai-section');
@@ -943,6 +945,52 @@ function onAiPresetChange() {
   if (baseUrl instanceof HTMLInputElement) baseUrl.value = preset.baseUrl;
   const model = document.getElementById('anb-ai-model');
   if (model instanceof HTMLInputElement) model.value = preset.model;
+  persistAiFields();
+}
+
+/** Persisted AI endpoint settings — everything except the api key (no secrets in localStorage). */
+const AI_STORE_KEY = 'anb-ai-endpoint';
+
+function persistAiFields() {
+  const preset = document.getElementById('anb-ai-preset');
+  try {
+    localStorage.setItem(
+      AI_STORE_KEY,
+      JSON.stringify({
+        preset: preset instanceof HTMLSelectElement ? preset.value : 'custom',
+        baseUrl: aiField('anb-ai-base-url'),
+        model: aiField('anb-ai-model'),
+        timeout: aiField('anb-ai-timeout'),
+      }),
+    );
+  } catch {
+    /* storage unavailable — private mode etc. */
+  }
+}
+
+function restoreAiFields() {
+  let saved: { preset?: unknown; baseUrl?: unknown; model?: unknown; timeout?: unknown };
+  try {
+    saved = JSON.parse(localStorage.getItem(AI_STORE_KEY) ?? '');
+  } catch {
+    return;
+  }
+  if (saved === null || typeof saved !== 'object') return;
+  const set = (id: string, value: unknown) => {
+    const el = document.getElementById(id);
+    if (el instanceof HTMLInputElement && typeof value === 'string') el.value = value;
+  };
+  set('anb-ai-base-url', saved.baseUrl);
+  set('anb-ai-model', saved.model);
+  set('anb-ai-timeout', saved.timeout);
+  const preset = document.getElementById('anb-ai-preset');
+  if (
+    preset instanceof HTMLSelectElement &&
+    typeof saved.preset === 'string' &&
+    saved.preset in AI_PRESETS
+  ) {
+    preset.value = saved.preset;
+  }
 }
 
 /**
@@ -961,6 +1009,7 @@ async function onAssistantApply() {
     }
     try {
       const timeoutS = Number(aiField('anb-ai-timeout'));
+      persistAiFields();
       const layout = await suggestLayoutViaLlm(signals, {
         baseUrl,
         model,
@@ -1175,6 +1224,7 @@ function init() {
   initGrid();
   /* Grid layout SSOT = vector state; boot applies the default vector. */
   applyDefaultVector();
+  restoreAiFields();
   renderSuggestSummary(currentSuggestSignals());
   setAssistantMode('manual');
   window.addEventListener('resize', () => {
@@ -1228,6 +1278,8 @@ init();
   setAssistantMode,
   onAssistantApply,
   onAiPresetChange,
+  persistAiFields,
+  restoreAiFields,
   assistantNote,
   applySuggestedLayout,
   chartProfile,
