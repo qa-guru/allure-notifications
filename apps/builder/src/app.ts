@@ -741,18 +741,140 @@ function suggestErrorText(msg: string | null) {
   el.hidden = msg == null;
 }
 
+function suggestImportError(msg: string | null) {
+  const el = document.getElementById('anb-suggest-import-error');
+  if (!(el instanceof HTMLElement)) return;
+  el.textContent = msg ?? '';
+  el.hidden = msg == null;
+}
+
+function suggestNumField(id: string): number {
+  const el = document.getElementById(id);
+  if (!(el instanceof HTMLInputElement)) return 0;
+  const value = Math.floor(Number(el.value));
+  return Number.isFinite(value) && value >= 0 ? value : 0;
+}
+
+function suggestCheckField(id: string): boolean {
+  const el = document.getElementById(id);
+  return el instanceof HTMLInputElement && el.checked;
+}
+
+function suggestSetNum(id: string, value: number) {
+  const el = document.getElementById(id);
+  if (el instanceof HTMLInputElement) el.value = String(value);
+}
+
+function suggestSetCheck(id: string, value: boolean) {
+  const el = document.getElementById(id);
+  if (el instanceof HTMLInputElement) el.checked = value;
+}
+
+/** Signals pasted into the import box; merged over derived signals until replaced or cleared. */
+let suggestImported: Partial<SuggestSignals> | undefined;
+
+function fillSuggestForm(signals: SuggestSignals) {
+  suggestSetNum('anb-sg-passed', signals.statistic.passed);
+  suggestSetNum('anb-sg-failed', signals.statistic.failed);
+  suggestSetNum('anb-sg-broken', signals.statistic.broken);
+  suggestSetNum('anb-sg-skipped', signals.statistic.skipped);
+  suggestSetNum('anb-sg-unknown', signals.statistic.unknown);
+  suggestSetNum('anb-sg-history', signals.historyRunCount);
+  suggestSetNum('anb-sg-layers', signals.knownLayerCount);
+  suggestSetCheck('anb-sg-layer-labels', signals.hasLayerLabels);
+  suggestSetCheck('anb-sg-known-layer-labels', signals.hasKnownLayerLabels);
+  suggestSetCheck('anb-sg-qg-rules', signals.qualityGateRuleCount > 0);
+  suggestSetCheck('anb-sg-aqg', Boolean(signals.allureQualityGatePath));
+  suggestSetCheck('anb-sg-sqg', Boolean(signals.sonarQualityGatePath));
+  suggestSetCheck('anb-sg-table', Boolean(signals.testsTablePath));
+}
+
+/** Signals = derived ∪ imported ∪ form fields (form always wins for the keys it models). */
+function currentSuggestSignals(): SuggestSignals {
+  const base = { ...deriveSuggestSignals(), ...suggestImported };
+  const statistic = {
+    passed: suggestNumField('anb-sg-passed'),
+    failed: suggestNumField('anb-sg-failed'),
+    broken: suggestNumField('anb-sg-broken'),
+    skipped: suggestNumField('anb-sg-skipped'),
+    unknown: suggestNumField('anb-sg-unknown'),
+    total: 0,
+  };
+  statistic.total =
+    statistic.passed + statistic.failed + statistic.broken + statistic.skipped + statistic.unknown;
+  return {
+    ...base,
+    statistic,
+    historyRunCount: suggestNumField('anb-sg-history'),
+    knownLayerCount: suggestNumField('anb-sg-layers'),
+    hasLayerLabels: suggestCheckField('anb-sg-layer-labels'),
+    hasKnownLayerLabels: suggestCheckField('anb-sg-known-layer-labels'),
+    qualityGateRuleCount: suggestCheckField('anb-sg-qg-rules')
+      ? Math.max(1, base.qualityGateRuleCount)
+      : 0,
+    allureQualityGatePath: suggestCheckField('anb-sg-aqg')
+      ? base.allureQualityGatePath
+      : undefined,
+    sonarQualityGatePath: suggestCheckField('anb-sg-sqg')
+      ? base.sonarQualityGatePath
+      : undefined,
+    testsTablePath: suggestCheckField('anb-sg-table')
+      ? base.testsTablePath
+      : undefined,
+    profile: base.profile === 'kit' ? 'kit' : 'default',
+  };
+}
+
+/** Pasted signals JSON → validate → store as import overlay → fill the form. */
+function onSuggestImportInput() {
+  const input = document.getElementById('anb-suggest-import-input');
+  if (!(input instanceof HTMLTextAreaElement)) return;
+  const raw = input.value.trim();
+  if (!raw) {
+    suggestImported = undefined;
+    suggestImportError(null);
+    return;
+  }
+  let parsed: unknown;
+  try {
+    parsed = JSON.parse(raw);
+  } catch {
+    suggestImportError('signals must be valid JSON');
+    return;
+  }
+  if (parsed === null || typeof parsed !== 'object' || Array.isArray(parsed)) {
+    suggestImportError('signals must be a JSON object');
+    return;
+  }
+  suggestImportError(null);
+  suggestImported = parsed as Partial<SuggestSignals>;
+  fillSuggestForm({ ...deriveSuggestSignals(), ...suggestImported });
+}
+
 function openSuggestPopover() {
   const popover = document.getElementById('anb-suggest-popover');
-  const input = document.getElementById('anb-suggest-signals');
-  const trigger = document.getElementById('anb-btn-suggest');
-  if (!(popover instanceof HTMLElement) || !(input instanceof HTMLTextAreaElement)) return;
+  if (!(popover instanceof HTMLElement)) return;
   if (!popover.hidden) {
     popover.hidden = true;
     return;
   }
-  input.value = JSON.stringify(deriveSuggestSignals(), null, 2);
+  suggestImported = undefined;
+  const importInput = document.getElementById('anb-suggest-import-input');
+  if (importInput instanceof HTMLTextAreaElement) importInput.value = '';
+  const importDetails = document.getElementById('anb-suggest-import');
+  if (importDetails instanceof HTMLDetailsElement) importDetails.open = false;
+  suggestImportError(null);
+  fillSuggestForm(deriveSuggestSignals());
   suggestErrorText(null);
   popover.hidden = false;
+  placeSuggestPopover();
+}
+
+/** Clamp the popover inside the viewport; re-run when the import details toggles height. */
+function placeSuggestPopover() {
+  const popover = document.getElementById('anb-suggest-popover');
+  if (!(popover instanceof HTMLElement) || popover.hidden) return;
+  const trigger = document.getElementById('anb-btn-suggest');
   const rect = trigger instanceof HTMLElement ? trigger.getBoundingClientRect() : null;
   const maxLeft = window.innerWidth - popover.offsetWidth - 8;
   const maxTop = window.innerHeight - popover.offsetHeight - 8;
@@ -779,24 +901,7 @@ function applySuggestedLayout(layout: SuggestedLayout) {
 }
 
 function applySuggestPopover() {
-  const input = document.getElementById('anb-suggest-signals');
-  if (!(input instanceof HTMLTextAreaElement)) return;
-  let parsed: unknown;
-  try {
-    parsed = JSON.parse(input.value);
-  } catch {
-    suggestErrorText('signals must be valid JSON');
-    return;
-  }
-  if (parsed === null || typeof parsed !== 'object' || Array.isArray(parsed)) {
-    suggestErrorText('signals must be a JSON object');
-    return;
-  }
-  suggestErrorText(null);
-  applySuggestedLayout(suggestLayout({
-    ...deriveSuggestSignals(),
-    ...(parsed as Partial<SuggestSignals>),
-  }));
+  applySuggestedLayout(suggestLayout(currentSuggestSignals()));
   closeSuggestPopover();
 }
 
@@ -938,6 +1043,8 @@ function wireEditorChrome() {
   document.getElementById('anb-btn-reset')?.addEventListener('click', resetToDefault);
   document.getElementById('anb-btn-clear')?.addEventListener('click', clearAll);
   document.getElementById('anb-btn-suggest')?.addEventListener('click', openSuggestPopover);
+  document.getElementById('anb-suggest-import-input')?.addEventListener('input', onSuggestImportInput);
+  document.getElementById('anb-suggest-import')?.addEventListener('toggle', placeSuggestPopover);
   document.getElementById('anb-suggest-apply')?.addEventListener('click', applySuggestPopover);
   document.getElementById('anb-suggest-cancel')?.addEventListener('click', closeSuggestPopover);
   document.addEventListener('keydown', (e) => {
@@ -1038,6 +1145,11 @@ init();
   resetToDefault,
   deriveSuggestSignals,
   suggestErrorText,
+  suggestImportError,
+  fillSuggestForm,
+  currentSuggestSignals,
+  onSuggestImportInput,
+  placeSuggestPopover,
   openSuggestPopover,
   closeSuggestPopover,
   applySuggestedLayout,

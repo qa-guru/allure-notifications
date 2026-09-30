@@ -142,6 +142,8 @@ body {
 
 .anb-suggest-popover__panel {
   width: min(430px, 92vw);
+  max-height: calc(100vh - 16px);
+  overflow-y: auto;
   padding: var(--space-3);
   border: 1px solid var(--color-border);
   border-radius: var(--radius-sm);
@@ -189,6 +191,61 @@ body {
 .anb-suggest-popover__actions {
   display: flex;
   justify-content: flex-end;
+  gap: var(--space-2);
+}
+
+.anb-suggest-import {
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  padding: var(--space-1) var(--space-2) var(--space-2);
+}
+
+.anb-suggest-import summary {
+  font-size: var(--font-size-xs);
+  color: var(--color-text-muted);
+  cursor: pointer;
+}
+
+.anb-suggest-import__input {
+  margin-top: var(--space-1);
+}
+
+.anb-suggest-popover__section {
+  border-top: 1px solid var(--color-border);
+  padding-top: var(--space-2);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.anb-suggest-popover__section-title {
+  font-size: var(--font-size-xs);
+  color: var(--color-text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.anb-suggest-popover__grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-2);
+}
+
+.anb-suggest-popover__grid .plaque-field {
+  min-width: 0;
+}
+
+.anb-suggest-popover__checks {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  font-size: var(--font-size-xs);
+  color: var(--color-text);
+}
+
+.anb-suggest-popover__checks label {
+  display: flex;
+  align-items: center;
   gap: var(--space-2);
 }
 

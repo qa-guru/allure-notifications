@@ -974,7 +974,7 @@ test.describe('allure-notifications-builder smoke', () => {
     expect(errors, errors.join('\n')).toEqual([]);
   });
 
-  test('suggest popover: applies scorer layout from compact signals', async ({
+  test('suggest popover: import CLI signals into the form, then apply', async ({
     page,
   }) => {
     const errors: string[] = [];
@@ -986,14 +986,14 @@ test.describe('allure-notifications-builder smoke', () => {
 
     const suggestBtn = page.getByTestId('anb-btn-suggest');
     const popover = page.getByTestId('anb-suggest-popover');
-    const input = page.getByTestId('anb-suggest-signals');
+    const importBox = page.getByTestId('anb-suggest-import-input');
 
     await suggestBtn.click();
     await expect(popover).toBeVisible();
-    const prefilled = JSON.parse(await input.inputValue());
-    expect(prefilled.profile).toBe('default');
-    expect(prefilled.historyRunCount).toBe(0);
-    expect(prefilled.statistic.total).toBe(0);
+    // Form prefilled with derived (empty) signals.
+    await expect(page.getByTestId('anb-sg-passed')).toHaveValue('0');
+    await expect(page.getByTestId('anb-sg-history')).toHaveValue('0');
+    await expect(page.getByTestId('anb-sg-layer-labels')).not.toBeChecked();
 
     // Second toolbar click toggles the popover closed.
     await suggestBtn.click();
@@ -1001,15 +1001,17 @@ test.describe('allure-notifications-builder smoke', () => {
     await suggestBtn.click();
     await expect(popover).toBeVisible();
 
-    // Invalid JSON → inline error, stays open, layout untouched.
-    await input.fill('{nope');
-    await page.getByTestId('anb-suggest-apply').click();
-    await expect(page.getByTestId('anb-suggest-error')).toContainText('valid JSON');
+    // Invalid JSON in the import box → inline error, fields untouched.
+    await page.getByTestId('anb-suggest-import').locator('summary').click();
+    await importBox.fill('{nope');
+    await expect(page.getByTestId('anb-suggest-import-error')).toContainText('valid JSON');
+    await expect(page.getByTestId('anb-sg-history')).toHaveValue('0');
     await expect(popover).toBeVisible();
 
-    // History + known layers → 7-tile hero on 870×1080.
-    await input.fill(
+    // Valid CLI signals JSON → fields fill from it.
+    await importBox.fill(
       JSON.stringify({
+        statistic: { passed: 40, failed: 3, broken: 1, skipped: 0, unknown: 0, total: 44 },
         historyRunCount: 12,
         hasLayerLabels: true,
         hasKnownLayerLabels: true,
@@ -1017,6 +1019,13 @@ test.describe('allure-notifications-builder smoke', () => {
         layers: { unit: 8, e2e: 2 },
       }),
     );
+    await expect(page.getByTestId('anb-suggest-import-error')).toBeHidden();
+    await expect(page.getByTestId('anb-sg-passed')).toHaveValue('40');
+    await expect(page.getByTestId('anb-sg-failed')).toHaveValue('3');
+    await expect(page.getByTestId('anb-sg-history')).toHaveValue('12');
+    await expect(page.getByTestId('anb-sg-layer-labels')).toBeChecked();
+
+    // History + known layers → 7-tile hero on 870×1080.
     await page.getByTestId('anb-suggest-apply').click();
     await expect(popover).toBeHidden();
     await expect(page.locator('#anb-grid .grid-stack-item')).toHaveCount(7);
@@ -1028,6 +1037,21 @@ test.describe('allure-notifications-builder smoke', () => {
         return { w: chart.width, profile: chart.profile, count: chart.items.length };
       })
       .toEqual({ w: 870, profile: 'default', count: 7 });
+
+    // Manual form path: no import — type counts, Apply applies scorer.
+    await suggestBtn.click();
+    await page.getByTestId('anb-sg-failed').fill('2');
+    await page.getByTestId('anb-sg-history').fill('4');
+    await page.getByTestId('anb-suggest-apply').click();
+    await expect(popover).toBeHidden();
+    await expect
+      .poll(async () => {
+        const chart = JSON.parse(
+          await page.getByTestId('anb-terminal').innerText(),
+        ).base.chart;
+        return chart.items.map((item: { type: string }) => item.type);
+      })
+      .toContain('problemsDistribution');
 
     // Outside click closes an open popover.
     await suggestBtn.click();

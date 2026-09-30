@@ -1302,39 +1302,126 @@ test.describe('suggest', () => {
     expect(empty.allureQualityGatePath).toBeUndefined();
   });
 
-  test('popover guards, apply branches and document click', async ({
+  test('popover guards, import branches and document click', async ({
     page,
   }) => {
     await page.goto('/');
     await page.evaluate(() => {
       const A = globalThis.__ANB__;
       const popover = document.getElementById('anb-suggest-popover')!;
-      const input = document.getElementById('anb-suggest-signals') as HTMLTextAreaElement;
+      const importInput = document.getElementById(
+        'anb-suggest-import-input',
+      ) as HTMLTextAreaElement;
+      const importDetails = document.getElementById(
+        'anb-suggest-import',
+      ) as HTMLDetailsElement;
+      const importError = document.getElementById('anb-suggest-import-error')!;
       const error = document.getElementById('anb-suggest-error')!;
       const btn = document.getElementById('anb-btn-suggest')!;
       const panel = popover.querySelector('.anb-suggest-popover__panel')!;
       const actions = document.querySelector('.anb-editor__actions')!;
+      const passed = document.getElementById('anb-sg-passed') as HTMLInputElement;
 
-      // Apply on missing input → guard return.
-      input.remove();
-      A.applySuggestPopover();
-      panel.appendChild(input);
+      // Import: missing textarea → guard return.
+      importInput.remove();
+      A.onSuggestImportInput();
+      importDetails.appendChild(importInput);
 
-      // Non-JSON / non-object / array answers → inline errors, stays open.
+      // Empty / bad / non-object → error shown or cleared; fields untouched.
+      importInput.value = '';
+      A.onSuggestImportInput();
+      if (!importError.hidden) throw new Error('empty import should clear error');
+      importInput.value = 'not json';
+      A.onSuggestImportInput();
+      if (importError.hidden) throw new Error('bad JSON error not shown');
+      importInput.value = 'null';
+      A.onSuggestImportInput();
+      importInput.value = '42';
+      A.onSuggestImportInput();
+      importInput.value = '[1,2]';
+      A.onSuggestImportInput();
+      if (importError.hidden) throw new Error('non-object error not shown');
+
+      // Valid object → fills form fields.
+      importInput.value =
+        '{"statistic":{"passed":9,"failed":1,"broken":0,"skipped":0,"unknown":0,"total":10},"historyRunCount":5}';
+      A.onSuggestImportInput();
+      if (passed.value !== '9') throw new Error('import did not fill passed');
+      const hist = document.getElementById('anb-sg-history') as HTMLInputElement;
+      if (hist.value !== '5') throw new Error('import did not fill history');
+
+      // suggestImportError on missing element → guard return.
+      importError.remove();
+      A.suggestImportError('x');
+      A.suggestImportError(null);
+      importDetails.appendChild(importError);
+
+      // currentSuggestSignals: form wins, ternary branches.
       A.openSuggestPopover();
-      input.value = 'not json';
-      A.applySuggestPopover();
-      if (error.hidden) throw new Error('error not shown');
-      input.value = 'null';
-      A.applySuggestPopover();
-      input.value = '42';
-      A.applySuggestPopover();
-      input.value = '[1,2]';
-      A.applySuggestPopover();
-      if (popover.hidden) throw new Error('popover closed on bad input');
+      const sg = (id: string) => document.getElementById(id) as HTMLInputElement;
+      sg('anb-sg-passed').value = '-3';
+      sg('anb-sg-failed').value = 'abc';
+      sg('anb-sg-broken').value = '2';
+      sg('anb-sg-skipped').value = '0';
+      sg('anb-sg-unknown').value = '0';
+      sg('anb-sg-history').value = '4';
+      sg('anb-sg-layers').value = '3';
+      sg('anb-sg-layer-labels').checked = true;
+      sg('anb-sg-known-layer-labels').checked = true;
+      sg('anb-sg-qg-rules').checked = true;
+      sg('anb-sg-aqg').checked = true;
+      sg('anb-sg-sqg').checked = true;
+      sg('anb-sg-table').checked = true;
+      const sig = A.currentSuggestSignals();
+      if (sig.statistic.passed !== 0 || sig.statistic.failed !== 0)
+        throw new Error('num field guard failed');
+      if (sig.statistic.broken !== 2 || sig.statistic.total !== 2)
+        throw new Error('statistic total wrong');
+      if (sig.qualityGateRuleCount !== 1) throw new Error('qg rules check failed');
+      if (sig.allureQualityGatePath !== undefined)
+        throw new Error('checked aqg without path should stay undefined');
+      if (sig.profile !== 'default') throw new Error('profile should be default');
 
-      // Valid object → applies layout and closes.
-      input.value = '{"statistic":{"passed":0,"failed":3,"broken":0,"skipped":0,"unknown":0,"total":3}}';
+      // Kit profile branch + unchecked payload branches.
+      A.setPath('base.chart.profile', 'kit');
+      A.setPath('base.chart.allureQualityGatePath', '/a/aqg.json');
+      A.setPath('base.chart.sonarQualityGatePath', '/a/sqg.json');
+      A.setPath('base.chart.testsTablePath', '/a/t.json');
+      sg('anb-sg-qg-rules').checked = false;
+      sg('anb-sg-aqg').checked = true;
+      sg('anb-sg-sqg').checked = false;
+      sg('anb-sg-table').checked = true;
+      const kitSig = A.currentSuggestSignals();
+      if (kitSig.profile !== 'kit') throw new Error('kit profile lost');
+      if (kitSig.qualityGateRuleCount !== 0) throw new Error('qg uncheck failed');
+      if (kitSig.allureQualityGatePath !== '/a/aqg.json')
+        throw new Error('aqg path dropped');
+      if (kitSig.sonarQualityGatePath !== undefined)
+        throw new Error('unchecked sqg should be undefined');
+      if (kitSig.testsTablePath !== '/a/t.json')
+        throw new Error('testsTable path dropped');
+      A.setPath('base.chart.profile', 'default');
+      A.setPath('base.chart.allureQualityGatePath', '');
+      A.setPath('base.chart.sonarQualityGatePath', '');
+      A.setPath('base.chart.testsTablePath', '');
+
+      // Missing elements → zero/false guards in readers AND writers.
+      passed.remove();
+      sg('anb-sg-layer-labels').remove();
+      const partial = A.currentSuggestSignals();
+      if (partial.statistic.passed !== 0 || partial.hasLayerLabels !== false)
+        throw new Error('missing-field guards failed');
+      A.fillSuggestForm(A.deriveSuggestSignals());
+      panel.appendChild(passed);
+      importDetails.appendChild(
+        document.getElementById('anb-sg-layer-labels') ||
+          Object.assign(document.createElement('input'), {
+            id: 'anb-sg-layer-labels',
+            type: 'checkbox',
+          }),
+      );
+
+      // applySuggestPopover applies layout and closes.
       A.applySuggestPopover();
       if (!popover.hidden) throw new Error('popover stayed open on apply');
 
@@ -1346,7 +1433,7 @@ test.describe('suggest', () => {
       A.openSuggestPopover();
 
       // Document click: inside popover → stays; trigger → stays; outside → closes.
-      input.dispatchEvent(new MouseEvent('click', { bubbles: true }));
+      importInput.dispatchEvent(new MouseEvent('click', { bubbles: true }));
       if (popover.hidden) throw new Error('inside click closed popover');
       btn.dispatchEvent(new MouseEvent('click', { bubbles: true }));
       if (!popover.hidden) throw new Error('button click did not toggle-close');
@@ -1371,14 +1458,19 @@ test.describe('suggest', () => {
       A.closeSuggestPopover();
       actions.appendChild(btn);
 
-      // Element-absence guards.
+      // Element-absence guards + placeSuggestPopover hidden/missing branches.
+      A.placeSuggestPopover();
       popover.remove();
       A.openSuggestPopover();
       A.closeSuggestPopover();
+      A.placeSuggestPopover();
       document.body.appendChild(popover);
-      input.remove();
+      importInput.remove();
+      importDetails.remove();
       A.openSuggestPopover();
-      panel.appendChild(input);
+      document.body.appendChild(popover);
+      panel.appendChild(importDetails);
+      importDetails.appendChild(importInput);
       error.remove();
       A.suggestErrorText('x');
       A.suggestErrorText(null);
