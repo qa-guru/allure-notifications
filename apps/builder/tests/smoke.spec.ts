@@ -1017,15 +1017,8 @@ test.describe('allure-notifications-builder smoke', () => {
     await expect(page.getByTestId('anb-assistant-actions')).toBeHidden();
     await expect(page.getByTestId('anb-ai-section')).toBeHidden();
 
-    // Form prefilled with derived (empty) signals — toggles off, no summary.
-    await expect(page.getByTestId('anb-sg-failures')).not.toBeChecked();
-    await expect(page.getByTestId('anb-sg-history')).not.toBeChecked();
-    await expect(page.getByTestId('anb-sg-layers')).not.toBeChecked();
+    // No manual controls — signals come only from the import box.
     await expect(page.getByTestId('anb-sg-summary')).toBeHidden();
-    await expect(page.getByTestId('anb-sg-profile')).toHaveValue('default');
-    // Payload checkboxes are dead without a configured chart.*Path.
-    await expect(page.getByTestId('anb-sg-aqg')).toBeDisabled();
-    await expect(page.getByTestId('anb-sg-table')).toBeDisabled();
 
     // Toolbar button scrolls the panel into view.
     await page.getByTestId('anb-btn-suggest').click();
@@ -1036,13 +1029,13 @@ test.describe('allure-notifications-builder smoke', () => {
     await expect(page.getByTestId('anb-suggest-apply')).toHaveText('Apply');
     await expect(page.getByTestId('anb-ai-section')).toBeHidden();
 
-    // Invalid JSON in the import box → inline error, fields untouched.
+    // Invalid JSON in the import box → inline error, signals untouched.
     await page.getByTestId('anb-suggest-import').locator('summary').click();
     await importBox.fill('{nope');
     await expect(page.getByTestId('anb-suggest-import-error')).toContainText('valid JSON');
-    await expect(page.getByTestId('anb-sg-history')).not.toBeChecked();
+    await expect(page.getByTestId('anb-sg-summary')).toBeHidden();
 
-    // Valid CLI signals JSON → toggles flip, summary shows the raw facts.
+    // Valid CLI signals JSON → summary shows the raw facts.
     await importBox.fill(
       JSON.stringify({
         statistic: { passed: 40, failed: 3, broken: 1, skipped: 0, unknown: 0, total: 44 },
@@ -1054,11 +1047,9 @@ test.describe('allure-notifications-builder smoke', () => {
       }),
     );
     await expect(page.getByTestId('anb-suggest-import-error')).toBeHidden();
-    await expect(page.getByTestId('anb-sg-failures')).toBeChecked();
-    await expect(page.getByTestId('anb-sg-history')).toBeChecked();
-    await expect(page.getByTestId('anb-sg-layers')).toBeChecked();
     await expect(page.getByTestId('anb-sg-summary')).toContainText('44 tests');
     await expect(page.getByTestId('anb-sg-summary')).toContainText('12 runs');
+    await expect(page.getByTestId('anb-sg-summary')).toContainText('2 layers');
 
     // History + known layers → 7-tile hero on 870×1080.
     await page.getByTestId('anb-suggest-apply').click();
@@ -1104,8 +1095,11 @@ test.describe('allure-notifications-builder smoke', () => {
     await page.route('**/chat/completions', async (route) => {
       await route.fulfill({ status: 500, body: 'oops' });
     });
-    await page.getByTestId('anb-sg-history').uncheck();
-    await page.getByTestId('anb-sg-layers').uncheck();
+    await importBox.fill(
+      JSON.stringify({
+        statistic: { passed: 8, failed: 2, broken: 0, skipped: 0, unknown: 0, total: 10 },
+      }),
+    );
     await page.getByTestId('anb-suggest-apply').click();
     await expect(page.getByTestId('anb-suggest-error')).toContainText('ai failed');
     await expect(page.getByTestId('anb-suggest-error')).toContainText('rules');
@@ -1145,10 +1139,10 @@ test.describe('allure-notifications-builder smoke', () => {
       })
       .toEqual({ profile: 'kit', types: ['currentStatus', 'allureQualityGate'] });
 
-    // Manual mode → apply row hidden again; panel state persists.
+    // Manual mode → apply row hidden again; imported signals persist.
     await page.getByTestId('anb-mode-manual').click();
     await expect(page.getByTestId('anb-assistant-actions')).toBeHidden();
-    await expect(page.getByTestId('anb-sg-failures')).toBeChecked();
+    await expect(page.getByTestId('anb-sg-summary')).toBeVisible();
 
     expect(errors, errors.join('\n')).toEqual([]);
   });

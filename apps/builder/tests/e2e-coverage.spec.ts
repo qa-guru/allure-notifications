@@ -1323,8 +1323,6 @@ test.describe('suggest', () => {
       const applyRow = document.getElementById('anb-assistant-actions')!;
       const applyBtn = document.getElementById('anb-suggest-apply') as HTMLButtonElement;
       const summary = document.getElementById('anb-sg-summary')!;
-      const sg = (id: string) => document.getElementById(id) as HTMLInputElement;
-      const profileSel = document.getElementById('anb-sg-profile') as HTMLSelectElement;
 
       // Import: missing textarea → guard return.
       importInput.remove();
@@ -1361,13 +1359,11 @@ test.describe('suggest', () => {
       if (A.state.base.chart.profile !== 'kit')
         throw new Error('config import did not apply kit profile');
 
-      // Valid signals object → toggles flip + summary shows the imported facts.
+      // Valid signals object → summary shows the imported facts.
+      A.setPath('base.chart.profile', 'default'); // config import above set kit
       importInput.value =
         '{"statistic":{"passed":9,"failed":1,"broken":0,"skipped":0,"unknown":0,"total":10},"historyRunCount":5,"knownLayerCount":3,"hasLayerLabels":true,"hasKnownLayerLabels":true,"allureQualityGatePath":"/a/aqg.json"}';
       A.onSuggestImportInput();
-      if (!sg('anb-sg-failures').checked) throw new Error('import did not set failures toggle');
-      if (!sg('anb-sg-history').checked) throw new Error('import did not set history toggle');
-      if (!sg('anb-sg-layers').checked) throw new Error('import did not set layers toggle');
       if (summary.hidden || !summary.textContent?.includes('10 tests'))
         throw new Error('import summary missing');
       if (!summary.textContent?.includes('5 runs') || !summary.textContent?.includes('3 layers'))
@@ -1389,13 +1385,7 @@ test.describe('suggest', () => {
       A.assistantNote(null);
       body.appendChild(note);
 
-      // currentSuggestSignals: toggles win; imported numbers pass through.
-      profileSel.value = 'default';
-      sg('anb-sg-failures').checked = true; // imported failed=1 → kept, no synth
-      sg('anb-sg-history').checked = true; // imported 5 → max(2,5)
-      sg('anb-sg-layers').checked = true;
-      sg('anb-sg-qg-rules').checked = false; // imported rules 0 → 0
-      sg('anb-sg-sqg').checked = true; // no path → stays undefined
+      // currentSuggestSignals: imported numbers pass through; absent → zeros/derived.
       const sig = A.currentSuggestSignals();
       if (sig.statistic.failed !== 1 || sig.statistic.total !== 10)
         throw new Error('imported statistic should pass through');
@@ -1404,95 +1394,55 @@ test.describe('suggest', () => {
       if (sig.allureQualityGatePath !== '/a/aqg.json')
         throw new Error('imported aqg path dropped');
       if (sig.sonarQualityGatePath !== undefined)
-        throw new Error('checked sqg without path should stay undefined');
-      if (sig.profile !== 'default') throw new Error('profile should be default');
+        throw new Error('absent sqg path should stay undefined');
+      if (sig.profile !== 'default' || !sig.hasLayerLabels)
+        throw new Error('profile/layer flags wrong');
 
-      // Toggles on with zero base → minimal synthesized facts.
-      importInput.value = '';
-      A.onSuggestImportInput(); // clears the import overlay
-      sg('anb-sg-failures').checked = true;
-      sg('anb-sg-history').checked = true;
-      sg('anb-sg-layers').checked = true;
-      sg('anb-sg-qg-rules').checked = true;
-      const synth = A.currentSuggestSignals();
-      if (synth.statistic.failed !== 1 || synth.statistic.total !== 1)
-        throw new Error('failures toggle should synthesize failed=1');
-      if (synth.historyRunCount !== 2 || synth.knownLayerCount !== 2)
-        throw new Error('toggle minimums failed');
-      if (!synth.hasLayerLabels || synth.qualityGateRuleCount !== 1)
-        throw new Error('toggle flags failed');
-
-      // Garbage numbers in the import → toCount clamps; toggles off → zeros.
-      importInput.value = '{"statistic":{"passed":"x","failed":-2},"historyRunCount":"nope"}';
+      // Garbage values in the import → toCount clamps / Boolean coercion.
+      importInput.value =
+        '{"statistic":{"passed":"x","failed":-2},"historyRunCount":"nope","knownLayerCount":-1,"qualityGateRuleCount":"z","durationMs":-9,"hasLayerLabels":""}';
       A.onSuggestImportInput();
-      sg('anb-sg-history').checked = true;
       const clamped = A.currentSuggestSignals();
       if (clamped.statistic.passed !== 0 || clamped.statistic.failed !== 0)
         throw new Error('toCount clamp failed');
-      if (clamped.historyRunCount !== 2) throw new Error('history clamp failed');
+      if (clamped.historyRunCount !== 0 || clamped.knownLayerCount !== 0)
+        throw new Error('numeric clamps failed');
+      if (clamped.durationMs !== 0 || clamped.qualityGateRuleCount !== 0)
+        throw new Error('durationMs/rules clamp failed');
+      if (clamped.hasLayerLabels) throw new Error('booleanize failed');
 
-      // Import without statistic → raw?.pass-through guard.
+      // Import without statistic → raw?. guard → zeros.
       importInput.value = '{}';
       A.onSuggestImportInput();
       if (A.currentSuggestSignals().statistic.total !== 0)
         throw new Error('missing statistic should produce zeros');
 
-      // Live summary: toggling a checkbox re-renders "what the scorer sees".
-      sg('anb-sg-failures').checked = true;
-      sg('anb-sg-failures').dispatchEvent(new Event('change', { bubbles: true }));
-      if (!summary.textContent?.includes('failed'))
-        throw new Error('summary did not refresh on toggle');
-      profileSel.dispatchEvent(new Event('change', { bubbles: true }));
-      const aiKey = document.getElementById('anb-ai-key')!;
-      aiKey.dispatchEvent(new Event('change', { bubbles: true })); // non-checkbox input → ignored
+      // Clearing the import → derived signals again.
+      importInput.value = '';
+      A.onSuggestImportInput();
 
-      // Kit profile branch + unchecked payload branches.
+      // renderSuggestSummary on missing element → guard return.
+      summary.remove();
+      A.renderSuggestSummary(A.currentSuggestSignals());
+      body.appendChild(summary);
+
+      // Kit profile + payload paths derive straight from chart state.
       A.setPath('base.chart.profile', 'kit');
       A.setPath('base.chart.allureQualityGatePath', '/a/aqg.json');
       A.setPath('base.chart.sonarQualityGatePath', '/a/sqg.json');
       A.setPath('base.chart.testsTablePath', '/a/t.json');
-      A.fillSuggestForm(A.deriveSuggestSignals()); // refill: payload checkboxes enable with paths
-      profileSel.value = 'kit';
-      sg('anb-sg-qg-rules').checked = false;
-      sg('anb-sg-aqg').checked = true;
-      sg('anb-sg-sqg').checked = false;
-      sg('anb-sg-table').checked = true;
       const kitSig = A.currentSuggestSignals();
       if (kitSig.profile !== 'kit') throw new Error('kit profile lost');
-      if (kitSig.qualityGateRuleCount !== 0) throw new Error('qg uncheck failed');
       if (kitSig.allureQualityGatePath !== '/a/aqg.json')
         throw new Error('aqg path dropped');
-      if (kitSig.sonarQualityGatePath !== undefined)
-        throw new Error('unchecked sqg should be undefined');
+      if (kitSig.sonarQualityGatePath !== '/a/sqg.json')
+        throw new Error('sqg path dropped');
       if (kitSig.testsTablePath !== '/a/t.json')
         throw new Error('testsTable path dropped');
       A.setPath('base.chart.profile', 'default');
       A.setPath('base.chart.allureQualityGatePath', '');
       A.setPath('base.chart.sonarQualityGatePath', '');
       A.setPath('base.chart.testsTablePath', '');
-
-      // Missing elements → false/guard branches in readers AND writers.
-      const aqgCheck = sg('anb-sg-aqg');
-      const aqgLabel = aqgCheck.parentElement!;
-      const failuresEl = sg('anb-sg-failures');
-      const failuresLabel = failuresEl.parentElement!;
-      const layersEl = sg('anb-sg-layers');
-      const layersLabel = layersEl.parentElement!;
-      failuresEl.remove(); // suggestCheckField → instanceof false
-      layersEl.remove();
-      profileSel.remove(); // suggestProfileField → ?? fallback branch
-      aqgCheck.remove(); // suggestSetPayload → instanceof guard
-      summary.remove(); // renderSuggestSummary → guard return
-      const partial = A.currentSuggestSignals();
-      if (partial.statistic.failed !== 0 || partial.hasLayerLabels !== false)
-        throw new Error('missing-field guards failed');
-      if (partial.profile !== 'default') throw new Error('profile fallback failed');
-      A.fillSuggestForm(A.deriveSuggestSignals());
-      failuresLabel.appendChild(failuresEl);
-      layersLabel.appendChild(layersEl);
-      aqgLabel.appendChild(aqgCheck);
-      panel.querySelectorAll('.anb-assistant__section')[1]!.appendChild(profileSel);
-      panel.querySelectorAll('.anb-assistant__section')[0]!.appendChild(summary);
 
       // Mode seg: setAssistantMode toggles ai section, actions, apply label.
       A.setAssistantMode('manual');

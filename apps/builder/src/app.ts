@@ -11,7 +11,6 @@ import {
   suggestLayout,
   suggestLayoutViaLlm,
   type ChartItem,
-  type ChartProfile,
   type PanelMeta,
   type SuggestedLayout,
   type SuggestSignals,
@@ -751,35 +750,10 @@ function suggestImportError(msg: string | null) {
   el.hidden = msg == null;
 }
 
-function suggestCheckField(id: string): boolean {
-  const el = document.getElementById(id);
-  return el instanceof HTMLInputElement && el.checked;
-}
-
-function suggestSetCheck(id: string, value: boolean) {
-  const el = document.getElementById(id);
-  if (el instanceof HTMLInputElement) el.checked = value;
-}
-
 /** Untrusted JSON number → non-negative count. */
 function toCount(value: unknown): number {
   const n = Math.floor(Number(value));
   return Number.isFinite(n) && n >= 0 ? n : 0;
-}
-
-/** Payload checkbox: enabled only when a payload path exists (derived or imported). */
-function suggestSetPayload(id: string, path: string | undefined) {
-  const el = document.getElementById(id);
-  if (!(el instanceof HTMLInputElement)) return;
-  el.checked = Boolean(path);
-  el.disabled = !path;
-  el.title = path ? '' : 'no payload path configured — set chart.*Path in Options first';
-}
-
-function suggestProfileField(): ChartProfile | undefined {
-  const el = document.getElementById('anb-sg-profile');
-  if (!(el instanceof HTMLSelectElement)) return undefined;
-  return normalizeChartProfile(el.value);
 }
 
 /** Signals pasted into the import box; merged over derived signals until replaced or cleared. */
@@ -788,23 +762,6 @@ let suggestImported: Partial<SuggestSignals> | undefined;
 type AssistantMode = 'manual' | 'rules' | 'ai';
 /** Assistant mode — 'manual' never touches the canvas; 'rules' = tier-0 scorer; 'ai' = shared LLM advisor. */
 let assistantMode: AssistantMode = 'manual';
-
-function fillSuggestForm(signals: SuggestSignals) {
-  const statistic = signals.statistic;
-  suggestSetCheck('anb-sg-failures', statistic.failed + statistic.broken > 0);
-  suggestSetCheck('anb-sg-history', signals.historyRunCount >= 2);
-  suggestSetCheck(
-    'anb-sg-layers',
-    signals.hasLayerLabels && signals.hasKnownLayerLabels && signals.knownLayerCount >= 2,
-  );
-  suggestSetCheck('anb-sg-qg-rules', signals.qualityGateRuleCount > 0);
-  suggestSetPayload('anb-sg-aqg', signals.allureQualityGatePath);
-  suggestSetPayload('anb-sg-sqg', signals.sonarQualityGatePath);
-  suggestSetPayload('anb-sg-table', signals.testsTablePath);
-  const profileEl = document.getElementById('anb-sg-profile');
-  if (profileEl instanceof HTMLSelectElement) profileEl.value = normalizeChartProfile(signals.profile);
-  renderSuggestSummary(signals);
-}
 
 /** Compact readout of the effective signals — the exact facts the scorer/LLM will see. */
 function renderSuggestSummary(signals: SuggestSignals) {
@@ -828,9 +785,10 @@ function renderSuggestSummary(signals: SuggestSignals) {
 }
 
 /**
- * Signals = derived ∪ imported ∪ toggles. Toggles hold the scorer's real
- * levers only; imported numbers (statistic, layers, severities…) pass through
- * untouched so the LLM still sees real report data.
+ * Signals = derived (chart payload paths, qg rules, profile) ∪ imported
+ * `--signals` JSON. Imported numbers are clamped — the JSON is untrusted —
+ * while report facts (layers, severities, suites…) pass through so the
+ * scorer/LLM still sees real data.
  */
 function currentSuggestSignals(): SuggestSignals {
   const base = { ...deriveSuggestSignals(), ...suggestImported };
@@ -843,37 +801,18 @@ function currentSuggestSignals(): SuggestSignals {
     unknown: toCount(raw?.unknown),
     total: 0,
   };
-  if (suggestCheckField('anb-sg-failures')) {
-    if (statistic.failed + statistic.broken === 0) statistic.failed = 1;
-  } else {
-    statistic.failed = 0;
-    statistic.broken = 0;
-  }
   statistic.total =
     statistic.passed + statistic.failed + statistic.broken + statistic.skipped + statistic.unknown;
-  const layers = suggestCheckField('anb-sg-layers');
   return {
     ...base,
     statistic,
-    historyRunCount: suggestCheckField('anb-sg-history')
-      ? Math.max(2, toCount(base.historyRunCount))
-      : 0,
-    hasLayerLabels: layers,
-    hasKnownLayerLabels: layers,
-    knownLayerCount: layers ? Math.max(2, toCount(base.knownLayerCount)) : 0,
-    qualityGateRuleCount: suggestCheckField('anb-sg-qg-rules')
-      ? Math.max(1, toCount(base.qualityGateRuleCount))
-      : 0,
-    allureQualityGatePath: suggestCheckField('anb-sg-aqg')
-      ? base.allureQualityGatePath
-      : undefined,
-    sonarQualityGatePath: suggestCheckField('anb-sg-sqg')
-      ? base.sonarQualityGatePath
-      : undefined,
-    testsTablePath: suggestCheckField('anb-sg-table')
-      ? base.testsTablePath
-      : undefined,
-    profile: suggestProfileField() ?? normalizeChartProfile(base.profile),
+    durationMs: toCount(base.durationMs),
+    historyRunCount: toCount(base.historyRunCount),
+    knownLayerCount: toCount(base.knownLayerCount),
+    qualityGateRuleCount: toCount(base.qualityGateRuleCount),
+    hasLayerLabels: Boolean(base.hasLayerLabels),
+    hasKnownLayerLabels: Boolean(base.hasKnownLayerLabels),
+    profile: normalizeChartProfile(base.profile),
   };
 }
 
@@ -886,7 +825,7 @@ function assistantNote(msg: string | null) {
 
 /**
  * Import box accepts two shapes — both converge on the same canvas layout:
- * - compact signals JSON (`--signals` output) → fills the form;
+ * - compact signals JSON (`--signals` output) → becomes the effective signals;
  * - a full suggest config (`base.chart.items`) → panel ids + profile are
  *   re-materialized through materializeLayout, so CLI and browser results
  *   are identical by construction.
@@ -938,7 +877,7 @@ function onSuggestImportInput() {
   }
   suggestImportError(null);
   suggestImported = parsed as Partial<SuggestSignals>;
-  fillSuggestForm({ ...deriveSuggestSignals(), ...suggestImported });
+  renderSuggestSummary(currentSuggestSignals());
 }
 
 /** Segmented mode control: sync aria-pressed, toggle AI fields and the Apply row. */
@@ -1190,15 +1129,6 @@ function wireEditorChrome() {
   });
   document.getElementById('anb-suggest-import-input')?.addEventListener('input', onSuggestImportInput);
   document.getElementById('anb-ai-preset')?.addEventListener('change', onAiPresetChange);
-  document.getElementById('anb-assistant')?.addEventListener('change', (e) => {
-    const t = e.target;
-    if (t instanceof HTMLInputElement && t.type === 'checkbox') {
-      renderSuggestSummary(currentSuggestSignals());
-    }
-    if (t instanceof HTMLSelectElement && t.id === 'anb-sg-profile') {
-      renderSuggestSummary(currentSuggestSignals());
-    }
-  });
   document.getElementById('anb-suggest-apply')?.addEventListener('click', () => {
     void onAssistantApply();
   });
@@ -1245,7 +1175,7 @@ function init() {
   initGrid();
   /* Grid layout SSOT = vector state; boot applies the default vector. */
   applyDefaultVector();
-  fillSuggestForm(deriveSuggestSignals());
+  renderSuggestSummary(currentSuggestSignals());
   setAssistantMode('manual');
   window.addEventListener('resize', () => {
     scheduleFitEditorScale();
@@ -1292,7 +1222,7 @@ init();
   deriveSuggestSignals,
   suggestErrorText,
   suggestImportError,
-  fillSuggestForm,
+  renderSuggestSummary,
   currentSuggestSignals,
   onSuggestImportInput,
   setAssistantMode,

@@ -341,7 +341,7 @@
             </div>
           </div>
           <div class="panel__body stack stack--sm">
-            <p class="anb-group__hint text text--sm">Suggest collage layout from compact report signals. Off by default — the canvas is never touched until you apply.</p>
+            <p class="anb-group__hint text text--sm">Suggest collage layout from compact report signals — paste <code>--signals</code> JSON into the import box below. Off by default — the canvas is never touched until you apply.</p>
 
             <div class="plaque-field plaque-field--divided" id="anb-assistant-mode" data-testid="anb-assistant-mode">
               <span class="plaque-field__label">mode</span>
@@ -355,30 +355,7 @@
               </div>
             </div>
 
-            <div class="anb-assistant__section">
-              <span class="anb-assistant__section-title">Signals</span>
-              <div class="anb-assistant__checks">
-                <label><input type="checkbox" id="anb-sg-failures" data-testid="anb-sg-failures" /> failures present</label>
-                <label><input type="checkbox" id="anb-sg-history" data-testid="anb-sg-history" /> run history (≥2)</label>
-                <label><input type="checkbox" id="anb-sg-layers" data-testid="anb-sg-layers" /> layer structure (≥2 known)</label>
-              </div>
-              <div class="anb-assistant__summary" id="anb-sg-summary" data-testid="anb-sg-summary" hidden></div>
-            </div>
-            <div class="anb-assistant__section">
-              <span class="anb-assistant__section-title">Kit payloads</span>
-              <label class="plaque-field plaque-field--divided plaque-field--stretch"><span class="plaque-field__label">profile</span>
-                <select class="plaque-field__control" id="anb-sg-profile" data-testid="anb-sg-profile">
-                  <option value="default">default</option>
-                  <option value="kit">kit</option>
-                </select>
-              </label>
-              <div class="anb-assistant__checks">
-                <label><input type="checkbox" id="anb-sg-qg-rules" data-testid="anb-sg-qg-rules" /> qualityGate rules</label>
-                <label><input type="checkbox" id="anb-sg-aqg" data-testid="anb-sg-aqg" /> allureQualityGate payload</label>
-                <label><input type="checkbox" id="anb-sg-sqg" data-testid="anb-sg-sqg" /> sonarQualityGate payload</label>
-                <label><input type="checkbox" id="anb-sg-table" data-testid="anb-sg-table" /> testsTable payload</label>
-              </div>
-            </div>
+            <div class="anb-assistant__summary" id="anb-sg-summary" data-testid="anb-sg-summary" hidden></div>
 
             <div class="anb-assistant__section" id="anb-ai-section" data-testid="anb-ai-section" hidden>
               <span class="anb-assistant__section-title">AI endpoint — OpenAI-compatible</span>
@@ -399,7 +376,7 @@
             </div>
 
             <details class="anb-assistant__import" id="anb-suggest-import" data-testid="anb-suggest-import">
-              <summary>Import — <code>--signals</code> JSON fills the form; a suggest config applies its layout</summary>
+              <summary>Import — <code>--signals</code> JSON sets the effective signals; a suggest config applies its layout</summary>
               <textarea
                 class="anb-assistant__input"
                 id="anb-suggest-import-input"
