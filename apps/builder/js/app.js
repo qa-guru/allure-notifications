@@ -658,6 +658,10 @@ function suggestProfileField() {
 }
 /** Signals pasted into the import box; merged over derived signals until replaced or cleared. */
 let suggestImported;
+/** Last form content — survives popover close so edits are not lost on reopen. */
+let suggestFormSnapshot;
+/** Whether the import <details> stays expanded across opens. */
+let suggestDetailsOpen = false;
 function fillSuggestForm(signals) {
     suggestSetNum('anb-sg-passed', signals.statistic.passed);
     suggestSetNum('anb-sg-failed', signals.statistic.failed);
@@ -752,9 +756,9 @@ function openSuggestPopover() {
         importInput.value = '';
     const importDetails = document.getElementById('anb-suggest-import');
     if (importDetails instanceof HTMLDetailsElement)
-        importDetails.open = false;
+        importDetails.open = suggestDetailsOpen;
     suggestImportError(null);
-    fillSuggestForm(deriveSuggestSignals());
+    fillSuggestForm(suggestFormSnapshot ?? deriveSuggestSignals());
     suggestErrorText(null);
     popover.hidden = false;
     placeSuggestPopover();
@@ -773,8 +777,12 @@ function placeSuggestPopover() {
 }
 function closeSuggestPopover() {
     const popover = document.getElementById('anb-suggest-popover');
-    if (popover instanceof HTMLElement)
-        popover.hidden = true;
+    if (!(popover instanceof HTMLElement))
+        return;
+    if (document.getElementById('anb-sg-passed') instanceof HTMLInputElement) {
+        suggestFormSnapshot = currentSuggestSignals();
+    }
+    popover.hidden = true;
 }
 function applySuggestedLayout(layout) {
     setPath('base.chart.profile', layout.profile);
@@ -920,7 +928,12 @@ function wireEditorChrome() {
     document.getElementById('anb-btn-clear')?.addEventListener('click', clearAll);
     document.getElementById('anb-btn-suggest')?.addEventListener('click', openSuggestPopover);
     document.getElementById('anb-suggest-import-input')?.addEventListener('input', onSuggestImportInput);
-    document.getElementById('anb-suggest-import')?.addEventListener('toggle', placeSuggestPopover);
+    document.getElementById('anb-suggest-import')?.addEventListener('toggle', () => {
+        const el = document.getElementById('anb-suggest-import');
+        if (el instanceof HTMLDetailsElement)
+            suggestDetailsOpen = el.open;
+        placeSuggestPopover();
+    });
     document.getElementById('anb-suggest-apply')?.addEventListener('click', applySuggestPopover);
     document.getElementById('anb-suggest-cancel')?.addEventListener('click', closeSuggestPopover);
     document.addEventListener('keydown', (e) => {

@@ -1472,6 +1472,25 @@ test.describe('suggest', () => {
       A.closeSuggestPopover();
       actions.appendChild(btn);
 
+      // Persist branches: snapshot on close (passed present/missing),
+      // reopen fills from snapshot; details toggle persists open state.
+      A.openSuggestPopover();
+      sg('anb-sg-passed').value = '77';
+      passed.remove();
+      A.closeSuggestPopover(); // snapshot guard: missing field → skip
+      panel.appendChild(passed);
+      A.openSuggestPopover();
+      sg('anb-sg-passed').value = '77';
+      A.closeSuggestPopover(); // snapshot taken
+      A.openSuggestPopover();
+      if ((document.getElementById('anb-sg-passed') as HTMLInputElement).value !== '77')
+        throw new Error('snapshot not restored on reopen');
+      importDetails.open = true;
+      importDetails.dispatchEvent(new Event('toggle'));
+      importDetails.open = false;
+      importDetails.dispatchEvent(new Event('toggle'));
+      A.closeSuggestPopover();
+
       // Element-absence guards + placeSuggestPopover hidden/missing branches.
       A.placeSuggestPopover();
       popover.remove();
@@ -1481,6 +1500,7 @@ test.describe('suggest', () => {
       document.body.appendChild(popover);
       importInput.remove();
       importDetails.remove();
+      importDetails.dispatchEvent(new Event('toggle')); // listener guard: detached details
       A.openSuggestPopover();
       document.body.appendChild(popover);
       panel.appendChild(importDetails);
