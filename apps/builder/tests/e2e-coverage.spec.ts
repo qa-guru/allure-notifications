@@ -1302,13 +1302,12 @@ test.describe('suggest', () => {
     expect(empty.allureQualityGatePath).toBeUndefined();
   });
 
-  test('popover guards, import branches and document click', async ({
-    page,
-  }) => {
+  test('assistant guards, import branches and ai apply', async ({ page }) => {
     await page.goto('/');
-    await page.evaluate(() => {
+    await page.evaluate(async () => {
       const A = globalThis.__ANB__;
-      const popover = document.getElementById('anb-suggest-popover')!;
+      const panel = document.getElementById('anb-assistant')!;
+      const body = panel.querySelector('.panel__body')!;
       const importInput = document.getElementById(
         'anb-suggest-import-input',
       ) as HTMLTextAreaElement;
@@ -1317,10 +1316,15 @@ test.describe('suggest', () => {
       ) as HTMLDetailsElement;
       const importError = document.getElementById('anb-suggest-import-error')!;
       const error = document.getElementById('anb-suggest-error')!;
+      const note = document.getElementById('anb-assistant-note')!;
       const btn = document.getElementById('anb-btn-suggest')!;
-      const panel = popover.querySelector('.anb-suggest-popover__panel')!;
-      const actions = document.querySelector('.anb-editor__actions')!;
-      const passed = document.getElementById('anb-sg-passed') as HTMLInputElement;
+      const editorActions = document.querySelector('.anb-editor__actions')!;
+      const aiSection = document.getElementById('anb-ai-section')!;
+      const applyRow = document.getElementById('anb-assistant-actions')!;
+      const applyBtn = document.getElementById('anb-suggest-apply') as HTMLButtonElement;
+      const summary = document.getElementById('anb-sg-summary')!;
+      const sg = (id: string) => document.getElementById(id) as HTMLInputElement;
+      const profileSel = document.getElementById('anb-sg-profile') as HTMLSelectElement;
 
       // Import: missing textarea → guard return.
       importInput.remove();
@@ -1342,56 +1346,112 @@ test.describe('suggest', () => {
       A.onSuggestImportInput();
       if (importError.hidden) throw new Error('non-object error not shown');
 
-      // Valid object → fills form fields.
-      importInput.value =
-        '{"statistic":{"passed":9,"failed":1,"broken":0,"skipped":0,"unknown":0,"total":10},"historyRunCount":5}';
+      // Config import: unknown type, non-object item → error; valid → applies.
+      importInput.value = '{"base":{"chart":{"items":[{"type":"bogusPanel"}]}}}';
       A.onSuggestImportInput();
-      if (passed.value !== '9') throw new Error('import did not fill passed');
-      const hist = document.getElementById('anb-sg-history') as HTMLInputElement;
-      if (hist.value !== '5') throw new Error('import did not fill history');
+      if (importError.hidden) throw new Error('unknown type error not shown');
+      importInput.value = '{"base":{"chart":{"items":[42]}}}';
+      A.onSuggestImportInput();
+      if (importError.hidden) throw new Error('non-object item error not shown');
+      importInput.value =
+        '{"base":{"chart":{"profile":"kit","items":[{"type":"currentStatus"},{"type":"qualityGate","id":"allureQualityGate"}]}}}';
+      A.onSuggestImportInput();
+      if (note.hidden || !note.textContent?.includes('imported config'))
+        throw new Error('config import note missing');
+      if (A.state.base.chart.profile !== 'kit')
+        throw new Error('config import did not apply kit profile');
 
-      // suggestImportError on missing element → guard return.
+      // Valid signals object → toggles flip + summary shows the imported facts.
+      importInput.value =
+        '{"statistic":{"passed":9,"failed":1,"broken":0,"skipped":0,"unknown":0,"total":10},"historyRunCount":5,"knownLayerCount":3,"hasLayerLabels":true,"hasKnownLayerLabels":true,"allureQualityGatePath":"/a/aqg.json"}';
+      A.onSuggestImportInput();
+      if (!sg('anb-sg-failures').checked) throw new Error('import did not set failures toggle');
+      if (!sg('anb-sg-history').checked) throw new Error('import did not set history toggle');
+      if (!sg('anb-sg-layers').checked) throw new Error('import did not set layers toggle');
+      if (summary.hidden || !summary.textContent?.includes('10 tests'))
+        throw new Error('import summary missing');
+      if (!summary.textContent?.includes('5 runs') || !summary.textContent?.includes('3 layers'))
+        throw new Error('summary parts missing');
+      if (!summary.textContent?.includes('1 payload'))
+        throw new Error('summary payloads missing');
+
+      // suggestImportError / suggestErrorText / assistantNote on missing elements → guard return.
       importError.remove();
       A.suggestImportError('x');
       A.suggestImportError(null);
       importDetails.appendChild(importError);
+      error.remove();
+      A.suggestErrorText('x');
+      A.suggestErrorText(null);
+      body.appendChild(error);
+      note.remove();
+      A.assistantNote('x');
+      A.assistantNote(null);
+      body.appendChild(note);
 
-      // currentSuggestSignals: form wins, ternary branches.
-      A.openSuggestPopover();
-      const sg = (id: string) => document.getElementById(id) as HTMLInputElement;
-      sg('anb-sg-passed').value = '-3';
-      sg('anb-sg-failed').value = 'abc';
-      sg('anb-sg-broken').value = '2';
-      sg('anb-sg-skipped').value = '0';
-      sg('anb-sg-unknown').value = '0';
-      sg('anb-sg-history').value = '4';
-      sg('anb-sg-layers').value = '3';
-      sg('anb-sg-layer-labels').checked = true;
-      sg('anb-sg-known-layer-labels').checked = true;
-      sg('anb-sg-qg-rules').checked = true;
-      sg('anb-sg-aqg').checked = true;
-      sg('anb-sg-sqg').checked = true;
-      sg('anb-sg-table').checked = true;
+      // currentSuggestSignals: toggles win; imported numbers pass through.
+      profileSel.value = 'default';
+      sg('anb-sg-failures').checked = true; // imported failed=1 → kept, no synth
+      sg('anb-sg-history').checked = true; // imported 5 → max(2,5)
+      sg('anb-sg-layers').checked = true;
+      sg('anb-sg-qg-rules').checked = false; // imported rules 0 → 0
+      sg('anb-sg-sqg').checked = true; // no path → stays undefined
       const sig = A.currentSuggestSignals();
-      if (sig.statistic.passed !== 0 || sig.statistic.failed !== 0)
-        throw new Error('num field guard failed');
-      if (sig.statistic.broken !== 2 || sig.statistic.total !== 2)
-        throw new Error('statistic total wrong');
-      if (sig.qualityGateRuleCount !== 1) throw new Error('qg rules check failed');
-      if (sig.allureQualityGatePath !== undefined)
-        throw new Error('checked aqg without path should stay undefined');
+      if (sig.statistic.failed !== 1 || sig.statistic.total !== 10)
+        throw new Error('imported statistic should pass through');
+      if (sig.historyRunCount !== 5 || sig.knownLayerCount !== 3)
+        throw new Error('imported counts should pass through');
+      if (sig.allureQualityGatePath !== '/a/aqg.json')
+        throw new Error('imported aqg path dropped');
+      if (sig.sonarQualityGatePath !== undefined)
+        throw new Error('checked sqg without path should stay undefined');
       if (sig.profile !== 'default') throw new Error('profile should be default');
 
+      // Toggles on with zero base → minimal synthesized facts.
+      importInput.value = '';
+      A.onSuggestImportInput(); // clears the import overlay
+      sg('anb-sg-failures').checked = true;
+      sg('anb-sg-history').checked = true;
+      sg('anb-sg-layers').checked = true;
+      sg('anb-sg-qg-rules').checked = true;
+      const synth = A.currentSuggestSignals();
+      if (synth.statistic.failed !== 1 || synth.statistic.total !== 1)
+        throw new Error('failures toggle should synthesize failed=1');
+      if (synth.historyRunCount !== 2 || synth.knownLayerCount !== 2)
+        throw new Error('toggle minimums failed');
+      if (!synth.hasLayerLabels || synth.qualityGateRuleCount !== 1)
+        throw new Error('toggle flags failed');
+
+      // Garbage numbers in the import → toCount clamps; toggles off → zeros.
+      importInput.value = '{"statistic":{"passed":"x","failed":-2},"historyRunCount":"nope"}';
+      A.onSuggestImportInput();
+      sg('anb-sg-history').checked = true;
+      const clamped = A.currentSuggestSignals();
+      if (clamped.statistic.passed !== 0 || clamped.statistic.failed !== 0)
+        throw new Error('toCount clamp failed');
+      if (clamped.historyRunCount !== 2) throw new Error('history clamp failed');
+
+      // Import without statistic → raw?.pass-through guard.
+      importInput.value = '{}';
+      A.onSuggestImportInput();
+      if (A.currentSuggestSignals().statistic.total !== 0)
+        throw new Error('missing statistic should produce zeros');
+
+      // Live summary: toggling a checkbox re-renders "what the scorer sees".
+      sg('anb-sg-failures').checked = true;
+      sg('anb-sg-failures').dispatchEvent(new Event('change', { bubbles: true }));
+      if (!summary.textContent?.includes('failed'))
+        throw new Error('summary did not refresh on toggle');
+      profileSel.dispatchEvent(new Event('change', { bubbles: true }));
+      const aiKey = document.getElementById('anb-ai-key')!;
+      aiKey.dispatchEvent(new Event('change', { bubbles: true })); // non-checkbox input → ignored
+
       // Kit profile branch + unchecked payload branches.
-      const profileSel = document.getElementById(
-        'anb-sg-profile',
-      ) as HTMLSelectElement;
       A.setPath('base.chart.profile', 'kit');
       A.setPath('base.chart.allureQualityGatePath', '/a/aqg.json');
       A.setPath('base.chart.sonarQualityGatePath', '/a/sqg.json');
       A.setPath('base.chart.testsTablePath', '/a/t.json');
-      A.closeSuggestPopover();
-      A.openSuggestPopover(); // refill: payload checkboxes enable with paths
+      A.fillSuggestForm(A.deriveSuggestSignals()); // refill: payload checkboxes enable with paths
       profileSel.value = 'kit';
       sg('anb-sg-qg-rules').checked = false;
       sg('anb-sg-aqg').checked = true;
@@ -1411,109 +1471,134 @@ test.describe('suggest', () => {
       A.setPath('base.chart.sonarQualityGatePath', '');
       A.setPath('base.chart.testsTablePath', '');
 
-      // Missing elements → zero/false guards in readers AND writers.
+      // Missing elements → false/guard branches in readers AND writers.
       const aqgCheck = sg('anb-sg-aqg');
       const aqgLabel = aqgCheck.parentElement!;
-      passed.remove();
-      sg('anb-sg-layer-labels').remove();
+      const failuresEl = sg('anb-sg-failures');
+      const failuresLabel = failuresEl.parentElement!;
+      const layersEl = sg('anb-sg-layers');
+      const layersLabel = layersEl.parentElement!;
+      failuresEl.remove(); // suggestCheckField → instanceof false
+      layersEl.remove();
       profileSel.remove(); // suggestProfileField → ?? fallback branch
       aqgCheck.remove(); // suggestSetPayload → instanceof guard
+      summary.remove(); // renderSuggestSummary → guard return
       const partial = A.currentSuggestSignals();
-      if (partial.statistic.passed !== 0 || partial.hasLayerLabels !== false)
+      if (partial.statistic.failed !== 0 || partial.hasLayerLabels !== false)
         throw new Error('missing-field guards failed');
       if (partial.profile !== 'default') throw new Error('profile fallback failed');
       A.fillSuggestForm(A.deriveSuggestSignals());
-      panel.appendChild(passed);
+      failuresLabel.appendChild(failuresEl);
+      layersLabel.appendChild(layersEl);
       aqgLabel.appendChild(aqgCheck);
-      const sections = popover.querySelectorAll('.anb-suggest-popover__section');
-      sections[sections.length - 1]!.appendChild(profileSel);
-      importDetails.appendChild(
-        document.getElementById('anb-sg-layer-labels') ||
-          Object.assign(document.createElement('input'), {
-            id: 'anb-sg-layer-labels',
-            type: 'checkbox',
-          }),
-      );
+      panel.querySelectorAll('.anb-assistant__section')[1]!.appendChild(profileSel);
+      panel.querySelectorAll('.anb-assistant__section')[0]!.appendChild(summary);
 
-      // applySuggestPopover applies layout and closes.
-      A.applySuggestPopover();
-      if (!popover.hidden) throw new Error('popover stayed open on apply');
+      // Mode seg: setAssistantMode toggles ai section, actions, apply label.
+      A.setAssistantMode('manual');
+      if (!applyRow.hidden) throw new Error('manual should hide actions');
+      A.setAssistantMode('rules');
+      if (applyRow.hidden || applyBtn.textContent !== 'Apply')
+        throw new Error('rules mode wiring failed');
+      A.setAssistantMode('ai');
+      if (aiSection.hidden || applyBtn.textContent !== 'Ask AI')
+        throw new Error('ai mode wiring failed');
+      if (note.hidden === false) throw new Error('mode switch should clear note');
 
-      // Toggle branches of openSuggestPopover.
-      A.openSuggestPopover();
-      if (popover.hidden) throw new Error('popover did not open');
-      A.openSuggestPopover();
-      if (!popover.hidden) throw new Error('toggle close failed');
-      A.openSuggestPopover();
+      // Element-absence guards in setAssistantMode.
+      const seg = document.getElementById('anb-assistant-mode')!;
+      const segBtns = [...seg.querySelectorAll('.plaque-field-seg__btn')];
+      aiSection.remove();
+      applyRow.remove();
+      applyBtn.remove();
+      A.setAssistantMode('manual'); // all guards return early
+      body.appendChild(aiSection);
+      body.appendChild(applyRow);
+      applyRow.appendChild(applyBtn);
+      // Non-button element with the seg class → instanceof guard in setAssistantMode.
+      const notAButton = document.createElement('span');
+      notAButton.className = 'plaque-field-seg__btn';
+      seg.appendChild(notAButton);
+      // Seg listener: valid click flips mode; bogus data-mode is ignored.
+      (segBtns[1] as HTMLButtonElement).click();
+      if (!aiSection.hidden) throw new Error('rules click should hide ai');
+      // A wired button with a bogus data-mode hits the listener guard.
+      segBtns[0]!.setAttribute('data-mode', 'bogus');
+      (segBtns[0] as HTMLButtonElement).click();
+      segBtns[0]!.setAttribute('data-mode', 'manual');
+      (segBtns[2] as HTMLButtonElement).click();
+      if (aiSection.hidden) throw new Error('ai click should show ai');
+      A.setAssistantMode('rules');
 
-      // Document click: inside popover → stays; trigger → stays; outside → closes.
-      importInput.dispatchEvent(new MouseEvent('click', { bubbles: true }));
-      if (popover.hidden) throw new Error('inside click closed popover');
-      btn.dispatchEvent(new MouseEvent('click', { bubbles: true }));
-      if (!popover.hidden) throw new Error('button click did not toggle-close');
-      A.openSuggestPopover();
-      document.dispatchEvent(new MouseEvent('click', { bubbles: true }));
-      if (!popover.hidden) throw new Error('outside click did not close popover');
-      // Document click while popover closed → no-op branch.
-      document.dispatchEvent(new MouseEvent('click', { bubbles: true }));
+      // Toolbar button scrolls the panel into view.
+      btn.click();
 
-      // Escape closes via keydown listener.
-      A.openSuggestPopover();
-      document.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true }));
-      if (!popover.hidden) throw new Error('escape did not close popover');
-      document.dispatchEvent(new KeyboardEvent('keydown', { key: 'a', bubbles: true }));
+      // onAssistantApply — rules path applies deterministic layout.
+      await A.onAssistantApply();
+      const grid0 = JSON.parse(
+        document.getElementById('anb-terminal')!.textContent ?? '{}',
+      ) as { base: { chart: { items: unknown[] } } };
+      if (!grid0.base.chart.items.length) throw new Error('rules apply produced no items');
 
-      // Trigger removed → rect null position fallback + btn?.contains arm.
-      btn.remove();
-      A.openSuggestPopover();
-      if (popover.hidden) throw new Error('open without trigger failed');
-      document.dispatchEvent(new MouseEvent('click', { bubbles: true }));
-      if (!popover.hidden) throw new Error('outside click without btn failed');
-      A.closeSuggestPopover();
-      actions.appendChild(btn);
+      // AI path: empty model → early error, no fetch.
+      const modelInput = document.getElementById('anb-ai-model') as HTMLInputElement;
+      const baseUrlInput = document.getElementById('anb-ai-base-url') as HTMLInputElement;
+      A.setAssistantMode('ai');
+      modelInput.value = '';
+      await A.onAssistantApply();
+      if (error.hidden || !error.textContent?.includes('base url and model'))
+        throw new Error('missing-ai-fields error not shown');
+      baseUrlInput.value = '';
+      modelInput.value = 'm';
+      await A.onAssistantApply();
+      if (error.hidden) throw new Error('empty base url error not shown');
+      baseUrlInput.value = 'http://localhost:11434/v1';
 
-      // Persist branches: snapshot on close (passed present/missing),
-      // reopen fills from snapshot; details toggle persists open state.
-      A.openSuggestPopover();
-      sg('anb-sg-passed').value = '77';
-      passed.remove();
-      A.closeSuggestPopover(); // snapshot guard: missing field → skip
-      panel.appendChild(passed);
-      A.openSuggestPopover();
-      sg('anb-sg-passed').value = '77';
-      A.closeSuggestPopover(); // snapshot taken
-      A.openSuggestPopover();
-      if ((document.getElementById('anb-sg-passed') as HTMLInputElement).value !== '77')
-        throw new Error('snapshot not restored on reopen');
-      importDetails.open = true;
-      importDetails.dispatchEvent(new Event('toggle'));
-      importDetails.open = false;
-      importDetails.dispatchEvent(new Event('toggle'));
-      A.closeSuggestPopover();
+      // aiField missing-element guard + fetch rejection → error + rules fallback.
+      const origFetch = globalThis.fetch;
+      const keyInput = document.getElementById('anb-ai-key') as HTMLInputElement;
+      keyInput.remove();
+      globalThis.fetch = (() =>
+        Promise.reject(new TypeError('fetch failed'))) as typeof fetch;
+      await A.onAssistantApply();
+      if (error.hidden || !error.textContent?.includes('ai failed'))
+        throw new Error('fetch failure did not fall back to rules');
+      aiSection.querySelector('.anb-assistant__grid')!.appendChild(keyInput);
 
-      // Element-absence guards + placeSuggestPopover hidden/missing branches.
-      A.placeSuggestPopover();
-      popover.remove();
-      A.openSuggestPopover();
-      A.closeSuggestPopover();
-      A.placeSuggestPopover();
-      document.body.appendChild(popover);
-      importInput.remove();
-      importDetails.remove();
-      importDetails.dispatchEvent(new Event('toggle')); // listener guard: detached details
-      A.openSuggestPopover();
-      document.body.appendChild(popover);
-      panel.appendChild(importDetails);
-      importDetails.appendChild(importInput);
-      error.remove();
-      A.suggestErrorText('x');
-      A.suggestErrorText(null);
-      panel.insertBefore(error, panel.querySelector('.anb-suggest-popover__actions'));
+      // AI success via stubbed fetch → note, no error.
+      globalThis.fetch = (() =>
+        Promise.resolve(
+          new Response(
+            JSON.stringify({
+              choices: [
+                { message: { content: '{"items":["currentStatus"],"profile":"default"}' } },
+              ],
+            }),
+            { status: 200 },
+          ),
+        )) as typeof fetch;
+      await A.onAssistantApply();
+      if (note.hidden || !note.textContent?.includes('ai layout applied'))
+        throw new Error('ai success note missing');
+
+      // AI HTTP failure → error + deterministic fallback.
+      globalThis.fetch = (() =>
+        Promise.resolve(new Response('x', { status: 500 }))) as typeof fetch;
+      await A.onAssistantApply();
+      if (error.hidden || !error.textContent?.includes('ai failed'))
+        throw new Error('http-500 fallback error missing');
+
+      // Non-Error thrown value → String(err) branch.
+      globalThis.fetch = (() => Promise.reject('boom')) as typeof fetch;
+      await A.onAssistantApply();
+      if (!error.textContent?.includes('boom'))
+        throw new Error('non-Error rejection not stringified');
+      globalThis.fetch = origFetch;
 
       // applyChartFlags with suggest button removed → instanceof guard.
       btn.remove();
       A.applyChartFlags();
-      actions.appendChild(btn);
+      editorActions.appendChild(btn);
     });
     await expect(page.getByTestId('anb-terminal')).toBeVisible();
   });

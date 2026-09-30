@@ -97,7 +97,7 @@
                 <button type="button" class="btn btn--danger anb-tool-btn" id="anb-btn-delete" data-testid="anb-btn-delete" disabled title="Delete selected">Delete</button>
                 <button type="button" class="btn btn--secondary anb-tool-btn" id="anb-btn-reset" data-testid="anb-btn-reset" title="CB-870 default">Reset</button>
                 <button type="button" class="btn btn--secondary anb-tool-btn" id="anb-btn-clear" data-testid="anb-btn-clear">Clear</button>
-                <button type="button" class="btn btn--secondary anb-tool-btn" id="anb-btn-suggest" data-testid="anb-btn-suggest" title="Suggest layout from compact signals" aria-haspopup="dialog">Suggest</button>
+                <button type="button" class="btn btn--secondary anb-tool-btn" id="anb-btn-suggest" data-testid="anb-btn-suggest" title="Assistant — suggest layout from compact signals">Assistant</button>
               </div>
             </div>
           </div>
@@ -328,6 +328,89 @@
 
           </div>
         </div>
+
+        <div class="panel panel--content" id="anb-assistant" data-testid="anb-assistant">
+          <div class="panel__bar">
+            <div class="panel__dots" aria-hidden="true">
+              <span class="panel__dot"></span>
+              <span class="panel__dot"></span>
+              <span class="panel__dot"></span>
+            </div>
+            <div class="panel__trail">
+              <span class="panel__title">Assistant</span>
+            </div>
+          </div>
+          <div class="panel__body stack stack--sm">
+            <p class="anb-group__hint text text--sm">Suggest collage layout from compact report signals. Off by default — the canvas is never touched until you apply.</p>
+
+            <div class="plaque-field plaque-field--divided" id="anb-assistant-mode" data-testid="anb-assistant-mode">
+              <span class="plaque-field__label">mode</span>
+              <span class="plaque-divider" aria-hidden="true"></span>
+              <div class="plaque-field-seg-track plaque-field-seg-track--many plaque-field__control">
+                <div class="plaque-field-seg" role="radiogroup" aria-label="assistant mode">
+                  <button type="button" class="plaque-field-seg__btn" data-mode="manual" data-testid="anb-mode-manual" aria-pressed="true">manual</button>
+                  <button type="button" class="plaque-field-seg__btn" data-mode="rules" data-testid="anb-mode-rules" aria-pressed="false">rules</button>
+                  <button type="button" class="plaque-field-seg__btn" data-mode="ai" data-testid="anb-mode-ai" aria-pressed="false">ai</button>
+                </div>
+              </div>
+            </div>
+
+            <div class="anb-assistant__section">
+              <span class="anb-assistant__section-title">Signals</span>
+              <div class="anb-assistant__checks">
+                <label><input type="checkbox" id="anb-sg-failures" data-testid="anb-sg-failures" /> failures present</label>
+                <label><input type="checkbox" id="anb-sg-history" data-testid="anb-sg-history" /> run history (≥2)</label>
+                <label><input type="checkbox" id="anb-sg-layers" data-testid="anb-sg-layers" /> layer structure (≥2 known)</label>
+              </div>
+              <div class="anb-assistant__summary" id="anb-sg-summary" data-testid="anb-sg-summary" hidden></div>
+            </div>
+            <div class="anb-assistant__section">
+              <span class="anb-assistant__section-title">Kit payloads</span>
+              <label class="plaque-field plaque-field--divided plaque-field--stretch"><span class="plaque-field__label">profile</span>
+                <select class="plaque-field__control" id="anb-sg-profile" data-testid="anb-sg-profile">
+                  <option value="default">default</option>
+                  <option value="kit">kit</option>
+                </select>
+              </label>
+              <div class="anb-assistant__checks">
+                <label><input type="checkbox" id="anb-sg-qg-rules" data-testid="anb-sg-qg-rules" /> qualityGate rules</label>
+                <label><input type="checkbox" id="anb-sg-aqg" data-testid="anb-sg-aqg" /> allureQualityGate payload</label>
+                <label><input type="checkbox" id="anb-sg-sqg" data-testid="anb-sg-sqg" /> sonarQualityGate payload</label>
+                <label><input type="checkbox" id="anb-sg-table" data-testid="anb-sg-table" /> testsTable payload</label>
+              </div>
+            </div>
+
+            <div class="anb-assistant__section" id="anb-ai-section" data-testid="anb-ai-section" hidden>
+              <span class="anb-assistant__section-title">AI endpoint — OpenAI-compatible</span>
+              <div class="anb-assistant__grid">
+                <label class="plaque-field plaque-field--divided plaque-field--stretch"><span class="plaque-field__label">base url</span><input type="text" class="plaque-field__control" id="anb-ai-base-url" data-testid="anb-ai-base-url" value="http://localhost:11434/v1" spellcheck="false" autocomplete="off" /></label>
+                <label class="plaque-field plaque-field--divided plaque-field--stretch"><span class="plaque-field__label">model</span><input type="text" class="plaque-field__control" id="anb-ai-model" data-testid="anb-ai-model" placeholder="qwen3-coder:30b" spellcheck="false" autocomplete="off" /></label>
+                <label class="plaque-field plaque-field--divided plaque-field--stretch"><span class="plaque-field__label">api key</span><input type="password" class="plaque-field__control" id="anb-ai-key" data-testid="anb-ai-key" placeholder="optional" autocomplete="off" /></label>
+              </div>
+              <p class="anb-group__hint text text--sm">Only compact signals are sent — never raw results or secrets. CLI equivalent: <code>ANB_AI_BASE_URL=… ANB_AI_MODEL=… ANB_AI_API_KEY=… allure-notifications suggest --results &lt;dir&gt;</code> — paste the resulting config into the import box; identical layout either way.</p>
+            </div>
+
+            <details class="anb-assistant__import" id="anb-suggest-import" data-testid="anb-suggest-import">
+              <summary>Import — <code>--signals</code> JSON fills the form; a suggest config applies its layout</summary>
+              <textarea
+                class="anb-assistant__input"
+                id="anb-suggest-import-input"
+                data-testid="anb-suggest-import-input"
+                spellcheck="false"
+                autocomplete="off"
+                rows="5"
+                aria-label="Signals or suggest config JSON to import"
+              ></textarea>
+              <div class="anb-assistant__error" id="anb-suggest-import-error" data-testid="anb-suggest-import-error" hidden></div>
+            </details>
+
+            <div class="anb-assistant__error" id="anb-suggest-error" data-testid="anb-suggest-error" hidden></div>
+            <div class="anb-assistant__note" id="anb-assistant-note" data-testid="anb-assistant-note" hidden></div>
+            <div class="anb-assistant__actions" id="anb-assistant-actions" data-testid="anb-assistant-actions" hidden>
+              <button type="button" class="btn btn--primary anb-tool-btn" id="anb-suggest-apply" data-testid="anb-suggest-apply">Apply</button>
+            </div>
+          </div>
+        </div>
       </section>
 
       <section class="anb-zone anb-zone--preview" aria-label="Messenger preview" data-testid="anb-zone-preview">
@@ -455,77 +538,6 @@
     hidden
   >
     <div class="anb-export-popover__stage" id="anb-export-popover-stage"></div>
-  </div>
-
-  <div
-    class="anb-suggest-popover"
-    id="anb-suggest-popover"
-    data-testid="anb-suggest-popover"
-    role="dialog"
-    aria-modal="false"
-    aria-labelledby="anb-suggest-title"
-    hidden
-  >
-    <div class="anb-suggest-popover__panel">
-      <div class="anb-suggest-popover__head">
-        <span class="anb-suggest-popover__title" id="anb-suggest-title">Suggest layout</span>
-      </div>
-      <p class="anb-suggest-popover__hint">Paste signals from the CLI or fill the fields manually, then Apply.</p>
-      <details class="anb-suggest-import" id="anb-suggest-import" data-testid="anb-suggest-import">
-        <summary>Import signals JSON — <code>allure-notifications suggest --results &lt;dir&gt; --signals</code></summary>
-        <textarea
-          class="anb-suggest-popover__input anb-suggest-import__input"
-          id="anb-suggest-import-input"
-          data-testid="anb-suggest-import-input"
-          spellcheck="false"
-          autocomplete="off"
-          rows="5"
-          aria-label="Signals JSON to import"
-        ></textarea>
-        <div class="anb-suggest-popover__error" id="anb-suggest-import-error" data-testid="anb-suggest-import-error" hidden></div>
-      </details>
-      <div class="anb-suggest-popover__section">
-        <span class="anb-suggest-popover__section-title">Results</span>
-        <div class="anb-suggest-popover__grid">
-          <label class="plaque-field plaque-field--divided plaque-field--stretch"><span class="plaque-field__label">passed</span><input type="number" min="0" class="plaque-field__control" id="anb-sg-passed" data-testid="anb-sg-passed" /></label>
-          <label class="plaque-field plaque-field--divided plaque-field--stretch"><span class="plaque-field__label">failed</span><input type="number" min="0" class="plaque-field__control" id="anb-sg-failed" data-testid="anb-sg-failed" /></label>
-          <label class="plaque-field plaque-field--divided plaque-field--stretch"><span class="plaque-field__label">broken</span><input type="number" min="0" class="plaque-field__control" id="anb-sg-broken" data-testid="anb-sg-broken" /></label>
-          <label class="plaque-field plaque-field--divided plaque-field--stretch"><span class="plaque-field__label">skipped</span><input type="number" min="0" class="plaque-field__control" id="anb-sg-skipped" data-testid="anb-sg-skipped" /></label>
-          <label class="plaque-field plaque-field--divided plaque-field--stretch"><span class="plaque-field__label">unknown</span><input type="number" min="0" class="plaque-field__control" id="anb-sg-unknown" data-testid="anb-sg-unknown" /></label>
-        </div>
-      </div>
-      <div class="anb-suggest-popover__section">
-        <span class="anb-suggest-popover__section-title">History &amp; layers</span>
-        <div class="anb-suggest-popover__grid">
-          <label class="plaque-field plaque-field--divided plaque-field--stretch"><span class="plaque-field__label">history runs</span><input type="number" min="0" class="plaque-field__control" id="anb-sg-history" data-testid="anb-sg-history" /></label>
-          <label class="plaque-field plaque-field--divided plaque-field--stretch"><span class="plaque-field__label">known layers</span><input type="number" min="0" class="plaque-field__control" id="anb-sg-layers" data-testid="anb-sg-layers" /></label>
-        </div>
-        <div class="anb-suggest-popover__checks">
-          <label><input type="checkbox" id="anb-sg-layer-labels" data-testid="anb-sg-layer-labels" /> layer labels (epic / feature / story)</label>
-          <label><input type="checkbox" id="anb-sg-known-layer-labels" data-testid="anb-sg-known-layer-labels" /> known layer labels</label>
-        </div>
-      </div>
-      <div class="anb-suggest-popover__section">
-        <span class="anb-suggest-popover__section-title">Kit payloads</span>
-        <label class="plaque-field plaque-field--divided plaque-field--stretch"><span class="plaque-field__label">profile</span>
-          <select class="plaque-field__control" id="anb-sg-profile" data-testid="anb-sg-profile">
-            <option value="default">default</option>
-            <option value="kit">kit</option>
-          </select>
-        </label>
-        <div class="anb-suggest-popover__checks">
-          <label><input type="checkbox" id="anb-sg-qg-rules" data-testid="anb-sg-qg-rules" /> qualityGate rules</label>
-          <label><input type="checkbox" id="anb-sg-aqg" data-testid="anb-sg-aqg" /> allureQualityGate payload</label>
-          <label><input type="checkbox" id="anb-sg-sqg" data-testid="anb-sg-sqg" /> sonarQualityGate payload</label>
-          <label><input type="checkbox" id="anb-sg-table" data-testid="anb-sg-table" /> testsTable payload</label>
-        </div>
-      </div>
-      <div class="anb-suggest-popover__error" id="anb-suggest-error" data-testid="anb-suggest-error" hidden></div>
-      <div class="anb-suggest-popover__actions">
-        <button type="button" class="btn btn--secondary anb-tool-btn" id="anb-suggest-cancel" data-testid="anb-suggest-cancel">Cancel</button>
-        <button type="button" class="btn btn--primary anb-tool-btn" id="anb-suggest-apply" data-testid="anb-suggest-apply">Apply</button>
-      </div>
-    </div>
   </div>
 
   <script src="vendor/gridstack/gridstack-all.js"></script>

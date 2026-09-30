@@ -3,7 +3,7 @@ const PRECACHE = 'anb-shell';
 const MANIFEST = [
   {
     "url": "/css/app.css",
-    "revision": "6fc6912fa5adb594"
+    "revision": "849e9501c482d235"
   },
   {
     "url": "/icons/pwa-192.png",
@@ -19,11 +19,11 @@ const MANIFEST = [
   },
   {
     "url": "/index.html",
-    "revision": "b34af9dcb6e257cf"
+    "revision": "2c0aad2adba09cdf"
   },
   {
     "url": "/js/app.js",
-    "revision": "2ba0c37cb5db53fb"
+    "revision": "226c9786c1a17e99"
   },
   {
     "url": "/js/grid-editor.js",
@@ -63,7 +63,7 @@ const MANIFEST = [
   },
   {
     "url": "/vendor/allure-notifications-config/browser.js",
-    "revision": "718b2dfa9254f95d"
+    "revision": "4a120ba7d11650b0"
   },
   {
     "url": "/vendor/allure-notifications-config/catalog.js",
@@ -80,6 +80,10 @@ const MANIFEST = [
   {
     "url": "/vendor/allure-notifications-config/presets.js",
     "revision": "70df4cb7fa5a3077"
+  },
+  {
+    "url": "/vendor/allure-notifications-config/suggest-llm.js",
+    "revision": "c8d5be07a04292db"
   },
   {
     "url": "/vendor/allure-notifications-config/suggest.js",

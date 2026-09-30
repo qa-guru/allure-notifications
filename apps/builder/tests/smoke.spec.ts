@@ -974,45 +974,75 @@ test.describe('allure-notifications-builder smoke', () => {
     expect(errors, errors.join('\n')).toEqual([]);
   });
 
-  test('suggest popover: import CLI signals into the form, then apply', async ({
+  test('assistant panel: modes, signals/config import, rules + ai apply', async ({
     page,
   }) => {
     const errors: string[] = [];
     page.on('console', (msg) => {
-      if (msg.type() === 'error') errors.push(`console:${msg.text()}`);
+      // Stubbed 500 below logs a benign "Failed to load resource" console error.
+      if (msg.type() === 'error' && !msg.text().startsWith('Failed to load resource'))
+        errors.push(`console:${msg.text()}`);
     });
     page.on('pageerror', (err) => errors.push(`pageerror:${err.message}`));
+
+    const llmCalls: string[] = [];
+    await page.route('**/chat/completions', async (route) => {
+      llmCalls.push(route.request().postData() ?? '');
+      await route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify({
+          choices: [
+            {
+              message: {
+                content: JSON.stringify({
+                  items: ['currentStatus', 'testingPyramid', 'statusDynamics'],
+                  profile: 'default',
+                }),
+              },
+            },
+          ],
+        }),
+      });
+    });
+
     await page.goto('/');
 
-    const suggestBtn = page.getByTestId('anb-btn-suggest');
-    const popover = page.getByTestId('anb-suggest-popover');
+    const panel = page.getByTestId('anb-assistant');
     const importBox = page.getByTestId('anb-suggest-import-input');
 
-    await suggestBtn.click();
-    await expect(popover).toBeVisible();
-    // Form prefilled with derived (empty) signals.
-    await expect(page.getByTestId('anb-sg-passed')).toHaveValue('0');
-    await expect(page.getByTestId('anb-sg-history')).toHaveValue('0');
-    await expect(page.getByTestId('anb-sg-layer-labels')).not.toBeChecked();
+    // Panel is a permanent section; mode manual = no apply, no AI fields.
+    await expect(panel).toBeVisible();
+    await expect(page.getByTestId('anb-mode-manual')).toHaveAttribute('aria-pressed', 'true');
+    await expect(page.getByTestId('anb-assistant-actions')).toBeHidden();
+    await expect(page.getByTestId('anb-ai-section')).toBeHidden();
+
+    // Form prefilled with derived (empty) signals — toggles off, no summary.
+    await expect(page.getByTestId('anb-sg-failures')).not.toBeChecked();
+    await expect(page.getByTestId('anb-sg-history')).not.toBeChecked();
+    await expect(page.getByTestId('anb-sg-layers')).not.toBeChecked();
+    await expect(page.getByTestId('anb-sg-summary')).toBeHidden();
     await expect(page.getByTestId('anb-sg-profile')).toHaveValue('default');
     // Payload checkboxes are dead without a configured chart.*Path.
     await expect(page.getByTestId('anb-sg-aqg')).toBeDisabled();
     await expect(page.getByTestId('anb-sg-table')).toBeDisabled();
 
-    // Second toolbar click toggles the popover closed.
-    await suggestBtn.click();
-    await expect(popover).toBeHidden();
-    await suggestBtn.click();
-    await expect(popover).toBeVisible();
+    // Toolbar button scrolls the panel into view.
+    await page.getByTestId('anb-btn-suggest').click();
+
+    // Rules mode → Apply appears; ai section still hidden.
+    await page.getByTestId('anb-mode-rules').click();
+    await expect(page.getByTestId('anb-assistant-actions')).toBeVisible();
+    await expect(page.getByTestId('anb-suggest-apply')).toHaveText('Apply');
+    await expect(page.getByTestId('anb-ai-section')).toBeHidden();
 
     // Invalid JSON in the import box → inline error, fields untouched.
     await page.getByTestId('anb-suggest-import').locator('summary').click();
     await importBox.fill('{nope');
     await expect(page.getByTestId('anb-suggest-import-error')).toContainText('valid JSON');
-    await expect(page.getByTestId('anb-sg-history')).toHaveValue('0');
-    await expect(popover).toBeVisible();
+    await expect(page.getByTestId('anb-sg-history')).not.toBeChecked();
 
-    // Valid CLI signals JSON → fields fill from it.
+    // Valid CLI signals JSON → toggles flip, summary shows the raw facts.
     await importBox.fill(
       JSON.stringify({
         statistic: { passed: 40, failed: 3, broken: 1, skipped: 0, unknown: 0, total: 44 },
@@ -1024,14 +1054,14 @@ test.describe('allure-notifications-builder smoke', () => {
       }),
     );
     await expect(page.getByTestId('anb-suggest-import-error')).toBeHidden();
-    await expect(page.getByTestId('anb-sg-passed')).toHaveValue('40');
-    await expect(page.getByTestId('anb-sg-failed')).toHaveValue('3');
-    await expect(page.getByTestId('anb-sg-history')).toHaveValue('12');
-    await expect(page.getByTestId('anb-sg-layer-labels')).toBeChecked();
+    await expect(page.getByTestId('anb-sg-failures')).toBeChecked();
+    await expect(page.getByTestId('anb-sg-history')).toBeChecked();
+    await expect(page.getByTestId('anb-sg-layers')).toBeChecked();
+    await expect(page.getByTestId('anb-sg-summary')).toContainText('44 tests');
+    await expect(page.getByTestId('anb-sg-summary')).toContainText('12 runs');
 
     // History + known layers → 7-tile hero on 870×1080.
     await page.getByTestId('anb-suggest-apply').click();
-    await expect(popover).toBeHidden();
     await expect(page.locator('#anb-grid .grid-stack-item')).toHaveCount(7);
     await expect
       .poll(async () => {
@@ -1042,12 +1072,38 @@ test.describe('allure-notifications-builder smoke', () => {
       })
       .toEqual({ w: 870, profile: 'default', count: 7 });
 
-    // Manual form path: no import — type counts, Apply applies scorer.
-    await suggestBtn.click();
-    await page.getByTestId('anb-sg-failed').fill('2');
-    await page.getByTestId('anb-sg-history').fill('4');
+    // AI mode → endpoint fields + relabeled apply; empty model → honest error.
+    await page.getByTestId('anb-mode-ai').click();
+    await expect(page.getByTestId('anb-ai-section')).toBeVisible();
+    await expect(page.getByTestId('anb-suggest-apply')).toHaveText('Ask AI');
     await page.getByTestId('anb-suggest-apply').click();
-    await expect(popover).toBeHidden();
+    await expect(page.getByTestId('anb-suggest-error')).toContainText('base url and model');
+
+    // AI answers via the shared advisor → items materialized on canvas.
+    await page.getByTestId('anb-ai-model').fill('qwen3-coder:30b');
+    await page.getByTestId('anb-suggest-apply').click();
+    await expect(page.getByTestId('anb-assistant-note')).toContainText('ai layout applied');
+    expect(llmCalls).toHaveLength(1);
+    expect(llmCalls[0]).toContain('qwen3-coder:30b');
+    await expect
+      .poll(async () => {
+        const chart = JSON.parse(
+          await page.getByTestId('anb-terminal').innerText(),
+        ).base.chart;
+        return chart.items.map((item: { type: string }) => item.type);
+      })
+      .toEqual(['currentStatus', 'statusDynamics', 'testingPyramid']);
+
+    // AI failure → warning + deterministic fallback (same contract as the CLI).
+    await page.unroute('**/chat/completions');
+    await page.route('**/chat/completions', async (route) => {
+      await route.fulfill({ status: 500, body: 'oops' });
+    });
+    await page.getByTestId('anb-sg-history').uncheck();
+    await page.getByTestId('anb-sg-layers').uncheck();
+    await page.getByTestId('anb-suggest-apply').click();
+    await expect(page.getByTestId('anb-suggest-error')).toContainText('ai failed');
+    await expect(page.getByTestId('anb-suggest-error')).toContainText('rules');
     await expect
       .poll(async () => {
         const chart = JSON.parse(
@@ -1057,22 +1113,37 @@ test.describe('allure-notifications-builder smoke', () => {
       })
       .toContain('problemsDistribution');
 
-    // Outside click closes an open popover.
-    await suggestBtn.click();
-    await expect(popover).toBeVisible();
-    await page.getByTestId('anb-terminal-panel').click({ position: { x: 4, y: 4 } });
-    await expect(popover).toBeHidden();
+    // A full suggest config in the import → ids re-materialized (same layout).
+    await importBox.fill(
+      JSON.stringify({
+        base: {
+          chart: {
+            profile: 'kit',
+            items: [
+              { type: 'currentStatus', x: 99, y: 99, w: 1, h: 1 },
+              { type: 'allureQualityGate', x: 0, y: 0, w: 1, h: 1 },
+            ],
+          },
+        },
+      }),
+    );
+    await expect(page.getByTestId('anb-assistant-note')).toContainText('imported config layout');
+    await expect
+      .poll(async () => {
+        const chart = JSON.parse(
+          await page.getByTestId('anb-terminal').innerText(),
+        ).base.chart;
+        return {
+          profile: chart.profile,
+          types: chart.items.map((i: { id?: string; type: string }) => i.id ?? i.type),
+        };
+      })
+      .toEqual({ profile: 'kit', types: ['currentStatus', 'allureQualityGate'] });
 
-    // Escape closes too.
-    await suggestBtn.click();
-    await page.keyboard.press('Escape');
-    await expect(popover).toBeHidden();
-
-    // Cancel button path.
-    await suggestBtn.click();
-    await expect(popover).toBeVisible();
-    await page.getByTestId('anb-suggest-cancel').click();
-    await expect(popover).toBeHidden();
+    // Manual mode → apply row hidden again; panel state persists.
+    await page.getByTestId('anb-mode-manual').click();
+    await expect(page.getByTestId('anb-assistant-actions')).toBeHidden();
+    await expect(page.getByTestId('anb-sg-failures')).toBeChecked();
 
     expect(errors, errors.join('\n')).toEqual([]);
   });

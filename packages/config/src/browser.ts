@@ -59,3 +59,8 @@ export {
   type SuggestedLayout,
   type SuggestSignals,
 } from "./suggest.js";
+
+export {
+  suggestLayoutViaLlm,
+  type LlmOptions,
+} from "./suggest-llm.js";

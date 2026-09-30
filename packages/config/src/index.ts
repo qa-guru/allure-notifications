@@ -56,6 +56,11 @@ export {
 } from "./suggest.js";
 
 export {
+  suggestLayoutViaLlm,
+  type LlmOptions,
+} from "./suggest-llm.js";
+
+export {
   PHRASES,
   captionPhrasesFor,
   phrasesFor,

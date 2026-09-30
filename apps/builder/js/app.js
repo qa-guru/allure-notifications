@@ -1,4 +1,4 @@
-import { CANVAS_PRESETS, DEFAULT_CANVAS, GRID_COLS, GRID_ROWS, PANEL_CATALOG, PANEL_META, isKitOnlyPanelId, normalizeChartProfile, suggestLayout, } from '@qa-guru/allure-notifications-config';
+import { CANVAS_PRESETS, DEFAULT_CANVAS, GRID_COLS, GRID_ROWS, PANEL_CATALOG, PANEL_META, isKitOnlyPanelId, materializeLayout, normalizeChartProfile, suggestLayout, suggestLayoutViaLlm, } from '@qa-guru/allure-notifications-config';
 import { CORNER_RATIO, PYRAMID_COLORS_DARK, PYRAMID_COLORS_LIGHT, STATUS_COLORS, TIER_GAP_RATIO, } from '@qa-guru/allure-report-kit/collage';
 import { DEFAULT_TILE_H, DEFAULT_TILE_W, addItem, clearAll, clearSelection, clearResizeMockElForTest, copyItem, deleteItem, fillEditorMocks, fitAndFillEditor, fitEditorScale, getGrid, getSelectedEl, initGrid, loadItems, migrateChromeKnobs, onGridChange, onGridResizeStart, onGridResizeStop, readItemsFromGrid, scheduleFitEditorScale, scheduleLiveResizeMock, selectItem, setGridAnimate, setGridForTest, setSuppressSyncForTest, stopLiveResizeMocks, syncEditorChrome, updateEmptyState, updateToolbar, canvasDisplayHeight, canvasDisplayScale, chromeCssVars, clampItem, findFreeSpot, freeCellRect, makeWidgetEl, rectsOverlap, } from './grid-editor.js';
 import { canvasTestsTableMaxRows, canvasTestsTableRowsHtml, kitOnlyPanelMockHtml, paletteItemHtml, panelInnerHtml, previewItemHtml, syncCanvasTestsTables, tileTier, } from './mocks/kit.js';
@@ -620,26 +620,19 @@ function suggestImportError(msg) {
     el.textContent = msg ?? '';
     el.hidden = msg == null;
 }
-function suggestNumField(id) {
-    const el = document.getElementById(id);
-    if (!(el instanceof HTMLInputElement))
-        return 0;
-    const value = Math.floor(Number(el.value));
-    return Number.isFinite(value) && value >= 0 ? value : 0;
-}
 function suggestCheckField(id) {
     const el = document.getElementById(id);
     return el instanceof HTMLInputElement && el.checked;
-}
-function suggestSetNum(id, value) {
-    const el = document.getElementById(id);
-    if (el instanceof HTMLInputElement)
-        el.value = String(value);
 }
 function suggestSetCheck(id, value) {
     const el = document.getElementById(id);
     if (el instanceof HTMLInputElement)
         el.checked = value;
+}
+/** Untrusted JSON number → non-negative count. */
+function toCount(value) {
+    const n = Math.floor(Number(value));
+    return Number.isFinite(n) && n >= 0 ? n : 0;
 }
 /** Payload checkbox: enabled only when a payload path exists (derived or imported). */
 function suggestSetPayload(id, path) {
@@ -658,20 +651,13 @@ function suggestProfileField() {
 }
 /** Signals pasted into the import box; merged over derived signals until replaced or cleared. */
 let suggestImported;
-/** Last form content — survives popover close so edits are not lost on reopen. */
-let suggestFormSnapshot;
-/** Whether the import <details> stays expanded across opens. */
-let suggestDetailsOpen = false;
+/** Assistant mode — 'manual' never touches the canvas; 'rules' = tier-0 scorer; 'ai' = shared LLM advisor. */
+let assistantMode = 'manual';
 function fillSuggestForm(signals) {
-    suggestSetNum('anb-sg-passed', signals.statistic.passed);
-    suggestSetNum('anb-sg-failed', signals.statistic.failed);
-    suggestSetNum('anb-sg-broken', signals.statistic.broken);
-    suggestSetNum('anb-sg-skipped', signals.statistic.skipped);
-    suggestSetNum('anb-sg-unknown', signals.statistic.unknown);
-    suggestSetNum('anb-sg-history', signals.historyRunCount);
-    suggestSetNum('anb-sg-layers', signals.knownLayerCount);
-    suggestSetCheck('anb-sg-layer-labels', signals.hasLayerLabels);
-    suggestSetCheck('anb-sg-known-layer-labels', signals.hasKnownLayerLabels);
+    const statistic = signals.statistic;
+    suggestSetCheck('anb-sg-failures', statistic.failed + statistic.broken > 0);
+    suggestSetCheck('anb-sg-history', signals.historyRunCount >= 2);
+    suggestSetCheck('anb-sg-layers', signals.hasLayerLabels && signals.hasKnownLayerLabels && signals.knownLayerCount >= 2);
     suggestSetCheck('anb-sg-qg-rules', signals.qualityGateRuleCount > 0);
     suggestSetPayload('anb-sg-aqg', signals.allureQualityGatePath);
     suggestSetPayload('anb-sg-sqg', signals.sonarQualityGatePath);
@@ -679,29 +665,72 @@ function fillSuggestForm(signals) {
     const profileEl = document.getElementById('anb-sg-profile');
     if (profileEl instanceof HTMLSelectElement)
         profileEl.value = normalizeChartProfile(signals.profile);
+    renderSuggestSummary(signals);
 }
-/** Signals = derived ∪ imported ∪ form fields (form always wins for the keys it models). */
+/** Compact readout of the effective signals — the exact facts the scorer/LLM will see. */
+function renderSuggestSummary(signals) {
+    const el = document.getElementById('anb-sg-summary');
+    if (!(el instanceof HTMLElement))
+        return;
+    const pl = (n, word) => `${n} ${word}${n === 1 ? '' : 's'}`;
+    const s = signals.statistic;
+    const parts = [];
+    if (s.total > 0)
+        parts.push(pl(s.total, 'test'));
+    if (s.failed + s.broken > 0)
+        parts.push(`${s.failed + s.broken} failed`);
+    if (signals.historyRunCount > 0)
+        parts.push(pl(signals.historyRunCount, 'run'));
+    if (signals.knownLayerCount > 0)
+        parts.push(pl(signals.knownLayerCount, 'layer'));
+    const payloads = [
+        signals.allureQualityGatePath,
+        signals.sonarQualityGatePath,
+        signals.testsTablePath,
+    ].filter(Boolean).length;
+    if (payloads > 0)
+        parts.push(pl(payloads, 'payload'));
+    el.textContent = parts.join(' · ');
+    el.hidden = parts.length === 0;
+}
+/**
+ * Signals = derived ∪ imported ∪ toggles. Toggles hold the scorer's real
+ * levers only; imported numbers (statistic, layers, severities…) pass through
+ * untouched so the LLM still sees real report data.
+ */
 function currentSuggestSignals() {
     const base = { ...deriveSuggestSignals(), ...suggestImported };
+    const raw = base.statistic;
     const statistic = {
-        passed: suggestNumField('anb-sg-passed'),
-        failed: suggestNumField('anb-sg-failed'),
-        broken: suggestNumField('anb-sg-broken'),
-        skipped: suggestNumField('anb-sg-skipped'),
-        unknown: suggestNumField('anb-sg-unknown'),
+        passed: toCount(raw?.passed),
+        failed: toCount(raw?.failed),
+        broken: toCount(raw?.broken),
+        skipped: toCount(raw?.skipped),
+        unknown: toCount(raw?.unknown),
         total: 0,
     };
+    if (suggestCheckField('anb-sg-failures')) {
+        if (statistic.failed + statistic.broken === 0)
+            statistic.failed = 1;
+    }
+    else {
+        statistic.failed = 0;
+        statistic.broken = 0;
+    }
     statistic.total =
         statistic.passed + statistic.failed + statistic.broken + statistic.skipped + statistic.unknown;
+    const layers = suggestCheckField('anb-sg-layers');
     return {
         ...base,
         statistic,
-        historyRunCount: suggestNumField('anb-sg-history'),
-        knownLayerCount: suggestNumField('anb-sg-layers'),
-        hasLayerLabels: suggestCheckField('anb-sg-layer-labels'),
-        hasKnownLayerLabels: suggestCheckField('anb-sg-known-layer-labels'),
+        historyRunCount: suggestCheckField('anb-sg-history')
+            ? Math.max(2, toCount(base.historyRunCount))
+            : 0,
+        hasLayerLabels: layers,
+        hasKnownLayerLabels: layers,
+        knownLayerCount: layers ? Math.max(2, toCount(base.knownLayerCount)) : 0,
         qualityGateRuleCount: suggestCheckField('anb-sg-qg-rules')
-            ? Math.max(1, base.qualityGateRuleCount)
+            ? Math.max(1, toCount(base.qualityGateRuleCount))
             : 0,
         allureQualityGatePath: suggestCheckField('anb-sg-aqg')
             ? base.allureQualityGatePath
@@ -715,7 +744,20 @@ function currentSuggestSignals() {
         profile: suggestProfileField() ?? normalizeChartProfile(base.profile),
     };
 }
-/** Pasted signals JSON → validate → store as import overlay → fill the form. */
+function assistantNote(msg) {
+    const el = document.getElementById('anb-assistant-note');
+    if (!(el instanceof HTMLElement))
+        return;
+    el.textContent = msg ?? '';
+    el.hidden = msg == null;
+}
+/**
+ * Import box accepts two shapes — both converge on the same canvas layout:
+ * - compact signals JSON (`--signals` output) → fills the form;
+ * - a full suggest config (`base.chart.items`) → panel ids + profile are
+ *   re-materialized through materializeLayout, so CLI and browser results
+ *   are identical by construction.
+ */
 function onSuggestImportInput() {
     const input = document.getElementById('anb-suggest-import-input');
     if (!(input instanceof HTMLTextAreaElement))
@@ -724,6 +766,7 @@ function onSuggestImportInput() {
     if (!raw) {
         suggestImported = undefined;
         suggestImportError(null);
+        renderSuggestSummary(currentSuggestSignals());
         return;
     }
     let parsed;
@@ -731,58 +774,54 @@ function onSuggestImportInput() {
         parsed = JSON.parse(raw);
     }
     catch {
-        suggestImportError('signals must be valid JSON');
+        suggestImportError('import must be valid JSON');
         return;
     }
     if (parsed === null || typeof parsed !== 'object' || Array.isArray(parsed)) {
-        suggestImportError('signals must be a JSON object');
+        suggestImportError('import must be a JSON object');
+        return;
+    }
+    const chart = parsed
+        .base?.chart;
+    if (Array.isArray(chart?.items)) {
+        const ids = chart.items.map((item) => typeof item === 'object' && item !== null
+            ? (item.id ??
+                item.type)
+            : undefined);
+        if (!ids.every((id) => typeof id === 'string' && Boolean(PANEL_META[id]))) {
+            suggestImportError('config items contain an unknown panel type');
+            return;
+        }
+        const layout = materializeLayout(ids, normalizeChartProfile(chart.profile));
+        applySuggestedLayout(layout);
+        suggestImportError(null);
+        assistantNote(`imported config layout — ${layout.items.length} panels @ ${layout.canvas.w}×${layout.canvas.h} (canonical slots)`);
         return;
     }
     suggestImportError(null);
     suggestImported = parsed;
     fillSuggestForm({ ...deriveSuggestSignals(), ...suggestImported });
 }
-function openSuggestPopover() {
-    const popover = document.getElementById('anb-suggest-popover');
-    if (!(popover instanceof HTMLElement))
-        return;
-    if (!popover.hidden) {
-        popover.hidden = true;
-        return;
+/** Segmented mode control: sync aria-pressed, toggle AI fields and the Apply row. */
+function setAssistantMode(mode) {
+    assistantMode = mode;
+    document.querySelectorAll('#anb-assistant-mode .plaque-field-seg__btn').forEach((btn) => {
+        if (btn instanceof HTMLButtonElement) {
+            btn.setAttribute('aria-pressed', btn.getAttribute('data-mode') === mode ? 'true' : 'false');
+        }
+    });
+    const aiSection = document.getElementById('anb-ai-section');
+    if (aiSection instanceof HTMLElement)
+        aiSection.hidden = mode !== 'ai';
+    const actions = document.getElementById('anb-assistant-actions');
+    if (actions instanceof HTMLElement)
+        actions.hidden = mode === 'manual';
+    const apply = document.getElementById('anb-suggest-apply');
+    if (apply instanceof HTMLButtonElement) {
+        apply.textContent = mode === 'ai' ? 'Ask AI' : 'Apply';
     }
-    suggestImported = undefined;
-    const importInput = document.getElementById('anb-suggest-import-input');
-    if (importInput instanceof HTMLTextAreaElement)
-        importInput.value = '';
-    const importDetails = document.getElementById('anb-suggest-import');
-    if (importDetails instanceof HTMLDetailsElement)
-        importDetails.open = suggestDetailsOpen;
-    suggestImportError(null);
-    fillSuggestForm(suggestFormSnapshot ?? deriveSuggestSignals());
     suggestErrorText(null);
-    popover.hidden = false;
-    placeSuggestPopover();
-}
-/** Clamp the popover inside the viewport; re-run when the import details toggles height. */
-function placeSuggestPopover() {
-    const popover = document.getElementById('anb-suggest-popover');
-    if (!(popover instanceof HTMLElement) || popover.hidden)
-        return;
-    const trigger = document.getElementById('anb-btn-suggest');
-    const rect = trigger instanceof HTMLElement ? trigger.getBoundingClientRect() : null;
-    const maxLeft = window.innerWidth - popover.offsetWidth - 8;
-    const maxTop = window.innerHeight - popover.offsetHeight - 8;
-    popover.style.left = rect ? `${Math.max(8, Math.min(rect.left, maxLeft))}px` : '16px';
-    popover.style.top = rect ? `${Math.max(8, Math.min(rect.bottom + 8, maxTop))}px` : '16px';
-}
-function closeSuggestPopover() {
-    const popover = document.getElementById('anb-suggest-popover');
-    if (!(popover instanceof HTMLElement))
-        return;
-    if (document.getElementById('anb-sg-passed') instanceof HTMLInputElement) {
-        suggestFormSnapshot = currentSuggestSignals();
-    }
-    popover.hidden = true;
+    assistantNote(null);
 }
 function applySuggestedLayout(layout) {
     setPath('base.chart.profile', layout.profile);
@@ -796,9 +835,40 @@ function applySuggestedLayout(layout) {
     renderTerminal();
     renderMessengerPreview();
 }
-function applySuggestPopover() {
-    applySuggestedLayout(suggestLayout(currentSuggestSignals()));
-    closeSuggestPopover();
+function aiField(id) {
+    const el = document.getElementById(id);
+    return el instanceof HTMLInputElement ? el.value.trim() : '';
+}
+/**
+ * Apply by mode — mirrors the CLI contract: 'rules' runs the deterministic
+ * scorer; 'ai' calls the shared advisor and on any failure warns and falls
+ * back to rules (same as `llm suggest failed …` in the CLI).
+ */
+async function onAssistantApply() {
+    const signals = currentSuggestSignals();
+    if (assistantMode === 'ai') {
+        const baseUrl = aiField('anb-ai-base-url').replace(/\/+$/, '');
+        const model = aiField('anb-ai-model');
+        if (!baseUrl || !model) {
+            suggestErrorText('ai mode needs base url and model');
+            return;
+        }
+        try {
+            const layout = await suggestLayoutViaLlm(signals, {
+                baseUrl,
+                model,
+                apiKey: aiField('anb-ai-key') || undefined,
+            });
+            applySuggestedLayout(layout);
+            suggestErrorText(null);
+            assistantNote(`ai layout applied — ${layout.items.length} panels @ ${layout.canvas.w}×${layout.canvas.h}`);
+            return;
+        }
+        catch (err) {
+            suggestErrorText(`ai failed (${err instanceof Error ? err.message : String(err)}) — applied rules layout instead`);
+        }
+    }
+    applySuggestedLayout(suggestLayout(signals));
 }
 function renderPaletteItems() {
     const palette = document.getElementById('anb-palette');
@@ -926,28 +996,28 @@ function wireEditorChrome() {
     }
     document.getElementById('anb-btn-reset')?.addEventListener('click', resetToDefault);
     document.getElementById('anb-btn-clear')?.addEventListener('click', clearAll);
-    document.getElementById('anb-btn-suggest')?.addEventListener('click', openSuggestPopover);
+    document.getElementById('anb-btn-suggest')?.addEventListener('click', () => {
+        document.getElementById('anb-assistant')?.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    });
+    document.querySelectorAll('#anb-assistant-mode .plaque-field-seg__btn').forEach((btn) => {
+        btn.addEventListener('click', () => {
+            const mode = btn.getAttribute('data-mode');
+            if (mode === 'manual' || mode === 'rules' || mode === 'ai')
+                setAssistantMode(mode);
+        });
+    });
     document.getElementById('anb-suggest-import-input')?.addEventListener('input', onSuggestImportInput);
-    document.getElementById('anb-suggest-import')?.addEventListener('toggle', () => {
-        const el = document.getElementById('anb-suggest-import');
-        if (el instanceof HTMLDetailsElement)
-            suggestDetailsOpen = el.open;
-        placeSuggestPopover();
+    document.getElementById('anb-assistant')?.addEventListener('change', (e) => {
+        const t = e.target;
+        if (t instanceof HTMLInputElement && t.type === 'checkbox') {
+            renderSuggestSummary(currentSuggestSignals());
+        }
+        if (t instanceof HTMLSelectElement && t.id === 'anb-sg-profile') {
+            renderSuggestSummary(currentSuggestSignals());
+        }
     });
-    document.getElementById('anb-suggest-apply')?.addEventListener('click', applySuggestPopover);
-    document.getElementById('anb-suggest-cancel')?.addEventListener('click', closeSuggestPopover);
-    document.addEventListener('keydown', (e) => {
-        if (e.key === 'Escape')
-            closeSuggestPopover();
-    });
-    document.addEventListener('click', (e) => {
-        const popover = document.getElementById('anb-suggest-popover');
-        const target = e.target;
-        const open = popover instanceof HTMLElement && !popover.hidden;
-        const inside = open && (popover.contains(target)
-            || document.getElementById('anb-btn-suggest')?.contains(target) === true);
-        if (open && !inside)
-            closeSuggestPopover();
+    document.getElementById('anb-suggest-apply')?.addEventListener('click', () => {
+        void onAssistantApply();
     });
     document.getElementById('anb-btn-delete')?.addEventListener('click', () => {
         const selected = getSelectedEl();
@@ -993,6 +1063,8 @@ function init() {
     initGrid();
     /* Grid layout SSOT = vector state; boot applies the default vector. */
     applyDefaultVector();
+    fillSuggestForm(deriveSuggestSignals());
+    setAssistantMode('manual');
     window.addEventListener('resize', () => {
         scheduleFitEditorScale();
     });
@@ -1034,11 +1106,10 @@ globalThis.__ANB__ = {
     fillSuggestForm,
     currentSuggestSignals,
     onSuggestImportInput,
-    placeSuggestPopover,
-    openSuggestPopover,
-    closeSuggestPopover,
+    setAssistantMode,
+    onAssistantApply,
+    assistantNote,
     applySuggestedLayout,
-    applySuggestPopover,
     chartProfile,
     isKitProfile,
     paletteCatalog,
