@@ -51,3 +51,11 @@ export {
   type CanvasSize,
   type DefaultConfigOptions,
 } from "./presets.js";
+
+export {
+  SUGGEST_TEMPLATES,
+  materializeLayout,
+  suggestLayout,
+  type SuggestedLayout,
+  type SuggestSignals,
+} from "./suggest.js";

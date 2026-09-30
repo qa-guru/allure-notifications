@@ -7,8 +7,11 @@ import {
   PANEL_META,
   isKitOnlyPanelId,
   normalizeChartProfile,
+  suggestLayout,
   type ChartItem,
   type PanelMeta,
+  type SuggestedLayout,
+  type SuggestSignals,
 } from '@qa-guru/allure-notifications-config';
 import {
   CORNER_RATIO,
@@ -581,8 +584,10 @@ function applyChartFlags() {
 
   const resetBtn = document.getElementById('anb-btn-reset');
   const clearBtn = document.getElementById('anb-btn-clear');
+  const suggestBtn = document.getElementById('anb-btn-suggest');
   if (resetBtn instanceof HTMLButtonElement) resetBtn.disabled = !enableChart;
   if (clearBtn instanceof HTMLButtonElement) clearBtn.disabled = !enableChart;
+  if (suggestBtn instanceof HTMLButtonElement) suggestBtn.disabled = !enableChart;
   fillEditorMocks();
   refreshExportPopoverIfOpen();
   updateToolbar();
@@ -699,6 +704,100 @@ function bindControls() {
 /** Full reset → default vector (CB-870 + DEFAULT_ITEMS). */
 function resetToDefault() {
   applyDefaultVector();
+}
+
+/** Signals derivable in-browser: payload paths + QG rules + profile; counts stay 0 — user edits them. */
+function deriveSuggestSignals(): SuggestSignals {
+  const chart = state.base.chart as {
+    historyPath?: string;
+    allureQualityGatePath?: string;
+    sonarQualityGatePath?: string;
+    testsTablePath?: string;
+  };
+  const rules = (state as { qualityGate?: { rules?: unknown } }).qualityGate?.rules;
+  return {
+    statistic: { passed: 0, failed: 0, broken: 0, skipped: 0, unknown: 0, total: 0 },
+    durationMs: 0,
+    layers: {},
+    hasLayerLabels: false,
+    hasKnownLayerLabels: false,
+    knownLayerCount: 0,
+    severities: {},
+    suites: [],
+    durationsMsByLayer: {},
+    historyRunCount: 0,
+    qualityGateRuleCount: Array.isArray(rules) ? rules.length : 0,
+    profile: chartProfile(),
+    allureQualityGatePath: chart.allureQualityGatePath || undefined,
+    sonarQualityGatePath: chart.sonarQualityGatePath || undefined,
+    testsTablePath: chart.testsTablePath || undefined,
+  };
+}
+
+function suggestErrorText(msg: string | null) {
+  const el = document.getElementById('anb-suggest-error');
+  if (!(el instanceof HTMLElement)) return;
+  el.textContent = msg ?? '';
+  el.hidden = msg == null;
+}
+
+function openSuggestPopover() {
+  const popover = document.getElementById('anb-suggest-popover');
+  const input = document.getElementById('anb-suggest-signals');
+  const trigger = document.getElementById('anb-btn-suggest');
+  if (!(popover instanceof HTMLElement) || !(input instanceof HTMLTextAreaElement)) return;
+  if (!popover.hidden) {
+    popover.hidden = true;
+    return;
+  }
+  input.value = JSON.stringify(deriveSuggestSignals(), null, 2);
+  suggestErrorText(null);
+  popover.hidden = false;
+  const rect = trigger instanceof HTMLElement ? trigger.getBoundingClientRect() : null;
+  const maxLeft = window.innerWidth - popover.offsetWidth - 8;
+  const maxTop = window.innerHeight - popover.offsetHeight - 8;
+  popover.style.left = rect ? `${Math.max(8, Math.min(rect.left, maxLeft))}px` : '16px';
+  popover.style.top = rect ? `${Math.max(8, Math.min(rect.bottom + 8, maxTop))}px` : '16px';
+}
+
+function closeSuggestPopover() {
+  const popover = document.getElementById('anb-suggest-popover');
+  if (popover instanceof HTMLElement) popover.hidden = true;
+}
+
+function applySuggestedLayout(layout: SuggestedLayout) {
+  setPath('base.chart.profile', layout.profile);
+  const chart = /** @type {{ items?: ChartItem[] }} */ (state.base.chart);
+  chart.items = layout.items.map((item) => ({ ...item }));
+  applyCanvasPreset(`${layout.canvas.w}x${layout.canvas.h}`);
+  loadItems(layout.items.map((item) => ({ ...item })));
+  hydrateControls();
+  applyChartFlags();
+  renderPaletteItems();
+  renderTerminal();
+  renderMessengerPreview();
+}
+
+function applySuggestPopover() {
+  const input = document.getElementById('anb-suggest-signals');
+  if (!(input instanceof HTMLTextAreaElement)) return;
+  let parsed: unknown;
+  try {
+    parsed = JSON.parse(input.value);
+  } catch {
+    suggestErrorText('signals must be valid JSON');
+    return;
+  }
+  if (parsed === null || typeof parsed !== 'object' || Array.isArray(parsed)) {
+    suggestErrorText('signals must be a JSON object');
+    return;
+  }
+  suggestErrorText(null);
+  applySuggestedLayout(suggestLayout({
+    ...deriveSuggestSignals(),
+    ...(parsed as Partial<SuggestSignals>),
+  }));
+  closeSuggestPopover();
 }
 
 function renderPaletteItems() {
@@ -838,6 +937,20 @@ function wireEditorChrome() {
 
   document.getElementById('anb-btn-reset')?.addEventListener('click', resetToDefault);
   document.getElementById('anb-btn-clear')?.addEventListener('click', clearAll);
+  document.getElementById('anb-btn-suggest')?.addEventListener('click', openSuggestPopover);
+  document.getElementById('anb-suggest-apply')?.addEventListener('click', applySuggestPopover);
+  document.getElementById('anb-suggest-cancel')?.addEventListener('click', closeSuggestPopover);
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') closeSuggestPopover();
+  });
+  document.addEventListener('click', (e) => {
+    const popover = document.getElementById('anb-suggest-popover');
+    const target = e.target as Node | null;
+    const open = popover instanceof HTMLElement && !popover.hidden;
+    const inside = open && (popover.contains(target)
+      || document.getElementById('anb-btn-suggest')?.contains(target) === true);
+    if (open && !inside) closeSuggestPopover();
+  });
   document.getElementById('anb-btn-delete')?.addEventListener('click', () => {
     const selected = getSelectedEl();
     if (selected) deleteItem(selected);
@@ -910,6 +1023,7 @@ init();
   resolvePath,
   getPath,
   setPath,
+  state,
   commitVector,
   findFreeSpot: (
     w: number,
@@ -922,6 +1036,12 @@ init();
   deleteItem,
   clearAll,
   resetToDefault,
+  deriveSuggestSignals,
+  suggestErrorText,
+  openSuggestPopover,
+  closeSuggestPopover,
+  applySuggestedLayout,
+  applySuggestPopover,
   chartProfile,
   isKitProfile,
   paletteCatalog,

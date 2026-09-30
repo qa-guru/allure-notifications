@@ -973,4 +973,79 @@ test.describe('allure-notifications-builder smoke', () => {
 
     expect(errors, errors.join('\n')).toEqual([]);
   });
+
+  test('suggest popover: applies scorer layout from compact signals', async ({
+    page,
+  }) => {
+    const errors: string[] = [];
+    page.on('console', (msg) => {
+      if (msg.type() === 'error') errors.push(`console:${msg.text()}`);
+    });
+    page.on('pageerror', (err) => errors.push(`pageerror:${err.message}`));
+    await page.goto('/');
+
+    const suggestBtn = page.getByTestId('anb-btn-suggest');
+    const popover = page.getByTestId('anb-suggest-popover');
+    const input = page.getByTestId('anb-suggest-signals');
+
+    await suggestBtn.click();
+    await expect(popover).toBeVisible();
+    const prefilled = JSON.parse(await input.inputValue());
+    expect(prefilled.profile).toBe('default');
+    expect(prefilled.historyRunCount).toBe(0);
+    expect(prefilled.statistic.total).toBe(0);
+
+    // Second toolbar click toggles the popover closed.
+    await suggestBtn.click();
+    await expect(popover).toBeHidden();
+    await suggestBtn.click();
+    await expect(popover).toBeVisible();
+
+    // Invalid JSON → inline error, stays open, layout untouched.
+    await input.fill('{nope');
+    await page.getByTestId('anb-suggest-apply').click();
+    await expect(page.getByTestId('anb-suggest-error')).toContainText('valid JSON');
+    await expect(popover).toBeVisible();
+
+    // History + known layers → 7-tile hero on 870×1080.
+    await input.fill(
+      JSON.stringify({
+        historyRunCount: 12,
+        hasLayerLabels: true,
+        hasKnownLayerLabels: true,
+        knownLayerCount: 2,
+        layers: { unit: 8, e2e: 2 },
+      }),
+    );
+    await page.getByTestId('anb-suggest-apply').click();
+    await expect(popover).toBeHidden();
+    await expect(page.locator('#anb-grid .grid-stack-item')).toHaveCount(7);
+    await expect
+      .poll(async () => {
+        const chart = JSON.parse(
+          await page.getByTestId('anb-terminal').innerText(),
+        ).base.chart;
+        return { w: chart.width, profile: chart.profile, count: chart.items.length };
+      })
+      .toEqual({ w: 870, profile: 'default', count: 7 });
+
+    // Outside click closes an open popover.
+    await suggestBtn.click();
+    await expect(popover).toBeVisible();
+    await page.getByTestId('anb-terminal-panel').click({ position: { x: 4, y: 4 } });
+    await expect(popover).toBeHidden();
+
+    // Escape closes too.
+    await suggestBtn.click();
+    await page.keyboard.press('Escape');
+    await expect(popover).toBeHidden();
+
+    // Cancel button path.
+    await suggestBtn.click();
+    await expect(popover).toBeVisible();
+    await page.getByTestId('anb-suggest-cancel').click();
+    await expect(popover).toBeHidden();
+
+    expect(errors, errors.join('\n')).toEqual([]);
+  });
 });

@@ -97,6 +97,7 @@
                 <button type="button" class="btn btn--danger anb-tool-btn" id="anb-btn-delete" data-testid="anb-btn-delete" disabled title="Delete selected">Delete</button>
                 <button type="button" class="btn btn--secondary anb-tool-btn" id="anb-btn-reset" data-testid="anb-btn-reset" title="CB-870 default">Reset</button>
                 <button type="button" class="btn btn--secondary anb-tool-btn" id="anb-btn-clear" data-testid="anb-btn-clear">Clear</button>
+                <button type="button" class="btn btn--secondary anb-tool-btn" id="anb-btn-suggest" data-testid="anb-btn-suggest" title="Suggest layout from compact signals" aria-haspopup="dialog">Suggest</button>
               </div>
             </div>
           </div>
@@ -454,6 +455,37 @@
     hidden
   >
     <div class="anb-export-popover__stage" id="anb-export-popover-stage"></div>
+  </div>
+
+  <div
+    class="anb-suggest-popover"
+    id="anb-suggest-popover"
+    data-testid="anb-suggest-popover"
+    role="dialog"
+    aria-modal="false"
+    aria-labelledby="anb-suggest-title"
+    hidden
+  >
+    <div class="anb-suggest-popover__panel">
+      <div class="anb-suggest-popover__head">
+        <span class="anb-suggest-popover__title" id="anb-suggest-title">Suggest layout</span>
+      </div>
+      <p class="anb-suggest-popover__hint">Compact signals JSON — payload paths and profile are prefilled from the form; edit counts from your report, then Apply.</p>
+      <textarea
+        class="anb-suggest-popover__input"
+        id="anb-suggest-signals"
+        data-testid="anb-suggest-signals"
+        spellcheck="false"
+        autocomplete="off"
+        rows="12"
+        aria-label="Compact signals JSON"
+      ></textarea>
+      <div class="anb-suggest-popover__error" id="anb-suggest-error" data-testid="anb-suggest-error" hidden></div>
+      <div class="anb-suggest-popover__actions">
+        <button type="button" class="btn btn--secondary anb-tool-btn" id="anb-suggest-cancel" data-testid="anb-suggest-cancel">Cancel</button>
+        <button type="button" class="btn btn--primary anb-tool-btn" id="anb-suggest-apply" data-testid="anb-suggest-apply">Apply</button>
+      </div>
+    </div>
   </div>
 
   <script src="vendor/gridstack/gridstack-all.js"></script>

@@ -1256,3 +1256,139 @@ test.describe('negative', () => {
     expect(kit.catalog).toBeGreaterThan(17);
   });
 });
+
+test.describe('suggest', () => {
+  test('derive branches: payload paths and qualityGate rules', async ({
+    page,
+  }) => {
+    await page.goto('/');
+    const derived = await page.evaluate(() => {
+      const A = globalThis.__ANB__;
+      const out: Record<string, unknown> = {};
+
+      A.setPath('base.chart.allureQualityGatePath', '/a/aqg.json');
+      A.setPath('base.chart.sonarQualityGatePath', '/a/sonar.json');
+      A.setPath('base.chart.testsTablePath', '/a/table.json');
+      A.state.qualityGate = { rules: [{ maxFailures: 0 }] };
+      out.full = A.deriveSuggestSignals();
+
+      A.state.qualityGate = { rules: 'not-an-array' };
+      out.nonArray = A.deriveSuggestSignals().qualityGateRuleCount;
+
+      delete A.state.qualityGate;
+      A.setPath('base.chart.allureQualityGatePath', '');
+      A.setPath('base.chart.sonarQualityGatePath', '');
+      A.setPath('base.chart.testsTablePath', '');
+      out.empty = A.deriveSuggestSignals();
+      return out;
+    });
+    const full = derived.full as {
+      qualityGateRuleCount: number;
+      allureQualityGatePath?: string;
+      sonarQualityGatePath?: string;
+      testsTablePath?: string;
+      profile: string;
+    };
+    expect(full.qualityGateRuleCount).toBe(1);
+    expect(full.allureQualityGatePath).toBe('/a/aqg.json');
+    expect(full.sonarQualityGatePath).toBe('/a/sonar.json');
+    expect(full.testsTablePath).toBe('/a/table.json');
+    expect(derived.nonArray).toBe(0);
+    const empty = derived.empty as {
+      qualityGateRuleCount: number;
+      allureQualityGatePath?: string;
+    };
+    expect(empty.qualityGateRuleCount).toBe(0);
+    expect(empty.allureQualityGatePath).toBeUndefined();
+  });
+
+  test('popover guards, apply branches and document click', async ({
+    page,
+  }) => {
+    await page.goto('/');
+    await page.evaluate(() => {
+      const A = globalThis.__ANB__;
+      const popover = document.getElementById('anb-suggest-popover')!;
+      const input = document.getElementById('anb-suggest-signals') as HTMLTextAreaElement;
+      const error = document.getElementById('anb-suggest-error')!;
+      const btn = document.getElementById('anb-btn-suggest')!;
+      const panel = popover.querySelector('.anb-suggest-popover__panel')!;
+      const actions = document.querySelector('.anb-editor__actions')!;
+
+      // Apply on missing input → guard return.
+      input.remove();
+      A.applySuggestPopover();
+      panel.appendChild(input);
+
+      // Non-JSON / non-object / array answers → inline errors, stays open.
+      A.openSuggestPopover();
+      input.value = 'not json';
+      A.applySuggestPopover();
+      if (error.hidden) throw new Error('error not shown');
+      input.value = 'null';
+      A.applySuggestPopover();
+      input.value = '42';
+      A.applySuggestPopover();
+      input.value = '[1,2]';
+      A.applySuggestPopover();
+      if (popover.hidden) throw new Error('popover closed on bad input');
+
+      // Valid object → applies layout and closes.
+      input.value = '{"statistic":{"passed":0,"failed":3,"broken":0,"skipped":0,"unknown":0,"total":3}}';
+      A.applySuggestPopover();
+      if (!popover.hidden) throw new Error('popover stayed open on apply');
+
+      // Toggle branches of openSuggestPopover.
+      A.openSuggestPopover();
+      if (popover.hidden) throw new Error('popover did not open');
+      A.openSuggestPopover();
+      if (!popover.hidden) throw new Error('toggle close failed');
+      A.openSuggestPopover();
+
+      // Document click: inside popover → stays; trigger → stays; outside → closes.
+      input.dispatchEvent(new MouseEvent('click', { bubbles: true }));
+      if (popover.hidden) throw new Error('inside click closed popover');
+      btn.dispatchEvent(new MouseEvent('click', { bubbles: true }));
+      if (!popover.hidden) throw new Error('button click did not toggle-close');
+      A.openSuggestPopover();
+      document.dispatchEvent(new MouseEvent('click', { bubbles: true }));
+      if (!popover.hidden) throw new Error('outside click did not close popover');
+      // Document click while popover closed → no-op branch.
+      document.dispatchEvent(new MouseEvent('click', { bubbles: true }));
+
+      // Escape closes via keydown listener.
+      A.openSuggestPopover();
+      document.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true }));
+      if (!popover.hidden) throw new Error('escape did not close popover');
+      document.dispatchEvent(new KeyboardEvent('keydown', { key: 'a', bubbles: true }));
+
+      // Trigger removed → rect null position fallback + btn?.contains arm.
+      btn.remove();
+      A.openSuggestPopover();
+      if (popover.hidden) throw new Error('open without trigger failed');
+      document.dispatchEvent(new MouseEvent('click', { bubbles: true }));
+      if (!popover.hidden) throw new Error('outside click without btn failed');
+      A.closeSuggestPopover();
+      actions.appendChild(btn);
+
+      // Element-absence guards.
+      popover.remove();
+      A.openSuggestPopover();
+      A.closeSuggestPopover();
+      document.body.appendChild(popover);
+      input.remove();
+      A.openSuggestPopover();
+      panel.appendChild(input);
+      error.remove();
+      A.suggestErrorText('x');
+      A.suggestErrorText(null);
+      panel.insertBefore(error, panel.querySelector('.anb-suggest-popover__actions'));
+
+      // applyChartFlags with suggest button removed → instanceof guard.
+      btn.remove();
+      A.applyChartFlags();
+      actions.appendChild(btn);
+    });
+    await expect(page.getByTestId('anb-terminal')).toBeVisible();
+  });
+});
