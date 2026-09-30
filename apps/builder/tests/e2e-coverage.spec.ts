@@ -1556,16 +1556,21 @@ test.describe('suggest', () => {
 
       // Endpoint preset: fills url+model; custom keeps fields; guards on missing els.
       const presetSel = document.getElementById('anb-ai-preset') as HTMLSelectElement;
+      const keyInput = document.getElementById('anb-ai-key') as HTMLInputElement;
       presetSel.value = 'box2';
       A.onAiPresetChange();
       if (baseUrlInput.value !== 'https://ollama-box2.qa.guru/v1')
         throw new Error('box2 preset url wrong');
       if (modelInput.value !== 'qwen2.5-coder:7b')
         throw new Error('box2 preset model wrong');
+      if (keyInput.placeholder !== 'user:pass (required)')
+        throw new Error('box2 key hint missing');
       presetSel.value = 'custom';
       A.onAiPresetChange();
       if (baseUrlInput.value !== 'https://ollama-box2.qa.guru/v1')
         throw new Error('custom preset should not overwrite fields');
+      if (keyInput.placeholder !== 'optional')
+        throw new Error('custom preset should restore optional hint');
       presetSel.value = 'bogus';
       A.onAiPresetChange(); // unknown key → early return
       presetSel.remove();
@@ -1587,10 +1592,34 @@ test.describe('suggest', () => {
       if (baseUrlInput.value !== 'http://localhost:11434/v1')
         throw new Error('local preset url wrong');
 
+      // Timeout field: invalid and valid inputs both reach the advisor call.
+      const timeoutInput = document.getElementById('anb-ai-timeout') as HTMLInputElement;
+      globalThis.fetch = (() =>
+        Promise.reject(new TypeError('stop'))) as typeof fetch;
+      timeoutInput.value = 'later';
+      await A.onAssistantApply(); // invalid → undefined → advisor default
+      timeoutInput.value = '45';
+      await A.onAssistantApply(); // valid → 45000ms
+      timeoutInput.value = '0';
+      await A.onAssistantApply(); // non-positive → default too
+
+      // 401 + empty api key → user:pass hint; filled key → plain message.
+      globalThis.fetch = (() =>
+        Promise.reject(new Error('llm http 401'))) as typeof fetch;
+      keyInput.value = '';
+      await A.onAssistantApply();
+      if (!error.textContent?.includes('user:pass'))
+        throw new Error('401 empty-key hint missing');
+      keyInput.value = 'u:p';
+      await A.onAssistantApply();
+      if (error.textContent?.includes('user:pass'))
+        throw new Error('401 hint shown despite filled key');
+      keyInput.value = '';
+
       // aiField missing-element guard + fetch rejection → error + rules fallback.
       const origFetch = globalThis.fetch;
-      const keyInput = document.getElementById('anb-ai-key') as HTMLInputElement;
       keyInput.remove();
+      A.onAiPresetChange(); // key input missing → instanceof guard
       globalThis.fetch = (() =>
         Promise.reject(new TypeError('fetch failed'))) as typeof fetch;
       await A.onAssistantApply();

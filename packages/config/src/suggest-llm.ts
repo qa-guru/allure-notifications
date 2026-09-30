@@ -29,7 +29,7 @@ export type LlmOptions = {
   fetchImpl?: typeof fetch;
 };
 
-const DEFAULT_TIMEOUT_MS = 15000;
+const DEFAULT_TIMEOUT_MS = 60000;
 const VALID_PROFILES: ReadonlySet<string> = new Set(["default", "kit"]);
 
 function systemPrompt(): string {

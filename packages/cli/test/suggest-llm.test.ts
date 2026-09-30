@@ -47,12 +47,20 @@ describe("llmOptionsFromEnv", () => {
       baseUrl: "https://llm.local/v1",
       model: "test-model",
       apiKey: undefined,
+      timeoutMs: undefined,
     });
     assert.deepEqual(llmOptionsFromEnv({ ...llmEnv, ANB_AI_API_KEY: "  key-1  " }), {
       baseUrl: "https://llm.local/v1",
       model: "test-model",
       apiKey: "key-1",
+      timeoutMs: undefined,
     });
+  });
+
+  it("parses ANB_AI_TIMEOUT_MS and ignores invalid values", () => {
+    assert.equal(llmOptionsFromEnv({ ...llmEnv, ANB_AI_TIMEOUT_MS: "120000" })?.timeoutMs, 120000);
+    assert.equal(llmOptionsFromEnv({ ...llmEnv, ANB_AI_TIMEOUT_MS: "later" })?.timeoutMs, undefined);
+    assert.equal(llmOptionsFromEnv({ ...llmEnv, ANB_AI_TIMEOUT_MS: "0" })?.timeoutMs, undefined);
   });
 });
 

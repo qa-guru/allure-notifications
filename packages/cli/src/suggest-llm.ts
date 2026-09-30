@@ -14,14 +14,21 @@ import type { LlmOptions } from "@qa-guru/allure-notifications-config";
 
 /** Env contract (ADR 020): disabled unless base URL and model are both set. */
 export function llmOptionsFromEnv(
-  env: Partial<Record<"ANB_AI_BASE_URL" | "ANB_AI_MODEL" | "ANB_AI_API_KEY", string | undefined>>,
+  env: Partial<
+    Record<
+      "ANB_AI_BASE_URL" | "ANB_AI_MODEL" | "ANB_AI_API_KEY" | "ANB_AI_TIMEOUT_MS",
+      string | undefined
+    >
+  >,
 ): LlmOptions | undefined {
   const baseUrl = env.ANB_AI_BASE_URL?.trim();
   const model = env.ANB_AI_MODEL?.trim();
   if (!baseUrl || !model) return undefined;
+  const timeoutMs = Number(env.ANB_AI_TIMEOUT_MS);
   return {
     baseUrl: baseUrl.replace(/\/+$/, ""),
     model,
     apiKey: env.ANB_AI_API_KEY?.trim() || undefined,
+    timeoutMs: Number.isFinite(timeoutMs) && timeoutMs > 0 ? timeoutMs : undefined,
   };
 }

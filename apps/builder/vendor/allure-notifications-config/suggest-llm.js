@@ -12,7 +12,7 @@
 import { PANEL_META } from "./catalog.js";
 import { isKitOnlyPanelId } from "./kit-only.js";
 import { materializeLayout, suggestLayout, } from "./suggest.js";
-const DEFAULT_TIMEOUT_MS = 15000;
+const DEFAULT_TIMEOUT_MS = 60000;
 const VALID_PROFILES = new Set(["default", "kit"]);
 function systemPrompt() {
     return [

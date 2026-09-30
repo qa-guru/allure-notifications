@@ -843,13 +843,20 @@ function aiField(id) {
 const AI_PRESETS = {
     custom: undefined,
     local: { baseUrl: 'http://localhost:11434/v1', model: 'qwen2.5-coder:7b' },
-    box2: { baseUrl: 'https://ollama-box2.qa.guru/v1', model: 'qwen2.5-coder:7b' },
+    box2: {
+        baseUrl: 'https://ollama-box2.qa.guru/v1',
+        model: 'qwen2.5-coder:7b',
+        keyHint: 'user:pass (required)',
+    },
 };
 function onAiPresetChange() {
     const el = document.getElementById('anb-ai-preset');
     if (!(el instanceof HTMLSelectElement))
         return;
     const preset = AI_PRESETS[el.value];
+    const key = document.getElementById('anb-ai-key');
+    if (key instanceof HTMLInputElement)
+        key.placeholder = preset?.keyHint ?? 'optional';
     if (!preset)
         return;
     const baseUrl = document.getElementById('anb-ai-base-url');
@@ -874,10 +881,12 @@ async function onAssistantApply() {
             return;
         }
         try {
+            const timeoutS = Number(aiField('anb-ai-timeout'));
             const layout = await suggestLayoutViaLlm(signals, {
                 baseUrl,
                 model,
                 apiKey: aiField('anb-ai-key') || undefined,
+                timeoutMs: Number.isFinite(timeoutS) && timeoutS > 0 ? timeoutS * 1000 : undefined,
             });
             applySuggestedLayout(layout);
             suggestErrorText(null);
@@ -885,7 +894,9 @@ async function onAssistantApply() {
             return;
         }
         catch (err) {
-            suggestErrorText(`ai failed (${err instanceof Error ? err.message : String(err)}) — applied rules layout instead`);
+            const msg = err instanceof Error ? err.message : String(err);
+            const keyHint = !aiField('anb-ai-key') && /\b401\b/.test(msg) ? ' — api key empty: use user:pass' : '';
+            suggestErrorText(`ai failed (${msg}${keyHint}) — applied rules layout instead`);
         }
     }
     applySuggestedLayout(suggestLayout(signals));
