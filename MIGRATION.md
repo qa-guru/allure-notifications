@@ -12,9 +12,9 @@ There is **no 5.1** line. Historical Java A3 MVP stays at **5.0.8**; product con
 |------|--------|-------|--------|
 | **4.\*** | Allure 2 | Java | Historical A2 |
 | **5.\*** | Allure 3 | Java MVP (Gradle fat jar **5.0.8**) | **Archived** on branch [`legacy/java-5.0.8`](https://github.com/qa-guru/allure-notifications/tree/legacy/java-5.0.8/legacy/java) — **keep forever on that branch**; release [v5.0.8](https://github.com/qa-guru/allure-notifications/releases/tag/v5.0.8); bugfix / security only; **no TypeScript**; **not in-tree on `master`** |
-| **6.\*** | Allure 3 | TypeScript / typescript-go · CLI · builder · A3 plugin · AI | **Product** on `master` — pin `docs/allure-notifications/VERSION` (**6.3.1**) |
+| **6.\*** | Allure 3 | TypeScript / typescript-go · CLI · builder · A3 plugin · AI | **Product** on `master` — pin `docs/allure-notifications/VERSION` (**6.3.2**) |
 
-Monorepo pin = **6.3.1**. Product packages: npm **`@qa-guru/allure-notifications`** + scoped `@qa-guru/allure-notifications-*` (CLI + plugin aligned at **6.3.1**). Collage palette/geometry: **`@qa-guru/allure-report-kit/collage`** (≥0.3.3); `@qa-guru/allure-notifications-pyramid` removed.
+Monorepo pin = **6.3.2**. Product packages: npm **`@qa-guru/allure-notifications`** + scoped `@qa-guru/allure-notifications-*` (CLI + plugin aligned at **6.3.2**). Collage palette/geometry: **`@qa-guru/allure-report-kit/collage`** (≥0.3.3); `@qa-guru/allure-notifications-pyramid` removed.
 
 ## Public product 6.\* (locked)
 

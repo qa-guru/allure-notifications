@@ -1,5 +1,15 @@
 # Changelog
 
+## v 6.3.2
+
+### English
+
+- **builder: Assistant fixes** — the active mode button now gets `plaque-field-seg__btn--on` (was `aria-pressed` only, so nothing looked selected); AI endpoint fields (`preset`, `base url`, `model`, `timeout`) persist in `localStorage` across reloads — the api key is intentionally never stored.
+
+### Russian
+
+- **builder: фиксы Assistant** — активная кнопка режима теперь получает `plaque-field-seg__btn--on` (раньше выставлялся только `aria-pressed`, визуального выделения не было); поля AI-эндпоинта (`preset`, `base url`, `model`, `timeout`) персистятся в `localStorage` между перезагрузками — api key намеренно не сохраняется.
+
 ## v 6.3.1
 
 ### English

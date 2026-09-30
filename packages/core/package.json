@@ -1,6 +1,6 @@
 {
   "name": "@qa-guru/allure-notifications-core",
-  "version": "6.3.1",
+  "version": "6.3.2",
   "description": "Allure 3 summary/results → native collage PNG (Phase 3 / Stage C).",
   "type": "module",
   "exports": {
