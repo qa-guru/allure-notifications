@@ -290,10 +290,15 @@ export function syncItemsToState() {
     if (suppressSync)
         return;
     const chart = /** @type {{ layout: string, items: ChartItem[], gridCols: number, gridRows: number }} */ (state.base.chart);
+    const items = readItemsFromGrid();
+    if (items.some((item, i) => items.slice(i + 1).some((other) => rectsOverlap(item, other)))) {
+        loadItems(chart.items);
+        return;
+    }
     chart.layout = 'free';
     chart.gridCols = GRID_COLS;
     chart.gridRows = GRID_ROWS;
-    chart.items = readItemsFromGrid();
+    chart.items = items;
     const layoutSelect = document.querySelector('[data-anb-path="base.chart.layout"]');
     if (layoutSelect instanceof HTMLSelectElement) {
         layoutSelect.value = 'free';
@@ -364,15 +369,14 @@ export function makeWidgetEl(item) {
  * @param {number | null | undefined} preferX
  * @param {number | null | undefined} preferY
  */
-export function findFreeSpot(w, h, preferX, preferY) {
-    const occupied = readItemsFromGrid();
+export function findFreeSpot(w, h, preferX, preferY, occupied = readItemsFromGrid()) {
     /** @param {number} x @param {number} y */
     function overlaps(x, y) {
         return occupied.some((p) => rectsOverlap({ type: '_', x, y, w, h }, p));
     }
     /** @param {number} x @param {number} y */
     function fits(x, y) {
-        return x + w <= GRID_COLS && y + h <= GRID_ROWS && !overlaps(x, y);
+        return x >= 0 && y >= 0 && x + w <= GRID_COLS && y + h <= GRID_ROWS && !overlaps(x, y);
     }
     if (preferX != null && preferY != null && fits(preferX, preferY)) {
         return { x: preferX, y: preferY };
@@ -484,15 +488,25 @@ export function deleteItem(el) {
 export function loadItems(items) {
     if (!grid)
         return;
+    const placed = [];
+    for (const raw of items) {
+        const item = clampItem(raw);
+        if (!item)
+            continue;
+        const spot = findFreeSpot(item.w, item.h, item.x, item.y, placed);
+        if (!spot) {
+            syncItemsToState();
+            window.alert(`No space for ${item.id || item.type} (${item.w}×${item.h})`);
+            return;
+        }
+        placed.push({ ...item, ...spot });
+    }
     suppressSync = true;
     setGridAnimate(false);
     fitEditorScale();
     grid.removeAll(true);
     clearSelection();
-    items.forEach((raw) => {
-        const item = clampItem(raw);
-        if (!item)
-            return;
+    placed.forEach((item) => {
         const el = makeWidgetEl(item);
         grid.makeWidget(el);
         if (el.gridstackNode) {

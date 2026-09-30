@@ -17,6 +17,26 @@ const SQ1080_ITEMS = [
   { type: 'durations', x: 3, y: 4, w: 4, h: 3, groupBy: 'layer' },
 ];
 
+async function layoutSnapshot(page: import('@playwright/test').Page) {
+  return page.evaluate(() => {
+    const items = globalThis.__ANB__.readItemsFromGrid();
+    const cards = [...document.querySelectorAll('#anb-grid > .grid-stack-item[data-type]')].map((el) => {
+      const rect = el.querySelector('.grid-stack-item-content').getBoundingClientRect();
+      return { x: rect.x, y: rect.y, w: rect.width, h: rect.height };
+    });
+    const overlaps = (rects: { x: number; y: number; w: number; h: number }[]) =>
+      rects.some((a, i) => rects.slice(i + 1).some((b) =>
+        a.x < b.x + b.w && b.x < a.x + a.w && a.y < b.y + b.h && b.y < a.y + a.h,
+      ));
+    return {
+      items,
+      terminalItems: JSON.parse(document.getElementById('anb-terminal').textContent).base.chart.items,
+      logicalOverlap: overlaps(items),
+      visualOverlap: overlaps(cards),
+    };
+  });
+}
+
 test.describe('allure-notifications-builder smoke', () => {
   test('shell mounts: header, 3 zones, terminal JSON', async ({ page }) => {
     await page.goto('/');
@@ -189,6 +209,70 @@ test.describe('allure-notifications-builder smoke', () => {
         };
       })
       .toEqual({ headerHeight: 80, cardGap: 18, tilePad: 8 });
+  });
+
+  test('layout collisions: loading overlapping copies finds free cells', async ({ page }) => {
+    await page.goto('/');
+    await page.waitForFunction(() => globalThis.__ANB__?.getGrid());
+    await page.evaluate(() => globalThis.__ANB__.loadItems([
+      { type: 'currentStatus', x: 3, y: 1, w: 4, h: 4 },
+      { type: 'currentStatus', x: 0, y: 4, w: 4, h: 4 },
+    ]));
+
+    const snapshot = await layoutSnapshot(page);
+    expect(snapshot.items).toEqual([
+      { type: 'currentStatus', x: 3, y: 1, w: 4, h: 4 },
+      { type: 'currentStatus', x: 0, y: 5, w: 4, h: 4 },
+    ]);
+    expect(snapshot.logicalOverlap).toBe(false);
+    expect(snapshot.visualOverlap).toBe(false);
+    expect(snapshot.terminalItems).toEqual(snapshot.items);
+    await expect(page.locator('#anb-grid > .grid-stack-item[data-type="currentStatus"]')).toHaveCount(2);
+  });
+
+  test('layout collisions: moves at the row limit keep the last valid layout', async ({ page }) => {
+    await page.goto('/');
+    await page.waitForFunction(() => globalThis.__ANB__?.getGrid());
+    await page.evaluate(() => globalThis.__ANB__.loadItems([
+      { type: 'currentStatus', x: 3, y: 1, w: 4, h: 4 },
+      { type: 'currentStatus', x: 0, y: 5, w: 4, h: 4 },
+    ]));
+    const before = await layoutSnapshot(page);
+
+    await page.evaluate(() => {
+      const grid = globalThis.__ANB__.getGrid();
+      const el = [...document.querySelectorAll('#anb-grid > .grid-stack-item[data-type]')].at(-1);
+      grid.update(el, { x: 0, y: 4 });
+    });
+
+    const after = await layoutSnapshot(page);
+    expect(after.items).toEqual(before.items);
+    expect(after.logicalOverlap).toBe(false);
+    expect(after.visualOverlap).toBe(false);
+    expect(after.terminalItems).toEqual(after.items);
+  });
+
+  test('layout collisions: an overfull import does not discard existing cards', async ({ page }) => {
+    const dialogs: string[] = [];
+    page.on('dialog', async (dialog) => {
+      dialogs.push(dialog.message());
+      await dialog.dismiss();
+    });
+    await page.goto('/');
+    await page.waitForFunction(() => globalThis.__ANB__?.getGrid());
+    const before = await layoutSnapshot(page);
+
+    await page.evaluate(() => globalThis.__ANB__.loadItems([
+      { type: 'currentStatus', x: 0, y: 0, w: 10, h: 10 },
+      { type: 'durationDynamics', x: 0, y: 0, w: 10, h: 10 },
+    ]));
+
+    const after = await layoutSnapshot(page);
+    expect(after.items).toEqual(before.items);
+    expect(after.logicalOverlap).toBe(false);
+    expect(after.visualOverlap).toBe(false);
+    expect(after.terminalItems).toEqual(after.items);
+    expect(dialogs).toEqual(['No space for durationDynamics (10×10)']);
   });
 
   test('canvas presets only 870 / 1080 / 1410', async ({ page }) => {

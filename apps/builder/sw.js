@@ -27,7 +27,7 @@ const MANIFEST = [
   },
   {
     "url": "/js/grid-editor.js",
-    "revision": "4b4896e4109bf1ad"
+    "revision": "807b0d25e8eeec99"
   },
   {
     "url": "/js/mocks/kit.js",
