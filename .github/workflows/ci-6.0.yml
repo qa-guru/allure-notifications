@@ -79,6 +79,19 @@ jobs:
       - name: Install fonts for canvas rendering
         run: sudo apt-get update && sudo apt-get install -y --no-install-recommends fontconfig fonts-dejavu-core
 
+      - name: Debug canvas fonts
+        run: |
+          fc-list | head -5 || true
+          cd packages/core && node --input-type=module -e "
+            import { GlobalFonts, createCanvas } from '@napi-rs/canvas';
+            console.log('families:', GlobalFonts.families.length, JSON.stringify(GlobalFonts.families.slice(0,8)));
+            const c = createCanvas(220,60); const ctx = c.getContext('2d');
+            ctx.fillStyle = '#22c55e'; ctx.font = '600 24px sans-serif'; ctx.fillText('Пройден', 10, 40);
+            const d = ctx.getImageData(0,0,220,60).data; let g = 0;
+            for (let i=0;i<d.length;i+=4){ if (Math.abs(d[i]-34)<20 && Math.abs(d[i+1]-197)<20 && Math.abs(d[i+2]-94)<20) g++; }
+            console.log('green px:', g);
+          "
+
       - name: Validate Action metadata and workflows
         run: pnpm validate:action
 
