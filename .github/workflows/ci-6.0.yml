@@ -74,6 +74,11 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
+      # @napi-rs/canvas renders panel text via fontconfig; a fontless env
+      # yields empty glyphs and pixel-assertion tests fail with "got 0".
+      - name: Install fonts for canvas rendering
+        run: sudo apt-get update && sudo apt-get install -y --no-install-recommends fontconfig fonts-dejavu-core
+
       - name: Validate Action metadata and workflows
         run: pnpm validate:action
 
