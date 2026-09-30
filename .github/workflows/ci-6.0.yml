@@ -79,10 +79,20 @@ jobs:
       - name: Install fonts for canvas rendering
         run: sudo apt-get update && sudo apt-get install -y --no-install-recommends fontconfig fonts-dejavu-core
 
+      - name: Validate Action metadata and workflows
+        run: pnpm validate:action
+
+      - name: Install Playwright Chromium
+        run: pnpm --filter @qa-guru/allure-notifications-builder exec playwright install chromium --with-deps
+
+      # Workspace package exports point at dist/; emit before typecheck (fresh CI has no dist).
+      - name: Build (packages + builder emit)
+        run: pnpm build
+
       - name: Debug canvas fonts
         run: |
           fc-list | head -5 || true
-          cd packages/core && pnpm run build >/dev/null 2>&1; node --input-type=module -e "
+          cd packages/core && node --input-type=module -e "
             import { readFileSync, writeFileSync } from 'node:fs';
             import { fileURLToPath } from 'node:url';
             import { GlobalFonts, createCanvas } from '@napi-rs/canvas';
@@ -119,16 +129,6 @@ jobs:
           path: /tmp/qg-ci.png
           if-no-files-found: ignore
           retention-days: 3
-
-      - name: Validate Action metadata and workflows
-        run: pnpm validate:action
-
-      - name: Install Playwright Chromium
-        run: pnpm --filter @qa-guru/allure-notifications-builder exec playwright install chromium --with-deps
-
-      # Workspace package exports point at dist/; emit before typecheck (fresh CI has no dist).
-      - name: Build (packages + builder emit)
-        run: pnpm build
 
       - name: Typecheck (packages + builder, typescript@7)
         run: pnpm typecheck
