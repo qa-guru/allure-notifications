@@ -35,7 +35,7 @@
   "dependencies": {
     "@qa-guru/allure-notifications-config": "workspace:*",
     "@qa-guru/allure-notifications-core": "workspace:*",
-    "undici": "^8.0.0"
+    "undici": "^8.10.2"
   },
   "devDependencies": {
     "@qa-guru/allure-notifications-test-meta": "workspace:*",
