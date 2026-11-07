@@ -1,5 +1,15 @@
 # Changelog
 
+## v 6.3.4
+
+### English
+
+- **release: republish via `pnpm publish` only** — 6.3.3 `core` went out via plain `npm publish`, which does not rewrite `workspace:*` deps, so its published manifest was unresolvable (`workspace:*` leaked to the registry). 6.3.3 `core`/`cli`/`plugin` are deprecated; 6.3.4 is byte-identical code published through the correct tool.
+
+### Russian
+
+- **release: перепаблиш только через `pnpm publish`** — 6.3.3 `core` ушёл через голый `npm publish`, который не переписывает `workspace:*`-зависимости — manifest в registry оказался неразрешимым. 6.3.3 `core`/`cli`/`plugin` помечены deprecated; 6.3.4 — тот же код, опубликованный правильным инструментом.
+
 ## v 6.3.3
 
 ### English
