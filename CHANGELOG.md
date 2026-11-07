@@ -1,5 +1,15 @@
 # Changelog
 
+## v 6.3.3
+
+### English
+
+- **cli: Telegram sendPhoto through `config.proxy` actually delivers** — the proxied fetch (`undici` npm package) did not recognize the runtime `FormData`/`Blob` classes, so the body was serialized as `"[object FormData]"` text/plain and Telegram answered `Bad Request: there is no photo in the request`. `createProxiedFetch` now re-realms `FormData` bodies into undici's own `FormData` before dispatch; verified live (sendPhoto ok, message_id returned) and covered by a CONNECT-tunnel regression test.
+
+### Russian
+
+- **cli: sendPhoto через `config.proxy` теперь реально доставляет** — проксированный fetch (npm-пакет `undici`) не распознавал рантайм-классы `FormData`/`Blob`, поэтому тело уходило как `"[object FormData]"` text/plain и Telegram отвечал `Bad Request: there is no photo in the request`. `createProxiedFetch` теперь пересобирает `FormData`-тела в realm undici до dispatch; проверено живьём (sendPhoto ok, message_id возвращён) и покрыто регрессионным тестом через CONNECT-туннель.
+
 ## v 6.3.2
 
 ### English

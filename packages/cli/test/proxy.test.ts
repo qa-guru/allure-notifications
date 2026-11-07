@@ -1,4 +1,6 @@
 import assert from "node:assert/strict";
+import http from "node:http";
+import net from "node:net";
 import { describe, it } from "node:test";
 import { declareSuite } from "@qa-guru/allure-notifications-test-meta";
 
@@ -132,6 +134,81 @@ describe("@qa-guru/allure-notifications proxy resolve", () => {
 
   it("resolveLiveFetch: undefined when no proxy and no fetchImpl", () => {
     assert.equal(resolveLiveFetch({ configProxy: undefined }), undefined);
+  });
+
+  it("createProxiedFetch re-realms global FormData — multipart survives (ADR 008 regression)", async () => {
+    // Echo target: records what arrived through the tunnel.
+    let resolveEcho!: (v: {
+      bytes: number;
+      ct?: string;
+      hasPhoto: boolean;
+    }) => void;
+    const echoed = new Promise<{
+      bytes: number;
+      ct?: string;
+      hasPhoto: boolean;
+    }>((r) => (resolveEcho = r));
+    const echo = http.createServer((req, res) => {
+      const chunks: Buffer[] = [];
+      req.on("data", (c) => chunks.push(c));
+      req.on("end", () => {
+        const body = Buffer.concat(chunks);
+        res.end("ok");
+        resolveEcho({
+          bytes: body.length,
+          ct: req.headers["content-type"],
+          hasPhoto:
+            body.includes("chart.png") && body.includes("image/png"),
+        });
+      });
+    });
+    await new Promise<void>((r) => echo.listen(0, "127.0.0.1", r));
+    const echoPort = (echo.address() as net.AddressInfo).port;
+
+    // Minimal HTTP proxy: undici uses absolute-URI form for http:// targets —
+    // forward the request head as-is (origin servers accept absolute-form), then pipe.
+    const proxy = net.createServer((client) => {
+      client.once("data", (head) => {
+        const m = /^\w+ http:\/\/([^:/]+):(\d+)\//.exec(head.toString());
+        assert.ok(m, `expected absolute-URI request, got: ${head.toString().slice(0, 60)}`);
+        const upstream = net.connect(Number(m[2]), m[1]!, () => {
+          upstream.write(head);
+          client.pipe(upstream).pipe(client);
+        });
+      });
+    });
+    await new Promise<void>((r) => proxy.listen(0, "127.0.0.1", r));
+    const proxyPort = (proxy.address() as net.AddressInfo).port;
+
+    try {
+      const proxied = createProxiedFetch({
+        type: "http",
+        host: "127.0.0.1",
+        port: proxyPort,
+      });
+      const form = new FormData();
+      form.append("chat_id", "123");
+      form.append(
+        "photo",
+        new Blob([new Uint8Array(100)], { type: "image/png" }),
+        "chart.png",
+      );
+      const res = await proxied(`http://127.0.0.1:${echoPort}/sendPhoto`, {
+        method: "POST",
+        body: form,
+      });
+      assert.equal(res.status, 200);
+      const got = await echoed;
+      assert.ok(
+        got.ct?.startsWith("multipart/form-data"),
+        `content-type: ${got.ct}`,
+      );
+      assert.ok(got.bytes > 100, `body too small: ${got.bytes}`);
+      assert.ok(got.hasPhoto);
+    } finally {
+      proxy.close();
+      echo.close();
+    }
   });
 });
 

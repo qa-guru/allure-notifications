@@ -4,6 +4,7 @@
 
 import {
   fetch as undiciFetch,
+  FormData as UndiciFormData,
   ProxyAgent,
   Socks5ProxyAgent,
   type Dispatcher,
@@ -99,6 +100,24 @@ export function createProxyDispatcher(proxy: OutboundProxy): Dispatcher {
 }
 
 /**
+ * Rebuild a global-realm `FormData` in the npm-undici realm. undici fetch does
+ * not recognize the runtime `FormData`/`Blob` classes and would serialize the
+ * body as `"[object FormData]"` text/plain — Telegram then answers
+ * "there is no photo in the request". File entries keep name via 3-arg append.
+ */
+function toUndiciFormData(source: FormData): UndiciFormData {
+  const fd = new UndiciFormData();
+  for (const [key, value] of source.entries()) {
+    if (typeof value === "string") {
+      fd.append(key, value);
+    } else {
+      fd.append(key, value, (value as File).name);
+    }
+  }
+  return fd;
+}
+
+/**
  * `fetch` bound to the proxy dispatcher. Injectable tests should pass their own `fetchImpl`
  * and skip this (explicit fetch wins over config.proxy).
  */
@@ -107,11 +126,17 @@ export function createProxiedFetch(proxy: OutboundProxy): typeof fetch {
   const proxied = (
     input: Parameters<typeof fetch>[0],
     init?: Parameters<typeof fetch>[1],
-  ): ReturnType<typeof fetch> =>
-    undiciFetch(input as string | URL, {
-      ...(init as object | undefined),
+  ): ReturnType<typeof fetch> => {
+    const body = init?.body;
+    const patched =
+      body instanceof FormData
+        ? { ...init, body: toUndiciFormData(body) }
+        : init;
+    return undiciFetch(input as string | URL, {
+      ...(patched as object | undefined),
       dispatcher,
     }) as ReturnType<typeof fetch>;
+  };
   return proxied as typeof fetch;
 }
 
