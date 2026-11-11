@@ -144,7 +144,7 @@ test.describe('allure-notifications-builder smoke', () => {
     expect(errors, errors.join('\n')).toEqual([]);
   });
 
-  test('header tool links: monorepo + prod builder site', async ({ page }) => {
+  test('header tool links: monorepo only', async ({ page }) => {
     await page.goto('/');
     await expect(page.getByTestId('anb-page')).toBeVisible();
     const github = page.getByTestId('header-github');
