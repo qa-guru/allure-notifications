@@ -153,15 +153,7 @@ test.describe('allure-notifications-builder smoke', () => {
       'https://github.com/qa-guru/allure-notifications',
     );
     await expect(github).toHaveAttribute('aria-label', 'allure-notifications');
-    const site = page.getByTestId('header-github-pages');
-    await expect(site).toHaveAttribute(
-      'href',
-      'https://allure-notifications.qa.guru',
-    );
-    await expect(site).toHaveAttribute('aria-label', 'allure-notifications');
-    // Template github.io icon (SVG currentColor) — never allure3-logo img override.
-    await expect(site.locator('.icon svg')).toBeVisible();
-    await expect(site.locator('.icon img')).toHaveCount(0);
+    await expect(page.getByTestId('header-github-pages')).toHaveCount(0);
   });
 
   test('Reset → CB-870 free chart + chrome defaults in terminal', async ({
